@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd TeaLeaf
+xcodebuild -target test -sdk iphonesimulator5.1
+if [ $? != 0 ]; then	
+	echo "Test(s) failed. Commit failed. You can use --no-verify to bypass this checking."
+	exit 1
+fi
+
+exit 0

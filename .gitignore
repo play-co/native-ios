@@ -1,0 +1,10 @@
+install.shbuild/*
+libpng/build
+libjpeg/build
+*.xcodeproj/*.pbxuser
+*.xcodeproj/*.mode*
+*xcuserdata*
+app.bundle/*
+.DS_Store
+.gitmodules
+

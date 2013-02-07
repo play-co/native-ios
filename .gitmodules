@@ -1,0 +1,9 @@
+[submodule "tealeaf/native-core"]
+	path = tealeaf/native-core
+	url = git@github.com:gameclosure/native-core.git
+[submodule "tealeaf/deps/jansson"]
+	path = tealeaf/deps/jansson
+	url = git@github.com:gameclosure/jansson.git
+[submodule "barista"]
+	path = barista
+	url = git@github.com:gameclosure/barista

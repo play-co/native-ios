@@ -1,0 +1,74 @@
+/* @license
+ * This file is part of the Game Closure SDK.
+ *
+ * The Game Closure SDK is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ 
+ * The Game Closure SDK is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ 
+ * You should have received a copy of the GNU General Public License
+ * along with the Game Closure SDK.	 If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "js/js.h"
+#include "timestep_image_map.h"
+#include "gen/js_timestep_image_map_template.gen.h"
+#include "core/log.h"
+
+CEXPORT void def_timestep_image_map_class_finalize(JSFreeOp *fop, JSObject *obj) {
+	timestep_image_map *map = (timestep_image_map*)JS_GetPrivate(obj);
+	if (map) {
+		timestep_image_delete(map);
+	}
+}
+
+CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned argc, jsval *vp) {
+	JS_BeginRequest(cx);
+
+	JSObject *thiz = timestep_image_map_create_ctor_object(cx, vp);
+
+	timestep_image_map *map = timestep_image_map_init();
+	JS_SetPrivate(thiz, map);
+
+	JSObject *parent; // NOTE: Parent is currently not stored anywhere
+	JSString *url_jstr;
+
+	if (argc == 6) {
+		if (JS_ConvertArguments(cx, argc, JS_ARGV(cx, vp), "oiiiiS", &parent, &map->x, &map->y, &map->width, &map->height, &url_jstr)) {
+			map->margin_top = 0;
+			map->margin_right = 0;
+			map->margin_bottom = 0;
+			map->margin_left = 0;
+			JSTR_TO_CSTR_PERSIST(cx, url_jstr, url_cstr);
+			map->url = url_cstr;
+
+			JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(thiz));
+
+			JS_EndRequest(cx);
+			return JS_TRUE;
+		}
+	} else if (argc == 10) {
+		if (JS_ConvertArguments(cx, argc, JS_ARGV(cx, vp), "oiiiiiiiiS", &parent, &map->x, &map->y, &map->width, &map->height, &map->margin_top, &map->margin_right, &map->margin_bottom, &map->margin_left, &url_jstr)) {
+			JSTR_TO_CSTR_PERSIST(cx, url_jstr, url_cstr);
+			map->url = url_cstr;
+			
+			JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(thiz));
+			
+			JS_EndRequest(cx);
+			return JS_TRUE;
+		}
+	}
+
+	LOG("{imagemap} ERROR: ImageMap constructor arguments were invalid!");
+
+	// Unlikely
+	timestep_image_delete(map);
+
+	JS_EndRequest(cx);
+	return JS_FALSE;
+}

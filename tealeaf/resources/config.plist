@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>app_id</key>
+	<string>deadbeef</string>
+	<key>apple_id</key>
+	<string>123456789</string>
+	<key>bundle_id</key>
+	<string>tealeaf</string>
+	<key>code_host</key>
+	<string>localhost</string>
+	<key>code_path</key>
+	<string>native.js.mp3</string>
+	<key>code_port</key>
+	<integer>9200</integer>
+	<key>contacts_url</key>
+	<string>ContactsURL</string>
+	<key>entry_point</key>
+	<string>gc.native.launchClient</string>
+	<key>game_hash</key>
+	<string>GameHash</string>
+	<key>native_hash</key>
+	<string>NativeHash</string>
+	<key>push_url</key>
+	<string>http://staging.api.gameclosure.com/push/%s/?device=%s&amp;amp;version=%s</string>
+	<key>remote_loading</key>
+	<true/>
+	<key>screen_height</key>
+	<integer>800</integer>
+	<key>screen_width</key>
+	<integer>480</integer>
+	<key>sdk_hash</key>
+	<string>SDKHash</string>
+	<key>services_url</key>
+	<string>http://api.gameclosure.com</string>
+	<key>source_dir</key>
+	<string>/</string>
+	<key>studio_name</key>
+	<string>StudioName</string>
+	<key>tcp_host</key>
+	<string>localhost</string>
+	<key>tcp_port</key>
+	<integer>4747</integer>
+	<key>userdata_url</key>
+	<string>UserdataURL</string>
+	<key>version</key>
+	<string>1.0.0</string>
+</dict>
+</plist>
