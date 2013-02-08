@@ -24,9 +24,6 @@
 @private
 int callback;
 UIAlertView *message;
-
-@public
-bool isPortrait;
 }
 
 @property (nonatomic, retain) UIImageView *loading_image_view;

@@ -85,6 +85,7 @@ static CFTimeInterval last_timestamp = 0.0f;
 
 static volatile BOOL m_ogl_en = NO; // OpenGL calls enabled
 static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
+static volatile BOOL m_showing_splash = YES; // Maybe showing splash screen?
 
 - (void)startRendering {
 	m_ogl_en = YES;
@@ -92,16 +93,18 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (void)stopRendering {
 	m_ogl_en = NO;
-	
+
 	[cond lock];
 	while (m_ogl_in) {
 		[cond wait];
 	}
 	[cond unlock];
+
+	// Maybe showing splash again
+	m_showing_splash = YES;
 }
 
 - (void)render:(CADisplayLink*)displayLink {
-	[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view removeFromSuperview];
 	m_ogl_in = YES;
 
 	// Compiler memory barrier
@@ -144,6 +147,13 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 			[cond lock];
 			[cond signal];
 			[cond unlock];
+		}
+
+		// If showing the splash screen,
+		if (m_showing_splash) {
+			// Hide it immediately!
+			[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view removeFromSuperview];
+			m_showing_splash = false;
 		}
 	}
 }

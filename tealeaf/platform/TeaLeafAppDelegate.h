@@ -25,6 +25,14 @@
 #import "OpenGLView.h"
 #import "Reachability.h"
 
+
+// Splash Screen Descriptor
+struct SplashDescriptor {
+	const char *key;		// Manifest.json key name under "splash" section
+	const char *resource;	// Local resource name used by Xcode
+};
+
+
 @interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
@@ -34,7 +42,6 @@
 @property (nonatomic) BOOL isOnline;                        // Indicates that upon the previous notice, that the internet was reachable
 @property (nonatomic) BOOL wasPaused;                       // Indicates that upon the previous notice, that the app was paused
 @property (nonatomic) BOOL tealeafShowing;
-//@property (nonatomic, retain) UITextField *textField;
 @property (nonatomic, retain) TeaLeafViewController *tealeafViewController;
 @property (nonatomic, retain) ServerTableViewController *tableViewController;
 @property (nonatomic, retain) AppTableViewController *appTableViewController;
@@ -43,29 +50,47 @@
 @property (nonatomic, retain) NSNetServiceBrowser *serviceBrowser;
 @property (nonatomic, retain) NSMutableArray *services;
 @property (nonatomic, strong) NSNotification *launchNotification;
-- (void) setJSReady:(bool)isReady;
-- (BOOL) getJSReady;
 
-// Initialize the reachability callback
+// Test app
+@property (nonatomic, retain) NSDictionary *testAppManifest;
+
+// Game orientation
+@property (nonatomic) BOOL gameSupportsPortrait;
+@property (nonatomic) BOOL gameSupportsLandscape;
+
+// Splash screen properties
+@property (nonatomic) int screenWidthPixels;
+@property (nonatomic) int screenHeightPixels;
+@property (nonatomic) int screenLongerSide;
+@property (nonatomic) BOOL screenPortraitMode;
+@property (nonatomic, retain) NSString *screenBestSplash;
+
+// Online state
 - (void) initializeOnlineState;
 - (void) hookOnlineState;
 - (BOOL) getNetworkStatus: (Reachability*) reach;
 - (void) updateNetworkStatus: (Reachability*) reach;
 
+// Update the screen properties
+- (void) updateScreenProperties;
+- (NSString *) findBestSplash; // Called automatically by updateScreenProperties
+
 // Callback for network status changes
 - (void) reachabilityChanged: (NSNotification*) notice;
 
 // Called when JavaScript engine is ready from another thread
+- (void) setJSReady:(bool)isReady;
+- (BOOL) getJSReady;
 - (void) onJSReady;
 
 // JavaScript event generators
 - (void) postNetworkStatusEvent: (BOOL) isOnline;
 - (void) postPauseEvent: (BOOL) isPaused;
 
+// Notifications
 - (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error;
 - (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *) userInfo;
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken;
-
 
 // NSNetServiceBrowser delegate methods for service browsing
 - (void)netServiceDidResolveAddress:(NSNetService *)sender;

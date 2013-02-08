@@ -58,7 +58,7 @@ static OverlayView *overlayView = nil;
 
 
 static void loadURL(NSString *urlStr) {
-	NSURL *url = [[ResourceLoader get] resolve: urlStr];
+	NSURL *url = [[ResourceLoader get] resolve:urlStr];
 	BOOL there = [[NSFileManager defaultManager] fileExistsAtPath:[url path]];
 	NSURL *theURL = [NSURL fileURLWithPath:[url path]];
 	NSLOG(@"{overlay} Loading '%@' / '%@' - %@ - %@", [url absoluteString], [url path], (there ? @"Exists" : @"Does Not Exist"), theURL);

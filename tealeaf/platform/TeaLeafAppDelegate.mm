@@ -37,9 +37,6 @@
 
 
 @interface TeaLeafAppDelegate ()
-
-
-
 @end
 
 @implementation TeaLeafAppDelegate
@@ -51,13 +48,13 @@
 	self.js = nil;
 	self.canvas = nil;
 	self.pluginManager = nil;
+	self.screenBestSplash = nil;
+	self.testAppManifest = nil;
 
 	[super dealloc];
 }
 
-
-- (void) setJSReady:(bool) isReady
-{
+- (void) setJSReady:(bool) isReady {
 	js_ready = isReady;
 }
 
@@ -65,9 +62,7 @@
 	return js_ready;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *) options
-{
-	
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *) options {
 	//SEARCH FOR NETWORKS
 	self.services = [NSMutableArray array];
 	self.serviceBrowser = [[NSNetServiceBrowser alloc] init];
@@ -81,10 +76,7 @@
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 	[self.window makeKeyAndVisible];
 
-	  
-	
 	//TEALEAF_SPECIFIC_START
-	
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
 	
 	NSString *path = [[NSBundle mainBundle] resourcePath];
@@ -430,4 +422,144 @@
 	[pool release];
 							   
 }
+
+
+//// Splash Screen
+
+- (void) updateScreenProperties {
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+	
+	// Detect iPad portrait mode
+	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+
+	if (orientation == UIDeviceOrientationUnknown) {
+		NSLog(@"{core} WARNING: Device orientation unknown");
+
+		orientation = self.tealeafViewController.interfaceOrientation;
+	}
+
+	bool portraitMode = (orientation == UIDeviceOrientationFaceUp ||
+						 orientation == UIDeviceOrientationPortrait ||
+						 orientation == UIDeviceOrientationPortraitUpsideDown);
+
+	if (!self.gameSupportsPortrait) {
+		self.screenPortraitMode = NO;
+	} else {
+		self.screenPortraitMode = portraitMode ? YES : NO;
+	}
+	
+	// Calculate screen dimensions
+	CGRect frame = [self.window frame];
+	float scale = 1.0;
+	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
+		scale = [[UIScreen mainScreen] scale];
+	}
+
+	// Choose width/height based on current mode
+	int w, h;
+	if (portraitMode) {
+		w = frame.size.width;
+		h = frame.size.height;
+	} else {
+		w = frame.size.height;
+		h = frame.size.width;
+	}
+	w = (int)(w * scale + 0.5f);
+	h = (int)(h * scale + 0.5f);
+	
+	// Determine longer side
+	int longerScreenSide = w;
+	bool swap = false;
+	if (h > longerScreenSide) {
+		longerScreenSide = h;
+		swap = true;
+	}
+
+	if (self.gameSupportsPortrait) {
+		swap ^= true;
+	}
+
+	// Swap orientation if needed
+	if (swap) {
+		int t = w;
+		w = h;
+		h = t;
+	}
+
+	// Store dimensions
+	self.screenWidthPixels = w;
+	self.screenHeightPixels = h;
+	self.screenLongerSide = longerScreenSide;
+	self.screenBestSplash = [self findBestSplash];
+
+	NSLog(@"{core} Device screen (%d, %d), portrait=%d, using splash '%@'", w, h, (int)self.screenPortraitMode, self.screenBestSplash);
+}
+
+enum Splashes {
+	SPLASH_PORTRAIT_480,
+	SPLASH_PORTRAIT_960,
+	SPLASH_PORTRAIT_1024,
+	SPLASH_PORTRAIT_1136,
+	SPLASH_PORTRAIT_2048,
+	SPLASH_LANDSCAPE_768,
+	SPLASH_LANDSCAPE_1536,
+};
+
+SplashDescriptor SPLASHES[] = {
+	{"portrait480", "@root://Default.png"},
+	{"portrait960", "@root://Default@2x.png"},
+	{"portrait1024", "@root://Default-Portrait~ipad.png"},
+	{"portrait1136", "@root://Default-568h@2x.png"},
+	{"portrait2048", "@root://Default-Portrait@2x~ipad.png"},
+	{"landscape768", "@root://Default-Landscape~ipad.png"},
+	{"landscape1536", "@root://Default-Landscape@2x~ipad.png"}
+};
+
+- (NSString *) findBestSplash {
+	// Determine longer side
+	const int longerScreenSide = self.screenLongerSide;
+
+	SplashDescriptor *splash = &SPLASHES[SPLASH_PORTRAIT_480];
+
+	// If on iPad,
+	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+		// If portrait mode,
+		if (self.screenPortraitMode) {
+			if (longerScreenSide >= 2048) {
+				splash = &SPLASHES[SPLASH_PORTRAIT_2048];
+			} else {
+				splash = &SPLASHES[SPLASH_PORTRAIT_1024];
+			}
+		} else { // Landscape:
+			if (longerScreenSide >= 2048) {
+				splash = &SPLASHES[SPLASH_LANDSCAPE_1536];
+			} else {
+				splash = &SPLASHES[SPLASH_LANDSCAPE_768];
+			}
+		}
+	} else { // iPhone:
+		if (longerScreenSide >= 1136) {
+			splash = &SPLASHES[SPLASH_PORTRAIT_1136];
+		} else if (longerScreenSide >= 960) {
+			splash = &SPLASHES[SPLASH_PORTRAIT_960];
+		} else {
+			splash = &SPLASHES[SPLASH_PORTRAIT_480];
+		}
+	}
+
+	NSString *splashResource = [NSString stringWithUTF8String:splash->resource];
+
+	if (self.testAppManifest) {
+		NSDictionary *splashes = [self.testAppManifest objectForKey:@"splash"];
+
+		if (splashes) {
+			splashResource = [splashes objectForKey:[NSString stringWithUTF8String:splash->key]];
+		} else {
+			NSLOG(@"{testapp} WARNING: Splash section is missing from manifest");
+		}
+	}
+
+	return splashResource;
+}
+
 @end

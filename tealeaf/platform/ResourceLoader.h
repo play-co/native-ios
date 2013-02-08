@@ -21,15 +21,15 @@
 @interface ResourceLoader : NSObject
 
 @property (nonatomic, retain) NSURL *baseURL;
-@property (nonatomic, retain) NSString *appBundle;
+@property (nonatomic, retain) NSString *appBundle;		// resources.bundle path
+@property (nonatomic, retain) NSString *appBase;		// Root resource path (includes splash screens)
 @property (nonatomic, retain) NSCondition *imageWaiter;
 @property (nonatomic, retain) NSMutableArray *images;
 
 - (NSString *) initStringWithContentsOfURL:(NSString *)url;
 - (NSURL *) resolve:(NSString *)url;
-- (NSURL *) resolveFile:(NSString *)url;
+- (NSURL *) resolveFile:(NSString *)url inBundle:(BOOL)inBundle;
 - (NSURL *) resolveFileUrl:(NSString *)url;
-- (NSURL *) resolveUrl:(NSString *)url;
 
 - (void) finishLoadingText:(NSString *)url;
 
