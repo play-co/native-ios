@@ -85,7 +85,6 @@ static CFTimeInterval last_timestamp = 0.0f;
 
 static volatile BOOL m_ogl_en = NO; // OpenGL calls enabled
 static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
-static volatile BOOL m_showing_splash = YES; // Maybe showing splash screen?
 
 - (void)startRendering {
 	m_ogl_en = YES;
@@ -99,9 +98,6 @@ static volatile BOOL m_showing_splash = YES; // Maybe showing splash screen?
 		[cond wait];
 	}
 	[cond unlock];
-
-	// Maybe showing splash again
-	m_showing_splash = YES;
 }
 
 - (void)render:(CADisplayLink*)displayLink {
@@ -148,16 +144,8 @@ static volatile BOOL m_showing_splash = YES; // Maybe showing splash screen?
 			[cond signal];
 			[cond unlock];
 		}
-
-		// If showing the splash screen,
-		if (m_showing_splash) {
-			// Hide it immediately!
-			[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view removeFromSuperview];
-			m_showing_splash = false;
-		}
 	}
 }
-
 
 - (void)setupDisplayLink {
 	// Enable multi-touch
@@ -166,12 +154,10 @@ static volatile BOOL m_showing_splash = YES; // Maybe showing splash screen?
 	displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
 	displayLink.frameInterval = 1;
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-   
 }
 
 - (void) destroyDisplayLink {
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-
 }
 
 

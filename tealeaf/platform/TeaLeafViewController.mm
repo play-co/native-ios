@@ -50,6 +50,21 @@ static NSString *get_platform() {
 }
 
 
+static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
+
+CEXPORT void device_hide_splash() {
+	// If showing the splash screen,
+	if (m_showing_splash) {
+		// Hide it immediately!
+		[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view removeFromSuperview];
+
+		[UIView setAnimationsEnabled:YES];
+
+		m_showing_splash = false;
+	}
+}
+
+
 @interface TeaLeafViewController ()
 @property (nonatomic, assign) TeaLeafAppDelegate *appDelegate;
 @end
@@ -94,7 +109,21 @@ static NSString *get_platform() {
 	}
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
+-(void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	if (m_showing_splash) {
+		[UIView setAnimationsEnabled:NO];
+	}
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+	[UIView setAnimationsEnabled:YES];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+	if (m_showing_splash) {
+		[UIView setAnimationsEnabled:NO];
+	}
+
 	if (!self.appDelegate.gameSupportsPortrait) {
 		return (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
 			   (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight);
@@ -105,10 +134,14 @@ static NSString *get_platform() {
 			   (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 	}
 
-	return YES;
+	return NO;
 }
 
 -(BOOL)shouldAutorotate {
+	if (m_showing_splash) {
+		[UIView setAnimationsEnabled:NO];
+	}
+
 	return YES;
 }
 
@@ -124,10 +157,6 @@ static NSString *get_platform() {
 	}
 
 	return mask;
-}
-
--(void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	// CGRect bounds = [self.view bounds];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -289,15 +318,38 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 
 	NSURL *loading_path = [[ResourceLoader get] resolve:self.appDelegate.screenBestSplash];
 	NSData *data = [NSData dataWithContentsOfURL:loading_path];
-	UIImage *loading_image = [UIImage imageWithData: data];
+	UIImage *loading_image_raw = [UIImage imageWithData: data];
 
+	UIImage *loading_image = [UIImage imageWithCGImage:loading_image_raw.CGImage scale:1.f orientation:UIImageOrientationRight];
+/*
+    UIImageOrientationUp,            // default orientation
+    UIImageOrientationDown,          // 180 deg rotation
+    UIImageOrientationLeft,          // 90 deg CCW
+    UIImageOrientationRight,         // 90 deg CW
+    UIImageOrientationUpMirrored,    // as above but image mirrored along other axis. horizontal flip
+    UIImageOrientationDownMirrored,  // horizontal flip
+    UIImageOrientationLeftMirrored,  // vertical flip
+    UIImageOrientationRightMirrored, // vertical flip
+*/
 	self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
-	self.loading_image_view.frame = CGRectMake(0, 0, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels);
+
+	int frameWidth = (int)self.appDelegate.window.frame.size.width;
+	int frameHeight = (int)self.appDelegate.window.frame.size.height;
+	bool needsRotate = w > h;
+	needsRotate ^= frameWidth > frameHeight;
+	if (needsRotate) {
+		int temp = frameWidth;
+		frameWidth = frameHeight;
+		frameHeight = temp;
+	}
+
+	self.loading_image_view.frame = CGRectMake(0, 0, frameWidth, frameHeight);
 
 	//add the openglview to our window
 	[self.appDelegate.window addSubview:self.view];
 	self.appDelegate.window.rootViewController = self;
 	[self.appDelegate.window.rootViewController.view addSubview:self.loading_image_view];
+	m_showing_splash = YES;
 
 	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
 	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];

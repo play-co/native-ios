@@ -471,7 +471,7 @@ static NSThread *appLoadListThread = nil;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	UITableViewCell *cell = [[[UITableViewCell alloc] init] autorelease];
-	cell.textLabel.font = [UIFont systemFontOfSize:34.0];
+	cell.textLabel.font = [UIFont systemFontOfSize:24.0];
 	NSUInteger row = [indexPath row];
 	cell.textLabel.text = [((AppInfo*)[self.listData objectAtIndex:row]) appTitle];
 	return cell;
