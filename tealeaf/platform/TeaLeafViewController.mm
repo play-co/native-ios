@@ -267,7 +267,7 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	self.appDelegate.gameSupportsPortrait = gamePortrait ? YES : NO;
 
 	[self.appDelegate updateScreenProperties];
-	
+
 	// Set splash screen
 	config_set_splash([self.appDelegate.screenBestSplash UTF8String]);
 
@@ -320,29 +320,22 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	NSData *data = [NSData dataWithContentsOfURL:loading_path];
 	UIImage *loading_image_raw = [UIImage imageWithData: data];
 
-	UIImage *loading_image = [UIImage imageWithCGImage:loading_image_raw.CGImage scale:1.f orientation:UIImageOrientationRight];
-/*
-    UIImageOrientationUp,            // default orientation
-    UIImageOrientationDown,          // 180 deg rotation
-    UIImageOrientationLeft,          // 90 deg CCW
-    UIImageOrientationRight,         // 90 deg CW
-    UIImageOrientationUpMirrored,    // as above but image mirrored along other axis. horizontal flip
-    UIImageOrientationDownMirrored,  // horizontal flip
-    UIImageOrientationLeftMirrored,  // vertical flip
-    UIImageOrientationRightMirrored, // vertical flip
-*/
-	self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
-
+	UIImageOrientation splashOrientation = UIImageOrientationUp;
 	int frameWidth = (int)self.appDelegate.window.frame.size.width;
 	int frameHeight = (int)self.appDelegate.window.frame.size.height;
+
 	bool needsRotate = w > h;
 	needsRotate ^= frameWidth > frameHeight;
 	if (needsRotate) {
+		// This happens on the iPhone when orientated on its side
 		int temp = frameWidth;
 		frameWidth = frameHeight;
 		frameHeight = temp;
+		splashOrientation = UIImageOrientationRight;
 	}
 
+	UIImage *loading_image = [UIImage imageWithCGImage:loading_image_raw.CGImage scale:1.f orientation:splashOrientation];
+	self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
 	self.loading_image_view.frame = CGRectMake(0, 0, frameWidth, frameHeight);
 
 	//add the openglview to our window
