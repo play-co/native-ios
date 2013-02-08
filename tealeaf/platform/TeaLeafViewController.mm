@@ -60,7 +60,7 @@ CEXPORT void device_hide_splash() {
 
 		[UIView setAnimationsEnabled:YES];
 
-		m_showing_splash = false;
+		m_showing_splash = NO;
 	}
 }
 
