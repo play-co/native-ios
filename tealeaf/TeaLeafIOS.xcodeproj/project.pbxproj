@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36E6F37B16C45FB50016CD1A /* PluginManager.mm */; };
 		4E35EA8716B9FEEE004FD452 /* timestep_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */; };
 		4E35EA8816B9FEEE004FD452 /* timestep_events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7F16B9FEEE004FD452 /* timestep_events.cpp */; };
 		4E35EA8916B9FEEE004FD452 /* timestep_image_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA8116B9FEEE004FD452 /* timestep_image_map.cpp */; };
@@ -45,7 +46,6 @@
 		4E8493F81651D06000C96B4A /* jsTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493DA1651D06000C96B4A /* jsTimer.mm */; };
 		4E8493F91651D06000C96B4A /* jsTimestep.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493DC1651D06000C96B4A /* jsTimestep.mm */; };
 		4E8493FA1651D06000C96B4A /* jsXHR.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493DE1651D06000C96B4A /* jsXHR.mm */; };
-		4EB0C68616BBB41E00838A49 /* PluginManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68516BBB41E00838A49 /* PluginManager.mm */; };
 		4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */; };
 		4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */; };
 		4ED6353E16AE1BB1008D3427 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4ED6353D16AE1BB1008D3427 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -176,6 +176,8 @@
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		360D3DBB16809A6F005766D9 /* iosVersioning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iosVersioning.h; sourceTree = "<group>"; };
+		36E6F37A16C45FB50016CD1A /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginManager.h; sourceTree = "<group>"; };
+		36E6F37B16C45FB50016CD1A /* PluginManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PluginManager.mm; sourceTree = "<group>"; };
 		4E35EA7C16B9FEEE004FD452 /* timestep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep.h; sourceTree = "<group>"; };
 		4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_animate.cpp; sourceTree = "<group>"; };
 		4E35EA7E16B9FEEE004FD452 /* timestep_animate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_animate.h; sourceTree = "<group>"; };
@@ -359,8 +361,6 @@
 		4EB0C68016BBA2D800838A49 /* jsval.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsval.h; path = spidermonkey/jsval.h; sourceTree = "<group>"; };
 		4EB0C68116BBA2D800838A49 /* jsversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsversion.h; path = spidermonkey/jsversion.h; sourceTree = "<group>"; };
 		4EB0C68216BBA2D800838A49 /* jswrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jswrapper.h; path = spidermonkey/jswrapper.h; sourceTree = "<group>"; };
-		4EB0C68416BBB41E00838A49 /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginManager.h; sourceTree = "<group>"; };
-		4EB0C68516BBB41E00838A49 /* PluginManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PluginManager.mm; sourceTree = "<group>"; };
 		4EB0C68816BBB4B900838A49 /* AppTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppTableViewController.h; sourceTree = "<group>"; };
 		4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppTableViewController.mm; sourceTree = "<group>"; };
 		4EB0C68A16BBB4B900838A49 /* ServerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerTableViewController.h; sourceTree = "<group>"; };
@@ -549,7 +549,6 @@
 			isa = PBXGroup;
 			children = (
 				4EB0C68716BBB4B900838A49 /* testapp */,
-				4EB0C68316BBB41E00838A49 /* plugins */,
 				4E35EAB916BB0D94004FD452 /* libjs_static.a */,
 				4E35EABA16BB0D94004FD452 /* libnspr4.a */,
 				4E35EA7B16B9FEEE004FD452 /* timestep */,
@@ -759,15 +758,6 @@
 				4E77EAE61666B90000FD6430 /* DebugServer.mm */,
 			);
 			name = debug;
-			sourceTree = "<group>";
-		};
-		4EB0C68316BBB41E00838A49 /* plugins */ = {
-			isa = PBXGroup;
-			children = (
-				4EB0C68416BBB41E00838A49 /* PluginManager.h */,
-				4EB0C68516BBB41E00838A49 /* PluginManager.mm */,
-			);
-			path = plugins;
 			sourceTree = "<group>";
 		};
 		4EB0C68716BBB4B900838A49 /* testapp */ = {
@@ -1008,6 +998,8 @@
 		D55821D1150E7C7600549BF6 /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				36E6F37A16C45FB50016CD1A /* PluginManager.h */,
+				36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
 				4E6B37FE16C0F90B006AC8FD /* threads.mm */,
 				D56C7E20157EE5C100DB8BDA /* OpenGLView.h */,
 				D56C7E21157EE5C100DB8BDA /* OpenGLView.mm */,
@@ -1279,10 +1271,10 @@
 				4E35EA8916B9FEEE004FD452 /* timestep_image_map.cpp in Sources */,
 				4E35EA8A16B9FEEE004FD452 /* timestep_text_data.cpp in Sources */,
 				4E35EA8B16B9FEEE004FD452 /* timestep_view.cpp in Sources */,
-				4EB0C68616BBB41E00838A49 /* PluginManager.mm in Sources */,
 				4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */,
 				4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */,
 				4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */,
+				36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1332,7 +1324,9 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)"
+				);
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
