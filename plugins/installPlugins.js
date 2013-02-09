@@ -86,13 +86,13 @@ var implStrs = {
 
 var delegates = [];
 
-for (var i in config) {
+for (var c in config) {
 
-	var pluginDir = config[i];
+	var pluginDir = config[c];
 	var pluginConfig = JSON.parse(fs.readFileSync(pluginDir + "/config.json"));
-	var ios = pluginConfig.ios;
+	var ios = pluginConfig;
 
-	for (var i = 0; i < ios.length; i++) {
+	for (var i in ios) {
 		var obj = ios[i];
 		if (!obj.name) {
 			continue;
@@ -130,7 +130,6 @@ for (var i in config) {
 		}
 	}
 	
-
 }
 
 //inject and write all the collected plugin header code

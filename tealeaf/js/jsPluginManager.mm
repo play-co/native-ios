@@ -15,14 +15,16 @@
  * along with the Game Closure SDK.	 If not, see <http://www.gnu.org/licenses/>.
  */
 
-#import <plugins/PluginManager.h>
+#import <platform/PluginManager.h>
 #import "js/jsPluginManager.h"
 
 static js_core *m_core = nil;
 
 
-JSAG_MEMBER_BEGIN(sendEvent, 1)
+JSAG_MEMBER_BEGIN(sendEvent, 3)
 {
+	JSAG_ARG_NSTR(pluginName);
+	JSAG_ARG_NSTR(eventName);
 	JSAG_ARG_NSTR(str);
 
 	[m_core.pluginManager sendEvent:str isJS:NO];
