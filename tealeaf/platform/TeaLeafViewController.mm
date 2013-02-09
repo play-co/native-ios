@@ -324,13 +324,18 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	int frameWidth = (int)self.appDelegate.window.frame.size.width;
 	int frameHeight = (int)self.appDelegate.window.frame.size.height;
 
-	bool needsRotate = w > h;
-	needsRotate ^= frameWidth > frameHeight;
-	if (needsRotate) {
+	bool needsFrameRotate = w > h;
+	needsFrameRotate ^= frameWidth > frameHeight;
+	if (needsFrameRotate) {
 		// This happens on the iPhone when orientated on its side
 		int temp = frameWidth;
 		frameWidth = frameHeight;
 		frameHeight = temp;
+	}
+
+	bool needsOrientRotate = w > h;
+	needsOrientRotate ^= loading_image_raw.size.width > loading_image_raw.size.height;
+	if (needsOrientRotate) {
 		splashOrientation = UIImageOrientationRight;
 	}
 
