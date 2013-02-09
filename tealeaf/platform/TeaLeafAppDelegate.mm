@@ -447,9 +447,10 @@
 	} else {
 		self.screenPortraitMode = portraitMode ? YES : NO;
 	}
-	
+
 	// Calculate screen dimensions
 	CGRect frame = [self.window frame];
+
 	float scale = 1.0;
 	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
 		scale = [[UIScreen mainScreen] scale];
@@ -464,9 +465,11 @@
 		w = frame.size.height;
 		h = frame.size.width;
 	}
+	self.initFrame = CGRectMake(0, 0, w, h);
 	w = (int)(w * scale + 0.5f);
 	h = (int)(h * scale + 0.5f);
-	
+	self.screenFrame = CGRectMake(0, 0, w, h);
+
 	// Determine longer side
 	int longerScreenSide = w;
 	bool swap = false;

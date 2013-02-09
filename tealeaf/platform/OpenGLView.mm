@@ -34,7 +34,7 @@ CADisplayLink* displayLink;
 	if (self) {
 		cond = [NSCondition new];
 	}
-	
+
 	return self;
 }
 
@@ -169,7 +169,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		[self setupContext];  
 		[self setupRenderBuffer];
 		[self setupFrameBuffer];
-	   
+
 		[self setupDisplayLink];
 		_id = 0;
 	}

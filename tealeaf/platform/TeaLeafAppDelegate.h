@@ -61,6 +61,8 @@ struct SplashDescriptor {
 // Splash screen properties
 @property (nonatomic) int screenWidthPixels;
 @property (nonatomic) int screenHeightPixels;
+@property (nonatomic) CGRect screenFrame; // This may be scaled by 2, but these are the coordinates the Canvas cares about
+@property (nonatomic) CGRect initFrame; // This may be scaled by 2, but these are the coordinates the Canvas cares about
 @property (nonatomic) int screenLongerSide;
 @property (nonatomic) BOOL screenPortraitMode;
 @property (nonatomic, retain) NSString *screenBestSplash;
