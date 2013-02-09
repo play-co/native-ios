@@ -25,7 +25,7 @@
 #import "OpenGLView.h"
 #import "Reachability.h"
 
-@interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
+@interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate, PluginManagerDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) NSMutableDictionary *config;         // Configuration config.plist file dictionary

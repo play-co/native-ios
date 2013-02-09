@@ -28,7 +28,7 @@
 #include "gen/js_timestep_view_template.gen.h"
 #import "core/platform/location_manager.h"
 #import "js/jsBase.h"
-#import "plugins/PluginManager.h"
+#import "platform/PluginManager.h"
 
 // JS Ready flag: Indicates that the JavaScript engine is running (see core/core_js.h)
 bool js_ready = false;
