@@ -177,7 +177,7 @@ static const char *base_path = 0;
 	BOOL inBundle = YES;
 	if ([url hasPrefix: @"@root://"]) {
 		inBundle = NO;
-		url = [url substringFromIndex:7];
+		url = [url substringFromIndex:8];
 	}
 	
 	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
