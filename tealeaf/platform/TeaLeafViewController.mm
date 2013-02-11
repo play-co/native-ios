@@ -268,9 +268,6 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 
 	[self.appDelegate updateScreenProperties];
 
-	// Set splash screen
-	config_set_splash([self.appDelegate.screenBestSplash UTF8String]);
-
 	// Lookup source path
 	const char *source_path = [[ResourceLoader get].appBundle UTF8String];
 	if (!source_path || *source_path == '\0') {
@@ -284,6 +281,7 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 			  [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
 			  source_path, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels,
 			  [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue],
+			  [self.appDelegate.screenBestSplash UTF8String],
 			  "");
 	
 	// Lower texture memory based on device model
