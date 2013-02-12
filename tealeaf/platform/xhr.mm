@@ -35,7 +35,7 @@
 
 	NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
 	[req setHTTPMethod:[method uppercaseString]];
-	[req setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding]];
+	[req setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
 
 	if (hdrs) {
 		for (NSString *key in hdrs) {
