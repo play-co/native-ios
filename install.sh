@@ -2,13 +2,22 @@
 
 remoteurl=`git config --get remote.origin.url`
 
-git submodule init
+PRIV_SUBMODS=false && [[ "$remoteurl" == *native-ios-priv* ]] && PRIV_SUBMODS=true
 
-if [[ "$remoteurl" == *native-ios-priv* ]]
-then
-	cd tealeaf/native-core
-	git remote set-url origin "https://github.com/gameclosure/native-core-priv.git"
-	cd ../..
+if $PRIV_SUBMODS; then
+	echo "Using private submodules..."
+	cp .gitmodules.priv .gitmodules
+fi
+
+if ! git submodule sync; then
+	error "Unable to sync git submodules"
+	exit 1
 fi
 
 git submodule update --init --recursive
+
+if $PRIV_SUBMODS; then
+	git checkout .gitmodules
+fi
+
+
