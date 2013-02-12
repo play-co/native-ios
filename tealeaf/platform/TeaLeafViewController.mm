@@ -271,11 +271,7 @@ static void ReadManifest(bool *isPortrait) {
     NSString *platform = get_platform();
     NSLog(@"{core} iOS device model '%@'", platform);
 
-	// If iPad 1 or iPhone 3GS,
-    if ([platform isEqualToString:@"iPad1,1"] ||
-        [platform isEqualToString:@"iPhone2,1"]) {
-        texture_manager_set_max_memory(texture_manager_get(), 50000000); // 50 MB
-	}
+	texture_manager_set_max_memory(texture_manager_get(), get_platform_memory_limit());
 
 	bool isPortrait;
 	ReadManifest(&isPortrait);
