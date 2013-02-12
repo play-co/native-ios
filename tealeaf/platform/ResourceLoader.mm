@@ -37,6 +37,7 @@
 static ResourceLoader *instance = nil;
 static NSThread *imgThread = nil;
 static const char *base_path = 0;
+static int base_path_len = 0;
 
 @interface ResourceLoader ()
 @property (nonatomic, assign) TeaLeafAppDelegate *appDelegate;
@@ -381,51 +382,64 @@ static const char *base_path = 0;
 @end
 
 
-static unsigned char *read_file(const char *url, unsigned long *sz) {
-	unsigned char *data = NULL;
-	/* check if the image resides on the file system first */
-	if (!url || strlen(url) == 0) {
-		return NULL;
+#include <sys/mman.h>
+
+static bool read_file(const char *url, unsigned long *sz, unsigned char **data) {
+	// Try to use stack memory if it is small
+	char full_path[512];
+	int url_len = strlen(url);
+	int full_path_len = base_path_len + url_len + 1 + 1;
+	char *path = full_path;
+	if (full_path_len > sizeof(full_path)) {
+		path = (char*)malloc(full_path_len);
 	}
-	int len = strlen(base_path) + strlen(url) + 1 +1; //adding the slash
-	char * path = (char*)malloc(len);
-	memset(path, 0, len);
-	
+
+	// Concatente path
 	sprintf(path, "%s/%s", base_path, url);
-	
-	struct stat statBuf;
-	int result = stat(path, &statBuf);
-	// try the file system first
-	bool on_file_sys = (result != -1);
-	if(on_file_sys && statBuf.st_size > 0) {
-		FILE * file_from_sys = fopen(path, "r");
-		
-		if(!file_from_sys) {
-			on_file_sys = false;
-		} else {
-			*sz = statBuf.st_size;
-			data = (unsigned char*)malloc(*sz);
-			memset(data, 0, *sz);
-			fread(data, sizeof(unsigned char), *sz, file_from_sys);
-			fclose(file_from_sys);
+
+	// Open the file
+	FILE *f = fopen(path, "rb");
+	fseek(f, 0, SEEK_END);
+	unsigned long len = (unsigned long)ftell(f);
+	fseek(f, 0, SEEK_SET);
+
+	bool success = false;
+
+	if (len > 0) {
+		void *raw = mmap(0, len, PROT_READ, MAP_PRIVATE, fileno(f), 0);
+
+		if (raw == MAP_FAILED) {
+			LOG("{resources} WARNING: mmap failed errno=%d", errno);
 		}
-	}	 
-	free(path);
-	return data;
+
+		*data = (unsigned char*)raw;
+		*sz = len;
+		success = true;
+	}
+
+	fclose(f);
+	
+	// Release path memory if it was long
+	if (path != full_path) {
+		free(path);
+	}
+
+	return success;
 }
 
 CEXPORT bool resource_loader_load_image_with_c(texture_2d *texture) {
 	unsigned long sz = 0;
-	unsigned char *data = read_file(texture->url, &sz);
+	unsigned char *data;
 
-	if (!data) {
+	if (!read_file(texture->url, &sz, &data)) {
 		texture->pixel_data = NULL;
 
 		return false;
 	} else {
 		texture->pixel_data = texture_2d_load_texture_raw(texture->url, data, sz, &texture->num_channels, &texture->width, &texture->height, &texture->originalWidth, &texture->originalHeight, &texture->scale);
 
-		free(data);
+		// Release map
+		munmap(data, sz);
 		return true;
 	}
 }
@@ -443,6 +457,7 @@ CEXPORT const char* resource_loader_string_from_url(const char* url) {
 
 CEXPORT void resource_loader_initialize(const char *path) {
 	base_path = strdup(path);
+	base_path_len = (int)strlen(base_path);
 }
 
 CEXPORT void resource_loader_load_image(const char* url) {
