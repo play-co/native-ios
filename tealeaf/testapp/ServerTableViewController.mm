@@ -54,7 +54,7 @@
 	CGRect ipInputViewRect = CGRectMake(0, frame.size.height *.01f, frame.size.width * .52f, frame.size.height * .10f);
 	self.ipInputView = [[UITextField alloc] initWithFrame:ipInputViewRect];
 	[self.ipInputView setText:prevIP];
-	[self.ipInputView setFont:[UIFont systemFontOfSize:34.0]];
+	[self.ipInputView setFont:[UIFont systemFontOfSize:25.0]];
 	[self.ipInputView setBackgroundColor:[UIColor lightGrayColor]];
 	[self.ipInputView setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 	self.ipInputView.textAlignment = UITextAlignmentCenter;
@@ -62,7 +62,7 @@
 	CGRect portInputViewRect = CGRectMake(frame.size.width *.54f, frame.size.height *.01f, frame.size.width *.28f, frame.size.height * .10f);
 	self.portInputView = [[UITextField alloc] initWithFrame:portInputViewRect];
 	[self.portInputView setText:prevPort];
-	[self.portInputView setFont:[UIFont systemFontOfSize:34.0]];
+	[self.portInputView setFont:[UIFont systemFontOfSize:25.0]];
 	[self.portInputView setBackgroundColor:[UIColor lightGrayColor]];
 	[self.portInputView setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 	self.portInputView.textAlignment = UITextAlignmentCenter;
@@ -73,7 +73,7 @@
 	[button setEnabled:YES];
 	[button setUserInteractionEnabled:YES];
 	[button setTitle:@"Go!" forState:UIControlStateNormal];
-	button.titleLabel.font = [UIFont systemFontOfSize:34.0];
+	button.titleLabel.font = [UIFont systemFontOfSize:25.0];
 	[button addTarget:self action:@selector(goButtonFunc) forControlEvents:UIControlEventTouchUpInside];
 	UIView *base = [[UIView alloc] initWithFrame:self.view.frame];
 	[base addSubview:button];
