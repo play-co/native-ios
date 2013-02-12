@@ -25,6 +25,14 @@ function registerTestApp() {
 }
 
 exports.init = function () {
+
+	console.log("Running install.sh");
+	common.child("sh", ["install.sh"], {
+		cwd: __dirname
+	}, function () {
+		console.log("Install complete");
+	});
+
 	exports.load();
 }
 
