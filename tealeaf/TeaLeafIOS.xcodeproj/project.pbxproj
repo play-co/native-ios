@@ -1356,13 +1356,7 @@
 				);
 				LLVM_LTO = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"-mllvm",
-					"-vectorize",
-					"-mllvm",
-					"-bb-vectorize-aligned-only",
-				);
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
 					"-lsqlite3.0",
 					"-lstdc++",

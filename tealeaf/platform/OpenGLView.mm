@@ -115,10 +115,6 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		// Measure time to perform a tick
 		// CFTimeInterval after_tick = CFAbsoluteTimeGetCurrent();
 
-		// Indicate that we are done with the depth buffer
-		const GLenum discards[]  = {GL_DEPTH_ATTACHMENT};
-		glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1, discards);
-
 		last_timestamp = timestamp;
 		[_context presentRenderbuffer:GL_RENDERBUFFER];
 
