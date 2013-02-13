@@ -383,6 +383,7 @@ static int base_path_len = 0;
 
 
 #include <sys/mman.h>
+#include <sys/fcntl.h>
 
 static bool read_file(const char *url, unsigned long *sz, unsigned char **data) {
 	// Try to use stack memory if it is small
@@ -398,27 +399,29 @@ static bool read_file(const char *url, unsigned long *sz, unsigned char **data) 
 	sprintf(path, "%s/%s", base_path, url);
 
 	// Open the file
-	FILE *f = fopen(path, "rb");
-	fseek(f, 0, SEEK_END);
-	unsigned long len = (unsigned long)ftell(f);
-	fseek(f, 0, SEEK_SET);
+	int fd = open(path, O_RDONLY);
 
+	unsigned long len = lseek(fd, 0, SEEK_END);
+
+    fcntl(fd, F_NOCACHE, 1);
+    fcntl(fd, F_RDAHEAD, 1);
+	
 	bool success = false;
-
+	
 	if (len > 0) {
-		void *raw = mmap(0, len, PROT_READ, MAP_PRIVATE, fileno(f), 0);
-
+		void *raw = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
+		
 		if (raw == MAP_FAILED) {
 			LOG("{resources} WARNING: mmap failed errno=%d", errno);
 		}
-
+		
 		*data = (unsigned char*)raw;
 		*sz = len;
 		success = true;
 	}
 
-	fclose(f);
-	
+	close(fd);
+
 	// Release path memory if it was long
 	if (path != full_path) {
 		free(path);
