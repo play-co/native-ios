@@ -395,7 +395,7 @@ static bool read_file(const char *url, unsigned long *sz, unsigned char **data) 
 		path = (char*)malloc(full_path_len);
 	}
 
-	// Concatente path
+	// Concatenate path
 	sprintf(path, "%s/%s", base_path, url);
 
 	// Open the file
