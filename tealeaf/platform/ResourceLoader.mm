@@ -414,11 +414,11 @@ static bool read_file(const char *url, unsigned long *sz, unsigned char **data) 
 
 			if (raw == MAP_FAILED) {
 				LOG("{resources} WARNING: mmap failed errno=%d", errno);
+			} else {
+				*data = (unsigned char*)raw;
+				*sz = len;
+				success = true;
 			}
-
-			*data = (unsigned char*)raw;
-			*sz = len;
-			success = true;
 		}
 
 		close(fd);
