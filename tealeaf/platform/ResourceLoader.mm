@@ -400,31 +400,30 @@ static bool read_file(const char *url, unsigned long *sz, unsigned char **data) 
 
 	// Open the file
 	int fd = open(path, O_RDONLY);
-	
+
 	bool success = false;
 
 	if (fd != -1) {
 		unsigned long len = lseek(fd, 0, SEEK_END);
-		
+
 		fcntl(fd, F_NOCACHE, 1);
 		fcntl(fd, F_RDAHEAD, 1);
-		
+
 		if (len > 0) {
 			void *raw = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
-			
+
 			if (raw == MAP_FAILED) {
 				LOG("{resources} WARNING: mmap failed errno=%d", errno);
 			}
-			
+
 			*data = (unsigned char*)raw;
 			*sz = len;
 			success = true;
 		}
-		
+
 		close(fd);
-		
 	}
-	
+
 	// Release path memory if it was long
 	if (path != full_path) {
 		free(path);
