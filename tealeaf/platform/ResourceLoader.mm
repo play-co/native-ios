@@ -403,7 +403,7 @@ static bool read_file(const char *url, unsigned long *sz, unsigned char **data) 
 	
 	bool success = false;
 
-	if (fd == -1) {
+	if (fd != -1) {
 		unsigned long len = lseek(fd, 0, SEEK_END);
 		
 		fcntl(fd, F_NOCACHE, 1);
