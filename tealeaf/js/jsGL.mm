@@ -530,8 +530,6 @@ static double textBaselineValue(JSContext *cx, JSObject *ctx, JSObject *custom_f
 			JS_ValueToNumber(cx, _b, &b);
 
 			return -b * scale;
-		} else {
-			LOG("{gl} USER ERROR: textBaselineValue called without a baseline string");
 		}
 	}
 
