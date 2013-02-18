@@ -518,12 +518,11 @@ SplashDescriptor SPLASHES[] = {
 	{"landscape1536", "@root://Default-Landscape@2x~ipad.png"}
 };
 
-- (NSString *) findBestSplash {
+- (SplashDescriptor *) findBestSplashDescriptor {
 	// Determine longer side
 	const int longerScreenSide = self.screenLongerSide;
-
 	SplashDescriptor *splash = &SPLASHES[SPLASH_PORTRAIT_480];
-
+	
 	// If on iPad,
 	if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
 		// If portrait mode,
@@ -549,17 +548,17 @@ SplashDescriptor SPLASHES[] = {
 			splash = &SPLASHES[SPLASH_PORTRAIT_480];
 		}
 	}
+	return splash;
+}
+
+- (NSString *) findBestSplash {
+
+	SplashDescriptor *splash = [self findBestSplashDescriptor];	
 
 	NSString *splashResource = [NSString stringWithUTF8String:splash->resource];
 
 	if (self.testAppManifest) {
-		NSDictionary *splashes = [self.testAppManifest objectForKey:@"splash"];
-
-		if (splashes) {
-			splashResource = [splashes objectForKey:[NSString stringWithUTF8String:splash->key]];
-		} else {
-			NSLOG(@"{testapp} WARNING: Splash section is missing from manifest");
-		}
+		splashResource = @"loading.png";
 	}
 
 	return splashResource;

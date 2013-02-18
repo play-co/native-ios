@@ -333,6 +333,17 @@ static NSThread *appLoadListThread = nil;
 	NSData *jsData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@native.js.mp3", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 	//write native.js.mp3 to file
 	[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"native.js.mp3"] withData:jsData];
+	
+	//get the correct loading.png
+	SplashDescriptor* bestSplash = [self.appDelegate findBestSplashDescriptor];
+	if (bestSplash) {
+		//get loading.png
+		NSData *splashData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@splash/%s", simulateURL, bestSplash->key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]; 
+		if(splashData) {
+			//write splash to file
+			[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"loading.png"] withData:splashData];
+		}
+	}
 
 	//get resource list
 	NSData *resources = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@resource_list.json", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];

@@ -76,6 +76,7 @@ struct SplashDescriptor {
 // Update the screen properties
 - (void) updateScreenProperties;
 - (NSString *) findBestSplash; // Called automatically by updateScreenProperties
+- (SplashDescriptor *) findBestSplashDescriptor;
 
 // Callback for network status changes
 - (void) reachabilityChanged: (NSNotification*) notice;
