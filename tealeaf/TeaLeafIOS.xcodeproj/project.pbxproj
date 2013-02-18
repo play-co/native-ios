@@ -18,6 +18,7 @@
 		4E35EABC16BB0D94004FD452 /* libnspr4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E35EABA16BB0D94004FD452 /* libnspr4.a */; };
 		4E35EACE16BB2082004FD452 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E35EACD16BB2082004FD452 /* StoreKit.framework */; };
 		4E4919E7167AA57100DFA99B /* jsHaptics.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E4919E6167AA57100DFA99B /* jsHaptics.mm */; };
+		4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E5F5CD816CAFCE200747A17 /* iosVersioning.m */; };
 		4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E659A461678254D002C8F19 /* jsNavigator.mm */; };
 		4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B37FE16C0F90B006AC8FD /* threads.mm */; };
 		4E77EAE71666B90000FD6430 /* DebugServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E77EAE61666B90000FD6430 /* DebugServer.mm */; };
@@ -197,6 +198,7 @@
 		4E4919E5167AA57100DFA99B /* jsHaptics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsHaptics.h; sourceTree = "<group>"; };
 		4E4919E6167AA57100DFA99B /* jsHaptics.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsHaptics.mm; sourceTree = "<group>"; };
 		4E5D39B415D062030088D41D /* config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = config.plist; sourceTree = "<group>"; };
+		4E5F5CD816CAFCE200747A17 /* iosVersioning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iosVersioning.m; sourceTree = "<group>"; };
 		4E659A451678254D002C8F19 /* jsNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsNavigator.h; sourceTree = "<group>"; };
 		4E659A461678254D002C8F19 /* jsNavigator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsNavigator.mm; sourceTree = "<group>"; };
 		4E667D2215E5C5010089D48D /* jsonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsonUtil.h; sourceTree = "<group>"; };
@@ -1048,6 +1050,7 @@
 				D55821FE150E7C7600549BF6 /* xhr.mm */,
 				8BC3D5E01639FFD1007942C3 /* OALSourceInfo.h */,
 				8BC3D5E11639FFD2007942C3 /* OALSourceInfo.mm */,
+				4E5F5CD816CAFCE200747A17 /* iosVersioning.m */,
 				360D3DBB16809A6F005766D9 /* iosVersioning.h */,
 			);
 			path = platform;
@@ -1275,6 +1278,7 @@
 				4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */,
 				4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */,
 				36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */,
+				4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1324,9 +1328,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)"
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;

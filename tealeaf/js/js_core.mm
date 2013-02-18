@@ -269,7 +269,7 @@ JSAG_OBJECT_END
 	self = [super init];
 	lastJS = self;
 
-	self.rt = JS_NewRuntime(20L * 1024L * 1024L, JS_USE_HELPER_THREADS);
+	self.rt = JS_NewRuntime(26L * 1024L * 1024L, JS_USE_HELPER_THREADS);
 	if (!self.rt) {
 		LOG("{js} FATAL: Unable to create JS runtime");
 		return NULL;
