@@ -246,7 +246,7 @@ static double measureText(JSContext *cx, JSObject *font_info, const char *text) 
 
 				width += (ow - 2) * scale;
 			} else {
-				width += space_width;
+				return -1;
 			}
 		}
 		width += tracking - outline;
@@ -285,9 +285,11 @@ JSAG_MEMBER_BEGIN(measureTextBitmap, 2)
 	double width = measureText(cx, font_info, str);
 	
 	jsval width_val = DOUBLE_TO_JSVAL(width);
+	jsval failed_val = BOOLEAN_TO_JSVAL(width < 0);
 	
 	JSObject *metrics = JS_NewObject(cx, NULL, NULL, NULL);
 	JS_DefineProperty(cx, metrics, "width", width_val, NULL, NULL, 0);
+	JS_DefineProperty(cx, metrics, "failed", failed_val, NULL, NULL, 0);
 
 	JSAG_RETURN_OBJECT(metrics);
 }
