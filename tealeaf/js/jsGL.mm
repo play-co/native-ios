@@ -246,7 +246,7 @@ static double measureText(JSContext *cx, JSObject *font_info, const char *text) 
 
 				width += (ow - 2) * scale;
 			} else {
-				width += space_width;
+				return -1;
 			}
 		}
 		width += tracking - outline;
@@ -285,9 +285,11 @@ JSAG_MEMBER_BEGIN(measureTextBitmap, 2)
 	double width = measureText(cx, font_info, str);
 	
 	jsval width_val = DOUBLE_TO_JSVAL(width);
+	jsval failed_val = BOOLEAN_TO_JSVAL(width < 0);
 	
 	JSObject *metrics = JS_NewObject(cx, NULL, NULL, NULL);
 	JS_DefineProperty(cx, metrics, "width", width_val, NULL, NULL, 0);
+	JS_DefineProperty(cx, metrics, "failed", failed_val, NULL, NULL, 0);
 
 	JSAG_RETURN_OBJECT(metrics);
 }
@@ -581,89 +583,106 @@ JSAG_MEMBER_BEGIN(fillTextBitmap, 7)
 	JS_ValueToObject(cx, v, &images2);
 	JS_GetProperty(cx, custom_font, "dimensions", &v);
 	JS_ValueToObject(cx, v, &dimensions);
-	JS_GetProperty(cx, custom_font, "horizontal", &v);
-	JS_ValueToObject(cx, v, &horizontal);
-	JS_GetProperty(cx, font_info, "scale", &v);
-	JS_ValueToNumber(cx, v, &scale);
-	JS_GetProperty(cx, horizontal, "width", &v);
-	JS_ValueToNumber(cx, v, &space_width);
-	space_width *= scale;
-	JS_GetProperty(cx, horizontal, "tracking", &v);
-	JS_ValueToNumber(cx, v, &tracking);
-	tracking *= scale;
-	JS_GetProperty(cx, horizontal, "outline", &v);
-	JS_ValueToNumber(cx, v, &outline);
-	outline *= scale;
-	
-	float dy = textBaselineValue(cx, js_ctx, custom_font, scale);
-	y += dy;
-	
-	float dx = textAlignValue(cx, js_ctx, font_info, text);
-	x += dx;
-	
-	int current_image_index = -1;
-	char *url = 0, ch = '\0';
-	
-	while ((ch = *text++)) {
+
+	char ch;
+	bool use_bitmap_fonts = true;
+	for (int i = 0; (ch = text[i]) != 0; i++) {
 		if (ch != ' ') {
 			jsval jdimension;
 			JS_GetElement(cx, dimensions, (unsigned char)ch, &jdimension);
-			
-			if (likely(JSVAL_IS_OBJECT(jdimension))) {
-				JSObject *dimension = JSVAL_TO_OBJECT(jdimension);
-				
-				int32_t image_index, sx, sy, sw, sh;
-				double ow, oh;
-				
-				JS_GetProperty(cx, dimension, "i", &v);
-				JS_ValueToInt32(cx, v, &image_index);
-				JS_GetProperty(cx, dimension, "x", &v);
-				JS_ValueToInt32(cx, v, &sx);
-				JS_GetProperty(cx, dimension, "y", &v);
-				JS_ValueToInt32(cx, v, &sy);
-				JS_GetProperty(cx, dimension, "w", &v);
-				JS_ValueToInt32(cx, v, &sw);
-				JS_GetProperty(cx, dimension, "h", &v);
-				JS_ValueToInt32(cx, v, &sh);
-				JS_GetProperty(cx, dimension, "ow", &v);
-				JS_ValueToNumber(cx, v, &ow);
-				JS_GetProperty(cx, dimension, "oh", &v);
-				JS_ValueToNumber(cx, v, &oh);
-				
-				rect_2d src_rect = {sx, sy, sw, sh};
-				rect_2d dest_rect = {x, y + (oh - 1) * scale, sw * scale, (sh - 2) * scale};
-				
-				if (current_image_index != image_index) {
-					current_image_index = image_index;
-					
-					jsval jimage;
-					JS_GetElement(cx, images2, image_index, &jimage);
-					if (likely(JSVAL_IS_OBJECT(jimage))) {
-						JSObject *image = JSVAL_TO_OBJECT(jimage);
-						
-						jsval src_tex;
-						JS_GetProperty(cx, image, "_src", &src_tex);
-						if (likely(JSVAL_IS_STRING(src_tex))) {
-							JSVAL_TO_CSTR(cx, src_tex, curl);
-							url = curl;
-						}
-					}
-				}
-				
-				context_2d_drawImage(context, 0, url, &src_rect, &dest_rect, source_over);
-				
-				x += (ow - 2) * scale + tracking - outline;
-			} else {
-				LOG("{gl} ERROR: Character provided was not supported by bitmap font (out of range): %s", text);
-				
-				// Character not in array: Skip the character
-				x += space_width + tracking - outline;
+			if (!JSVAL_IS_OBJECT(jdimension)) {
+				use_bitmap_fonts = false;
+				break;
 			}
-		} else {
-			// Space: Skip the character
-			x += space_width + tracking - outline;
 		}
 	}
+
+	if (use_bitmap_fonts) {
+		JS_GetProperty(cx, custom_font, "horizontal", &v);
+		JS_ValueToObject(cx, v, &horizontal);
+		JS_GetProperty(cx, font_info, "scale", &v);
+		JS_ValueToNumber(cx, v, &scale);
+		JS_GetProperty(cx, horizontal, "width", &v);
+		JS_ValueToNumber(cx, v, &space_width);
+		space_width *= scale;
+		JS_GetProperty(cx, horizontal, "tracking", &v);
+		JS_ValueToNumber(cx, v, &tracking);
+		tracking *= scale;
+		JS_GetProperty(cx, horizontal, "outline", &v);
+		JS_ValueToNumber(cx, v, &outline);
+		outline *= scale;
+
+		float dy = textBaselineValue(cx, js_ctx, custom_font, scale);
+		y += dy;
+
+		float dx = textAlignValue(cx, js_ctx, font_info, text);
+		x += dx;
+
+		int current_image_index = -1;
+		char *url = 0, ch = '\0';
+
+		while ((ch = *text++)) {
+			if (ch != ' ') {
+				jsval jdimension;
+				JS_GetElement(cx, dimensions, (unsigned char)ch, &jdimension);
+
+				if (likely(JSVAL_IS_OBJECT(jdimension))) {
+					JSObject *dimension = JSVAL_TO_OBJECT(jdimension);
+
+					int32_t image_index, sx, sy, sw, sh;
+					double ow, oh;
+
+					JS_GetProperty(cx, dimension, "i", &v);
+					JS_ValueToInt32(cx, v, &image_index);
+					JS_GetProperty(cx, dimension, "x", &v);
+					JS_ValueToInt32(cx, v, &sx);
+					JS_GetProperty(cx, dimension, "y", &v);
+					JS_ValueToInt32(cx, v, &sy);
+					JS_GetProperty(cx, dimension, "w", &v);
+					JS_ValueToInt32(cx, v, &sw);
+					JS_GetProperty(cx, dimension, "h", &v);
+					JS_ValueToInt32(cx, v, &sh);
+					JS_GetProperty(cx, dimension, "ow", &v);
+					JS_ValueToNumber(cx, v, &ow);
+					JS_GetProperty(cx, dimension, "oh", &v);
+					JS_ValueToNumber(cx, v, &oh);
+
+					rect_2d src_rect = {sx, sy, sw, sh};
+					rect_2d dest_rect = {x, y + (oh - 1) * scale, sw * scale, (sh - 2) * scale};
+
+					if (current_image_index != image_index) {
+						current_image_index = image_index;
+
+						jsval jimage;
+						JS_GetElement(cx, images2, image_index, &jimage);
+						if (likely(JSVAL_IS_OBJECT(jimage))) {
+							JSObject *image = JSVAL_TO_OBJECT(jimage);
+
+							jsval src_tex;
+							JS_GetProperty(cx, image, "_src", &src_tex);
+							if (likely(JSVAL_IS_STRING(src_tex))) {
+								JSVAL_TO_CSTR(cx, src_tex, curl);
+								url = curl;
+							}
+						}
+					}
+
+					context_2d_drawImage(context, 0, url, &src_rect, &dest_rect, source_over);
+
+					x += (ow - 2) * scale + tracking - outline;
+				} else {
+					LOG("{gl} ERROR: Character provided was not supported by bitmap font (out of range): %s", text);
+
+					// Character not in array: Skip the character
+					x += space_width + tracking - outline;
+				}
+			} else {
+				// Space: Skip the character
+				x += space_width + tracking - outline;
+			}
+		}
+	}
+	JSAG_RETURN_BOOL(use_bitmap_fonts);
 }
 JSAG_MEMBER_END
 
