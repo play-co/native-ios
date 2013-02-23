@@ -41,7 +41,7 @@ CEXPORT bool setup_js_runtime() {
 CEXPORT bool init_js(const char *uri, const char *version) {
 	if (m_core && !js_ready) {
 		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-		
+
 		NSString *baseURL = [NSString stringWithUTF8String:uri];
 		
 		js_core *js = m_core;
@@ -88,6 +88,10 @@ CEXPORT bool destroy_js() {
 		
 		LOG("{js} Shutting down...");
 		
+		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+		[app.canvas stopRendering];
+
 		view_animation_shutdown();
 		timestep_events_shutdown();
 		timestep_view_shutdown();

@@ -31,6 +31,7 @@
 #import "iosVersioning.h"
 #include "core/core_js.h"
 #include "core/texture_manager.h"
+#include "core/config.h"
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -46,6 +47,21 @@ static NSString *get_platform() {
     NSString *platform = [NSString stringWithUTF8String:machine];
     free(machine);
     return platform;
+}
+
+
+static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
+
+CEXPORT void device_hide_splash() {
+	// If showing the splash screen,
+	if (m_showing_splash) {
+		// Hide it immediately!
+		[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view removeFromSuperview];
+
+		[UIView setAnimationsEnabled:YES];
+
+		m_showing_splash = NO;
+	}
 }
 
 
@@ -82,7 +98,7 @@ static NSString *get_platform() {
 
 		if (js_ready) {
 			dispatch_async(dispatch_get_main_queue(), ^{
-				core_destroy();
+				core_reset();
 			});
 		}
 	} else if ([title isEqualToString:@"No"]) {
@@ -93,31 +109,54 @@ static NSString *get_platform() {
 	}
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
-	if (isPortrait) {
-		return (toInterfaceOrientation == UIInterfaceOrientationPortrait) ||
-			   (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
-	} else {
-		return (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
-			   (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight);
+-(void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	if (m_showing_splash) {
+		[UIView setAnimationsEnabled:NO];
 	}
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+	[UIView setAnimationsEnabled:YES];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+	if (m_showing_splash) {
+		[UIView setAnimationsEnabled:NO];
+	}
+
+	if (!self.appDelegate.gameSupportsPortrait) {
+		return (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
+			   (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight);
+	}
+	
+	if (!self.appDelegate.gameSupportsLandscape) {
+		return (toInterfaceOrientation == UIInterfaceOrientationPortrait) ||
+			   (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
+	}
+
+	return NO;
+}
+
 -(BOOL)shouldAutorotate {
+	if (m_showing_splash) {
+		[UIView setAnimationsEnabled:NO];
+	}
+
 	return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
-	if (isPortrait) {
-		return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
-	} else {
-		return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-		
+	NSUInteger mask = 0;
+	
+	if (self.appDelegate.gameSupportsPortrait) {
+		mask |= UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
 	}
-}
 
--(void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	// CGRect bounds = [self.view bounds];
+	if (self.appDelegate.gameSupportsLandscape) {
+		mask |= UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+	}
+
+	return mask;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -127,14 +166,12 @@ static NSString *get_platform() {
 	// Release any cached data, images, etc that aren't in use.
 }
 
-static void ReadManifest(bool *isPortrait) {
+static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	bool loaded_success = false;
-	
-	// TODO: Support changing orientation
-	
-	// Default: Fail to portrait mode
-	*isPortrait = true;
-	
+
+	*isPortrait = false;
+	*isLandscape = false;
+
 	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
 	if (manifest_file != nil) {
 		const char *c_manifest_file = [manifest_file UTF8String];
@@ -151,10 +188,11 @@ static void ReadManifest(bool *isPortrait) {
 						const char *str = json_string_value(entry);
 						if (0 == strcasecmp(str, "landscape")) {
 							// Landscape mode is specified
-							*isPortrait = false;
+							*isLandscape = true;
 						}
 						else if (0 == strcasecmp(str, "portrait")) {
 							// Portrait mode is specified
+							*isPortrait = true;
 						}
 					}
 				}
@@ -162,7 +200,7 @@ static void ReadManifest(bool *isPortrait) {
 		}
 		json_decref(manifest);
 	} else {
-		LOG("WARNING: Basil Server was not reachable or manifest.json not found");
+		LOG("WARNING: Manifest.json not found");
 	}
 	
 	if (!loaded_success) {
@@ -213,7 +251,8 @@ static void ReadManifest(bool *isPortrait) {
 }
 
 - (void)viewDidLoad {
-	 self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
+	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
+
 	//TEALEAF_SPECIFIC_START
 	/*
 	 * based on reported width and height, calculate the width and
@@ -221,113 +260,96 @@ static void ReadManifest(bool *isPortrait) {
 	 * and orientation (swapping width and height)
 	 */
 	
-	 [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-	 UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-	 
-	 
-	 CGRect frame = [self.appDelegate.window frame];
-	 float scale = 1.0;
-	 if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
-	 scale = [[UIScreen mainScreen] scale];
-	 }
-	 int w, h ;
-	 
-	 if (orientation == UIDeviceOrientationFaceUp || UIInterfaceOrientationIsPortrait(orientation)) {
-		 w = frame.size.width;
-		 h = frame.size.height;
-	 } else {
-		 w = frame.size.height;
-		 h = frame.size.width;
-	 }
-	 w *= scale;
-	 h *= scale;
-	 
-	
-	 // Lookup source path
-	
-	 const char *source_path = [[ResourceLoader get].appBundle UTF8String];
-	 if (!source_path || *source_path == '\0') {
-		 source_path = [[self.appDelegate.config objectForKey:@"source_dir"] UTF8String];
-	 }
-	
-	char *code_host = NULL;
-#if TARGET_IPHONE_SIMULATOR
-	code_host = "localhost";
-#else
-	code_host = (char*)[[self.appDelegate.config objectForKey:@"code_host"] UTF8String];
-#endif
-	
-	 core_init([[self.appDelegate.config objectForKey:@"entry_point"] UTF8String],
-	 [[self.appDelegate.config	objectForKey:@"tcp_host"] UTF8String],
-	 [[self.appDelegate.config	objectForKey:@"code_host"] UTF8String],
-	 [[self.appDelegate.config	objectForKey:@"tcp_port"] intValue],
-	 [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
-	 source_path,
-	 w,
-	 h,
-	 [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue],
-	 "");
+	// Read preferred orientation from game manifest
+	bool gamePortrait = false, gameLandscape = false;
+	ReadManifest(&gamePortrait, &gameLandscape);
+	self.appDelegate.gameSupportsLandscape = gameLandscape ? YES : NO;
+	self.appDelegate.gameSupportsPortrait = gamePortrait ? YES : NO;
 
+	[self.appDelegate updateScreenProperties];
+
+	// Lookup source path
+	const char *source_path = [[ResourceLoader get].appBundle UTF8String];
+	if (!source_path || *source_path == '\0') {
+		source_path = [[self.appDelegate.config objectForKey:@"source_dir"] UTF8String];
+	}
+
+	core_init([[self.appDelegate.config objectForKey:@"entry_point"] UTF8String],
+			  [[self.appDelegate.config	objectForKey:@"tcp_host"] UTF8String],
+			  [[self.appDelegate.config	objectForKey:@"code_host"] UTF8String],
+			  [[self.appDelegate.config	objectForKey:@"tcp_port"] intValue],
+			  [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
+			  source_path, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels,
+			  [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue],
+			  [self.appDelegate.screenBestSplash UTF8String],
+			  "");
+	
+	// Lower texture memory based on device model
     NSString *platform = get_platform();
     NSLog(@"{core} iOS device model '%@'", platform);
 
 	texture_manager_set_max_memory(texture_manager_get(), get_platform_memory_limit());
 
-	bool isPortrait;
-	ReadManifest(&isPortrait);
-	 
-	self->isPortrait = isPortrait;
-	
-	 
-	 // Fix orientation
-	 bool swap = h > w;
-	 swap ^= isPortrait;
-	 if (swap) {
-		 
-		 int t = w;
-		 w = h;
-		 h = t;
-	 }
-	 
-	 
-	 //create our openglview and size it correctly
-	 //TEALEAF_SPECIFIC_START
-	 
-	 frame = CGRectMake(0, 0, w, h);
-	 OpenGLView *glView = [[OpenGLView alloc] initWithFrame:frame];
-	 self.view = glView;
-	 self.appDelegate.canvas = glView;
-	 glView.frame = frame;
-	 core_init_gl(1);
-	 tealeaf_canvas_resize(w, h);
-	 
-	
+	//create our openglview and size it correctly
+	//TEALEAF_SPECIFIC_START
+
+	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.screenFrame];
+	self.view = glView;
+	self.appDelegate.canvas = glView;
+	glView.frame = self.appDelegate.initFrame;
+	core_init_gl(1);
+
+	int w = self.appDelegate.screenWidthPixels;
+	int h = self.appDelegate.screenHeightPixels;
+	tealeaf_canvas_resize(w, h);
+
+
 	/*
 	 * add a temporary imageview with the loading image.
 	 * This smooths the transition between the launch image
 	 * and our opengl loading image so there's no gap
 	 */
+
+	NSURL *loading_path = [[ResourceLoader get] resolve:self.appDelegate.screenBestSplash];
+	NSData *data = [NSData dataWithContentsOfURL:loading_path];
+	UIImage *loading_image_raw = [UIImage imageWithData: data];
+
+	UIImageOrientation splashOrientation = UIImageOrientationUp;
+	int frameWidth = (int)self.appDelegate.window.frame.size.width;
+	int frameHeight = (int)self.appDelegate.window.frame.size.height;
+
+	bool needsFrameRotate = w > h;
+	needsFrameRotate ^= frameWidth > frameHeight;
+	if (needsFrameRotate) {
+		// This happens on the iPhone when orientated on its side
+		int temp = frameWidth;
+		frameWidth = frameHeight;
+		frameHeight = temp;
+	}
+
+	bool needsOrientRotate = w > h;
+	needsOrientRotate ^= loading_image_raw.size.width > loading_image_raw.size.height;
+	if (needsOrientRotate) {
+		splashOrientation = UIImageOrientationRight;
+	}
+
+	UIImage *loading_image = [UIImage imageWithCGImage:loading_image_raw.CGImage scale:1.f orientation:splashOrientation];
+	self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
+	self.loading_image_view.frame = CGRectMake(0, 0, frameWidth, frameHeight);
+
+	//add the openglview to our window
+	[self.appDelegate.window addSubview:self.view];
+	self.appDelegate.window.rootViewController = self;
+	[self.appDelegate.window.rootViewController.view addSubview:self.loading_image_view];
+	m_showing_splash = YES;
+
+	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
+	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
 	
-	 NSURL *loading_path = [[ResourceLoader get] resolve:@"loading.png"];
-	 NSData *data = [NSData dataWithContentsOfURL: loading_path];
-	 UIImage *portrait = [UIImage imageWithData: data];
-	 UIImage *loading_image = [[UIImage alloc] initWithCGImage: portrait.CGImage scale: 1.0 orientation: UIImageOrientationLeft];
-	 
-	 self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
-	 self.loading_image_view.frame = [self.appDelegate.window frame];
-	 [self.appDelegate.window addSubview:self.loading_image_view];
-	 
-	 //add the openglview to our window
-	 [self.appDelegate.window addSubview:self.view];
-	 self.appDelegate.window.rootViewController = self;
-	 
-	 // PluginManager gets initialized after createJS() so that events are generated after core js is loaded
-	 self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
-	
-	 // Initialize text manager
-	 if (!text_manager_init()) {
-		 NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
-	 }
+	// Initialize text manager
+	if (!text_manager_init()) {
+		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
+	}
 	
 	// Setup the JS runtime in the main thread
 	if (!setup_js_runtime()) {

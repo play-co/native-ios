@@ -87,9 +87,7 @@
 	[self.view addSubview:base];
 	
 	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
-	
-	
-	
+
 	self.tapGestureRecognizer = [[[UITapGestureRecognizer alloc]
 								  initWithTarget:self
 								  action:@selector(dismissKeyboard)] autorelease];
