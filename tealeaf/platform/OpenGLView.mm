@@ -34,7 +34,7 @@ CADisplayLink* displayLink;
 	if (self) {
 		cond = [NSCondition new];
 	}
-	
+
 	return self;
 }
 
@@ -92,7 +92,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (void)stopRendering {
 	m_ogl_en = NO;
-	
+
 	[cond lock];
 	while (m_ogl_in) {
 		[cond wait];
@@ -101,7 +101,6 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 }
 
 - (void)render:(CADisplayLink*)displayLink {
-	[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view removeFromSuperview];
 	m_ogl_in = YES;
 
 	// Compiler memory barrier
@@ -148,7 +147,6 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	}
 }
 
-
 - (void)setupDisplayLink {
 	// Enable multi-touch
 	self.multipleTouchEnabled = YES;
@@ -156,12 +154,10 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
 	displayLink.frameInterval = 1;
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-   
 }
 
 - (void) destroyDisplayLink {
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-
 }
 
 
@@ -173,7 +169,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		[self setupContext];  
 		[self setupRenderBuffer];
 		[self setupFrameBuffer];
-	   
+
 		[self setupDisplayLink];
 		_id = 0;
 	}

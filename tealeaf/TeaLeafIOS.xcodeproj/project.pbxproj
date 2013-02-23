@@ -557,7 +557,6 @@
 				4E77EAE41666B8DF00FD6430 /* debug */,
 				4EFF545B16165167000C3AFD /* libjpeg.a */,
 				4EFF545C16165167000C3AFD /* libpng.a */,
-				4E3BA03C160BDD5A0070C5FF /* Default-568h@2x.png */,
 				D5795633159A7D02000DDEA3 /* TeaLeafIOS.entitlements */,
 				D5CA48DF15895D140017224F /* gen */,
 				D56C7E1B157EABCA00DB8BDA /* libz.dylib */,
@@ -578,6 +577,7 @@
 				D579561D159A79DA000DDEA3 /* Default-Portrait~ipad.png */,
 				D579561F159A79DB000DDEA3 /* icon57.png */,
 				D5795631159A7B99000DDEA3 /* Default-Portrait@2x~ipad.png */,
+				4E3BA03C160BDD5A0070C5FF /* Default-568h@2x.png */,
 				D5795620159A79DB000DDEA3 /* icon72.png */,
 				D5795621159A79DB000DDEA3 /* icon114.png */,
 				D5795622159A79DB000DDEA3 /* icon144.png */,
@@ -1326,6 +1326,7 @@
 				CODE_SIGN_ENTITLEMENTS = TeaLeafIOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";

@@ -128,6 +128,7 @@ static int base_path_len = 0;
 
 - (void) dealloc {
 	self.appBundle = nil;
+	self.appBase = nil;
 	self.images = nil;
 	self.imageWaiter = nil;
 	self.baseURL = nil;
@@ -139,6 +140,7 @@ static int base_path_len = 0;
 	self = [super init];
 
 	self.appBundle = [[NSBundle mainBundle] pathForResource:@"resources" ofType:@"bundle"];
+	self.appBase = [[NSBundle mainBundle] resourcePath];
 	self.images = [[[NSMutableArray alloc] init] autorelease];
 	self.imageWaiter = [[[NSCondition alloc] init] autorelease];
 
@@ -147,16 +149,8 @@ static int base_path_len = 0;
 
 - (NSString *) initStringWithContentsOfURL:(NSString *)url {
 	//check config for test app
-	
-	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
-	NSString *urlFormat = nil;
-	if (!isRemoteLoading) {
-		urlFormat = @"%@";
-	} else {
-		urlFormat = @"file://%@";
-	}
 
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:urlFormat, [self resolve: url]]] cachePolicy:0 timeoutInterval:600];
+	NSURLRequest *request = [NSURLRequest requestWithURL:[self resolve:url] cachePolicy:0 timeoutInterval:600];
 	NSURLResponse *response = nil;
 	NSError *error = nil;
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
@@ -164,7 +158,6 @@ static int base_path_len = 0;
 		NSLOG(@"{resources} FAILED: Unable to read '%@' : %@", url, [error localizedFailureReason]);
 		return nil;
 	} else {
-		
 		NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
 		if (NSOrderedSame == [result compare:@"Cannot GET" options:NSLiteralSearch range:NSMakeRange(0, 10)]) {
@@ -176,28 +169,37 @@ static int base_path_len = 0;
 	}
 }
 
-- (NSURL*) resolve:(NSString *)url {
+- (NSURL *) resolve:(NSString *)url {
 	if([url hasPrefix: @"http"] || [url hasPrefix: @"data"]) {
 		return [NSURL URLWithString: url];
 	}
-	if (!config_get_remote_loading()) {
-		return [self resolveFile: url];
+
+	// Prefix with "@root://" to access things at the root of the app data outside the resources.bundle
+	BOOL inBundle = YES;
+	if ([url hasPrefix: @"@root://"]) {
+		inBundle = NO;
+		url = [url substringFromIndex:8];
+	}
+	
+	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
+
+	if (!isRemoteLoading) {
+		return [self resolveFile:url inBundle:inBundle];
 	} else {
-		return [self resolveFileUrl: url];
+		return [self resolveFileUrl:url];
 	}
 }
 
-- (NSURL*) resolveFile:(NSString*) path {
-	return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", self.appBundle, path]];
-}
-
-- (NSURL*) resolveUrl: (NSString*) url {
-	url = [NSString stringWithFormat:@"code/__cmd__/%@", url];
-	return [NSURL URLWithString: [NSString stringWithFormat:@"http://%s:%d/%@", config_get_code_host(), config_get_code_port(), url]];
+- (NSURL *) resolveFile:(NSString *)path inBundle:(BOOL)inBundle {
+	if (inBundle) {
+		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", self.appBundle, path]];
+	} else {
+		return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", self.appBase, path]];
+	}
 }
 
 - (NSURL *) resolveFileUrl:(NSString *)url {
-	return [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@", [[instance.appDelegate.config objectForKey:@"app_files_dir"] stringByReplacingOccurrencesOfString:@" " withString:@"%20"], url ]];
+	return [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@", [[instance.appDelegate.config objectForKey:@"app_files_dir"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], url ]];
 	//return url to file on disk
 }
 
@@ -235,7 +237,7 @@ static int base_path_len = 0;
 						NSString* str = [url substringFromIndex: range.location+1];
 						data = decodeBase64(str);
 					} else {
-						data = [NSData dataWithContentsOfURL: [self resolve: url]];
+						data = [NSData dataWithContentsOfURL: [self resolve:url]];
 					}
 
 					unsigned char *tex_data = NULL;
@@ -449,10 +451,10 @@ CEXPORT bool resource_loader_load_image_with_c(texture_2d *texture) {
 	}
 }
 
-CEXPORT const char* resource_loader_string_from_url(const char* url) {
+CEXPORT const char* resource_loader_string_from_url(const char *url) {
 	ResourceLoader* loader = [ResourceLoader get];
 	NSString* nsurl = [NSString stringWithUTF8String:url];
-	NSString* contents = [[loader initStringWithContentsOfURL: nsurl] autorelease];
+	NSString* contents = [[loader initStringWithContentsOfURL:nsurl] autorelease];
 	const char *contents_str = [contents UTF8String];
 	if (contents_str) {
 		contents_str = strdup(contents_str);
