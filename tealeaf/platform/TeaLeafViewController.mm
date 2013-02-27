@@ -293,10 +293,9 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	//create our openglview and size it correctly
 	//TEALEAF_SPECIFIC_START
 
-	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.screenFrame];
+	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
 	self.view = glView;
 	self.appDelegate.canvas = glView;
-	glView.frame = self.appDelegate.initFrame;
 	core_init_gl(1);
 
 	int w = self.appDelegate.screenWidthPixels;
