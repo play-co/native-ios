@@ -58,6 +58,10 @@ static JSBool JSPOP_Online(JSContext *cx, JSHandleObject obj, JSHandleId id, JSM
 	}
 	dpi *= scale;
 
+	//add the pixel ratio to the window object
+	JSObject* window = get_global_object();
+	JS_DefineProperty(cx, window, "devicePixelRatio", DOUBLE_TO_JSVAL(scale), NULL, NULL, PROPERTY_FLAGS);
+
 	// displayMetrics subobject
 	JSObject *obj_metric = JS_NewObject(cx, NULL, NULL, NULL);
 	JS_DefineProperty(cx, obj_metric, "densityDpi", DOUBLE_TO_JSVAL(dpi), NULL, NULL, PROPERTY_FLAGS);
