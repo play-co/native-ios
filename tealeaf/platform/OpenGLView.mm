@@ -136,14 +136,14 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		 [NSThread sleepForTimeInterval:(sleep_ms / 1000.0)];
 		 }
 		 }*/
+	}
 
-		m_ogl_in = NO;
+	m_ogl_in = NO;
 
-		if (!m_ogl_en) {
-			[cond lock];
-			[cond signal];
-			[cond unlock];
-		}
+	if (!m_ogl_en) {
+		[cond lock];
+		[cond signal];
+		[cond unlock];
 	}
 }
 
