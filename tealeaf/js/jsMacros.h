@@ -87,7 +87,6 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 	JSString *cstr ## _jstr = JSVAL_TO_STRING(val); \
 	JSTR_TO_CSTR(cx, cstr ## _jstr, cstr);
 
-// WTF Mozilla is it really that hard to keep backwards compatibility? -cat
 #define JSVAL_IS_OBJECT(v) !JSVAL_IS_PRIMITIVE(v)
 
 
