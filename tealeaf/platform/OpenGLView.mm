@@ -163,7 +163,12 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
-	if (self) {	 
+	if (self) {
+		// Adjust for retina displays
+		if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {
+			self.contentScaleFactor = [[UIScreen mainScreen] scale];
+		}
+
 		touchData = [[NSMutableArray alloc] init];
 		[self setupLayer];		  
 		[self setupContext];  
