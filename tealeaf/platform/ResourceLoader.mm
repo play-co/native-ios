@@ -358,9 +358,18 @@ static int base_path_len = 0;
 
 	const char *url = [info.url UTF8String];
 
+	// Select the right internal and input format based on the number of channels
+	GLint format;
+	switch (info.channels) {
+	case 1: format = GL_LUMINANCE; break;
+	case 3: format = GL_RGB; break;
+	default:
+	case 4: format = GL_RGBA; break;
+	}
+
 	//create the texture
 	int shift = info.scale - 1;
-	glTexImage2D(GL_TEXTURE_2D, 0, info.channels == 4 ? GL_RGBA : GL_RGB, info.w >> shift, info.h >> shift, 0, info.channels == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, info.raw_data);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, info.w >> shift, info.h >> shift, 0, format, GL_UNSIGNED_BYTE, info.raw_data);
 	core_check_gl_error();
 
 	texture_manager_on_texture_loaded(texture_manager_get(), url, texture,

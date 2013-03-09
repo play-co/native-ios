@@ -108,7 +108,7 @@ static inline int NextPowerOfTwo(int n) {
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		
+
 		switch(pixelFormat) {
 			case kTexture2DPixelFormat_RGBA8888:
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, realSize.width, realSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
