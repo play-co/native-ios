@@ -292,7 +292,13 @@ static int base_path_len = 0;
 
 - (void) loadImage:(NSString *)url {
 	if([url hasPrefix: @"@TEXT"]) {
-		[self performSelectorOnMainThread: @selector(finishLoadingText:) withObject: url waitUntilDone:NO];
+		if ([NSThread isMainThread]) {
+			// Normal case: Most text load requests come from JavaScript from main GL thread
+			[self finishLoadingText:url];
+		} else {
+			// This will put it on a queue and execute it later, which is not ideal
+			[self performSelectorOnMainThread: @selector(finishLoadingText:) withObject:url waitUntilDone:NO];
+		}
 	} else if (url) {
 		[self.images addObject: url];
 		[self.imageWaiter broadcast];
