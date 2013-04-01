@@ -89,6 +89,16 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 
 #define JSVAL_IS_OBJECT(v) !JSVAL_IS_PRIMITIVE(v)
 
+inline int JSValToInt32(JSContext *cx, jsval v, int def) {
+	int result = def;
+
+	if (!JSVAL_IS_VOID(v)) {
+		JS_ValueToInt32(cx, v, &result);
+	}
+
+	return result;
+}
+
 
 // TODO: Needed?
 //#ifndef __UNUSED
