@@ -79,9 +79,9 @@ static inline void build_frame(JSContext *cx, JSObject *target, unsigned argc, j
 
 	jsval *vals = JS_ARGV(cx, vp);
 	if (argc > 1) {
-		JS_ValueToInt32(cx, vals[1], &duration);
+		duration = JSValToInt32(cx, vals[1], duration);
 		if (argc > 2) {
-			JS_ValueToInt32(cx, vals[2], &transition);
+			transition = JSValToInt32(cx, vals[2], transition);
 		}
 	}
 
