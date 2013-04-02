@@ -313,7 +313,10 @@ jsag_fail: \
 	JS_FN(#jsName, jsag_member_ ## jsName, jsag_member_ ## jsName ## _argCount, JS_MUTABLE_FUNCTION_FLAGS),
 
 #define JSAG_OBJECT_MEMBER_NAMED(jsName, functionName) \
-	JS_FN(#jsName, jsag_member_ ## functionName, jsag_member_ ## functionName ## _argCount, FUNCTION_FLAGS),
+JS_FN(#jsName, jsag_member_ ## functionName, jsag_member_ ## functionName ## _argCount, FUNCTION_FLAGS),
+
+#define JSAG_MUTABLE_OBJECT_MEMBER_NAMED(jsName, functionName) \
+JS_FN(#jsName, jsag_member_ ## functionName, jsag_member_ ## functionName ## _argCount, JS_MUTABLE_FUNCTION_FLAGS),
 
 #define JSAG_OBJECT_END \
 	JS_FS_END };
