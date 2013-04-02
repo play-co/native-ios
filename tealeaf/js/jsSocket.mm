@@ -88,7 +88,7 @@
 - (void) onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port {
 	jsval rval;
 	JS_CallFunctionName(self.cx, self.thiz, "onConnect", 0, NULL, &rval);
-	[sock readDataToData:[AsyncSocket CRLFData] withTimeout:-1 tag:0];
+	[sock readDataWithTimeout:-1 tag:0];
 }
 
 - (void) onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
@@ -119,7 +119,7 @@
 		JS_CallFunctionName(self.cx, self.thiz, "onError", 1, &jstr, &rval);
 	}
 	
-	[self.socket readDataToData:[AsyncSocket CRLFData] withTimeout:-1 tag:0];
+	[self.socket readDataWithTimeout:-1 tag:0];
 }
 
 - (void) onSocketDidDisconnect:(AsyncSocket *)sock {
@@ -136,7 +136,7 @@
 	
 	NSData *msgData = [message dataUsingEncoding:NSUTF8StringEncoding];
 	[self.socket writeData:msgData withTimeout:-1 tag:0];
-	[self.socket readDataToData:[AsyncSocket CRLFData] withTimeout:-1 tag:0];
+	[self.socket readDataWithTimeout:-1 tag:0];
 }
 
 - (void) close {
