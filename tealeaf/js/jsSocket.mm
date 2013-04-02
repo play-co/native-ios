@@ -18,6 +18,11 @@
 #import "js/jsSocket.h"
 #import "AsyncSocket.h"
 #import "platform/log.h"
+#include "core/events.h"
+
+#import "JSONKit.h"
+#import "jansson.h"
+#import "jsonUtil.h"
 
 @interface SocketWrapper : NSObject
 
@@ -92,8 +97,19 @@
 	NSString *msg = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 	if (msg) {
 		[msg autorelease];
-		jsval rval, jstr = NSTR_TO_JSVAL(self.cx, msg);
-		JS_CallFunctionName(self.cx, self.thiz, "onRead", 1, &jstr, &rval);
+
+		NSString *evt = @"{\"id\":1,\"name\":\"socketRead\"}";
+		const char *cEvt = [evt UTF8String];
+		json_error_t err;
+		json_t *jsEvt = json_loads(cEvt, 0, &err);
+		if (jsEvt && json_is_object(jsEvt)) {
+			JSON_AddOptionalString(jsEvt, "data", msg);
+			const char *jsChars = json_dumps(jsEvt, JSON_PRESERVE_ORDER);
+			LOG(jsChars);
+			core_dispatch_event(jsChars);
+		} else {
+			NSLOG(@"{socket} failed to create JSON event object: '%@'", msg);
+		}
 	} else {
 		const char *err = "Error converting received data into UTF-8 String";
 		LOG("{socket} %s", err);
@@ -144,6 +160,8 @@ JSAG_CLASS_FINALIZE(Socket, obj) {
 
 JSAG_CLASS_IMPL(Socket);
 
+int idCounter = 1;
+
 JSAG_MEMBER_BEGIN(Socket, 2)
 {
 	JSAG_ARG_NSTR(host);
@@ -157,6 +175,9 @@ JSAG_MEMBER_BEGIN(Socket, 2)
 	SocketWrapper *socket = [[SocketWrapper alloc] initWithContext:cx andObject:thiz andHost:host andPort:port andTimeout:timeout];
 
 	JSAG_SET_PRIVATE(thiz, socket);
+
+	jsval jsID = INT_TO_JSVAL(idCounter++);
+	JSAG_ADD_PROPERTY(thiz, __id, &jsID);
 
 	JSAG_RETURN_OBJECT(thiz);
 }
