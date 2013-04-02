@@ -97,8 +97,9 @@
 	NSString *msg = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 	if (msg) {
 		[msg autorelease];
-
-		NSString *evt = @"{\"id\":1,\"name\":\"socketRead\"}";
+		jsval rval;
+		JS_GetProperty(self.cx, self.thiz, "__id", &rval);
+		NSString *evt = [NSString stringWithFormat: @"{\"id\":%d,\"name\":\"socketRead\"}", JSValToInt32(self.cx, rval, 0)];
 		const char *cEvt = [evt UTF8String];
 		json_error_t err;
 		json_t *jsEvt = json_loads(cEvt, 0, &err);
