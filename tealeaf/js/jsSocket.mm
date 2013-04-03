@@ -106,7 +106,6 @@
 		if (jsEvt && json_is_object(jsEvt)) {
 			JSON_AddOptionalString(jsEvt, "data", msg);
 			const char *jsChars = json_dumps(jsEvt, JSON_PRESERVE_ORDER);
-			LOG(jsChars);
 			core_dispatch_event(jsChars);
 		} else {
 			NSLOG(@"{socket} failed to create JSON event object: '%@'", msg);
