@@ -132,6 +132,7 @@ CEXPORT bool destroy_js() {
 	}
 
 	if (m_core) {
+        [m_core shutdown];
 		[m_core release];
 		m_core = 0;
 	}

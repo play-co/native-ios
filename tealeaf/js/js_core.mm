@@ -241,28 +241,31 @@ JSAG_OBJECT_END
 @implementation js_core
 
 -(void) dealloc {
+	self.extensions = nil;
+	self.privateStore = nil;
+	self.pluginManager = nil;
+	self.config = nil;
+	
+	lastJS = nil;
+	global_obj = nil;
+	m_start_date = nil;
+
+	[super dealloc];
+}
+
+-(void) shutdown {
 	// Kill debug server immediately
 	if (self.debugServer) {
+        [self.debugServer close];
 		[self.debugServer release];
 		self.debugServer = nil;
 		
 		LoggerSetDebugger(nil);
 	}
 
-	self.extensions = nil;
-	self.privateStore = nil;
-	self.pluginManager = nil;
-	self.config = nil;
-	
 	JS_DestroyContext(self.cx);
 	JS_DestroyRuntime(self.rt);
 	JS_ShutDown();
-
-	lastJS = nil;
-	global_obj = nil;
-	m_start_date = nil;
-
-	[super dealloc];
 }
 
 - (id) initRuntime {
