@@ -2410,10 +2410,10 @@ static void NewScriptHook(JSContext	 *cx,
 		self.sock = nil;
 	}
 
-    if (self.runLoop) {
-        CFRunLoopStop(self.runLoop);
-    }
-    
+	if (self.runLoop) {
+		CFRunLoopStop(self.runLoop);
+	}
+ 
 	// Wait here for server thread to stop
 	if (self.dgroup) {
 		dispatch_group_wait(self.dgroup, DISPATCH_TIME_FOREVER);
