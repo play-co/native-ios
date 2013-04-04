@@ -60,6 +60,8 @@ CEXPORT JSObject *get_global_object();
 // Call this first from the main thread to initialize the runtime thread info
 - (id) initRuntime;
 
+- (void) shutdown;
+
 // Then call this from another thread to parallelize the initialization code
 - (id) setConfig:(NSDictionary*)config  pluginManager:(PluginManager*)pluginManager;
 
