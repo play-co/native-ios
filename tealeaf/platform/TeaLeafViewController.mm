@@ -134,7 +134,7 @@ CEXPORT void device_hide_splash() {
 			   (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 	}
 
-	return NO;
+	return YES;
 }
 
 -(BOOL)shouldAutorotate {
