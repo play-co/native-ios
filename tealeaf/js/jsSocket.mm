@@ -18,6 +18,11 @@
 #import "js/jsSocket.h"
 #import "AsyncSocket.h"
 #import "platform/log.h"
+#include "core/events.h"
+
+#import "JSONKit.h"
+#import "jansson.h"
+#import "jsonUtil.h"
 
 @interface SocketWrapper : NSObject
 
@@ -83,7 +88,7 @@
 - (void) onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port {
 	jsval rval;
 	JS_CallFunctionName(self.cx, self.thiz, "onConnect", 0, NULL, &rval);
-	[sock readDataToData:[AsyncSocket CRLFData] withTimeout:-1 tag:0];
+	[sock readDataWithTimeout:-1 tag:0];
 }
 
 - (void) onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
@@ -92,8 +97,19 @@
 	NSString *msg = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 	if (msg) {
 		[msg autorelease];
-		jsval rval, jstr = NSTR_TO_JSVAL(self.cx, msg);
-		JS_CallFunctionName(self.cx, self.thiz, "onRead", 1, &jstr, &rval);
+		jsval rval;
+		JS_GetProperty(self.cx, self.thiz, "__id", &rval);
+		NSString *evt = [NSString stringWithFormat: @"{\"id\":%d,\"name\":\"socketRead\"}", JSValToInt32(self.cx, rval, 0)];
+		const char *cEvt = [evt UTF8String];
+		json_error_t err;
+		json_t *jsEvt = json_loads(cEvt, 0, &err);
+		if (jsEvt && json_is_object(jsEvt)) {
+			JSON_AddOptionalString(jsEvt, "data", msg);
+			const char *jsChars = json_dumps(jsEvt, JSON_PRESERVE_ORDER);
+			core_dispatch_event(jsChars);
+		} else {
+			NSLOG(@"{socket} failed to create JSON event object: '%@'", msg);
+		}
 	} else {
 		const char *err = "Error converting received data into UTF-8 String";
 		LOG("{socket} %s", err);
@@ -102,7 +118,7 @@
 		JS_CallFunctionName(self.cx, self.thiz, "onError", 1, &jstr, &rval);
 	}
 	
-	[self.socket readDataToData:[AsyncSocket CRLFData] withTimeout:-1 tag:0];
+	[self.socket readDataWithTimeout:-1 tag:0];
 }
 
 - (void) onSocketDidDisconnect:(AsyncSocket *)sock {
@@ -119,7 +135,7 @@
 	
 	NSData *msgData = [message dataUsingEncoding:NSUTF8StringEncoding];
 	[self.socket writeData:msgData withTimeout:-1 tag:0];
-	[self.socket readDataToData:[AsyncSocket CRLFData] withTimeout:-1 tag:0];
+	[self.socket readDataWithTimeout:-1 tag:0];
 }
 
 - (void) close {
@@ -144,6 +160,8 @@ JSAG_CLASS_FINALIZE(Socket, obj) {
 
 JSAG_CLASS_IMPL(Socket);
 
+int idCounter = 1;
+
 JSAG_MEMBER_BEGIN(Socket, 2)
 {
 	JSAG_ARG_NSTR(host);
@@ -157,6 +175,9 @@ JSAG_MEMBER_BEGIN(Socket, 2)
 	SocketWrapper *socket = [[SocketWrapper alloc] initWithContext:cx andObject:thiz andHost:host andPort:port andTimeout:timeout];
 
 	JSAG_SET_PRIVATE(thiz, socket);
+
+	jsval jsID = INT_TO_JSVAL(idCounter++);
+	JSAG_ADD_PROPERTY(thiz, __id, &jsID);
 
 	JSAG_RETURN_OBJECT(thiz);
 }
