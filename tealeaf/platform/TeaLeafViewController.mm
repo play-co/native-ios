@@ -32,6 +32,7 @@
 #include "core/core_js.h"
 #include "core/texture_manager.h"
 #include "core/config.h"
+#include "core/events.h"
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -134,7 +135,7 @@ CEXPORT void device_hide_splash() {
 			   (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 	}
 
-	return NO;
+	return YES;
 }
 
 -(BOOL)shouldAutorotate {
@@ -246,8 +247,45 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 		
 		// Start listening for changes to online state
 		[self.appDelegate hookOnlineState];
+        
+        // subscribe to orientation change events
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRotate:)
+                                            name:@"UIDeviceOrientationDidChangeNotification"
+                                            object:nil];
 	});
 
+}
+
+- (void) didRotate: (NSNotification *) notification {
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    const char *orientationName;
+    switch (orientation) {
+        case UIDeviceOrientationPortrait:
+            orientationName = "portrait";
+            break;
+        case UIDeviceOrientationPortraitUpsideDown:
+            orientationName = "portraitUpsideDown";
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            orientationName = "landscapeLeft";
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            orientationName = "landscapeRight";
+            break;
+        case UIDeviceOrientationFaceUp:
+            orientationName = "faceUp";
+            break;
+        case UIDeviceOrientationFaceDown:
+            orientationName = "faceDown";
+            break;
+        case UIDeviceOrientationUnknown:
+        default:
+            orientationName = "unknown";
+            break;
+    }
+	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"rotate\",\"orientation\":\"%s\"}", orientationName];
+	core_dispatch_event([evt UTF8String]);
 }
 
 - (void)viewDidLoad {
