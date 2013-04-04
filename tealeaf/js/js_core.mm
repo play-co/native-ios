@@ -256,7 +256,7 @@ JSAG_OBJECT_END
 -(void) shutdown {
 	// Kill debug server immediately
 	if (self.debugServer) {
-        [self.debugServer close];
+		[self.debugServer close];
 		[self.debugServer release];
 		self.debugServer = nil;
 		
