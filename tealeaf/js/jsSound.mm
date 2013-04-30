@@ -88,6 +88,15 @@ JSAG_MEMBER_BEGIN(setVolume, 2)
 }
 JSAG_MEMBER_END
 
+JSAG_MEMBER_BEGIN(seekTo, 2)
+{
+	JSAG_ARG_NSTR(url);
+	JSAG_ARG_DOUBLE(position);
+	
+	[[SoundManager get] seekTo:position forSoundWithURL:url];
+}
+JSAG_MEMBER_END
+
 
 JSAG_OBJECT_START(sound)
 JSAG_OBJECT_MEMBER(playBackgroundMusic)
@@ -98,6 +107,7 @@ JSAG_OBJECT_MEMBER(stopSound)
 JSAG_OBJECT_MEMBER(pauseSound)
 JSAG_OBJECT_MEMBER(destroySound)
 JSAG_OBJECT_MEMBER(setVolume)
+JSAG_OBJECT_MEMBER(seekTo)
 JSAG_OBJECT_END
 
 
