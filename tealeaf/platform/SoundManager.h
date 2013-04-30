@@ -43,6 +43,7 @@
 -(void) pauseSoundWithURL: (NSString *) url;
 -(void) destroySoundWithURL:(NSString *)urlString;
 -(void) setVolume: (float) volume forSoundWithURL:(NSString*) urlString;
+-(void) seekTo: (float) position forSoundWithURL:(NSString*) urlString;
 -(void) clearEffects;
 -(void) stopBackgroundMusic;
 

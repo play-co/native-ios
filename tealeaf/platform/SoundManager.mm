@@ -54,7 +54,6 @@ SoundManager *globalSoundManager = NULL;
 	NSString *filePath = nil;
 	NSURL *url = [[ResourceLoader get] resolve:path];
 	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
-	NSString *urlFormat = nil;
 	if (!isRemoteLoading) {
 		if ([url.scheme compare: @"http"] != NSOrderedSame) {
 			filePath = [NSString stringWithFormat:@"resources.bundle/%@", path];
@@ -237,6 +236,12 @@ SoundManager *globalSoundManager = NULL;
 		{
 			sound.volume = volume;
 		}
+	}
+}
+
+-(void) seekTo: (float) position forSoundWithURL:(NSString*) urlString {
+	if ([bgUrl isEqualToString:urlString]) {
+		[OALSimpleAudio sharedInstance].backgroundTrack.currentTime = position;
 	}
 }
 
