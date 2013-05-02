@@ -84,6 +84,10 @@ SoundManager *globalSoundManager = NULL;
 		[bgUrl release];
 	}
 	bgUrl = [urlString retain];
+	
+	NSString* evt = [NSString stringWithFormat:@"{\"name\":\"soundDuration\",\"url\":\"%@\",\"duration\":%f}",
+					 urlString, [OALSimpleAudio sharedInstance].backgroundTrack.duration];
+	core_dispatch_event([evt UTF8String]);
 }
 
 - (void) playSoundWithURL:(NSString *)urlString andVolume:(float)volume andLoop:(BOOL)loop {
