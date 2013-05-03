@@ -1871,6 +1871,7 @@ static void NewScriptHook(JSContext	 *cx,
 	self.evals = nil;
 	self.scripts = nil;
 	self.lock = nil;
+	self.breakpoints = nil;
 
 	[super dealloc];
 }
