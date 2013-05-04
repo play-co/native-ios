@@ -34,6 +34,7 @@ SoundManager *globalSoundManager = NULL;
 - (id) init {
 	self = [super init];
 
+	pauses = [[NSMutableDictionary alloc] init];
 	sources = [[NSMutableDictionary alloc] init];
 	sourcesByURL = [[NSMutableDictionary alloc] init];
 	preloaded = [[NSMutableSet alloc] init];
@@ -80,6 +81,11 @@ SoundManager *globalSoundManager = NULL;
 - (void) playBackgroundMusicWithURL:(NSString *)urlString andVolume: (float)volume andLoop:(BOOL)loop {
 	NSString *resolvedUrl = [self resolvePath:urlString];
 	[[OALSimpleAudio sharedInstance] playBg:resolvedUrl volume:volume pan:0 loop:loop];
+	ResumeInfo *resumeInfo = [pauses objectForKey:urlString];
+	if (resumeInfo != nil) {
+		[OALSimpleAudio sharedInstance].backgroundTrack.currentTime = resumeInfo.pauseTime;
+		[pauses removeObjectForKey:urlString];
+	}
 	if (bgUrl) {
 		[bgUrl release];
 	}
@@ -191,6 +197,9 @@ SoundManager *globalSoundManager = NULL;
 
 -(void) pauseSoundWithURL: (NSString *) urlString {
 	if ([bgUrl isEqualToString:urlString]) {
+		float curTime = [OALSimpleAudio sharedInstance].backgroundTrack.currentTime;
+		ResumeInfo *resumeInfo = [[ResumeInfo alloc] initWithTime:curTime];
+		[pauses setObject:resumeInfo forKey:urlString];
 		[[OALSimpleAudio sharedInstance] stopBg];
 	} else {
 		ALSource *sound = [sourcesByURL objectForKey:urlString];
