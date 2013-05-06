@@ -12,21 +12,23 @@
  * GNU General Public License for more details.
  
  * You should have received a copy of the GNU General Public License
- * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
+ * along with the Game Closure SDK.	 If not, see <http://www.gnu.org/licenses/>.
  */
 
-#import <Foundation/Foundation.h>
-#import "ObjectAL.h"
+#import "ResumeInfo.h"
 
-@interface OALSourceInfo : NSObject
+@implementation ResumeInfo
 
-@property(retain) NSString *owningURL;
-@property(retain) ALSource *source;
-@property(nonatomic) CFTimeInterval lastUpdate;
-@property(nonatomic) float timer;
+- (id) init
+{
+	self.pauseTime = 0.0;
+	return self;
+}
 
-- (id) init;
-- (id) initWithSource:(ALSource*)src andTime:(float)time;
-- (void) updateTimer:(CFTimeInterval)currTime;
+- (id) initWithTime:(float)time {
+	id ret = [self init];
+	self.pauseTime = time;
+	return ret;
+}
 
 @end

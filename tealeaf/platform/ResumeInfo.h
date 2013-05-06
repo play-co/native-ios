@@ -18,15 +18,11 @@
 #import <Foundation/Foundation.h>
 #import "ObjectAL.h"
 
-@interface OALSourceInfo : NSObject
+@interface ResumeInfo : NSObject
 
-@property(retain) NSString *owningURL;
-@property(retain) ALSource *source;
-@property(nonatomic) CFTimeInterval lastUpdate;
-@property(nonatomic) float timer;
+@property(nonatomic) float pauseTime;
 
 - (id) init;
-- (id) initWithSource:(ALSource*)src andTime:(float)time;
-- (void) updateTimer:(CFTimeInterval)currTime;
+- (id) initWithTime:(float)time;
 
 @end

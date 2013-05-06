@@ -17,6 +17,7 @@
 
 #import <Foundation/Foundation.h>
 #import "OALSourceInfo.h"
+#import "ResumeInfo.h"
 
 #define MAX_SIMULTANEOUS_SOUNDS 28
 
@@ -25,6 +26,8 @@
 @class SoundSpec;
 
 @interface SoundManager : NSObject {
+	// pauses keeps track of pause times
+	NSMutableDictionary *pauses;
 	// sources keeps track of ObjectAL's ALSources and LRU timers
 	NSMutableDictionary *sources;
 	// quick look up by last URL played on a source for pausing and stopping sounds
@@ -43,6 +46,7 @@
 -(void) pauseSoundWithURL: (NSString *) url;
 -(void) destroySoundWithURL:(NSString *)urlString;
 -(void) setVolume: (float) volume forSoundWithURL:(NSString*) urlString;
+-(void) seekTo: (float) position forSoundWithURL:(NSString*) urlString;
 -(void) clearEffects;
 -(void) stopBackgroundMusic;
 
