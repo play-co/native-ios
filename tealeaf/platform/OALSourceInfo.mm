@@ -19,31 +19,32 @@
 
 @implementation OALSourceInfo
 
-@synthesize owningURL;
-@synthesize source;
-@synthesize timer;
+- (void) dealloc {
+	self.source = nil;
+	self.owningURL = nil;
+	[super dealloc];
+}
 
 - (id) init
 {
-	source = nil;
-	timer = 0.0;
-	lastUpdate = CFAbsoluteTimeGetCurrent();
-	owningURL = nil;
+	self.source = nil;
+	self.timer = 0.0;
+	self.lastUpdate = CFAbsoluteTimeGetCurrent();
+	self.owningURL = nil;
 	return self;
 }
 
 - (id) initWithSource:(ALSource*)src andTime:(float)time {
 	id ret = [self init];
-	source = src;
-	timer = time;
-	owningURL = nil;
+	self.source = src;
+	self.timer = time;
 	return ret;
 }
 
 - (void) updateTimer:(CFTimeInterval) currTime {
-	float dt = currTime - lastUpdate;
-	timer -= dt;
-	lastUpdate = currTime;
+	float dt = currTime - self.lastUpdate;
+	self.timer -= dt;
+	self.lastUpdate = currTime;
 }
 
 @end

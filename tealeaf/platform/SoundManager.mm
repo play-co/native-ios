@@ -34,6 +34,7 @@ SoundManager *globalSoundManager = NULL;
 - (id) init {
 	self = [super init];
 
+	pauses = [[NSMutableDictionary alloc] init];
 	sources = [[NSMutableDictionary alloc] init];
 	sourcesByURL = [[NSMutableDictionary alloc] init];
 	preloaded = [[NSMutableSet alloc] init];
@@ -54,7 +55,6 @@ SoundManager *globalSoundManager = NULL;
 	NSString *filePath = nil;
 	NSURL *url = [[ResourceLoader get] resolve:path];
 	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
-	NSString *urlFormat = nil;
 	if (!isRemoteLoading) {
 		if ([url.scheme compare: @"http"] != NSOrderedSame) {
 			filePath = [NSString stringWithFormat:@"resources.bundle/%@", path];
@@ -81,10 +81,19 @@ SoundManager *globalSoundManager = NULL;
 - (void) playBackgroundMusicWithURL:(NSString *)urlString andVolume: (float)volume andLoop:(BOOL)loop {
 	NSString *resolvedUrl = [self resolvePath:urlString];
 	[[OALSimpleAudio sharedInstance] playBg:resolvedUrl volume:volume pan:0 loop:loop];
+	ResumeInfo *resumeInfo = [pauses objectForKey:urlString];
+	if (resumeInfo != nil) {
+		[OALSimpleAudio sharedInstance].backgroundTrack.currentTime = resumeInfo.pauseTime;
+		[pauses removeObjectForKey:urlString];
+	}
 	if (bgUrl) {
 		[bgUrl release];
 	}
 	bgUrl = [urlString retain];
+	
+	NSString* evt = [NSString stringWithFormat:@"{\"name\":\"soundDuration\",\"url\":\"%@\",\"duration\":%f}",
+					 urlString, [OALSimpleAudio sharedInstance].backgroundTrack.duration];
+	core_dispatch_event([evt UTF8String]);
 }
 
 - (void) playSoundWithURL:(NSString *)urlString andVolume:(float)volume andLoop:(BOOL)loop {
@@ -188,6 +197,9 @@ SoundManager *globalSoundManager = NULL;
 
 -(void) pauseSoundWithURL: (NSString *) urlString {
 	if ([bgUrl isEqualToString:urlString]) {
+		float curTime = [OALSimpleAudio sharedInstance].backgroundTrack.currentTime;
+		ResumeInfo *resumeInfo = [[ResumeInfo alloc] initWithTime:curTime];
+		[pauses setObject:resumeInfo forKey:urlString];
 		[[OALSimpleAudio sharedInstance] stopBg];
 	} else {
 		ALSource *sound = [sourcesByURL objectForKey:urlString];
@@ -237,6 +249,12 @@ SoundManager *globalSoundManager = NULL;
 		{
 			sound.volume = volume;
 		}
+	}
+}
+
+-(void) seekTo: (float) position forSoundWithURL:(NSString*) urlString {
+	if ([bgUrl isEqualToString:urlString]) {
+		[OALSimpleAudio sharedInstance].backgroundTrack.currentTime = position;
 	}
 }
 

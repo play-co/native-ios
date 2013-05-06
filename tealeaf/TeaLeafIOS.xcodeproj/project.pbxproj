@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36E6F37B16C45FB50016CD1A /* PluginManager.mm */; };
+		37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37EEF09B173485A30017511A /* ResumeInfo.mm */; };
 		4E35EA8716B9FEEE004FD452 /* timestep_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */; };
 		4E35EA8816B9FEEE004FD452 /* timestep_events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7F16B9FEEE004FD452 /* timestep_events.cpp */; };
 		4E35EA8916B9FEEE004FD452 /* timestep_image_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA8116B9FEEE004FD452 /* timestep_image_map.cpp */; };
@@ -179,6 +180,8 @@
 		360D3DBB16809A6F005766D9 /* iosVersioning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iosVersioning.h; sourceTree = "<group>"; };
 		36E6F37A16C45FB50016CD1A /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginManager.h; sourceTree = "<group>"; };
 		36E6F37B16C45FB50016CD1A /* PluginManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PluginManager.mm; sourceTree = "<group>"; };
+		37EEF09A173485A30017511A /* ResumeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeInfo.h; sourceTree = "<group>"; };
+		37EEF09B173485A30017511A /* ResumeInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResumeInfo.mm; sourceTree = "<group>"; };
 		4E35EA7C16B9FEEE004FD452 /* timestep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep.h; sourceTree = "<group>"; };
 		4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_animate.cpp; sourceTree = "<group>"; };
 		4E35EA7E16B9FEEE004FD452 /* timestep_animate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_animate.h; sourceTree = "<group>"; };
@@ -1000,6 +1003,8 @@
 		D55821D1150E7C7600549BF6 /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				37EEF09A173485A30017511A /* ResumeInfo.h */,
+				37EEF09B173485A30017511A /* ResumeInfo.mm */,
 				36E6F37A16C45FB50016CD1A /* PluginManager.h */,
 				36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
 				4E6B37FE16C0F90B006AC8FD /* threads.mm */,
@@ -1279,6 +1284,7 @@
 				4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */,
 				36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */,
 				4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */,
+				37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1295,21 +1301,21 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_THUMB_SUPPORT = YES;
-				GCC_UNROLL_LOOPS = NO;
+				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				LLVM_LTO = NO;
+				LLVM_LTO = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lstdc++";
 				PROVISIONING_PROFILE = "";
@@ -1332,8 +1338,8 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = TeaLeafIOS_Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
@@ -1355,7 +1361,7 @@
 					"\"$(SRCROOT)/../spidermonkey-ios/nsprpub\"",
 					"\"$(SRCROOT)/deps/spidermonkey\"",
 				);
-				LLVM_LTO = YES;
+				LLVM_LTO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (

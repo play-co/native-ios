@@ -34,6 +34,7 @@
 
 #define MAX_HALFSIZE_SKIP 64
 
+static BOOL VERBOSE_LOGS = false;
 static ResourceLoader *instance = nil;
 static NSThread *imgThread = nil;
 static const char *base_path = 0;
@@ -334,8 +335,9 @@ static int base_path_len = 0;
 
 		if (tex) {
 			texture_manager_on_texture_loaded(texture_manager_get(), [url UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight, 4, 1, true);
-			
-			NSLOG(@"{resources} Loaded text %@ id:%d (%d,%d)->(%u,%u)", url, tex.name, tex.originalWidth, tex.originalHeight, tex.width, tex.height);
+			if (VERBOSE_LOGS) {
+				NSLOG(@"{resources} Loaded text %@ id:%d (%d,%d)->(%u,%u)", url, tex.name, tex.originalWidth, tex.originalHeight, tex.width, tex.height);
+			}
 		}
 	}
 }
@@ -483,7 +485,9 @@ CEXPORT void resource_loader_initialize(const char *path) {
 }
 
 CEXPORT void resource_loader_load_image(const char* url) {
-	LOG("{resources} Queuing %s", url);
+	if (VERBOSE_LOGS) {
+		LOG("{resources} Queuing %s", url);
+	}
 	[[ResourceLoader get] loadImage: [NSString stringWithUTF8String: url]];
 }
 
