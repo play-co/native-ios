@@ -52,6 +52,16 @@ var replaceTextBetween = function(text, startToken, endToken, replaceText) {
 	return newText;
 }
 
+/*		for (var i in pluginConfigs) {
+			var config = JSON.parse(pluginConfigs[i]);
+			for (var cd in config.copyDirs) {
+				var dirPath = config.copyDirs[cd].path;
+				wrench.mkdirSyncRecursive(path.join(destPath, dirPath));
+				copyDir(path.join(srcPath, dirPath), path.join(destPath, dirPath), config.copyDirs[cd].dir);
+			}
+		}
+*/
+
 
 var TEALEAF_DIR = path.join(__dirname, "../TeaLeaf");
 var START_IMPORT = "//START_PLUGINS_IMPORT";
@@ -160,3 +170,4 @@ for (var key in implStrs) {
 	pluginManagerImpl = replaceTextBetween(pluginManagerImpl, startKey, endKey, implStrs[key]);
 }
 fs.writeFileSync(path.join(__dirname, "../tealeaf/platform/PluginManager.mm"), pluginManagerImpl, "utf-8");
+
