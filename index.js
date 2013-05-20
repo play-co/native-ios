@@ -88,7 +88,9 @@ var replaceTextBetween = function(text, startToken, endToken, replaceText) {
 	return newText;
 }
 
-var installAddons = function (project, opts, next) {
+var addonCopyJS = function(
+
+var installAddons = function(common, project, opts, next) {
 	var f = ff(this, function () {
 		var group = f.group();
 
@@ -101,19 +103,28 @@ var installAddons = function (project, opts, next) {
 				logger.log("Installing addon: ", addon);
 				var addon_path = common.paths.root('addons', addon, 'ios', 'config.json');
 
-				async.readFile(addon_path, group.slot());
+				fs.readFile(addon_path, 'utf-8', group.slot());
 			}
 		}
 	}, function(results) {
-		var allGood = results.every(function(element, index) {
-			if (!element) {
-				logger.error("ERROR: Addon " + path.dirname(addons[index]) + " not found");
-			}
-			return element;
-		});
+		try {
+			var allGood = results.every(function(element, index) {
+				if (!element) {
+					logger.error("ERROR: Addon " + path.dirname(addons[index]) + " not found");
+				} else {
+					var config = JSON.parse(element);
 
-		if (!allGood) {
-			f.fail("");
+					config.copyJS;
+				}
+
+				return element;
+			});
+
+			if (!allGood) {
+				f.fail("An addon load failed");
+			}
+		} catch (err) {
+			f.fail(err);
 		}
 	}).error(function(err) {
 		logger.error(err);
@@ -730,17 +741,6 @@ function makeIOSProject(opts, next) {
 	}).cb(next);
 }
 
-function finishCopy(builder, project, destPath, cb) {
-	copyIcons(project.ios.icons, destPath);
-	copyFonts(project.ttf, destPath);
-	var f = ff(function () {
-		copySplash(builder, project, destPath, f.wait());
-	}, function () {
-		logger.log('copy complete!');
-		cb();
-	});
-}
-
 exports.build = function (common, builder, project, opts, next) {
 	logger = new builder.common.Formatter("build-ios");
 
@@ -822,6 +822,8 @@ exports.build = function (common, builder, project, opts, next) {
 	var f = ff(this, function() {
 		validateSubmodules(f());
 	}, function() {
+		installAddons(common, project, opts, f());
+	}, function() {
 		makeIOSProject({
 			builder: builder,
 			project: project,
@@ -832,12 +834,14 @@ exports.build = function (common, builder, project, opts, next) {
 		}, f());
 		require(common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
 	}, function() {
-		finishCopy(builder, manifest, destPath, f());
+		copyIcons(project.ios.icons, destPath);
+		copyFonts(project.ttf, destPath);
+		copySplash(builder, project, destPath, f.wait());
 	}, function() {
 		// If IPA generation was requested,
 		if (argv.ipa) {
 			// TODO: Debug mode is currently turned off because it does not build
-			require('./xcode.js').buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.shortName, false, provision, developer, manifest.shortName+'.ipa', f());
+			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.shortName, false, provision, developer, manifest.shortName+'.ipa', f());
 		}
 	}, function() {
 		if (argv.ipa) {
