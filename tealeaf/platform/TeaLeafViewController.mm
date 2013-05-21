@@ -133,7 +133,6 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) dealloc {
-	[self.appDelegate.canvas destroyDisplayLink];
 	[super dealloc];
 }
 
@@ -337,7 +336,6 @@ CEXPORT void device_hide_splash() {
 	int h = self.appDelegate.screenHeightPixels;
 	tealeaf_canvas_resize(w, h);
 
-
 	/*
 	 * add a temporary imageview with the loading image.
 	 * This smooths the transition between the launch image
@@ -440,11 +438,6 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
 	} else {
 		return value;
 	}
-}
-
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
 }
 
 - (void)assignCallback:(int)cb {

@@ -457,16 +457,18 @@
 	w = frame.size.width;
 	h = frame.size.height;
 
-	// Determine longer side
-	int longerScreenSide = w;
 	bool swap = false;
-	if (h > longerScreenSide) {
-		longerScreenSide = h;
-		swap = true;
+
+	if (!self.gameSupportsPortrait) {
+		if (h > w) {
+			swap = true;
+		}
 	}
-	
-	if (self.gameSupportsPortrait) {
-		swap ^= true;
+
+	if (!self.gameSupportsLandscape) {
+		if (w > h) {
+			swap = true;
+		}
 	}
 	
 	// Swap orientation if needed
@@ -481,6 +483,12 @@
 	h = (int)(h * scale + 0.5f);
 	self.screenFrame = CGRectMake(0, 0, w, h);
 
+	// Determine longer side
+	int longerScreenSide = w;
+	if (h > longerScreenSide) {
+		longerScreenSide = h;
+	}
+	
 	// Store dimensions
 	self.screenWidthPixels = w;
 	self.screenHeightPixels = h;
