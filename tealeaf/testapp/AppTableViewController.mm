@@ -439,21 +439,18 @@ static NSThread *appLoadListThread = nil;
 	//run on ui thread
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[progressviewBacking removeFromSuperview];
+
 		//present tealeafviewcontroller
 		self.appDelegate.tealeafShowing = YES;
 		[self.appDelegate.tealeafViewController release];
 		self.appDelegate.tealeafViewController = [[TeaLeafViewController alloc] init];
 
-		//check version and go
-		if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
-			[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window addSubview:self.appDelegate.tealeafViewController.view];
-		}
-		else {
-			[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window setRootViewController:self.appDelegate.tealeafViewController ];
-		}
-		
+		UIWindow *window = ((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window;
+
+		[window setRootViewController:self.appDelegate.tealeafViewController];
+		[window addSubview:self.appDelegate.tealeafViewController.view];
+		[window makeKeyAndVisible];
 	});
-  
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation{
