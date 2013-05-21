@@ -50,6 +50,51 @@ static NSString *get_platform() {
     return platform;
 }
 
+// Read manifest file to determine game portrait/landscape modes
+static void ReadManifest(bool *isPortrait, bool *isLandscape) {
+	bool loaded_success = false;
+	
+	*isPortrait = false;
+	*isLandscape = false;
+	
+	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
+	if (manifest_file != nil) {
+		const char *c_manifest_file = [manifest_file UTF8String];
+		json_error_t err;
+		json_t *manifest = json_loads(c_manifest_file, 0, &err);
+		if (manifest && json_is_object(manifest)) {
+			json_t *orient = json_object_get(manifest, "supportedOrientations");
+			if (orient && json_is_array(orient)) {
+				loaded_success = true;
+				int orient_len = (int)json_array_size(orient);
+				for (int ii = 0; ii < orient_len; ++ii) {
+					json_t *entry = json_array_get(orient, ii);
+					if (entry && json_is_string(entry)) {
+						const char *str = json_string_value(entry);
+						if (0 == strcasecmp(str, "landscape")) {
+							// Landscape mode is specified
+							*isLandscape = true;
+						}
+						else if (0 == strcasecmp(str, "portrait")) {
+							// Portrait mode is specified
+							*isPortrait = true;
+						}
+					}
+				}
+			}
+		}
+		json_decref(manifest);
+	} else {
+		LOG("WARNING: Manifest.json not found");
+	}
+	
+	if (!loaded_success) {
+		LOG("ERROR: Unable to read manifest.json!!!");
+	} else {
+		LOG("Successfully read manifest.json");
+	}
+}
+
 
 static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
 
@@ -76,11 +121,18 @@ CEXPORT void device_hide_splash() {
 - (TeaLeafViewController*) init {
 	self = [super init];
 
+	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
+	
+	// Read preferred orientation from game manifest
+	bool gamePortrait = false, gameLandscape = false;
+	ReadManifest(&gamePortrait, &gameLandscape);
+	self.appDelegate.gameSupportsLandscape = gameLandscape ? YES : NO;
+	self.appDelegate.gameSupportsPortrait = gamePortrait ? YES : NO;
+
 	return self;
 }
 
 - (void) dealloc {
-	[self.appDelegate.canvas destroyDisplayLink];
 	[super dealloc];
 }
 
@@ -167,53 +219,8 @@ CEXPORT void device_hide_splash() {
 	// Release any cached data, images, etc that aren't in use.
 }
 
-static void ReadManifest(bool *isPortrait, bool *isLandscape) {
-	bool loaded_success = false;
-
-	*isPortrait = false;
-	*isLandscape = false;
-
-	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
-	if (manifest_file != nil) {
-		const char *c_manifest_file = [manifest_file UTF8String];
-		json_error_t err;
-		json_t *manifest = json_loads(c_manifest_file, 0, &err);
-		if (manifest && json_is_object(manifest)) {
-			json_t *orient = json_object_get(manifest, "supportedOrientations");
-			if (orient && json_is_array(orient)) {
-				loaded_success = true;
-				int orient_len = (int)json_array_size(orient);
-				for (int ii = 0; ii < orient_len; ++ii) {
-					json_t *entry = json_array_get(orient, ii);
-					if (entry && json_is_string(entry)) {
-						const char *str = json_string_value(entry);
-						if (0 == strcasecmp(str, "landscape")) {
-							// Landscape mode is specified
-							*isLandscape = true;
-						}
-						else if (0 == strcasecmp(str, "portrait")) {
-							// Portrait mode is specified
-							*isPortrait = true;
-						}
-					}
-				}
-			}
-		}
-		json_decref(manifest);
-	} else {
-		LOG("WARNING: Manifest.json not found");
-	}
-	
-	if (!loaded_success) {
-		LOG("ERROR: Unable to read manifest.json!!!");
-	} else {
-		LOG("Successfully read manifest.json");
-	}
-}
-
 
 - (void)onJSReady {
-	
 	//This needs to be run on the main thread - it does some opengl stuff
 	dispatch_async(dispatch_get_main_queue(), ^{
 		// Launch!
@@ -289,21 +296,12 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 }
 
 - (void)viewDidLoad {
-	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
-
-	//TEALEAF_SPECIFIC_START
 	/*
 	 * based on reported width and height, calculate the width and
 	 * height we care about with respect to scale (retina displays)
 	 * and orientation (swapping width and height)
 	 */
 	
-	// Read preferred orientation from game manifest
-	bool gamePortrait = false, gameLandscape = false;
-	ReadManifest(&gamePortrait, &gameLandscape);
-	self.appDelegate.gameSupportsLandscape = gameLandscape ? YES : NO;
-	self.appDelegate.gameSupportsPortrait = gamePortrait ? YES : NO;
-
 	[self.appDelegate updateScreenProperties];
 
 	// Lookup source path
@@ -329,8 +327,6 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	texture_manager_set_max_memory(texture_manager_get(), get_platform_memory_limit());
 
 	//create our openglview and size it correctly
-	//TEALEAF_SPECIFIC_START
-
 	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
 	self.view = glView;
 	self.appDelegate.canvas = glView;
@@ -339,7 +335,6 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	int w = self.appDelegate.screenWidthPixels;
 	int h = self.appDelegate.screenHeightPixels;
 	tealeaf_canvas_resize(w, h);
-
 
 	/*
 	 * add a temporary imageview with the loading image.
@@ -443,11 +438,6 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
 	} else {
 		return value;
 	}
-}
-
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
 }
 
 - (void)assignCallback:(int)cb {
