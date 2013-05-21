@@ -82,17 +82,15 @@
 	NSString *path = [[NSBundle mainBundle] resourcePath];
 	NSString *finalPath = [path stringByAppendingPathComponent:@"config.plist"];
 	self.config = [NSMutableDictionary dictionaryWithContentsOfFile:finalPath];
-	//log config 
 	 
 	for (id key in self.config) {
 		NSLOG(@"{tealeaf} Config[%@] = %@", key, [self.config objectForKey:key]);
 	}
 
-	//TEALEAF_SPECIFIC_END
-	
 	self.tableViewController = [[[ServerTableViewController alloc] init] autorelease];
 	self.appTableViewController = [[[AppTableViewController alloc] init] autorelease];
 	//TEALEAF_SPECIFIC_END
+
 	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
 	if (!isRemoteLoading) {
 		[self.window addSubview:self.tealeafViewController.view];
@@ -102,7 +100,6 @@
 		self.window.rootViewController = self.tableViewController;
 	}
 	[self.window makeKeyAndVisible];
-	
 
 	return YES;
 }
@@ -456,19 +453,9 @@
 		scale = [[UIScreen mainScreen] scale];
 	}
 
-	// Choose width/height based on current mode
 	int w, h;
-	if (portraitMode) {
-		w = frame.size.width;
-		h = frame.size.height;
-	} else {
-		w = frame.size.height;
-		h = frame.size.width;
-	}
-	self.initFrame = CGRectMake(0, 0, w, h);
-	w = (int)(w * scale + 0.5f);
-	h = (int)(h * scale + 0.5f);
-	self.screenFrame = CGRectMake(0, 0, w, h);
+	w = frame.size.width;
+	h = frame.size.height;
 
 	// Determine longer side
 	int longerScreenSide = w;
@@ -477,17 +464,22 @@
 		longerScreenSide = h;
 		swap = true;
 	}
-
+	
 	if (self.gameSupportsPortrait) {
 		swap ^= true;
 	}
-
+	
 	// Swap orientation if needed
 	if (swap) {
 		int t = w;
 		w = h;
 		h = t;
 	}
+	
+	self.initFrame = CGRectMake(0, 0, w, h);
+	w = (int)(w * scale + 0.5f);
+	h = (int)(h * scale + 0.5f);
+	self.screenFrame = CGRectMake(0, 0, w, h);
 
 	// Store dimensions
 	self.screenWidthPixels = w;
