@@ -442,14 +442,20 @@ static NSThread *appLoadListThread = nil;
 
 		//present tealeafviewcontroller
 		self.appDelegate.tealeafShowing = YES;
-		[self.appDelegate.tealeafViewController release];
-		self.appDelegate.tealeafViewController = [[TeaLeafViewController alloc] init];
+
+		self.appDelegate.tealeafViewController = nil;
+
+		self.appDelegate.tealeafViewController = [[[TeaLeafViewController alloc] init] autorelease];
 
 		UIWindow *window = ((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window;
 
-		[window setRootViewController:self.appDelegate.tealeafViewController];
-		[window addSubview:self.appDelegate.tealeafViewController.view];
-		[window makeKeyAndVisible];
+		if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
+			[self.view removeFromSuperview];
+
+			[window addSubview:self.appDelegate.tealeafViewController.view];
+		} else {
+			[window setRootViewController:self.appDelegate.tealeafViewController];
+		}
 	});
 }
 
