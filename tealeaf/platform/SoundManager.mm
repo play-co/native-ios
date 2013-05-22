@@ -192,7 +192,6 @@ SoundManager *globalSoundManager = NULL;
 			}
 		}
 	}
-
 }
 
 -(void) pauseSoundWithURL: (NSString *) urlString {
