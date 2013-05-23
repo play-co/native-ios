@@ -24,6 +24,12 @@ var fs = require('fs');
 
 var logger;
 
+
+function copyFileSync (from, to) {
+	return fs.writeFileSync(to, fs.readFileSync(from));
+}
+
+
 exports.init = function (common) {
 	console.log("Running install.sh");
 	common.child("sh", ["install.sh"], {
@@ -88,20 +94,28 @@ var replaceTextBetween = function(text, startToken, endToken, replaceText) {
 	return newText;
 }
 
-var addonCopyJS = function(
+var addonCopyJS = function(common, addon, filePath) {
+	var src = common.paths.addons(addon, 'ios', filePath);
+	var dst = common.paths.timestepAddons(path.basename(filePath));
+
+	logger.log("Copying JS to timestep addons: ", src, " -> ", dst);
+
+	copyFileSync(src, dst);
+}
 
 var installAddons = function(common, project, opts, next) {
+	var addons = project && project.manifest && project.manifest.addons;
+
 	var f = ff(this, function () {
 		var group = f.group();
 
 		// For each addon,
-		var addons = project && project.manifest && project.manifest.addons;
 		if (addons) {
 			for (var ii = 0; ii < addons.length; ++ii) {
 				var addon = addons[ii];
 
 				logger.log("Installing addon: ", addon);
-				var addon_path = common.paths.root('addons', addon, 'ios', 'config.json');
+				var addon_path = common.paths.addons(addon, 'ios', 'config.json');
 
 				fs.readFile(addon_path, 'utf-8', group.slot());
 			}
@@ -114,7 +128,9 @@ var installAddons = function(common, project, opts, next) {
 				} else {
 					var config = JSON.parse(element);
 
-					config.copyJS;
+					for (var ii = 0, len = config.copyJS.length; ii < len; ++ii) {
+						addonCopyJS(common, addons[index], config.copyJS[ii]);
+					}
 				}
 
 				return element;
@@ -133,11 +149,6 @@ var installAddons = function(common, project, opts, next) {
 
 
 //// Build
-
-// helper function
-function copyFileSync (from, to) {
-	return fs.writeFileSync(to, fs.readFileSync(from));
-}
 
 function validateSubmodules(next) {
 	var submodules = [
@@ -815,7 +826,6 @@ exports.build = function (common, builder, project, opts, next) {
 	if (!title) {
 		title = manifest.shortName;
 	}
-
 	logger.log("App ID:", opts.appID);
 	logger.log("App Title:", title);
 
@@ -834,8 +844,8 @@ exports.build = function (common, builder, project, opts, next) {
 		}, f());
 		require(common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
 	}, function() {
-		copyIcons(project.ios.icons, destPath);
-		copyFonts(project.ttf, destPath);
+		copyIcons(manifest.ios.icons, destPath);
+		copyFonts(manifest.ttf, destPath);
 		copySplash(builder, project, destPath, f.wait());
 	}, function() {
 		// If IPA generation was requested,

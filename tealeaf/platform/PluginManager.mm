@@ -22,73 +22,200 @@
 #include "core.h"
 #include "events.h"
 #include "core/events.h"
-//START_PLUGINS_IMPORTS
-//END_PLUGINS_IMPORTS
+#include <Foundation/NSNotification.h>
+
+
 @implementation PluginManager
+
+- (void) dealloc {
+	[super dealloc];
+}
 
 - (id) init {
 	self = [super init];
-//START_init
-//END_init
-	return self; 
+	if (!self) {
+		return nil;
+	}
+	
+	return self;
 }
 
-- (void)sendEvent:(NSString*) eventInfo isJS:(BOOL) isJS {
-//START_sendEvent
-//END_sendEvent
+- (void) initializeUsingJSON:(NSDictionary *)json appDelegate:(TeaLeafAppDelegate *)appDelegate {
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"initializeUsingJSON",@"selector",
+						  json,@"obj1",
+						  appDelegate,@"obj2",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
-- (void) initializeUsingJSON:(NSDictionary *)json {
-	if (!json) return;
-//START_initializeUsingJSON
-//END_initializeUsingJSON
+- (void) sendEventForPlugin:(NSString *) eventName jsonString:(NSString *) jsonString {
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"sendEventForPlugin",@"selector",
+						  eventName,@"obj1",
+						  jsonString,@"obj2",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
-- (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error {
-//START_didFailToRegisterForRemoteNotificationsWithError
-//END_didFailToRegisterForRemoteNotificationsWithError
+- (void) didFailToRegisterForRemoteNotificationsWithError: (NSError *) error application: (UIApplication *) app {
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"didFailToRegisterForRemoteNotificationsWithError",@"selector",
+						  error,@"obj1",
+						  app,@"obj2",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
-- (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *) userInfo {
-//START_didReceiveRemoteNotification
-//END_didReceiveRemoteNotification
+- (void) didReceiveRemoteNotification:(NSDictionary *) userInfo application: (UIApplication *) app {
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"didReceiveRemoteNotification",@"selector",
+						  userInfo,@"obj1",
+						  app,@"obj2",
+						  nil];
+
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
-- (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken {
-//START_didRegisterForRemoteNotificationsWithDeviceToken
-//END_didRegisterForRemoteNotificationsWithDeviceToken
+- (void) didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken application: (UIApplication *) app {
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"didRegisterForRemoteNotificationsWithDeviceToken",@"selector",
+						  deviceToken,@"obj1",
+						  app,@"obj2",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
-//START_didRegisterForRemoteNotificationsWithDeviceToken
-//TODO: Implement full workflow
-// For now, dont do anything. We dont present notifications if app is running in the foreground.
-//END_didRegisterForRemoteNotificationsWithDeviceToken
-
+- (void) didReceiveLocalNotification:(UILocalNotification *)notification application:(UIApplication *)app {
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"didReceiveLocalNotification",@"selector",
+						  notification,@"obj1",
+						  app,@"obj2",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-//START_applicationDidBecomeActive
-//END_applicationDidBecomeActive
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"applicationDidBecomeActive",@"selector",
+						  application,@"obj1",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-//START_applicationWillTerminate
-//END_applicationWillTerminate
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"applicationWillTerminate",@"selector",
+						  application,@"obj1",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
 - (void) handleOpenURL:(NSURL* )url {
-//START_handleOpenURL
-//END_handleOpenURL
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+						  @"handleOpenURL",@"selector",
+						  url,@"obj1",
+						  nil];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
-
-
-- (void) dealloc {
-//START_dealloc
-//END_dealloc
-}
-
-//START_PLUGINS_FUNCS
-//END_PLUGINS_FUNCS
 
 @end
+
+
+// Note: Intentional incomplete implementation
+@implementation GCPlugin
+
+- (void) dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	[super dealloc];
+}
+
+- (id) init {
+	self = [super init];
+	if (!self) {
+		return nil;
+	}
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(onPluginNotification:)
+												 name:@"GameClosurePlugin"
+											   object:nil];
+	
+	return self;
+}
+
+- (void) onPluginNotification:(NSNotification *) notification {
+	NSLog(@"CAT: Got notification %@", [notification name]);
+	
+	if ([[notification name] isEqualToString:@"GameClosurePlugin"]) {
+		PluginManager *mgr = (PluginManager *)[notification object];
+		NSDictionary *dict = [notification userInfo];
+		if (!!dict && !!mgr) {
+			NSString *selectorString = [dict objectForKey:@"selector"];
+			
+			if (!!selectorString) {
+				SEL selector = NSSelectorFromString(selectorString);
+				if ([self respondsToSelector:selector]) {
+					id obj1 = [dict objectForKey:@"obj1"];
+					id obj2 = [dict objectForKey:@"obj2"];
+					
+					NSLog(@"CAT: Delivering %@", selectorString);
+					
+					if (!obj1) {
+						[self performSelector:selector];
+					} else {
+						if (!obj2) {
+							[self performSelector:selector withObject:obj1];
+						} else {
+							[self performSelector:selector withObject:obj1 withObject:obj2];
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@end
+
+
+//START_PLUGIN_CODE
+
+// Your plugin source code will be injected here.
+
+@implementation MyPlugin
+
+// The plugin must call super init.
+- (id) init {
+	self = [super init];
+	if (!self) {
+		return nil;
+	}
+	
+	return self;
+}
+
+// The plugin must call super dealloc.
+- (void) dealloc {
+	[super dealloc];
+}
+
+- (void) initializeUsingJSON: (NSDictionary *) json appDelegate:(TeaLeafAppDelegate *)appDelegate {
+	NSLog(@"CAT: initializeUsingJSON called! %@", [json debugDescription]);
+}
+
+- (void) sendEventForPlugin: (NSString *) eventName jsonString:(NSString *) jsonString {
+	NSLog(@"CAT: sendEventForPlugin called! %@ %@", eventName, jsonString);
+}
+
+@end
+
+//END_PLUGIN_CODE

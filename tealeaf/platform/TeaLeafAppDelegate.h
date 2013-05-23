@@ -32,7 +32,7 @@ struct SplashDescriptor {
 };
 
 
-@interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate, PluginManagerDelegate>
+@interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) NSMutableDictionary *config;         // Configuration config.plist file dictionary
