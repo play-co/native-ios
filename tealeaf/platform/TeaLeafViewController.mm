@@ -50,51 +50,6 @@ static NSString *get_platform() {
     return platform;
 }
 
-// Read manifest file to determine game portrait/landscape modes
-static void ReadManifest(bool *isPortrait, bool *isLandscape) {
-	bool loaded_success = false;
-	
-	*isPortrait = false;
-	*isLandscape = false;
-	
-
-	if (manifest_file != nil) {
-		const char *c_manifest_file = [manifest_file UTF8String];
-		json_error_t err;
-		json_t *manifest = json_loads(c_manifest_file, 0, &err);
-		if (manifest && json_is_object(manifest)) {
-			json_t *orient = json_object_get(manifest, "supportedOrientations");
-			if (orient && json_is_array(orient)) {
-				loaded_success = true;
-				int orient_len = (int)json_array_size(orient);
-				for (int ii = 0; ii < orient_len; ++ii) {
-					json_t *entry = json_array_get(orient, ii);
-					if (entry && json_is_string(entry)) {
-						const char *str = json_string_value(entry);
-						if (0 == strcasecmp(str, "landscape")) {
-							// Landscape mode is specified
-							*isLandscape = true;
-						}
-						else if (0 == strcasecmp(str, "portrait")) {
-							// Portrait mode is specified
-							*isPortrait = true;
-						}
-					}
-				}
-			}
-		}
-		json_decref(manifest);
-	} else {
-		LOG("WARNING: Manifest.json not found");
-	}
-	
-	if (!loaded_success) {
-		LOG("ERROR: Unable to read manifest.json!!!");
-	} else {
-		LOG("Successfully read manifest.json");
-	}
-}
-
 
 static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
 
@@ -120,34 +75,48 @@ CEXPORT void device_hide_splash() {
 
 - (TeaLeafViewController*) init {
 	self = [super init];
-
+	
 	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
-
-	// Defaults
+	
+	// Default is to allow any sort of orientation on failure to read the manifest
 	self.appDelegate.gameSupportsLandscape = YES;
 	self.appDelegate.gameSupportsPortrait = YES;
-
+	
 	// Read manifest file
 	NSError *err;
 	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
 	JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
 	NSDictionary *dict = [decoder objectWithUTF8String:(const unsigned char *)[manifest_file UTF8String] length:[manifest_file length] error:&err];
-
+	
 	// If failed to load,
 	if (!dict) {
-		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%@)", err, [manifest_file length]);
+		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", (int)[manifest_file length]);
 	} else {
 		self.appDelegate.appManifest = dict;
-
-		NSDictionary *orientations = (NSDictionary *)[dict valueForKey:@"supportedOrientations"];
 		
-		// TODO: Unpack landscape/portrait here
+		@try {
+			// Look up supported orientations
+			NSArray *orientations = (NSArray *)[dict valueForKey:@"supportedOrientations"];
+			
+			// Now that we're getting some info from the manifest, just turn on the ones the game developer wanted
+			self.appDelegate.gameSupportsLandscape = NO;
+			self.appDelegate.gameSupportsPortrait = NO;
+			
+			for (int ii = 0, count = [orientations count]; ii < count; ++ii) {
+				NSString *str = (NSString *)[orientations objectAtIndex:ii];
+				NSLOG(@"{manifest} Read orientation: %@", str);
+				if ([str caseInsensitiveCompare:@"landscape"] == NSOrderedSame) {
+					self.appDelegate.gameSupportsLandscape = YES;
+				} else if ([str caseInsensitiveCompare:@"portrait"] == NSOrderedSame) {
+					self.appDelegate.gameSupportsPortrait = YES;
+				}
+			}
+		}
+		@catch (NSException *exception) {
+			NSLOG(@"{manifest} Failure to read orientation data: %@", [exception debugDescription]);
+		}
 	}
-
-	// Read preferred orientation from game manifest
-	bool gamePortrait = false, gameLandscape = false;
-	ReadManifest(&gamePortrait, &gameLandscape);
-
+	
 	return self;
 }
 
