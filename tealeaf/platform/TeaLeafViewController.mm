@@ -57,7 +57,7 @@ static void ReadManifest(bool *isPortrait, bool *isLandscape) {
 	*isPortrait = false;
 	*isLandscape = false;
 	
-	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
+
 	if (manifest_file != nil) {
 		const char *c_manifest_file = [manifest_file UTF8String];
 		json_error_t err;
@@ -122,12 +122,31 @@ CEXPORT void device_hide_splash() {
 	self = [super init];
 
 	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
-	
+
+	// Defaults
+	self.appDelegate.gameSupportsLandscape = YES;
+	self.appDelegate.gameSupportsPortrait = YES;
+
+	// Read manifest file
+	NSError *err;
+	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
+	JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
+	NSDictionary *dict = [decoder objectWithUTF8String:(const unsigned char *)[manifest_file UTF8String] length:[manifest_file length] error:&err];
+
+	// If failed to load,
+	if (!dict) {
+		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%@)", err, [manifest_file length]);
+	} else {
+		self.appDelegate.appManifest = dict;
+
+		NSDictionary *orientations = (NSDictionary *)[dict valueForKey:@"supportedOrientations"];
+		
+		// TODO: Unpack landscape/portrait here
+	}
+
 	// Read preferred orientation from game manifest
 	bool gamePortrait = false, gameLandscape = false;
 	ReadManifest(&gamePortrait, &gameLandscape);
-	self.appDelegate.gameSupportsLandscape = gameLandscape ? YES : NO;
-	self.appDelegate.gameSupportsPortrait = gamePortrait ? YES : NO;
 
 	return self;
 }
@@ -219,29 +238,10 @@ CEXPORT void device_hide_splash() {
 	// Release any cached data, images, etc that aren't in use.
 }
 
-
 - (void)onJSReady {
 	//This needs to be run on the main thread - it does some opengl stuff
 	dispatch_async(dispatch_get_main_queue(), ^{
-		// Launch!
-		NSDictionary *json = @{
-		@"appID" : fixDictString(self.appDelegate.config, @"app_id"),
-		@"appleID" : fixDictString(self.appDelegate.config, @"apple_id"),
-		@"bundleID" : fixDictString(self.appDelegate.config, @"bundle_id"),
-		@"version" : fixDictString(self.appDelegate.config, @"version"),
-		@"servicesURL" : fixDictString(self.appDelegate.config, @"services_url"),
-		@"pushURL" : fixDictString(self.appDelegate.config, @"push_url"),
-		@"contactsURL" : fixDictString(self.appDelegate.config, @"contacts_url"),
-		@"userdataURL" : fixDictString(self.appDelegate.config, @"userdata_url"),
-		@"studioName" : fixDictString(self.appDelegate.config, @"studio_name"),
-		@"notification" : self.appDelegate.launchNotification?self.appDelegate.launchNotification:[NSNull null]
-		};
-		
-		for (id key in json) {
-			NSLOG(@"plugins init json: key=%@, value=%@", key, [json objectForKey:key]);
-		}
-		
-		[self.appDelegate.pluginManager initializeUsingJSON:json];
+		[self.appDelegate.pluginManager initializeWithManifest:self.appDelegate.appManifest appDelegate:self.appDelegate];
 		
 		self.appDelegate.launchNotification = nil;
 		

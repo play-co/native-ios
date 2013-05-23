@@ -23,11 +23,11 @@ static js_core *m_core = nil;
 
 JSAG_MEMBER_BEGIN(sendEvent, 3)
 {
-	JSAG_ARG_NSTR(pluginName);
+	JSAG_ARG_NSTR(pluginName); // Unused
 	JSAG_ARG_NSTR(eventName);
 	JSAG_ARG_NSTR(str);
 
-	[m_core.pluginManager sendEvent:str isJS:NO];
+	[m_core.pluginManager sendEvent:eventName jsonString:str];
 }
 JSAG_MEMBER_END
 

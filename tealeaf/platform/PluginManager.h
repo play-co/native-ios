@@ -23,8 +23,8 @@
 // Required and optional methods to implement
 @protocol GCPluginProtocol
 @required
-- (void) initializeUsingJSON: (NSDictionary *) json appDelegate:(TeaLeafAppDelegate *)appDelegate;
-- (void) sendEventForPlugin: (NSString *) eventName jsonString:(NSString *) jsonString;
+- (void) initializeWithManifest: (NSDictionary *) manifest appDelegate:(TeaLeafAppDelegate *) appDelegate;
+- (void) sendEvent: (NSString *) eventName jsonString:(NSString *) jsonString;
 @optional
 - (void) didFailToRegisterForRemoteNotificationsWithError: (NSError *) error application: (UIApplication *) app;
 - (void) didReceiveRemoteNotification:(NSDictionary *) userInfo application: (UIApplication *) app;
@@ -37,6 +37,7 @@
 
 
 @interface PluginManager : NSObject<GCPluginProtocol>
+- (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
 @end
 
 
