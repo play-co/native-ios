@@ -273,8 +273,6 @@ static NSThread *appLoadListThread = nil;
 
 -(void)createDirectory:(NSString *)directoryName
 {
-	
-
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	[fileManager createDirectoryAtPath:directoryName withIntermediateDirectories:YES attributes:nil error:nil];
 }
