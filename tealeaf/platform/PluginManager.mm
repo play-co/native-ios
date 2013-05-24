@@ -23,7 +23,8 @@
 #include "events.h"
 #include "core/events.h"
 #include <Foundation/NSNotification.h>
-
+#include <objc/runtime.h>
+#include <stdlib.h>
 
 @implementation PluginManager
 
@@ -36,7 +37,23 @@
 	if (!self) {
 		return nil;
 	}
-	
+
+	Class *classes = 0;
+	int numClasses = objc_getClassList(0, 0);
+	if (numClasses > 0 ) {
+		classes = (Class *)malloc(sizeof(Class) * numClasses);
+
+		numClasses = objc_getClassList(classes, numClasses);
+		for (int index = 0; index < numClasses; index++) {
+			Class nextClass = classes[index];
+
+			if (class_conformsToProtocol(nextClass, @protocol(GCPluginProtocol))) {
+				// TODO: Instantiate here, and check if it's PluginManager
+			}
+		}
+		free(classes);
+	}
+
 	return self;
 }
 
@@ -147,6 +164,11 @@
 
 
 //START_PLUGIN_CODE
+
+static const char *MyPlugins[] = {
+	"MyPlugin",
+	0
+};
 
 // Your plugin source code will be injected here.
 

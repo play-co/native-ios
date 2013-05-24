@@ -37,6 +37,8 @@
 
 
 @interface PluginManager : NSObject<GCPluginProtocol>
+@property (nonatomic, retain) NSMutableArray *plugins;
+
 - (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
 @end
 
