@@ -94,53 +94,33 @@ var replaceTextBetween = function(text, startToken, endToken, replaceText) {
 	return newText;
 }
 
-var addonCopyJS = function(common, addon, filePath) {
-	var src = common.paths.addons(addon, 'ios', filePath);
-	var dst = common.paths.timestepAddons(path.basename(filePath));
-
-	logger.log("Copying JS to timestep addons: ", src, " -> ", dst);
-
-	copyFileSync(src, dst);
-}
-
 var installAddons = function(common, project, opts, next) {
 	var addons = project && project.manifest && project.manifest.addons;
 
 	var f = ff(this, function () {
-		var group = f.group();
-
 		// For each addon,
 		if (addons) {
 			for (var ii = 0; ii < addons.length; ++ii) {
 				var addon = addons[ii];
 
-				logger.log("Installing addon: ", addon);
-				var addon_path = common.paths.addons(addon, 'ios', 'config.json');
+				// Prefer paths in this order:
+				var addon_js_ios = common.paths.addons(addon, 'js', 'ios');
+				var addon_js_native = common.paths.addons(addon, 'js', 'native');
+				var addon_js = common.paths.addons(addon, 'js');
 
-				fs.readFile(addon_path, 'utf-8', group.slot());
-			}
-		}
-	}, function(results) {
-		try {
-			var allGood = results.every(function(element, index) {
-				if (!element) {
-					logger.error("ERROR: Addon " + path.dirname(addons[index]) + " not found");
+				if (fs.existsSync(addon_js_ios)) {
+					logger.log("Installing addon: ", addon, " -- Adding ./js/ios to jsio path");
+					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js_ios);
+				} else if (fs.existsSync(addon_js_native)) {
+					logger.log("Installing addon: ", addon, " -- Adding ./js/native to jsio path");
+					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js_native);
+				} else if (fs.existsSync(addon_js)) {
+					logger.log("Installing addon: ", addon, " -- Adding ./js to jsio path");
+					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js);
 				} else {
-					var config = JSON.parse(element);
-
-					for (var ii = 0, len = config.copyJS.length; ii < len; ++ii) {
-						addonCopyJS(common, addons[index], config.copyJS[ii]);
-					}
+					logger.log("Installing addon: ", addon, " -- No js directory so no JavaScript will be installed");
 				}
-
-				return element;
-			});
-
-			if (!allGood) {
-				f.fail("An addon load failed");
 			}
-		} catch (err) {
-			f.fail(err);
 		}
 	}).error(function(err) {
 		logger.error(err);
