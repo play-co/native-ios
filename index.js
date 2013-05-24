@@ -52,7 +52,7 @@ exports.testapp = function (common, opts, next) {
 	var f = ff(this, function () {
 		common.child('open', [path.join(__dirname, './tealeaf/TeaLeafIOS.xcodeproj')], {}, f.wait());
 	}, function() {
-		require(common.paths.root('serve')).cli();
+		require(common.paths.root('src', 'serve')).cli();
 	}).error(function(err) {
 		console.log(clc.red("ERROR"), err);
 	}).cb(next);
