@@ -227,32 +227,6 @@ var PORTRAIT_ORIENTATIONS = /(UIInterfaceOrientationPortraitUpsideDown)|(UIInter
 // Updates the given TeaLeafIOS-Info.plist file to include fonts
 function updatePListFile(opts, next) {
 	var f = ff(this, function() {
-		var configPath = path.join(__dirname, 'plugins/config.json');
-		fs.readFile(configPath, 'utf8', f());
-	}, function(pluginsConfig) {
-			//loop through plugins
-			var group = f.group();
-			pluginsConfig = JSON.parse(pluginsConfig);
-			var pluginFiles = [];
-			for (var i in pluginsConfig) {
-				var relativePluginPath = pluginsConfig[i];
-				var pluginDir = path.join(__dirname, "plugins", relativePluginPath);
-				var pluginConfigFile = path.join(pluginDir, "config.json");
-				pluginFiles.push(pluginDir);
-				//read all plugin configs, pass on 
-				fs.readFile(pluginConfigFile , 'utf8', group());
-			}
-			f(pluginFiles);
-	}, function(pluginConfigs, pluginDirs) {
-		var pluginPlistInfos = []; 
-		for (var i in pluginConfigs) {
-			pluginConfigs[i] = JSON.parse(pluginConfigs[i]);
-			var plistInfo = pluginConfigs[i].plist ;
-			for (var p in plistInfo) {
-				pluginPlistInfos.push(plistInfo[p]);
-			}
-		}
-		
 		fs.readFile(opts.plistFilePath, 'utf8', function(err, data) {
 			logger.log("Updating Info.plist file: ", opts.plistFilePath);
 
@@ -267,16 +241,6 @@ function updatePListFile(opts, next) {
 					line = "";
 				} else if (line.indexOf("13375566") >= 0) {
 					line = line.replace("13375566", opts.version);
-				} else {
-					//loop through plugin plist information and use
-					//it to replace fields
-					for (var i in pluginPlistInfos) {
-						var info = pluginPlistInfos[i];
-						if (line.match(new RegExp(info.scheme, ""))) {
-							line = line.replace(info.from, opts[info.to] || info.from);
-							break;
-						}
-					}
 				}
 				return line;
 			});
@@ -454,7 +418,7 @@ function updateIOSProjectFile(opts, next) {
 				if (updateCount === 4) {
 					logger.log("Updating project file: Success!");
 				} else {
-					logger.error("WARNING: Updating project file: Unable to find one of the sections to patch.  native-ios.js has a bug -- it may not work with your version of XCode yet!");
+					logger.error("ERROR: Updating project file: Unable to find one of the sections to patch.  index.js has a bug -- it may not work with your version of XCode yet!");
 				}
 			}
 
