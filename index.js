@@ -94,7 +94,7 @@ var replaceTextBetween = function(text, startToken, endToken, replaceText) {
 	return newText;
 }
 
-var installAddons = function(common, project, opts, next) {
+var installAddons = function(common, project, opts, addonConfig, next) {
 	var addons = project && project.manifest && project.manifest.addons;
 
 	var f = ff(this, function () {
@@ -109,16 +109,139 @@ var installAddons = function(common, project, opts, next) {
 				var addon_js = common.paths.addons(addon, 'js');
 
 				if (fs.existsSync(addon_js_ios)) {
-					logger.log("Installing addon: ", addon, " -- Adding ./js/ios to jsio path");
+					logger.log("Installing addon:", addon, "-- Adding ./js/ios to jsio path");
 					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js_ios);
 				} else if (fs.existsSync(addon_js_native)) {
-					logger.log("Installing addon: ", addon, " -- Adding ./js/native to jsio path");
+					logger.log("Installing addon:", addon, "-- Adding ./js/native to jsio path");
 					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js_native);
 				} else if (fs.existsSync(addon_js)) {
-					logger.log("Installing addon: ", addon, " -- Adding ./js to jsio path");
+					logger.log("Installing addon:", addon, "-- Adding ./js to jsio path");
 					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js);
 				} else {
-					logger.log("Installing addon: ", addon, " -- No js directory so no JavaScript will be installed");
+					logger.log("Installing addon:", addon, "-- No js directory so no JavaScript will be installed");
+				}
+			}
+		}
+	}, function () {
+		var group = f.group();
+
+		// For each addon,
+		if (addons) {
+			for (var ii = 0; ii < addons.length; ++ii) {
+				var addon = addons[ii];
+				var addonConfig = common.paths.addons(addon, 'ios', 'config.json');
+
+				if (fs.existsSync(addonConfig)) {
+					fs.readFile(addonConfig, 'utf8', group.slot());
+				} else {
+					logger.warn("WARN: Unable to find iOS addon config file", addonConfig);
+				}
+			}
+		}
+	}, function(results) {
+		for (var ii = 0; ii < results.length; ++ii) {
+			var addon = addons[ii];
+			addonConfig[addon] = JSON.parse(results[ii]);
+
+			logger.log("Configured addon:", addon);
+		}
+	}).error(function(err) {
+		logger.error(err);
+	}).cb(next);
+}
+
+var installAddonsProject = function(common, addonConfig, contents, next) {
+	var f = ff(this, function () {
+		var frameworks = {};
+
+		for (var key in addonConfig) {
+			var config = addonConfig[key];
+
+			if (config.frameworks) {
+				for (var ii = 0; ii < config.frameworks.length; ++ii) {
+					var framework = config.frameworks[ii];
+
+					frameworks[framework] = 1;
+				}
+			}
+		}
+
+		var frameworkId = 1;
+
+		for (var framework in frameworks) {
+			logger.log("Installing framework:", framework);
+
+			var filename = "installed" + frameworkId + ".framework";
+
+			var uuid1 = "BAADBEEF";
+			uuid1 += String('00000000' + frameworkId.toString(16).toUpperCase()).slice(-8);
+			uuid1 += "DEADDEED"; // Unique from TTF installer
+
+			var uuid2 = "DEADD00D";
+			uuid2 += String('00000000' + frameworkId.toString(16).toUpperCase()).slice(-8);
+			uuid2 += "BAADFEED";
+
+			// Read out UUID for storekit
+			var uuid1_storekit, uuid2_storekit;
+
+			// Inject PBXFileReference
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
+
+				if (line.indexOf("System/Library/Frameworks/StoreKit.framework") > 0) {
+					uuid1_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
+
+					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = " + filename + "; path = " + framework + "; sourceTree = SDKROOT; };");
+
+					logger.log(" - Found PBXFileReference template on line", ii, "with uuid", uuid1_storekit);
+
+					break;
+				}
+			}
+
+			// Inject reference to PBXFileReference
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
+
+				// If line has the storekit UUID,
+				if (line.indexOf(uuid1_storekit) > 0 && line.indexOf("PBXFileReference") == -1 && line.indexOf("PBXBuildFile") == -1) {
+					contents.splice(++ii, 0, "\t\t\t" + uuid1 + " /* " + filename + " */,");
+
+					logger.log(" - Found PBXFileReference reference template on line", ii);
+
+					break;
+				}
+			}
+
+			// Inject PBXBuildFile
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
+
+				// If line has the storekit UUID,
+				if (line.indexOf("fileRef = " + uuid1_storekit) > 0) {
+					uuid2_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
+
+					contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Frameworks */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; };");
+
+					logger.log(" - Found PBXBuildFile template on line", ii, "with uuid", uuid2_storekit);
+
+					break;
+				}
+			}
+
+			var uuid2_match_regex = new RegExp("/^[ \\t]+" + uuid2_storekit + "/");
+
+			// Inject reference to PBXBuildFile
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
+
+				// If line has the storekit UUID,
+				if (line.indexOf(uuid2_storekit) > 0 && line.indexOf("PBXFileReference") == -1 && line.indexOf("PBXBuildFile") == -1) {
+					contents.splice(++ii, 0, "\t\t\t" + uuid2 + " /* " + filename + " in Frameworks */,");
+
+					logger.log(" - Found PBXBuildFile reference template on line", ii);
+
+					break;
 				}
 			}
 		}
@@ -317,7 +440,7 @@ function updatePListFile(opts, next) {
 var DEFAULT_IOS_PRODUCT = 'TeaLeafIOS';
 var NAMES_TO_REPLACE = /(PRODUCT_NAME)|(name = )|(productName = )/;
 
-function updateIOSProjectFile(opts, next) {
+function updateIOSProjectFile(common, opts, next) {
 	fs.readFile(opts.projectFile, 'utf8', function(err, data) {
 		if (err) {
 			next(err);
@@ -422,10 +545,13 @@ function updateIOSProjectFile(opts, next) {
 				}
 			}
 
-			contents = contents.join('\n');
+			// Run it through the plugin system before writing
+			installAddonsProject(common, opts.addonConfig, contents, function() {
+				contents = contents.join('\n');
 
-			fs.writeFile(opts.projectFile, contents, 'utf8', function(err) {
-				next(err);
+				fs.writeFile(opts.projectFile, contents, 'utf8', function(err) {
+					next(err);
+				});
 			});
 		}
 	});
@@ -616,7 +742,7 @@ function validateIOSManifest(manifest) {
 	return checkSchema(manifest.ios, schema, "ios");
 }
 
-function makeIOSProject(opts, next) {
+function makeIOSProject(common, opts, next) {
 	// Unpack options
 	var debug = opts.debug;
 	var servicesURL = opts.servicesURL;
@@ -644,10 +770,11 @@ function makeIOSProject(opts, next) {
 
 		copyIOSProjectDir(__dirname, opts.destPath, f.wait());
 	}, function() {
-		updateIOSProjectFile({
+		updateIOSProjectFile(common, {
 			projectFile: projectFile,
 			ttf: manifest.ttf,
-			bundleID: manifest.ios.bundleID
+			bundleID: manifest.ios.bundleID,
+			addonConfig: opts.addonConfig
 		}, f.wait());
 
 		var plistFile = path.join(opts.destPath, 'tealeaf/TeaLeafIOS-Info.plist');
@@ -773,18 +900,21 @@ exports.build = function (common, builder, project, opts, next) {
 	logger.log("App ID:", opts.appID);
 	logger.log("App Title:", title);
 
+	var addonConfig = {};
+
 	var f = ff(this, function() {
 		validateSubmodules(f());
 	}, function() {
-		installAddons(common, project, opts, f());
+		installAddons(common, project, opts, addonConfig, f());
 	}, function() {
-		makeIOSProject({
+		makeIOSProject(common, {
 			builder: builder,
 			project: project,
 			destPath: destPath,
 			debug: argv.debug,
 			servicesURL: manifest.servicesURL,
-			title: title
+			title: title,
+			addonConfig: addonConfig
 		}, f());
 		require(common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
 	}, function() {
