@@ -29,6 +29,8 @@
 @implementation PluginManager
 
 - (void) dealloc {
+	self.plugins = nil;
+	
 	[super dealloc];
 }
 
@@ -37,23 +39,35 @@
 	if (!self) {
 		return nil;
 	}
-
+	
+	self.plugins = [NSMutableArray array];
+	
 	Class *classes = 0;
 	int numClasses = objc_getClassList(0, 0);
 	if (numClasses > 0 ) {
 		classes = (Class *)malloc(sizeof(Class) * numClasses);
-
+		
 		numClasses = objc_getClassList(classes, numClasses);
 		for (int index = 0; index < numClasses; index++) {
 			Class nextClass = classes[index];
-
-			if (class_conformsToProtocol(nextClass, @protocol(GCPluginProtocol))) {
-				// TODO: Instantiate here, and check if it's PluginManager
+			Class superClass = class_getSuperclass(nextClass);
+			const char *superClassName = class_getName(superClass);
+			
+			if (superClassName && strcmp(superClassName, "GCPlugin") == 0) {
+				const char *className = class_getName(nextClass);
+				
+				id pluginInstance = [[[objc_lookUpClass(className) alloc] init] autorelease];
+				
+				if (pluginInstance) {
+					[self.plugins addObject:pluginInstance];
+					
+					NSLog(@"{plugins} Instantiated %s", className);
+				}
 			}
 		}
 		free(classes);
 	}
-
+	
 	return self;
 }
 
@@ -68,38 +82,38 @@
 }
 
 - (void) initializeWithManifest: (NSDictionary *) manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
-	[self postNotification:@"initializeWithManifest" obj1:manifest obj2:appDelegate];
+	[self postNotification:@"initializeWithManifest:appDelegate:" obj1:manifest obj2:appDelegate];
 }
 
-- (void) sendEvent: (NSString *) eventName jsonString:(NSString *) jsonString {
-	[self postNotification:@"sendEvent" obj1:eventName obj2:jsonString];
+- (void) sendEvent: (NSString *) eventName jsonObject:(NSDictionary*)jsonObject {
+	[self postNotification:@"sendEvent:jsonObject:" obj1:eventName obj2:jsonObject];
 }
 
 - (void) didFailToRegisterForRemoteNotificationsWithError: (NSError *) error application: (UIApplication *) app {
-	[self postNotification:@"didFailToRegisterForRemoteNotificationsWithError" obj1:error obj2:app];
+	[self postNotification:@"didFailToRegisterForRemoteNotificationsWithError:application:" obj1:error obj2:app];
 }
 
 - (void) didReceiveRemoteNotification:(NSDictionary *) userInfo application: (UIApplication *) app {
-	[self postNotification:@"didReceiveRemoteNotification" obj1:userInfo obj2:app];
+	[self postNotification:@"didReceiveRemoteNotification:application:" obj1:userInfo obj2:app];
 }
 - (void) didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken application: (UIApplication *) app {
-	[self postNotification:@"didRegisterForRemoteNotificationsWithDeviceToken" obj1:deviceToken obj2:app];
+	[self postNotification:@"didRegisterForRemoteNotificationsWithDeviceToken:application:" obj1:deviceToken obj2:app];
 }
 
 - (void) didReceiveLocalNotification:(UILocalNotification *)notification application:(UIApplication *)app {
-	[self postNotification:@"didReceiveLocalNotification" obj1:notification obj2:app];
+	[self postNotification:@"didReceiveLocalNotification:application:" obj1:notification obj2:app];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)app {
-	[self postNotification:@"applicationDidBecomeActive" obj1:app obj2:nil];
+	[self postNotification:@"applicationDidBecomeActive:" obj1:app obj2:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)app {
-	[self postNotification:@"applicationWillTerminate" obj1:app obj2:nil];
+	[self postNotification:@"applicationWillTerminate:" obj1:app obj2:nil];
 }
 
 - (void) handleOpenURL:(NSURL* )url {
-	[self postNotification:@"handleOpenURL" obj1:url obj2:nil];
+	[self postNotification:@"handleOpenURL:" obj1:url obj2:nil];
 }
 
 @end
@@ -129,21 +143,18 @@
 }
 
 - (void) onPluginNotification:(NSNotification *) notification {
-	NSLog(@"CAT: Got notification %@", [notification name]);
-	
 	if ([[notification name] isEqualToString:@"GameClosurePlugin"]) {
-		PluginManager *mgr = (PluginManager *)[notification object];
+		//PluginManager *mgr = (PluginManager *)[notification object];
 		NSDictionary *dict = [notification userInfo];
-		if (!!dict && !!mgr) {
+		
+		if (dict) {
 			NSString *selectorString = [dict objectForKey:@"selector"];
 			
-			if (!!selectorString) {
+			if (selectorString) {
 				SEL selector = NSSelectorFromString(selectorString);
 				if ([self respondsToSelector:selector]) {
 					id obj1 = [dict objectForKey:@"obj1"];
 					id obj2 = [dict objectForKey:@"obj2"];
-					
-					NSLog(@"CAT: Delivering %@", selectorString);
 					
 					if (!obj1) {
 						[self performSelector:selector];
@@ -165,14 +176,14 @@
 
 //START_PLUGIN_CODE
 
-static const char *MyPlugins[] = {
-	"MyPlugin",
-	0
-};
-
 // Your plugin source code will be injected here.
 
 @implementation MyPlugin
+
+// The plugin must call super dealloc.
+- (void) dealloc {
+	[super dealloc];
+}
 
 // The plugin must call super init.
 - (id) init {
@@ -180,21 +191,25 @@ static const char *MyPlugins[] = {
 	if (!self) {
 		return nil;
 	}
-	
+
 	return self;
 }
 
-// The plugin must call super dealloc.
-- (void) dealloc {
-	[super dealloc];
-}
-
 - (void) initializeWithManifest: (NSDictionary *) manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
-	NSLog(@"CAT: initializeWithManifest called! %@", [manifest debugDescription]);
+	NSLOG(@"{myplugin} Initialized with manifest");
 }
 
-- (void) sendEvent: (NSString *) eventName jsonString:(NSString *) jsonString {
-	NSLog(@"CAT: sendEvent called! %@ %@", eventName, jsonString);
+- (void) sendEvent: (NSString *) eventName jsonObject:(NSDictionary *)jsonObject {
+	@try {
+		NSString *method = [jsonObject valueForKey:@"method"];
+		
+		if ([method isEqualToString:@"getRequestedData"]) {
+			NSLOG(@"{myplugin} Got request");
+		}
+	}
+	@catch (NSException *exception) {
+		NSLOG(@"{myplugin} Exception while processing event: ", exception);
+	}
 }
 
 @end

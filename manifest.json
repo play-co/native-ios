@@ -1,4 +1,5 @@
 {
 	"name": "native-ios",
-	"version": "0.1.2"
+	"version": "0.1.2",
+	"appID": "9cd019a24abc45dbaa6c45ce514d98ca"
 }
