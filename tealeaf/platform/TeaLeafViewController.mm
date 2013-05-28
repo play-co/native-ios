@@ -83,14 +83,19 @@ CEXPORT void device_hide_splash() {
 	self.appDelegate.gameSupportsPortrait = YES;
 	
 	// Read manifest file
-	NSError *err;
+	NSError *err = nil;
 	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
-	JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
-	NSDictionary *dict = [decoder objectWithUTF8String:(const unsigned char *)[manifest_file UTF8String] length:[manifest_file length] error:&err];
+	NSDictionary *dict = nil;
+	int length = 0;
+	if (manifest_file) {
+		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
+		length = [manifest_file length];
+		dict = [decoder objectWithUTF8String:(const unsigned char *)[manifest_file UTF8String] length:(NSUInteger)length error:&err];
+	}
 	
 	// If failed to load,
 	if (!dict) {
-		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", (int)[manifest_file length]);
+		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", length);
 	} else {
 		self.appDelegate.appManifest = dict;
 		

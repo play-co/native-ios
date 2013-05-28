@@ -24,7 +24,7 @@
 @protocol GCPluginProtocol
 @required
 - (void) initializeWithManifest: (NSDictionary *) manifest appDelegate:(TeaLeafAppDelegate *) appDelegate;
-- (void) sendEvent: (NSString *) eventName jsonString:(NSString *) jsonString;
+- (void) sendEvent: (NSString *) eventName jsonObject:(NSDictionary *) jsonObject;
 @optional
 - (void) didFailToRegisterForRemoteNotificationsWithError: (NSError *) error application: (UIApplication *) app;
 - (void) didReceiveRemoteNotification:(NSDictionary *) userInfo application: (UIApplication *) app;
@@ -54,6 +54,8 @@
 // Your plugin header code will be injected here.
 
 // Here's an example plugin that will be replaced with yours:
+
+#import <CoreLocation/CoreLocation.h>
 
 @interface MyPlugin : GCPlugin
 @end

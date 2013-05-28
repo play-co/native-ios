@@ -16,18 +16,27 @@
  */
 
 #import <platform/PluginManager.h>
+#import <deps/JSONKit.h>
 #import "js/jsPluginManager.h"
 
 static js_core *m_core = nil;
+static JSONDecoder *m_decoder = nil;
 
 
 JSAG_MEMBER_BEGIN(sendEvent, 3)
 {
 	JSAG_ARG_NSTR(pluginName); // Unused
 	JSAG_ARG_NSTR(eventName);
-	JSAG_ARG_NSTR(str);
-
-	[m_core.pluginManager sendEvent:eventName jsonString:str];
+	JSAG_ARG_CSTR(str);
+	
+	NSError *err = nil;
+	NSDictionary *json = [m_decoder objectWithUTF8String:(const unsigned char *)str length:(NSUInteger)str_len error:&err];
+	
+	if (!json || err) {
+		NSLOG(@"{plugins} WARNING: Event passed to NATIVE.plugins.sendEvent does not contain a valid JSON string.");
+	} else {
+		[m_core.pluginManager sendEvent:eventName jsonObject:json];
+	}
 }
 JSAG_MEMBER_END
 
@@ -41,7 +50,9 @@ JSAG_OBJECT_END
 
 + (void) addToRuntime:(js_core *)js {
 	m_core = js;
-
+	
+	m_decoder = [[JSONDecoder decoderWithParseOptions:JKParseOptionStrict] retain];
+	
 	JSAG_OBJECT_ATTACH(js.cx, js.native, plugins);
 }
 
