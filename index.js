@@ -61,39 +61,6 @@ exports.testapp = function (common, opts, next) {
 
 //// Addons
 
-var getTextBetween = function(text, startToken, endToken) {
-	var start = text.indexOf(startToken);
-	var end = text.indexOf(endToken);
-
-	if (start == -1 || end == -1) {
-		return "";
-	}
-
-	var offset = text.substring(start).indexOf("\n") + 1;
-	var afterStart = start + offset;
-
-	return text.substring(afterStart, end);
-}
-
-var replaceTextBetween = function(text, startToken, endToken, replaceText) {
-	var newText = "";
-	var start = text.indexOf(startToken);
-	var end = text.indexOf(endToken);
-
-	if (start == -1 || end == -1) {
-		return text;
-	}
-
-	var offset = text.substring(start).indexOf("\n") + 1;
-	var afterStart = start + offset;
-
-	newText += text.substring(0, afterStart);
-	newText += replaceText;
-	newText += text.substring(end);
-
-	return newText;
-}
-
 var installAddons = function(common, project, opts, addonConfig, next) {
 	var addons = project && project.manifest && project.manifest.addons;
 
@@ -134,7 +101,7 @@ var installAddons = function(common, project, opts, addonConfig, next) {
 				if (fs.existsSync(addonConfig)) {
 					fs.readFile(addonConfig, 'utf8', group.slot());
 				} else {
-					logger.warn("WARN: Unable to find iOS addon config file", addonConfig);
+					logger.warn("Unable to find iOS addon config file", addonConfig);
 				}
 			}
 		}
@@ -145,6 +112,114 @@ var installAddons = function(common, project, opts, addonConfig, next) {
 
 			logger.log("Configured addon:", addon);
 		}
+	}).error(function(err) {
+		logger.error(err);
+	}).cb(next);
+}
+
+var replaceTextBetween = function(text, startToken, endToken, replaceText) {
+	var newText = "";
+	var start = text.indexOf(startToken);
+	var end = text.indexOf(endToken);
+
+	if (start == -1 || end == -1) {
+		return text;
+	}
+
+	var offset = text.substring(start).indexOf("\n") + 1;
+	var afterStart = start + offset;
+
+	newText += text.substring(0, afterStart);
+	newText += replaceText;
+	newText += text.substring(end);
+
+	return newText;
+}
+
+var installAddonsCode = function(common, opts, next) {
+	var headerCode = "";
+	var sourceCode = "";
+
+	var f = ff(this, function () {
+		logger.log("Installing addons: Reading headers");
+
+		var group = f.group();
+
+		for (var addon in opts.addonConfig) {
+			var config = opts.addonConfig[addon];
+
+			if (config.header) {
+				var headerPath = common.paths.addons(addon, 'ios', config.header);
+
+				if (fs.existsSync(headerPath)) {
+					logger.log("Installing header:", headerPath);
+
+					fs.readFile(headerPath, 'utf8', group.slot());
+				} else {
+					logger.warn("Unable to find iOS addon header file", headerPath);
+				}
+			}
+		}
+	}, function (results) {
+		logger.log("Installing addons: Reading source");
+
+		if (results) {
+			for (var ii = 0; ii < results.length; ++ii) {
+				var header = results[ii];
+
+				headerCode += "\n\n/* BEGIN HEADER */\n\n" + header + "\n\n/* END HEADER */\n\n";
+			}
+		} else {
+			logger.warn("No header code to read");
+		}
+
+		var group = f.group();
+
+		for (var addon in opts.addonConfig) {
+			var config = opts.addonConfig[addon];
+
+			if (config.header) {
+				var sourcePath = common.paths.addons(addon, 'ios', config.source);
+
+				if (fs.existsSync(sourcePath)) {
+					logger.log("Installing source:", sourcePath);
+
+					fs.readFile(sourcePath, 'utf8', group.slot());
+				} else {
+					logger.warn("Unable to find iOS addon source file", sourcePath);
+				}
+			}
+		}
+	}, function (results) {
+		logger.log("Installing addons: Reading PluginManager code");
+
+		if (results) {
+			for (var ii = 0; ii < results.length; ++ii) {
+				var source = results[ii];
+
+				sourceCode += "\n\n/* BEGIN SOURCE */\n\n" + source + "\n\n/* END SOURCE */\n\n";
+			}
+		} else {
+			logger.warn("No source code to read");
+		}
+
+		var managerHeader = path.join(__dirname, "tealeaf/platform", "PluginManager.h");
+		var managerSource = path.join(__dirname, "tealeaf/platform", "PluginManager.mm");
+
+		f(managerHeader, managerSource);
+
+		fs.readFile(managerHeader, 'utf8', f.slot());
+		fs.readFile(managerSource, 'utf8', f.slot());
+	}, function (managerHeader, managerSource, header, source) {
+		logger.log("Installing addons: Modifying PluginManager code");
+
+		header = replaceTextBetween(header, "//START_PLUGIN_CODE", "//END_PLUGIN_CODE", headerCode);
+		source = replaceTextBetween(source, "//START_PLUGIN_CODE", "//END_PLUGIN_CODE", sourceCode);
+
+		logger.log(header);
+
+		fs.writeFile(managerHeader, header, f.wait());
+		fs.writeFile(managerSource, source, f.wait());
 	}).error(function(err) {
 		logger.error(err);
 	}).cb(next);
@@ -268,7 +343,7 @@ function validateSubmodules(next) {
 	}, function(results) {
 		var allGood = results.every(function(element, index) {
 			if (!element) {
-				logger.error("ERROR: Submodule " + path.dirname(submodules[index]) + " not found");
+				logger.error("Submodule " + path.dirname(submodules[index]) + " not found");
 			}
 			return element;
 		});
@@ -388,7 +463,7 @@ function updatePListFile(opts, next) {
 						} else if (contents[i + 1].indexOf("<array>") >= 0) {
 							// No changes needed!
 						} else {
-							logger.log("WARNING: Unable to find <array> tag right after UIAppFonts section, so failing!");
+							logger.warn("Unable to find <array> tag right after UIAppFonts section, so failing!");
 							break;
 						}
 
@@ -460,9 +535,9 @@ function updateIOSProjectFile(common, opts, next) {
 			});
 
 			if (!opts.ttf) {
-				logger.log("WARNING: No \"ttf\" section found in the manifest.json, so no custom TTF fonts will be installed.  This does not affect bitmap fonts.");
+				logger.warn("No \"ttf\" section found in the manifest.json, so no custom TTF fonts will be installed.  This does not affect bitmap fonts.");
 			} else if (opts.ttf.length <= 0) {
-				logger.log("No \"ttf\" fonts specified in manifest.json, so no custom TTF fonts will be built in.  This does not affect bitmap fonts.");
+				logger.warn("No \"ttf\" fonts specified in manifest.json, so no custom TTF fonts will be built in.  This does not affect bitmap fonts.");
 			} else {
 				var fonts = [];
 
@@ -541,7 +616,7 @@ function updateIOSProjectFile(common, opts, next) {
 				if (updateCount === 4) {
 					logger.log("Updating project file: Success!");
 				} else {
-					logger.error("ERROR: Updating project file: Unable to find one of the sections to patch.  index.js has a bug -- it may not work with your version of XCode yet!");
+					logger.error("Updating project file: Unable to find one of the sections to patch.  index.js has a bug -- it may not work with your version of XCode yet!");
 				}
 			}
 
@@ -580,14 +655,14 @@ function copyIcons(icons, destPath) {
 					logger.log("Icons: Copying ", path.resolve(iconPath), " to ", path.resolve(targetPath));
 					copyFileSync(iconPath, targetPath);
 				} else {
-					logger.error('WARNING: Icon', iconPath, 'does not exist.');
+					logger.warn('Icon', iconPath, 'does not exist.');
 				}
 			} else {
-				logger.error('WARNING: Icon size', size, 'is not specified under manifest.json:ios:icons.');
+				logger.warn('Icon size', size, 'is not specified under manifest.json:ios:icons.');
 			}
 		});
 	} else {
-		logger.error('WARNING: No icons specified under "ios".');
+		logger.warn('No icons specified under "ios".');
 	}
 }
 
@@ -627,7 +702,7 @@ function copySplash(builder, manifest, destPath, next) {
 				} else if(universalSplash) {
 					var splashFile = path.resolve(universalSplash);
 				} else {
-					logger.error("WARNING: No universal splash given and no splash provided for " + splash.key);
+					logger.warn("No universal splash given and no splash provided for " + splash.key);
 					makeSplash(i-1);
 					return;
 				}
@@ -653,7 +728,7 @@ function copySplash(builder, manifest, destPath, next) {
 			next();	
 		});
 	} else {
-		logger.error("WARNING: No splash section provided in the provided manifest");
+		logger.warn("No splash section provided in the provided manifest");
 		next();
 	}
 }
@@ -729,7 +804,7 @@ function validateIOSManifest(manifest) {
 					return msg;
 				} else {
 					if (!schemaData.silent) {
-						logger.log("USER WARNING: " + msg + " Defaulting to '" + schemaData.def + "'");
+						logger.warn(msg + " Defaulting to '" + schemaData.def + "'");
 					}
 					loadingParent[key] = schemaData.def;
 				}
@@ -751,7 +826,7 @@ function makeIOSProject(common, opts, next) {
 	// Validate iOS section of the manifest.json file
 	var validationError = validateIOSManifest(manifest);
 	if (validationError) {
-		logger.log("USER ERROR: manifest.json file ios section is malformed. " + validationError);
+		logger.error("manifest.json file ios section is malformed. " + validationError);
 		process.exit(2);
 	}
 
@@ -770,6 +845,10 @@ function makeIOSProject(common, opts, next) {
 
 		copyIOSProjectDir(__dirname, opts.destPath, f.wait());
 	}, function() {
+		installAddonsCode(common, {
+			addonConfig: opts.addonConfig
+		}, f.wait());
+
 		updateIOSProjectFile(common, {
 			projectFile: projectFile,
 			ttf: manifest.ttf,
@@ -847,7 +926,7 @@ exports.build = function (common, builder, project, opts, next) {
 			developer = manifest.ios && manifest.ios.developer;
 		}
 		if (typeof developer !== "string") {
-			logger.error("ERROR: IPA mode selected but developer name was not provided.  You can add it to your config.json under the ios:developer key, or with the --developer command-line option.");
+			logger.error("IPA mode selected but developer name was not provided.  You can add it to your config.json under the ios:developer key, or with the --developer command-line option.");
 			process.exit(2);
 		}
 		logger.log("Using developer name:", developer);
@@ -857,7 +936,7 @@ exports.build = function (common, builder, project, opts, next) {
 			provision = manifest.ios && manifest.ios.provision;
 		}
 		if (typeof provision !== "string") {
-			logger.error("ERROR: IPA mode selected but .mobileprovision file was not provided.  You can add it to your config.json under the ios:provision key, or with the --provision command-line option.");
+			logger.error("IPA mode selected but .mobileprovision file was not provided.  You can add it to your config.json under the ios:provision key, or with the --provision command-line option.");
 			process.exit(2);
 		}
 		logger.log("Using provision file:", provision);
@@ -944,7 +1023,7 @@ exports.build = function (common, builder, project, opts, next) {
 		}
 		process.exit(0);
 	}).error(function(err) {
-		logger.error('ERROR:', err);
+		logger.error(err);
 		process.exit(2);
 	});
 }
