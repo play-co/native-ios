@@ -349,9 +349,6 @@ CEXPORT void device_hide_splash() {
 	[self.appDelegate.window.rootViewController.view addSubview:self.loading_image_view];
 	m_showing_splash = YES;
 
-	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
-	self.appDelegate.pluginManager = [[[PluginManager alloc] init:[js_core lastJS]] autorelease];
-
 	// Initialize text manager
 	if (!text_manager_init()) {
 		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
@@ -362,6 +359,9 @@ CEXPORT void device_hide_splash() {
 		NSLOG(@"{tealeaf} ERROR: Unable to setup javascript runtime.");
 	}
    
+	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
+	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
+	
 	// Run JS initialization in another thread
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, (unsigned long)NULL), ^(void) {
 		NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];
