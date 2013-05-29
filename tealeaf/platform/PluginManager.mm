@@ -28,6 +28,7 @@
 
 static js_core *m_core = nil;
 static JSONDecoder *m_decoder = nil;
+static PluginManager *m_pluginManager = nil;
 
 
 JSAG_MEMBER_BEGIN(sendEvent, 3)
@@ -74,7 +75,7 @@ JSAG_OBJECT_END
 
 - (void) dealloc {
 	self.plugins = nil;
-
+	
 	[super dealloc];
 }
 
@@ -83,9 +84,11 @@ JSAG_OBJECT_END
 	if (!self) {
 		return nil;
 	}
-
+	
+	m_pluginManager = self;
+	
 	self.plugins = [NSMutableArray array];
-
+	
 	Class *classes = 0;
 	int numClasses = objc_getClassList(0, 0);
 	if (numClasses > 0 ) {
@@ -101,7 +104,7 @@ JSAG_OBJECT_END
 				const char *className = class_getName(nextClass);
 				
 				id pluginInstance = [[[objc_lookUpClass(className) alloc] init] autorelease];
-
+				
 				if (pluginInstance) {
 					[self.plugins addObject:pluginInstance];
 					
