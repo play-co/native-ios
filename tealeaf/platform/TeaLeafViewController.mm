@@ -350,8 +350,8 @@ CEXPORT void device_hide_splash() {
 	m_showing_splash = YES;
 
 	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
-	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
-	
+	self.appDelegate.pluginManager = [[[PluginManager alloc] init:[js_core lastJS]] autorelease];
+
 	// Initialize text manager
 	if (!text_manager_init()) {
 		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");

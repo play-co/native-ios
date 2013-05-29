@@ -39,7 +39,6 @@
 		4E8493F11651D06000C96B4A /* jsOverlay.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493CC1651D06000C96B4A /* jsOverlay.mm */; };
 		4E8493F21651D06000C96B4A /* jsPhoto.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493CE1651D06000C96B4A /* jsPhoto.mm */; };
 		4E8493F31651D06000C96B4A /* jsPurchase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D01651D06000C96B4A /* jsPurchase.mm */; };
-		4E8493F41651D06000C96B4A /* jsPluginManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D21651D06000C96B4A /* jsPluginManager.mm */; };
 		4E8493F51651D06000C96B4A /* jsSocket.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D41651D06000C96B4A /* jsSocket.mm */; };
 		4E8493F61651D06000C96B4A /* jsSound.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D61651D06000C96B4A /* jsSound.mm */; };
 		4E8493F71651D06000C96B4A /* jsTextInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D81651D06000C96B4A /* jsTextInput.mm */; };
@@ -323,8 +322,6 @@
 		4E8493CE1651D06000C96B4A /* jsPhoto.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsPhoto.mm; sourceTree = "<group>"; };
 		4E8493CF1651D06000C96B4A /* jsPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsPurchase.h; sourceTree = "<group>"; };
 		4E8493D01651D06000C96B4A /* jsPurchase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsPurchase.mm; sourceTree = "<group>"; };
-		4E8493D11651D06000C96B4A /* jsPluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsPluginManager.h; sourceTree = "<group>"; };
-		4E8493D21651D06000C96B4A /* jsPluginManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsPluginManager.mm; sourceTree = "<group>"; };
 		4E8493D31651D06000C96B4A /* jsSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsSocket.h; sourceTree = "<group>"; };
 		4E8493D41651D06000C96B4A /* jsSocket.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsSocket.mm; sourceTree = "<group>"; };
 		4E8493D51651D06000C96B4A /* jsSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsSound.h; sourceTree = "<group>"; };
@@ -972,8 +969,6 @@
 				4E8493CE1651D06000C96B4A /* jsPhoto.mm */,
 				4E8493CF1651D06000C96B4A /* jsPurchase.h */,
 				4E8493D01651D06000C96B4A /* jsPurchase.mm */,
-				4E8493D11651D06000C96B4A /* jsPluginManager.h */,
-				4E8493D21651D06000C96B4A /* jsPluginManager.mm */,
 				4E8493D31651D06000C96B4A /* jsSocket.h */,
 				4E8493D41651D06000C96B4A /* jsSocket.mm */,
 				4E8493D51651D06000C96B4A /* jsSound.h */,
@@ -1253,7 +1248,6 @@
 				4E8493F11651D06000C96B4A /* jsOverlay.mm in Sources */,
 				4E8493F21651D06000C96B4A /* jsPhoto.mm in Sources */,
 				4E8493F31651D06000C96B4A /* jsPurchase.mm in Sources */,
-				4E8493F41651D06000C96B4A /* jsPluginManager.mm in Sources */,
 				4E8493F51651D06000C96B4A /* jsSocket.mm in Sources */,
 				4E8493F61651D06000C96B4A /* jsSound.mm in Sources */,
 				4E8493F71651D06000C96B4A /* jsTextInput.mm in Sources */,
