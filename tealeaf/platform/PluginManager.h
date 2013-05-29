@@ -16,8 +16,15 @@
  */
 
 #import "TeaLeafAppDelegate.h"
+#import "js/js_core.h"
 
 @class TeaLeafAppDelegate;
+
+
+@interface jsPluginManager : NSObject
++ (void) addToRuntime:(js_core *)js;
++ (void) onDestroyRuntime;
+@end
 
 
 // Required and optional methods to implement
@@ -40,6 +47,7 @@
 @property (nonatomic, retain) NSMutableArray *plugins;
 
 - (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
+- (void) dispatchJSEvent:(NSDictionary *)evt;
 @end
 
 

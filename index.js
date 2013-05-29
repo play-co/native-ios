@@ -203,8 +203,8 @@ var installAddonsCode = function(common, opts, next) {
 			logger.warn("No source code to read");
 		}
 
-		var managerHeader = path.join(__dirname, "tealeaf/platform", "PluginManager.h");
-		var managerSource = path.join(__dirname, "tealeaf/platform", "PluginManager.mm");
+		var managerHeader = path.join(opts.destPath, "tealeaf/platform", "PluginManager.h");
+		var managerSource = path.join(opts.destPath, "tealeaf/platform", "PluginManager.mm");
 
 		f(managerHeader, managerSource);
 
@@ -846,6 +846,7 @@ function makeIOSProject(common, opts, next) {
 		copyIOSProjectDir(__dirname, opts.destPath, f.wait());
 	}, function() {
 		installAddonsCode(common, {
+			destPath: opts.destPath,
 			addonConfig: opts.addonConfig
 		}, f.wait());
 

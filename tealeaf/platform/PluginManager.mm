@@ -17,7 +17,7 @@
 
 #import "PluginManager.h"
 #include "jsonUtil.h"
-#import "JSONKit.h"
+#import <deps/JSONKit.h>
 #import "platform/log.h"
 #include "core.h"
 #include "events.h"
@@ -26,11 +26,55 @@
 #include <objc/runtime.h>
 #include <stdlib.h>
 
+static js_core *m_core = nil;
+static JSONDecoder *m_decoder = nil;
+
+
+JSAG_MEMBER_BEGIN(sendEvent, 3)
+{
+	JSAG_ARG_NSTR(pluginName); // Unused
+	JSAG_ARG_NSTR(eventName);
+	JSAG_ARG_CSTR(str);
+	
+	NSError *err = nil;
+	NSDictionary *json = [m_decoder objectWithUTF8String:(const unsigned char *)str length:(NSUInteger)str_len error:&err];
+	
+	if (!json || err) {
+		NSLOG(@"{plugins} WARNING: Event passed to NATIVE.plugins.sendEvent does not contain a valid JSON string.");
+	} else {
+		[m_core.pluginManager sendEvent:eventName jsonObject:json];
+	}
+}
+JSAG_MEMBER_END
+
+
+JSAG_OBJECT_START(plugins)
+JSAG_OBJECT_MEMBER(sendEvent)
+JSAG_OBJECT_END
+
+
+@implementation jsPluginManager
+
++ (void) addToRuntime:(js_core *)js {
+	m_core = js;
+	
+	m_decoder = [[JSONDecoder decoderWithParseOptions:JKParseOptionStrict] retain];
+	
+	JSAG_OBJECT_ATTACH(js.cx, js.native, plugins);
+}
+
++ (void) onDestroyRuntime {
+	
+}
+
+@end
+
+
 @implementation PluginManager
 
 - (void) dealloc {
 	self.plugins = nil;
-	
+
 	[super dealloc];
 }
 
@@ -39,9 +83,9 @@
 	if (!self) {
 		return nil;
 	}
-	
+
 	self.plugins = [NSMutableArray array];
-	
+
 	Class *classes = 0;
 	int numClasses = objc_getClassList(0, 0);
 	if (numClasses > 0 ) {
@@ -57,7 +101,7 @@
 				const char *className = class_getName(nextClass);
 				
 				id pluginInstance = [[[objc_lookUpClass(className) alloc] init] autorelease];
-				
+
 				if (pluginInstance) {
 					[self.plugins addObject:pluginInstance];
 					
@@ -114,6 +158,23 @@
 
 - (void) handleOpenURL:(NSURL* )url {
 	[self postNotification:@"handleOpenURL:" obj1:url obj2:nil];
+}
+
+- (void) dispatchJSEvent:(NSDictionary *)evt {
+	if (m_core) {
+		JSContext *cx = m_core.cx;
+		JS_BeginRequest(cx);
+		
+		NSString *evt_nstr = [evt JSONString];
+		
+		jsval evt_val = NSTR_TO_JSVAL(cx, evt_nstr);
+		
+		[m_core dispatchEvent:&evt_val count:1];
+		
+		JS_EndRequest(cx);
+	} else {
+		NSLOG(@"WARNING: Plugin attempted to dispatch a JS event before the JS subsystem was created");
+	}
 }
 
 @end
