@@ -30,16 +30,16 @@
 // Required and optional methods to implement
 @protocol GCPluginProtocol
 @required
-- (void) initializeWithManifest: (NSDictionary *) manifest appDelegate:(TeaLeafAppDelegate *) appDelegate;
-- (void) sendEvent: (NSString *) eventName jsonObject:(NSDictionary *) jsonObject;
+- (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate;
+- (void) sendEvent:(NSString *)eventName jsonObject:(NSDictionary *)jsonObject;
 @optional
-- (void) didFailToRegisterForRemoteNotificationsWithError: (NSError *) error application: (UIApplication *) app;
-- (void) didReceiveRemoteNotification:(NSDictionary *) userInfo application: (UIApplication *) app;
-- (void) didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken application: (UIApplication *) app;
-- (void) didReceiveLocalNotification:(UILocalNotification *)notification application: (UIApplication *) app;
-- (void) applicationDidBecomeActive: (UIApplication *) app;
-- (void) applicationWillTerminate: (UIApplication *) app;
-- (void) handleOpenURL: (NSURL *) url;
+- (void) didFailToRegisterForRemoteNotificationsWithError:(NSError *)error application:(UIApplication *)app;
+- (void) didReceiveRemoteNotification:(NSDictionary *)userInfo application:(UIApplication *)app;
+- (void) didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken application:(UIApplication *)app;
+- (void) didReceiveLocalNotification:(UILocalNotification *)notification application:(UIApplication *)app;
+- (void) applicationDidBecomeActive:(UIApplication *)app;
+- (void) applicationWillTerminate:(UIApplication *)app;
+- (void) handleOpenURL:(NSURL *)url;
 @end
 
 

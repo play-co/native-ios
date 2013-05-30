@@ -25,12 +25,12 @@ var fs = require('fs');
 var logger;
 
 
-function copyFileSync (from, to) {
+function copyFileSync(from, to) {
 	return fs.writeFileSync(to, fs.readFileSync(from));
 }
 
 
-exports.init = function (common) {
+exports.init = function(common) {
 	console.log("Running install.sh");
 	common.child("sh", ["install.sh"], {
 		cwd: __dirname
@@ -41,14 +41,14 @@ exports.init = function (common) {
 	exports.load(common);
 }
 
-exports.load = function (common) {
+exports.load = function(common) {
 	common.config.set("ios:root", path.resolve(__dirname))
 	common.config.write();
 
 	require(common.paths.root('src', 'testapp')).registerTarget("native-ios", __dirname);
 }
 
-exports.testapp = function (common, opts, next) {
+exports.testapp = function(common, opts, next) {
 	var f = ff(this, function () {
 		common.child('open', [path.join(__dirname, './tealeaf/TeaLeafIOS.xcodeproj')], {}, f.wait());
 	}, function() {
@@ -61,7 +61,8 @@ exports.testapp = function (common, opts, next) {
 
 //// Addons
 
-var installAddons = function(common, project, opts, addonConfig, next) {
+var installAddons = function(builder, project, opts, addonConfig, next) {
+	var paths = builder.common.paths;
 	var addons = project && project.manifest && project.manifest.addons;
 
 	var f = ff(this, function () {
@@ -71,19 +72,19 @@ var installAddons = function(common, project, opts, addonConfig, next) {
 				var addon = addons[ii];
 
 				// Prefer paths in this order:
-				var addon_js_ios = common.paths.addons(addon, 'js', 'ios');
-				var addon_js_native = common.paths.addons(addon, 'js', 'native');
-				var addon_js = common.paths.addons(addon, 'js');
+				var addon_js_ios = paths.addons(addon, 'js', 'ios');
+				var addon_js_native = paths.addons(addon, 'js', 'native');
+				var addon_js = paths.addons(addon, 'js');
 
 				if (fs.existsSync(addon_js_ios)) {
 					logger.log("Installing addon:", addon, "-- Adding ./js/ios to jsio path");
-					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js_ios);
+					require(paths.root('src', 'AddonManager')).registerPath(addon_js_ios);
 				} else if (fs.existsSync(addon_js_native)) {
 					logger.log("Installing addon:", addon, "-- Adding ./js/native to jsio path");
-					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js_native);
+					require(paths.root('src', 'AddonManager')).registerPath(addon_js_native);
 				} else if (fs.existsSync(addon_js)) {
 					logger.log("Installing addon:", addon, "-- Adding ./js to jsio path");
-					require(common.paths.root('src', 'AddonManager')).registerPath(addon_js);
+					require(paths.root('src', 'AddonManager')).registerPath(addon_js);
 				} else {
 					logger.log("Installing addon:", addon, "-- No js directory so no JavaScript will be installed");
 				}
@@ -96,7 +97,7 @@ var installAddons = function(common, project, opts, addonConfig, next) {
 		if (addons) {
 			for (var ii = 0; ii < addons.length; ++ii) {
 				var addon = addons[ii];
-				var addonConfig = common.paths.addons(addon, 'ios', 'config.json');
+				var addonConfig = paths.addons(addon, 'ios', 'config.json');
 
 				if (fs.existsSync(addonConfig)) {
 					fs.readFile(addonConfig, 'utf8', group.slot());
@@ -136,7 +137,9 @@ var replaceTextBetween = function(text, startToken, endToken, replaceText) {
 	return newText;
 }
 
-var installAddonsCode = function(common, opts, next) {
+var installAddonsCode = function(opts, next) {
+	var paths = opts.builder.common.paths;
+
 	var headerCode = "";
 	var sourceCode = "";
 
@@ -149,7 +152,7 @@ var installAddonsCode = function(common, opts, next) {
 			var config = opts.addonConfig[addon];
 
 			if (config.header) {
-				var headerPath = common.paths.addons(addon, 'ios', config.header);
+				var headerPath = paths.addons(addon, 'ios', config.header);
 
 				if (fs.existsSync(headerPath)) {
 					logger.log("Installing header:", headerPath);
@@ -179,7 +182,7 @@ var installAddonsCode = function(common, opts, next) {
 			var config = opts.addonConfig[addon];
 
 			if (config.header) {
-				var sourcePath = common.paths.addons(addon, 'ios', config.source);
+				var sourcePath = paths.addons(addon, 'ios', config.source);
 
 				if (fs.existsSync(sourcePath)) {
 					logger.log("Installing source:", sourcePath);
@@ -216,8 +219,6 @@ var installAddonsCode = function(common, opts, next) {
 		header = replaceTextBetween(header, "//START_PLUGIN_CODE", "//END_PLUGIN_CODE", headerCode);
 		source = replaceTextBetween(source, "//START_PLUGIN_CODE", "//END_PLUGIN_CODE", sourceCode);
 
-		logger.log(header);
-
 		fs.writeFile(managerHeader, header, f.wait());
 		fs.writeFile(managerSource, source, f.wait());
 	}).error(function(err) {
@@ -225,7 +226,7 @@ var installAddonsCode = function(common, opts, next) {
 	}).cb(next);
 }
 
-var installAddonsProject = function(common, addonConfig, contents, next) {
+var installAddonsProject = function(builder, addonConfig, contents, next) {
 	var f = ff(this, function () {
 		var frameworks = {};
 
@@ -515,12 +516,12 @@ function updatePListFile(opts, next) {
 var DEFAULT_IOS_PRODUCT = 'TeaLeafIOS';
 var NAMES_TO_REPLACE = /(PRODUCT_NAME)|(name = )|(productName = )/;
 
-function updateIOSProjectFile(common, opts, next) {
+function updateIOSProjectFile(opts, next) {
 	fs.readFile(opts.projectFile, 'utf8', function(err, data) {
 		if (err) {
 			next(err);
 		} else {
-			logger.log("Updating iOS project file: ", opts.projectFile);
+			logger.log("Updating iOS project file:", opts.projectFile);
 
 			var contents = data.split('\n');
 			var i = 0, j = 0; // counters
@@ -535,9 +536,9 @@ function updateIOSProjectFile(common, opts, next) {
 			});
 
 			if (!opts.ttf) {
-				logger.warn("No \"ttf\" section found in the manifest.json, so no custom TTF fonts will be installed.  This does not affect bitmap fonts.");
+				logger.warn("No \"ttf\" section found in the manifest.json, so no custom TTF fonts will be installed.  This does not affect bitmap fonts");
 			} else if (opts.ttf.length <= 0) {
-				logger.warn("No \"ttf\" fonts specified in manifest.json, so no custom TTF fonts will be built in.  This does not affect bitmap fonts.");
+				logger.warn("No \"ttf\" fonts specified in manifest.json, so no custom TTF fonts will be built in.  This does not affect bitmap fonts");
 			} else {
 				var fonts = [];
 
@@ -621,7 +622,7 @@ function updateIOSProjectFile(common, opts, next) {
 			}
 
 			// Run it through the plugin system before writing
-			installAddonsProject(common, opts.addonConfig, contents, function() {
+			installAddonsProject(opts.builder, opts.addonConfig, contents, function() {
 				contents = contents.join('\n');
 
 				fs.writeFile(opts.projectFile, contents, 'utf8', function(err) {
@@ -716,6 +717,7 @@ function copySplash(builder, manifest, destPath, next) {
 					"-rotate", "auto"
 				], function (splasher) {
 					var formatter = new builder.common.Formatter('splasher');
+
 					splasher.on('out', formatter.out);
 					splasher.on('err', formatter.err);
 					splasher.on('end', function (data) {
@@ -817,7 +819,7 @@ function validateIOSManifest(manifest) {
 	return checkSchema(manifest.ios, schema, "ios");
 }
 
-function makeIOSProject(common, opts, next) {
+function makeIOSProject(opts, next) {
 	// Unpack options
 	var debug = opts.debug;
 	var servicesURL = opts.servicesURL;
@@ -845,12 +847,13 @@ function makeIOSProject(common, opts, next) {
 
 		copyIOSProjectDir(__dirname, opts.destPath, f.wait());
 	}, function() {
-		installAddonsCode(common, {
+		installAddonsCode({
+			builder: opts.builder,
 			destPath: opts.destPath,
 			addonConfig: opts.addonConfig
 		}, f.wait());
 
-		updateIOSProjectFile(common, {
+		updateIOSProjectFile({
 			projectFile: projectFile,
 			ttf: manifest.ttf,
 			bundleID: manifest.ios.bundleID,
@@ -903,8 +906,8 @@ function makeIOSProject(common, opts, next) {
 	}).cb(next);
 }
 
-exports.build = function (common, builder, project, opts, next) {
-	logger = new builder.common.Formatter("build-ios");
+exports.build = function(builder, project, opts, next) {
+	logger = new builder.common.Formatter("native-ios");
 
 	var manifest = project.manifest;
 	var argv = opts.argv;
@@ -985,9 +988,9 @@ exports.build = function (common, builder, project, opts, next) {
 	var f = ff(this, function() {
 		validateSubmodules(f());
 	}, function() {
-		installAddons(common, project, opts, addonConfig, f());
+		installAddons(builder, project, opts, addonConfig, f());
 	}, function() {
-		makeIOSProject(common, {
+		makeIOSProject({
 			builder: builder,
 			project: project,
 			destPath: destPath,
@@ -996,7 +999,7 @@ exports.build = function (common, builder, project, opts, next) {
 			title: title,
 			addonConfig: addonConfig
 		}, f());
-		require(common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
+		require(builder.common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
 	}, function() {
 		copyIcons(manifest.ios.icons, destPath);
 		copyFonts(manifest.ttf, destPath);

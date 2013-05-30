@@ -33,7 +33,7 @@ static PluginManager *m_pluginManager = nil;
 
 JSAG_MEMBER_BEGIN(sendEvent, 3)
 {
-	JSAG_ARG_NSTR(pluginName); // Unused
+	JSAG_ARG_SKIP; // JSAG_ARG_NSTR(pluginName); // Unused
 	JSAG_ARG_NSTR(eventName);
 	JSAG_ARG_CSTR(str);
 	
@@ -65,7 +65,7 @@ JSAG_OBJECT_END
 }
 
 + (void) onDestroyRuntime {
-	
+	m_core = nil;
 }
 
 @end
@@ -128,22 +128,22 @@ JSAG_OBJECT_END
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"GameClosurePlugin" object:self userInfo:dict];
 }
 
-- (void) initializeWithManifest: (NSDictionary *) manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
+- (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
 	[self postNotification:@"initializeWithManifest:appDelegate:" obj1:manifest obj2:appDelegate];
 }
 
-- (void) sendEvent: (NSString *) eventName jsonObject:(NSDictionary*)jsonObject {
+- (void) sendEvent:(NSString *)eventName jsonObject:(NSDictionary*)jsonObject {
 	[self postNotification:@"sendEvent:jsonObject:" obj1:eventName obj2:jsonObject];
 }
 
-- (void) didFailToRegisterForRemoteNotificationsWithError: (NSError *) error application: (UIApplication *) app {
+- (void) didFailToRegisterForRemoteNotificationsWithError:(NSError *)error application:(UIApplication *)app {
 	[self postNotification:@"didFailToRegisterForRemoteNotificationsWithError:application:" obj1:error obj2:app];
 }
 
-- (void) didReceiveRemoteNotification:(NSDictionary *) userInfo application: (UIApplication *) app {
+- (void) didReceiveRemoteNotification:(NSDictionary *)userInfo application:(UIApplication *)app {
 	[self postNotification:@"didReceiveRemoteNotification:application:" obj1:userInfo obj2:app];
 }
-- (void) didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken application: (UIApplication *) app {
+- (void) didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken application:(UIApplication *)app {
 	[self postNotification:@"didRegisterForRemoteNotificationsWithDeviceToken:application:" obj1:deviceToken obj2:app];
 }
 
@@ -159,22 +159,28 @@ JSAG_OBJECT_END
 	[self postNotification:@"applicationWillTerminate:" obj1:app obj2:nil];
 }
 
-- (void) handleOpenURL:(NSURL* )url {
+- (void) handleOpenURL:(NSURL *)url {
 	[self postNotification:@"handleOpenURL:" obj1:url obj2:nil];
 }
 
 - (void) dispatchJSEvent:(NSDictionary *)evt {
 	if (m_core) {
-		JSContext *cx = m_core.cx;
-		JS_BeginRequest(cx);
-		
-		NSString *evt_nstr = [evt JSONString];
-		
-		jsval evt_val = NSTR_TO_JSVAL(cx, evt_nstr);
-		
-		[m_core dispatchEvent:&evt_val count:1];
-		
-		JS_EndRequest(cx);
+		// Run JS synchronously in the main thread
+		dispatch_async(dispatch_get_main_queue(), ^{
+			// Check again in case the JS subsystem was destroyed in the meantime
+			if (m_core) {
+				JSContext *cx = m_core.cx;
+				JS_BeginRequest(cx);
+				
+				NSString *evt_nstr = [evt JSONString];
+				
+				jsval evt_val = NSTR_TO_JSVAL(cx, evt_nstr);
+				
+				[m_core dispatchEvent:&evt_val count:1];
+				
+				JS_EndRequest(cx);
+			}
+		});
 	} else {
 		NSLOG(@"WARNING: Plugin attempted to dispatch a JS event before the JS subsystem was created");
 	}
@@ -206,7 +212,7 @@ JSAG_OBJECT_END
 	return self;
 }
 
-- (void) onPluginNotification:(NSNotification *) notification {
+- (void) onPluginNotification:(NSNotification *)notification {
 	if ([[notification name] isEqualToString:@"GameClosurePlugin"]) {
 		//PluginManager *mgr = (PluginManager *)[notification object];
 		NSDictionary *dict = [notification userInfo];
