@@ -25,11 +25,6 @@ var fs = require('fs');
 var logger;
 
 
-function copyFileSync(from, to) {
-	return fs.writeFileSync(to, fs.readFileSync(from));
-}
-
-
 exports.init = function(common) {
 	console.log("Running install.sh");
 	common.child("sh", ["install.sh"], {
@@ -635,7 +630,7 @@ function updateIOSProjectFile(opts, next) {
 	});
 }
 
-function copyFonts(ttf, destDir) {
+function copyFonts(builder, ttf, destDir) {
 	if (ttf) {
 		var fontDir = path.join(destDir, 'tealeaf/resources/fonts');
 		wrench.mkdirSyncRecursive(fontDir);
@@ -643,12 +638,12 @@ function copyFonts(ttf, destDir) {
 		for (var i = 0, ilen = ttf.length; i < ilen; ++i) {
 			var filePath = ttf[i];
 
-			copyFileSync(filePath, path.join(fontDir, path.basename(filePath)));
+			builder.common.copyFileSync(filePath, path.join(fontDir, path.basename(filePath)));
 		}
 	}
 }
 
-function copyIcons(icons, destPath) {
+function copyIcons(builder, icons, destPath) {
 	if (icons) {
 		['57', '72', '114', '144'].forEach(function(size) {
 			var iconPath = icons[size];
@@ -656,7 +651,7 @@ function copyIcons(icons, destPath) {
 				if (fs.existsSync(iconPath)) {
 					var targetPath = path.join(destPath, 'tealeaf', 'icon' + size + '.png');
 					logger.log("Icons: Copying ", path.resolve(iconPath), " to ", path.resolve(targetPath));
-					copyFileSync(iconPath, targetPath);
+					builder.common.copyFileSync(iconPath, targetPath);
 				} else {
 					logger.warn('Icon', iconPath, 'does not exist.');
 				}
@@ -668,13 +663,6 @@ function copyIcons(icons, destPath) {
 		logger.warn('No icons specified under "ios".');
 	}
 }
-
-var _copyFile = function(srcPath, destPath) {
-	wrench.mkdirSyncRecursive(path.dirname(destPath));
-	if (srcPath) {
-		copyFileSync(srcPath, destPath);
-	}
-};
 
 function copySplash(builder, manifest, destPath, next) {
 	if (manifest.splash) {
@@ -1001,10 +989,11 @@ exports.build = function(builder, project, opts, next) {
 			title: title,
 			addonConfig: addonConfig
 		}, f());
+	}, function() {
 		require(builder.common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
 	}, function() {
-		copyIcons(manifest.ios.icons, destPath);
-		copyFonts(manifest.ttf, destPath);
+		copyIcons(builder, manifest.ios.icons, destPath);
+		copyFonts(builder, manifest.ttf, destPath);
 		copySplash(builder, project, destPath, f.wait());
 	}, function() {
 		// If IPA generation was requested,
