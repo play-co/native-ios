@@ -65,7 +65,7 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 	var paths = builder.common.paths;
 	var addons = project && project.manifest && project.manifest.addons;
 
-	var f = ff(this, function () {
+	var f = ff(this, function() {
 		// For each addon,
 		if (addons) {
 			for (var ii = 0; ii < addons.length; ++ii) {
@@ -86,11 +86,11 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 					logger.log("Installing addon:", addon, "-- Adding ./js to jsio path");
 					require(paths.root('src', 'AddonManager')).registerPath(addon_js);
 				} else {
-					logger.log("Installing addon:", addon, "-- No js directory so no JavaScript will be installed");
+					logger.warn("Installing addon:", addon, "-- No js directory so no JavaScript will be installed");
 				}
 			}
 		}
-	}, function () {
+	}, function() {
 		var group = f.group();
 
 		// For each addon,
@@ -107,11 +107,13 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 			}
 		}
 	}, function(results) {
-		for (var ii = 0; ii < results.length; ++ii) {
-			var addon = addons[ii];
-			addonConfig[addon] = JSON.parse(results[ii]);
+		if (results) {
+			for (var ii = 0; ii < results.length; ++ii) {
+				var addon = addons[ii];
+				addonConfig[addon] = JSON.parse(results[ii]);
 
-			logger.log("Configured addon:", addon);
+				logger.log("Configured addon:", addon);
+			}
 		}
 	}).error(function(err) {
 		logger.error(err);
