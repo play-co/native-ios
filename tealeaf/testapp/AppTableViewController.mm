@@ -407,19 +407,16 @@ static NSThread *appLoadListThread = nil;
 				if (resData == nil) {
 					//cancel everything, we need all the files to continue forward
 					//run on ui thread
-					dispatch_async(dispatch_get_main_queue(), ^{
-						[progressviewBacking removeFromSuperview];
-					});
-					return;
-				}
-
-				[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, valueStr] withData:resData];
-				BOOL fileNowExists = [[NSFileManager defaultManager] fileExistsAtPath:foofile];
-
-				if (!fileNowExists) {
-					NSLOG(@"{testapp} WARNING: Unable to write %@", foofile);
+					NSLOG(@"{testapp} WARNING: Unable to find a requested file: %@", valueStr);
 				} else {
-					NSLOG(@"{testapp} Cache update: %@", valueStr);
+					[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, valueStr] withData:resData];
+					BOOL fileNowExists = [[NSFileManager defaultManager] fileExistsAtPath:foofile];
+					
+					if (!fileNowExists) {
+						NSLOG(@"{testapp} WARNING: Unable to write %@", foofile);
+					} else {
+						NSLOG(@"{testapp} Cache update: %@", valueStr);
+					}
 				}
 			}
 			
