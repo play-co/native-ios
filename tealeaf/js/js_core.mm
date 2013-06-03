@@ -334,6 +334,7 @@ JSAG_OBJECT_END
 	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(screen), "height", &jscreenH);
 	jsval global_val = OBJECT_TO_JSVAL(self.global);
 	JS_SetProperty(self.cx, self.global, "window", &global_val);
+	JS_SetProperty(self.cx, self.global, "GLOBAL", &global_val);
 	JS_SetProperty(self.cx, self.global, "screen", &screen);
 	
 	jsval gid = NSTR_TO_JSVAL(cx, [js_core getDeviceId]);

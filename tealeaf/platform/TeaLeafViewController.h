@@ -20,10 +20,10 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
-@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, ABPeoplePickerNavigationControllerDelegate, UIActionSheetDelegate> {
+@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate> {
 @private
 int callback;
-UIAlertView *message;
+//UIAlertView *message;
 }
 
 @property (nonatomic, retain) UIImageView *loading_image_view;

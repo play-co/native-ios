@@ -50,51 +50,6 @@ static NSString *get_platform() {
     return platform;
 }
 
-// Read manifest file to determine game portrait/landscape modes
-static void ReadManifest(bool *isPortrait, bool *isLandscape) {
-	bool loaded_success = false;
-	
-	*isPortrait = false;
-	*isLandscape = false;
-	
-	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
-	if (manifest_file != nil) {
-		const char *c_manifest_file = [manifest_file UTF8String];
-		json_error_t err;
-		json_t *manifest = json_loads(c_manifest_file, 0, &err);
-		if (manifest && json_is_object(manifest)) {
-			json_t *orient = json_object_get(manifest, "supportedOrientations");
-			if (orient && json_is_array(orient)) {
-				loaded_success = true;
-				int orient_len = (int)json_array_size(orient);
-				for (int ii = 0; ii < orient_len; ++ii) {
-					json_t *entry = json_array_get(orient, ii);
-					if (entry && json_is_string(entry)) {
-						const char *str = json_string_value(entry);
-						if (0 == strcasecmp(str, "landscape")) {
-							// Landscape mode is specified
-							*isLandscape = true;
-						}
-						else if (0 == strcasecmp(str, "portrait")) {
-							// Portrait mode is specified
-							*isPortrait = true;
-						}
-					}
-				}
-			}
-		}
-		json_decref(manifest);
-	} else {
-		LOG("WARNING: Manifest.json not found");
-	}
-	
-	if (!loaded_success) {
-		LOG("ERROR: Unable to read manifest.json!!!");
-	} else {
-		LOG("Successfully read manifest.json");
-	}
-}
-
 
 static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
 
@@ -120,15 +75,53 @@ CEXPORT void device_hide_splash() {
 
 - (TeaLeafViewController*) init {
 	self = [super init];
-
+	
 	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
 	
-	// Read preferred orientation from game manifest
-	bool gamePortrait = false, gameLandscape = false;
-	ReadManifest(&gamePortrait, &gameLandscape);
-	self.appDelegate.gameSupportsLandscape = gameLandscape ? YES : NO;
-	self.appDelegate.gameSupportsPortrait = gamePortrait ? YES : NO;
-
+	// Default is to allow any sort of orientation on failure to read the manifest
+	self.appDelegate.gameSupportsLandscape = YES;
+	self.appDelegate.gameSupportsPortrait = YES;
+	
+	// Read manifest file
+	NSError *err = nil;
+	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
+	NSDictionary *dict = nil;
+	int length = 0;
+	if (manifest_file) {
+		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
+		length = [manifest_file length];
+		dict = [decoder objectWithUTF8String:(const unsigned char *)[manifest_file UTF8String] length:(NSUInteger)length error:&err];
+	}
+	
+	// If failed to load,
+	if (!dict) {
+		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", length);
+	} else {
+		self.appDelegate.appManifest = dict;
+		
+		@try {
+			// Look up supported orientations
+			NSArray *orientations = (NSArray *)[dict valueForKey:@"supportedOrientations"];
+			
+			// Now that we're getting some info from the manifest, just turn on the ones the game developer wanted
+			self.appDelegate.gameSupportsLandscape = NO;
+			self.appDelegate.gameSupportsPortrait = NO;
+			
+			for (int ii = 0, count = [orientations count]; ii < count; ++ii) {
+				NSString *str = (NSString *)[orientations objectAtIndex:ii];
+				NSLOG(@"{manifest} Read orientation: %@", str);
+				if ([str caseInsensitiveCompare:@"landscape"] == NSOrderedSame) {
+					self.appDelegate.gameSupportsLandscape = YES;
+				} else if ([str caseInsensitiveCompare:@"portrait"] == NSOrderedSame) {
+					self.appDelegate.gameSupportsPortrait = YES;
+				}
+			}
+		}
+		@catch (NSException *exception) {
+			NSLOG(@"{manifest} Failure to read orientation data: %@", [exception debugDescription]);
+		}
+	}
+	
 	return self;
 }
 
@@ -219,29 +212,10 @@ CEXPORT void device_hide_splash() {
 	// Release any cached data, images, etc that aren't in use.
 }
 
-
 - (void)onJSReady {
 	//This needs to be run on the main thread - it does some opengl stuff
 	dispatch_async(dispatch_get_main_queue(), ^{
-		// Launch!
-		NSDictionary *json = @{
-		@"appID" : fixDictString(self.appDelegate.config, @"app_id"),
-		@"appleID" : fixDictString(self.appDelegate.config, @"apple_id"),
-		@"bundleID" : fixDictString(self.appDelegate.config, @"bundle_id"),
-		@"version" : fixDictString(self.appDelegate.config, @"version"),
-		@"servicesURL" : fixDictString(self.appDelegate.config, @"services_url"),
-		@"pushURL" : fixDictString(self.appDelegate.config, @"push_url"),
-		@"contactsURL" : fixDictString(self.appDelegate.config, @"contacts_url"),
-		@"userdataURL" : fixDictString(self.appDelegate.config, @"userdata_url"),
-		@"studioName" : fixDictString(self.appDelegate.config, @"studio_name"),
-		@"notification" : self.appDelegate.launchNotification?self.appDelegate.launchNotification:[NSNull null]
-		};
-		
-		for (id key in json) {
-			NSLOG(@"plugins init json: key=%@, value=%@", key, [json objectForKey:key]);
-		}
-		
-		[self.appDelegate.pluginManager initializeUsingJSON:json];
+		[self.appDelegate.pluginManager initializeWithManifest:self.appDelegate.appManifest appDelegate:self.appDelegate];
 		
 		self.appDelegate.launchNotification = nil;
 		
@@ -375,9 +349,6 @@ CEXPORT void device_hide_splash() {
 	[self.appDelegate.window.rootViewController.view addSubview:self.loading_image_view];
 	m_showing_splash = YES;
 
-	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
-	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
-	
 	// Initialize text manager
 	if (!text_manager_init()) {
 		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
@@ -388,6 +359,9 @@ CEXPORT void device_hide_splash() {
 		NSLOG(@"{tealeaf} ERROR: Unable to setup javascript runtime.");
 	}
    
+	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
+	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
+	
 	// Run JS initialization in another thread
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, (unsigned long)NULL), ^(void) {
 		NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];

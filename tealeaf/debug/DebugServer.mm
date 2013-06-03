@@ -73,6 +73,11 @@ static const JKSerializeOptionFlags JK_ENCODE_FLAGS = JKSerializeOptionEscapeUni
 }
 
 - (id) init:(int)index key:(NSString *)key path:(NSString *)path source:(NSString *)source {
+	self = [super init];
+	if (!self) {
+		return nil;
+	}
+
 	self.index = index;
 	self.key = key;
 	self.path = path;
@@ -140,6 +145,11 @@ static const JKSerializeOptionFlags JK_ENCODE_FLAGS = JKSerializeOptionEscapeUni
 }
 
 - (id) init {
+	self = [super init];
+	if (!self) {
+		return nil;
+	}
+	
 	self.scripts = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 
 	return self;
@@ -462,6 +472,11 @@ static void *CallHook(JSContext *cx, JSStackFrame *fp, JSBool before, JSBool *ok
 }
 
 - (id) init:(DebugServer *)server {
+	self = [super init];
+	if (!self) {
+		return nil;
+	}
+	
 	self.server = server;
 
 	self.breakpoints = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
@@ -1010,8 +1025,8 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 			} else if ([command caseInsensitiveCompare:@"continue"] == NSOrderedSame) {
 				if (args) {
 					id istepaction = [args valueForKey:@"stepaction"];
-					id istepcount = [args valueForKey:@"stepcount"];
-
+/*					id istepcount = [args valueForKey:@"stepcount"];
+					TODO: Do something with step count
 					int stepcount = 1;
 
 					if (istepcount) {
@@ -1021,7 +1036,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 							stepcount = [(NSNumber *)istepcount intValue];
 						}
 					}
-
+*/
 					if ([istepaction isKindOfClass:[NSString class]]) {
 						NSString *stepaction = (NSString *)istepaction;
 
@@ -1079,9 +1094,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 				// Parse out breakpoint id parameter
 				if (args) {
 					id ienabled = [args valueForKey:@"enabled"];
-					id itype = [args valueForKey:@"type"];
 					int enabled = 0;
-					NSString *type = @"none";
 
 					if (ienabled) {
 						if ([ienabled isKindOfClass:[NSString class]]) {
@@ -1090,13 +1103,16 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 							enabled = [(NSNumber*)ienabled intValue];
 						}
 					}
+/*					TODO: Do something with the type
+					id itype = [args valueForKey:@"type"];
+					NSString *type = @"none";
 
 					if (itype) {
 						if ([itype isKindOfClass:[NSString class]]) {
 							type = (NSString*)itype;
 						}
 					}
-
+*/
 					// TODO: How to handle ONLY uncaught exceptions?
 					
 					[self.server setThrowHook:(enabled != 0)];

@@ -109,9 +109,8 @@ static int base_path_len = 0;
 @implementation ResourceLoader
 
 + (void) release {
-	
 	if (instance != nil) {
-		[instance  release];
+		[instance release];
 		instance = nil;
 	}
 }
