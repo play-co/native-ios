@@ -344,30 +344,26 @@
 
 }
 
-
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken
 {
-	//sendToken(self.js, deviceToken);
-	[self.pluginManager	 application:app didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+	[self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
 }
 
 - (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error
 {
-	NSLOG(@"Push notification registration failed: %@", error);
-	// TODO later: reschedule activating push notifications
-	[self.pluginManager	 application:app didFailToRegisterForRemoteNotificationsWithError:error];
+	NSLOG(@"{notifications} Push notification registration failed: %@", error);
+
+	[self.pluginManager didFailToRegisterForRemoteNotificationsWithError:error application:app];
 }
 
 - (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-	//TODO: Implement full workflow
-	[self.pluginManager	 application:app didReceiveRemoteNotification:userInfo];
+	[self.pluginManager didReceiveRemoteNotification:userInfo application:app];
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+- (void)application:(UIApplication *)app didReceiveLocalNotification:(UILocalNotification *)notification
 {
-	//TODO: Implement full workflow
-	// For now, dont do anything. We dont present notifications if app is running in the foreground.
+	[self.pluginManager didReceiveLocalNotification:notification application:app];
 }
 
 

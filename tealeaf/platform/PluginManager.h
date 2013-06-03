@@ -15,39 +15,57 @@
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//START_PLUGINS_IMPORTS
-//END_PLUGINS_IMPORTS
+#import "TeaLeafAppDelegate.h"
+#import "js/js_core.h"
 
-@protocol PluginManagerDelegate <NSObject>
-- (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error;
-- (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *) userInfo;
-- (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken;
-- (void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification;
-- (void)applicationDidBecomeActive:(UIApplication *)application;
-- (void)applicationWillTerminate:(UIApplication *)application;
-- (void) handleOpenURL:(NSURL* )url;
-- (void) initializeUsingJSON:(NSDictionary *)json;
+@class TeaLeafAppDelegate;
+
+
+@interface jsPluginManager : NSObject
++ (void) addToRuntime:(js_core *)js;
++ (void) onDestroyRuntime;
 @end
 
-@interface PluginManager : NSObject  
-//START_DEF_DELEGATES
-//END_DEF_DELEGATES
-{
-//START_DECL_VARS
-//END_DECL_VARS
-}
 
-//START_PLUGINS_FUNCS
-//END_PLUGINS_FUNCS
-
-- (void) sendEvent:(NSString*) eventInfo isJS:(BOOL) isJS;
-- (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error;
-- (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *) userInfo;
-- (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken;
-- (void) application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification;
-- (void) initializeUsingJSON:(NSDictionary *)json;
-- (void)applicationDidBecomeActive:(UIApplication *)application;
-- (void)applicationWillTerminate:(UIApplication *)application;
-- (void) handleOpenURL:(NSURL* )url;
-
+// Required and optional methods to implement
+@protocol GCPluginProtocol
+@required
+- (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate;
+- (void) sendEvent:(NSString *)eventName jsonObject:(NSDictionary *)jsonObject;
+@optional
+- (void) didFailToRegisterForRemoteNotificationsWithError:(NSError *)error application:(UIApplication *)app;
+- (void) didReceiveRemoteNotification:(NSDictionary *)userInfo application:(UIApplication *)app;
+- (void) didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken application:(UIApplication *)app;
+- (void) didReceiveLocalNotification:(UILocalNotification *)notification application:(UIApplication *)app;
+- (void) applicationDidBecomeActive:(UIApplication *)app;
+- (void) applicationWillTerminate:(UIApplication *)app;
+- (void) handleOpenURL:(NSURL *)url;
 @end
+
+
+@interface PluginManager : NSObject<GCPluginProtocol>
+@property (nonatomic, retain) NSMutableArray *plugins;
+
+- (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
+- (void) dispatchJSEvent:(NSDictionary *)evt;
+@end
+
+
+// Derive from this object to receive notification events
+@interface GCPlugin : NSObject<GCPluginProtocol>
+- (void) onPluginNotification:(NSNotification *) notification;
+@end
+
+
+//START_PLUGIN_CODE
+
+// Your plugin header code will be injected here.
+
+// Here's an example plugin that will be replaced with yours:
+
+#import <CoreLocation/CoreLocation.h>
+
+@interface MyPlugin : GCPlugin
+@end
+
+//END_PLUGIN_CODE
