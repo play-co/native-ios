@@ -73,6 +73,10 @@ JSAG_OBJECT_END
 
 @implementation PluginManager
 
++ (PluginManager *) get {
+	return m_pluginManager;
+}
+
 - (void) dealloc {
 	self.plugins = nil;
 	
@@ -242,46 +246,3 @@ JSAG_OBJECT_END
 }
 
 @end
-
-
-//START_PLUGIN_CODE
-
-// Your plugin source code will be injected here.
-
-@implementation MyPlugin
-
-// The plugin must call super dealloc.
-- (void) dealloc {
-	[super dealloc];
-}
-
-// The plugin must call super init.
-- (id) init {
-	self = [super init];
-	if (!self) {
-		return nil;
-	}
-
-	return self;
-}
-
-- (void) initializeWithManifest: (NSDictionary *) manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
-	NSLOG(@"{myplugin} Initialized with manifest");
-}
-
-- (void) sendEvent: (NSString *) eventName jsonObject:(NSDictionary *)jsonObject {
-	@try {
-		NSString *method = [jsonObject valueForKey:@"method"];
-		
-		if ([method isEqualToString:@"getRequestedData"]) {
-			NSLOG(@"{myplugin} Got request");
-		}
-	}
-	@catch (NSException *exception) {
-		NSLOG(@"{myplugin} Exception while processing event: ", exception);
-	}
-}
-
-@end
-
-//END_PLUGIN_CODE
