@@ -134,96 +134,12 @@ var replaceTextBetween = function(text, startToken, endToken, replaceText) {
 	return newText;
 }
 
-var installAddonsCode = function(opts, next) {
-	var paths = opts.builder.common.paths;
+var installAddonsProject = function(builder, opts, next) {
+	var addonConfig = opts.addonConfig;
+	var contents = opts.contents;
+	var destDir = opts.destDir;
+	var paths = builder.common.paths;
 
-	var headerCode = "";
-	var sourceCode = "";
-
-	var f = ff(this, function () {
-		logger.log("Installing addons: Reading headers");
-
-		var group = f.group();
-
-		for (var addon in opts.addonConfig) {
-			var config = opts.addonConfig[addon];
-
-			if (config.header) {
-				var headerPath = paths.addons(addon, 'ios', config.header);
-
-				if (fs.existsSync(headerPath)) {
-					logger.log("Installing header:", headerPath);
-
-					fs.readFile(headerPath, 'utf8', group.slot());
-				} else {
-					logger.warn("Unable to find iOS addon header file", headerPath);
-				}
-			}
-		}
-	}, function (results) {
-		logger.log("Installing addons: Reading source");
-
-		if (results) {
-			for (var ii = 0; ii < results.length; ++ii) {
-				var header = results[ii];
-
-				headerCode += "\n\n/* BEGIN HEADER */\n\n" + header + "\n\n/* END HEADER */\n\n";
-			}
-		} else {
-			logger.warn("No header code to read");
-		}
-
-		var group = f.group();
-
-		for (var addon in opts.addonConfig) {
-			var config = opts.addonConfig[addon];
-
-			if (config.header) {
-				var sourcePath = paths.addons(addon, 'ios', config.source);
-
-				if (fs.existsSync(sourcePath)) {
-					logger.log("Installing source:", sourcePath);
-
-					fs.readFile(sourcePath, 'utf8', group.slot());
-				} else {
-					logger.warn("Unable to find iOS addon source file", sourcePath);
-				}
-			}
-		}
-	}, function (results) {
-		logger.log("Installing addons: Reading PluginManager code");
-
-		if (results) {
-			for (var ii = 0; ii < results.length; ++ii) {
-				var source = results[ii];
-
-				sourceCode += "\n\n/* BEGIN SOURCE */\n\n" + source + "\n\n/* END SOURCE */\n\n";
-			}
-		} else {
-			logger.warn("No source code to read");
-		}
-
-		var managerHeader = path.join(opts.destPath, "tealeaf/platform", "PluginManager.h");
-		var managerSource = path.join(opts.destPath, "tealeaf/platform", "PluginManager.mm");
-
-		f(managerHeader, managerSource);
-
-		fs.readFile(managerHeader, 'utf8', f.slot());
-		fs.readFile(managerSource, 'utf8', f.slot());
-	}, function (managerHeader, managerSource, header, source) {
-		logger.log("Installing addons: Modifying PluginManager code");
-
-		header = replaceTextBetween(header, "//START_PLUGIN_CODE", "//END_PLUGIN_CODE", headerCode);
-		source = replaceTextBetween(source, "//START_PLUGIN_CODE", "//END_PLUGIN_CODE", sourceCode);
-
-		fs.writeFile(managerHeader, header, f.wait());
-		fs.writeFile(managerSource, source, f.wait());
-	}).error(function(err) {
-		logger.error(err);
-	}).cb(next);
-}
-
-var installAddonsProject = function(builder, addonConfig, contents, next) {
 	var f = ff(this, function () {
 		var frameworks = {};
 
@@ -234,6 +150,12 @@ var installAddonsProject = function(builder, addonConfig, contents, next) {
 				for (var ii = 0; ii < config.frameworks.length; ++ii) {
 					var framework = config.frameworks[ii];
 
+					if (path.extname(framework) === "") {
+						framework = path.basename(framework);
+					} else {
+						framework = paths.addons(addon, 'ios', framework);
+					}
+
 					frameworks[framework] = 1;
 				}
 			}
@@ -242,9 +164,27 @@ var installAddonsProject = function(builder, addonConfig, contents, next) {
 		var frameworkId = 1;
 
 		for (var framework in frameworks) {
-			logger.log("Installing framework:", framework);
+			var fileType;
+			var sourceTree;
+			var filename = "framework" + frameworkId + "_" + path.basename(framework);
 
-			var filename = "installed" + frameworkId + ".framework";
+			// If extension is framework,
+			if (path.extname(framework) === ".a") {
+				logger.log("Installing library:", framework);
+				fileType = "archive.ar";
+				sourceTree = '"<group>"';
+				framework = path.relative(destDir, framework);
+			} else if (path.extname(framework) === ".framework") {
+				logger.log("Installing framework:", framework);
+				fileType = "wrapper.framework";
+				sourceTree = '"<group>"';
+				framework = path.relative(destDir, framework);
+			} else if (path.extname(framework) === "") {
+				logger.log("Installing system framework:", framework);
+				fileType = "wrapper.framework";
+				sourceTree = 'SDKROOT';
+				framework = "System/Library/Frameworks/" + path.basename(framework) + ".framework";
+			}
 
 			var uuid1 = "BAADBEEF";
 			uuid1 += String('00000000' + frameworkId.toString(16).toUpperCase()).slice(-8);
@@ -253,6 +193,8 @@ var installAddonsProject = function(builder, addonConfig, contents, next) {
 			var uuid2 = "DEADD00D";
 			uuid2 += String('00000000' + frameworkId.toString(16).toUpperCase()).slice(-8);
 			uuid2 += "BAADFEED";
+
+			++frameworkId;
 
 			// Read out UUID for storekit
 			var uuid1_storekit, uuid2_storekit;
@@ -318,8 +260,131 @@ var installAddonsProject = function(builder, addonConfig, contents, next) {
 				}
 			}
 		}
+
+		var codes = {};
+
+		for (var key in addonConfig) {
+			var config = addonConfig[key];
+
+			if (config.code) {
+				for (var ii = 0; ii < config.code.length; ++ii) {
+					var code = config.code[ii];
+
+					code = paths.addons(key, 'ios', code);
+
+					var file = path.relative(path.join(destDir, "tealeaf/platform"), code);
+
+					codes[file] = 1;
+				}
+			}
+		}
+
+		var codeId = 1;
+
+		for (var code in codes) {
+			logger.log("Installing code:", code);
+
+			var ext = path.extname(code);
+			var fileType;
+			var skipBuild = false; // Do not add to build step?
+			if (ext === ".m") {
+				fileType = "sourcecode.c.objc";
+			} else if (ext === ".mm") {
+				fileType = "sourcecode.cpp.objcpp";
+			} else if (ext === ".c") {
+				fileType = "sourcecode.c.c";
+			} else if (ext === ".cpp" || ext === ".cc") {
+				fileType = "sourcecode.cpp.cpp";
+			} else if (ext === ".h" || ext == ".hpp") {
+				fileType = "sourcecode.c.h";
+				skipBuild = true;
+			} else {
+				throw new Error("Unsupported file type: " + code);
+			}
+
+			var filename = "code" + codeId + "_" + path.basename(code);
+
+			var uuid1 = "BAAFBEEF";
+			uuid1 += String('00000000' + codeId.toString(16).toUpperCase()).slice(-8);
+			uuid1 += "DEAFDEED"; // Unique from TTF installer
+
+			var uuid2 = "DEAFD00D";
+			uuid2 += String('00000000' + codeId.toString(16).toUpperCase()).slice(-8);
+			uuid2 += "BAAFFEED";
+
+			++codeId;
+
+			// Read out UUID for plugin manager
+			var uuid1_pm, uuid2_pm;
+
+			// Inject PBXFileReference
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
+
+				if (line.indexOf("path = PluginManager.mm") > 0) {
+					uuid1_pm = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
+
+					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = " + fileType + "; path = \"" + code + "\"; sourceTree = \"<group>\"; };");
+
+					logger.log(" - Found PBXFileReference template on line", ii, "with uuid", uuid1_pm);
+
+					break;
+				}
+			}
+
+			// Inject reference to PBXFileReference
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
+
+				// If line has the storekit UUID,
+				if (line.indexOf(uuid1_pm) > 0 && line.indexOf("PBXFileReference") == -1 && line.indexOf("PBXBuildFile") == -1) {
+					contents.splice(++ii, 0, "\t\t\t" + uuid1 + " /* " + filename + " */,");
+
+					logger.log(" - Found PBXFileReference reference template on line", ii);
+
+					break;
+				}
+			}
+
+			// If skipping build step injection,
+			if (skipBuild) {
+				logger.log(" - Skipping build step injection");
+			} else {
+				// Inject PBXBuildFile
+				for (var ii = 0; ii < contents.length; ++ii) {
+					var line = contents[ii];
+
+					// If line has the storekit UUID,
+					if (line.indexOf("fileRef = " + uuid1_pm) > 0) {
+						uuid2_pm = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
+
+						contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Sources */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; };");
+
+						logger.log(" - Found PBXBuildFile template on line", ii, "with uuid", uuid2_pm);
+
+						break;
+					}
+				}
+
+				var uuid2_match_regex = new RegExp("/^[ \\t]+" + uuid2_pm + "/");
+
+				// Inject reference to PBXBuildFile
+				for (var ii = 0; ii < contents.length; ++ii) {
+					var line = contents[ii];
+
+					// If line has the storekit UUID,
+					if (line.indexOf(uuid2_pm) > 0 && line.indexOf("PBXFileReference") == -1 && line.indexOf("PBXBuildFile") == -1) {
+						contents.splice(++ii, 0, "\t\t\t" + uuid2 + " /* " + filename + " in Sources */,");
+
+						logger.log(" - Found PBXBuildFile reference template on line", ii);
+
+						break;
+					}
+				}
+			}
+		}
 	}).error(function(err) {
-		logger.error(err);
+		logger.error("Failure in installing addon project changes:", err);
 	}).cb(next);
 }
 
@@ -513,7 +578,7 @@ function updatePListFile(opts, next) {
 var DEFAULT_IOS_PRODUCT = 'TeaLeafIOS';
 var NAMES_TO_REPLACE = /(PRODUCT_NAME)|(name = )|(productName = )/;
 
-function updateIOSProjectFile(opts, next) {
+function updateIOSProjectFile(builder, opts, next) {
 	fs.readFile(opts.projectFile, 'utf8', function(err, data) {
 		if (err) {
 			next(err);
@@ -619,7 +684,11 @@ function updateIOSProjectFile(opts, next) {
 			}
 
 			// Run it through the plugin system before writing
-			installAddonsProject(opts.builder, opts.addonConfig, contents, function() {
+			installAddonsProject(builder, {
+				addonConfig: opts.addonConfig,
+				contents: contents,
+				destDir: opts.destDir
+			}, function() {
 				contents = contents.join('\n');
 
 				fs.writeFile(opts.projectFile, contents, 'utf8', function(err) {
@@ -809,7 +878,7 @@ function validateIOSManifest(manifest) {
 	return checkSchema(manifest.ios, schema, "ios");
 }
 
-function makeIOSProject(opts, next) {
+function makeIOSProject(builder, opts, next) {
 	// Unpack options
 	var debug = opts.debug;
 	var servicesURL = opts.servicesURL;
@@ -827,9 +896,9 @@ function makeIOSProject(opts, next) {
 	var gameHash, sdkHash, nativeHash;
 
 	var f = ff(this, function(){
-		opts.builder.packager.getGameHash(opts.project, f.slotPlain());
-		opts.builder.packager.getSDKHash(f.slotPlain());
-		getIOSHash(opts.builder.git, f.slotPlain());
+		builder.packager.getGameHash(opts.project, f.slotPlain());
+		builder.packager.getSDKHash(f.slotPlain());
+		getIOSHash(builder.git, f.slotPlain());
 	}, function(game_hash, sdk_hash, native_hash) {
 		gameHash = game_hash;
 		sdkHash = sdk_hash;
@@ -837,17 +906,12 @@ function makeIOSProject(opts, next) {
 
 		copyIOSProjectDir(__dirname, opts.destPath, f.wait());
 	}, function() {
-		installAddonsCode({
-			builder: opts.builder,
-			destPath: opts.destPath,
-			addonConfig: opts.addonConfig
-		}, f.wait());
-
-		updateIOSProjectFile({
+		updateIOSProjectFile(builder, {
 			projectFile: projectFile,
 			ttf: manifest.ttf,
 			bundleID: manifest.ios.bundleID,
-			addonConfig: opts.addonConfig
+			addonConfig: opts.addonConfig,
+			destDir: opts.destPath
 		}, f.wait());
 
 		var plistFile = path.join(opts.destPath, 'tealeaf/TeaLeafIOS-Info.plist');
@@ -980,8 +1044,7 @@ exports.build = function(builder, project, opts, next) {
 	}, function() {
 		installAddons(builder, project, opts, addonConfig, f());
 	}, function() {
-		makeIOSProject({
-			builder: builder,
+		makeIOSProject(builder, {
 			project: project,
 			destPath: destPath,
 			debug: argv.debug,

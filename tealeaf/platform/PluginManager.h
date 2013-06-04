@@ -48,6 +48,8 @@
 
 - (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
 - (void) dispatchJSEvent:(NSDictionary *)evt;
+
++ (PluginManager *) get;
 @end
 
 
@@ -55,17 +57,3 @@
 @interface GCPlugin : NSObject<GCPluginProtocol>
 - (void) onPluginNotification:(NSNotification *) notification;
 @end
-
-
-//START_PLUGIN_CODE
-
-// Your plugin header code will be injected here.
-
-// Here's an example plugin that will be replaced with yours:
-
-#import <CoreLocation/CoreLocation.h>
-
-@interface MyPlugin : GCPlugin
-@end
-
-//END_PLUGIN_CODE
