@@ -31,7 +31,6 @@
 @protocol GCPluginProtocol
 @required
 - (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate;
-- (void) sendEvent:(NSString *)eventName jsonObject:(NSDictionary *)jsonObject;
 @optional
 - (void) didFailToRegisterForRemoteNotificationsWithError:(NSError *)error application:(UIApplication *)app;
 - (void) didReceiveRemoteNotification:(NSDictionary *)userInfo application:(UIApplication *)app;
@@ -44,10 +43,12 @@
 
 
 @interface PluginManager : NSObject<GCPluginProtocol>
-@property (nonatomic, retain) NSMutableArray *plugins;
+@property (nonatomic, retain) NSMutableDictionary *plugins;
 
 - (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
 - (void) dispatchJSEvent:(NSDictionary *)evt;
+
+- (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event;
 
 + (PluginManager *) get;
 @end
