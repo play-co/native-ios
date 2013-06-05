@@ -33,7 +33,7 @@ static PluginManager *m_pluginManager = nil;
 
 JSAG_MEMBER_BEGIN(sendEvent, 3)
 {
-	JSAG_ARG_SKIP; // JSAG_ARG_NSTR(pluginName); // Unused
+	JSAG_ARG_NSTR(pluginName);
 	JSAG_ARG_NSTR(eventName);
 	JSAG_ARG_CSTR(str);
 	
@@ -43,7 +43,7 @@ JSAG_MEMBER_BEGIN(sendEvent, 3)
 	if (!json || err) {
 		NSLOG(@"{plugins} WARNING: Event passed to NATIVE.plugins.sendEvent does not contain a valid JSON string.");
 	} else {
-		[m_core.pluginManager sendEvent:eventName jsonObject:json];
+		[m_pluginManager plugin:pluginName name:eventName event:json];
 	}
 }
 JSAG_MEMBER_END
@@ -91,7 +91,7 @@ JSAG_OBJECT_END
 	
 	m_pluginManager = self;
 	
-	self.plugins = [NSMutableArray array];
+	self.plugins = [NSMutableDictionary dictionary];
 	
 	Class *classes = 0;
 	int numClasses = objc_getClassList(0, 0);
@@ -110,12 +110,15 @@ JSAG_OBJECT_END
 				id pluginInstance = [[[objc_lookUpClass(className) alloc] init] autorelease];
 				
 				if (pluginInstance) {
-					[self.plugins addObject:pluginInstance];
+					NSString *key = [NSString stringWithUTF8String:className];
+					
+					[self.plugins setObject:pluginInstance forKey:key];
 					
 					NSLog(@"{plugins} Instantiated %s", className);
 				}
 			}
 		}
+		
 		free(classes);
 	}
 	
@@ -134,10 +137,6 @@ JSAG_OBJECT_END
 
 - (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
 	[self postNotification:@"initializeWithManifest:appDelegate:" obj1:manifest obj2:appDelegate];
-}
-
-- (void) sendEvent:(NSString *)eventName jsonObject:(NSDictionary*)jsonObject {
-	[self postNotification:@"sendEvent:jsonObject:" obj1:eventName obj2:jsonObject];
 }
 
 - (void) didFailToRegisterForRemoteNotificationsWithError:(NSError *)error application:(UIApplication *)app {
@@ -187,6 +186,18 @@ JSAG_OBJECT_END
 		});
 	} else {
 		NSLOG(@"WARNING: Plugin attempted to dispatch a JS event before the JS subsystem was created");
+	}
+}
+
+- (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
+	id instance = [self.plugins valueForKey:plugin];
+	if (instance) {
+		SEL selector = NSSelectorFromString([name stringByAppendingString:@":"]);
+		if ([instance respondsToSelector:selector]) {
+			[instance performSelector:selector withObject:event];
+		}
+	} else {
+		NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin: %@", plugin);
 	}
 }
 
