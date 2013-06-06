@@ -164,27 +164,24 @@ JSAG_OBJECT_END
 	[self postNotification:@"handleOpenURL:" obj1:url obj2:nil];
 }
 
-- (void) dispatchJSEvent:(NSDictionary *)evt {
-	if (m_core) {
-		// Run JS synchronously in the main thread
+- (void) dispatchJSEventWithJSONString: (NSString*) str {
+    if (m_core) {
+        JSContext *cx = m_core.cx;
 		dispatch_async(dispatch_get_main_queue(), ^{
-			// Check again in case the JS subsystem was destroyed in the meantime
-			if (m_core) {
-				JSContext *cx = m_core.cx;
-				JS_BeginRequest(cx);
-				
-				NSString *evt_nstr = [evt JSONString];
-				
-				jsval evt_val = NSTR_TO_JSVAL(cx, evt_nstr);
-				
-				[m_core dispatchEvent:&evt_val count:1];
-				
-				JS_EndRequest(cx);
-			}
-		});
-	} else {
-		NSLOG(@"WARNING: Plugin attempted to dispatch a JS event before the JS subsystem was created");
-	}
+            if (m_core) {
+                JS_BeginRequest(cx);
+                jsval evt_val = NSTR_TO_JSVAL(cx, str);
+                [m_core dispatchEvent:&evt_val count:1];
+            }
+        });
+    } else {
+            NSLOG(@"WARNING: Plugin attempted to dispatch a JS event before the JS subsystem was created");
+    }
+}
+
+- (void) dispatchJSEvent:(NSDictionary *)evt {
+    NSString *evt_nstr = [evt JSONString];
+    [self dispatchJSEventWithJSONString:evt_nstr];
 }
 
 - (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
