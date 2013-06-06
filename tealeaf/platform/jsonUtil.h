@@ -29,6 +29,7 @@
 // Add key to object with the given string as a value, or add a javascript
 // null value if the string value is null in Objective C
 void JSON_AddOptionalString(json_t *obj, const char *key, NSString *value);
+void JSON_AppendOptionalString(json_t *arr, NSString *value);
 
 #endif // JSON_UTIL_H
 

@@ -23,3 +23,11 @@ void JSON_AddOptionalString(json_t *obj, const char *key, NSString *value) {
 	}
 }
 
+void JSON_AppendOptionalString(json_t *arr, NSString *value) {
+    if (value == nil || value == (id)[NSNull null]) {
+        json_array_append(arr, json_null());
+    } else {
+        json_array_append_new(arr, json_string_nocheck([value UTF8String]));
+    }
+}
+
