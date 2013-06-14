@@ -182,10 +182,8 @@
 		4E35EA8416B9FEEE004FD452 /* timestep_text_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_text_data.h; sourceTree = "<group>"; };
 		4E35EA8516B9FEEE004FD452 /* timestep_view.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_view.cpp; sourceTree = "<group>"; };
 		4E35EA8616B9FEEE004FD452 /* timestep_view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_view.h; sourceTree = "<group>"; };
-		4E35EAB716BB0D3F004FD452 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		4E35EAB916BB0D94004FD452 /* libjs_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjs_static.a; path = deps/spidermonkey/libjs_static.a; sourceTree = "<group>"; };
 		4E35EABA16BB0D94004FD452 /* libnspr4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnspr4.a; path = deps/spidermonkey/libnspr4.a; sourceTree = "<group>"; };
-		4E35EACD16BB2082004FD452 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4E3BA03C160BDD5A0070C5FF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4E4919E5167AA57100DFA99B /* jsHaptics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsHaptics.h; sourceTree = "<group>"; };
 		4E4919E6167AA57100DFA99B /* jsHaptics.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsHaptics.mm; sourceTree = "<group>"; };
@@ -356,8 +354,6 @@
 		4EB0C68A16BBB4B900838A49 /* ServerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerTableViewController.h; sourceTree = "<group>"; };
 		4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ServerTableViewController.mm; sourceTree = "<group>"; };
 		4EC8F76915D1E264008DAED6 /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = resources.bundle; sourceTree = "<group>"; };
-		4ED6353D16AE1BB1008D3427 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
-		4ED6353F16AE1BB9008D3427 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		4EEFA20B1755545800570B4E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		4EFF545B16165167000C3AFD /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		4EFF545C16165167000C3AFD /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
@@ -371,12 +367,9 @@
 		5B469A40121A6B1300E414EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8BC3D5E01639FFD1007942C3 /* OALSourceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OALSourceInfo.h; sourceTree = "<group>"; };
 		8BC3D5E11639FFD2007942C3 /* OALSourceInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OALSourceInfo.mm; sourceTree = "<group>"; };
-		A224A6341435285C00A6698F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		A23214D313D8AFD600FA4C7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		A2391A481428159F00DE0ECA /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		A25F91F61489AC0300B39375 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		A25F91F81489AC0300B39375 /* TeaLeafIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeaLeafIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A263C3AD13D75F9F00338931 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		D510CFBE139059A20066D881 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		D5121A771593B42F00C2169F /* native.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = native.mm; sourceTree = "<group>"; };
 		D540B1BD15B9FAF600B0D6C0 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -576,20 +569,13 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4E35EACD16BB2082004FD452 /* StoreKit.framework */,
-				4E35EAB716BB0D3F004FD452 /* Social.framework */,
-				4ED6353F16AE1BB9008D3427 /* Accounts.framework */,
-				4ED6353D16AE1BB1008D3427 /* AdSupport.framework */,
 				4E72C65715D9E253000404EF /* SystemConfiguration.framework */,
 				A25F91F61489AC0300B39375 /* OpenGLES.framework */,
-				A224A6341435285C00A6698F /* CoreTelephony.framework */,
 				5B2BEA6912AEF41100AE98C5 /* CFNetwork.framework */,
-				A2391A481428159F00DE0ECA /* AddressBookUI.framework */,
 				A23214D313D8AFD600FA4C7D /* MessageUI.framework */,
 				D5E8D6791385C2E200246261 /* AudioToolbox.framework */,
 				D5E8D67A1385C2E200246261 /* OpenAL.framework */,
 				1695630A1338639B0052334D /* AVFoundation.framework */,
-				A263C3AD13D75F9F00338931 /* AddressBook.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
