@@ -63,6 +63,7 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+	[jsXHR onResponse:@"" fromRequest:self];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)conn {
