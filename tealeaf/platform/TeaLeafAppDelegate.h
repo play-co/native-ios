@@ -20,7 +20,6 @@
 #import "ServerTableViewController.h"
 #import "AppTableViewController.h"
 #import "PluginManager.h"
-#import "PaymentObserver.h"
 #import "js_core.h"
 #import "OpenGLView.h"
 #import "Reachability.h"

@@ -24,7 +24,6 @@
 #import "js/jsSound.h"
 #import "js/jsLocalStorage.h"
 #import "js/jsXHR.h"
-#import "js/jsPurchase.h"
 #import "js/jsTextInput.h"
 #import "js/jsDialog.h"
 #import "js/jsPhoto.h"
