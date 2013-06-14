@@ -178,7 +178,7 @@ var installAddonsProject = function(builder, opts, next) {
 			for (var ii = 0; ii < contents.length; ++ii) {
 				var line = contents[ii];
 
-				if (line.indexOf("System/Library/Frameworks/StoreKit.framework") > 0) {
+				if (line.indexOf("System/Library/Frameworks/UIKit.framework") > 0) {
 					uuid1_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
 					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = " + filename + "; path = " + framework + "; sourceTree = SDKROOT; };");
