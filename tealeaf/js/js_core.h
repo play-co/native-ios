@@ -39,7 +39,6 @@ CEXPORT JSObject *get_global_object();
 #if (__OBJC__) == 1
 
 #import <Foundation/Foundation.h>
-#import "PaymentObserver.h"
 #import "debug/DebugServer.h"
 
 @class PluginManager;
