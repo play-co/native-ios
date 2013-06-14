@@ -38,7 +38,6 @@
 		4E8493F01651D06000C96B4A /* jsMarket.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493CA1651D06000C96B4A /* jsMarket.mm */; };
 		4E8493F11651D06000C96B4A /* jsOverlay.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493CC1651D06000C96B4A /* jsOverlay.mm */; };
 		4E8493F21651D06000C96B4A /* jsPhoto.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493CE1651D06000C96B4A /* jsPhoto.mm */; };
-		4E8493F31651D06000C96B4A /* jsPurchase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D01651D06000C96B4A /* jsPurchase.mm */; };
 		4E8493F51651D06000C96B4A /* jsSocket.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D41651D06000C96B4A /* jsSocket.mm */; };
 		4E8493F61651D06000C96B4A /* jsSound.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D61651D06000C96B4A /* jsSound.mm */; };
 		4E8493F71651D06000C96B4A /* jsTextInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493D81651D06000C96B4A /* jsTextInput.mm */; };
@@ -48,7 +47,6 @@
 		4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */; };
 		4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */; };
 		4EEFA20D1755553500570B4E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A23214D313D8AFD600FA4C7D /* MessageUI.framework */; };
-		4EEFA20E1755556C00570B4E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E35EACD16BB2082004FD452 /* StoreKit.framework */; };
 		4EEFA20F1755557A00570B4E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		4EEFA2101755559A00570B4E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		4EEFA211175555AB00570B4E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1695630A1338639B0052334D /* AVFoundation.framework */; };
@@ -89,7 +87,6 @@
 		D5BC67281635D0270059EC0F /* location_manager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821E1150E7C7600549BF6 /* location_manager.mm */; };
 		D5BC67291635D0270059EC0F /* log.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821E3150E7C7600549BF6 /* log.mm */; };
 		D5BC672A1635D0270059EC0F /* photo.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821E4150E7C7600549BF6 /* photo.mm */; };
-		D5BC672B1635D0270059EC0F /* purchase.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821E7150E7C7600549BF6 /* purchase.mm */; };
 		D5BC672D1635D0270059EC0F /* ResourceLoader.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821EB150E7C7600549BF6 /* ResourceLoader.mm */; };
 		D5BC672E1635D0270059EC0F /* SoundManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821ED150E7C7600549BF6 /* SoundManager.mm */; };
 		D5BC672F1635D0270059EC0F /* TeaLeafAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821EF150E7C7600549BF6 /* TeaLeafAppDelegate.mm */; };
@@ -122,7 +119,6 @@
 		D5BC67531635D0270059EC0F /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E72C66715DAFE6E000404EF /* value.c */; };
 		D5BC67551635D0270059EC0F /* get_locale.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E9506D915E4383900FEF0E9 /* get_locale.mm */; };
 		D5BC67561635D0270059EC0F /* jsonUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E667D2315E5C5010089D48D /* jsonUtil.mm */; };
-		D5BC675A1635D0270059EC0F /* PaymentObserver.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EBBC5BB16123368001E795E /* PaymentObserver.mm */; };
 		D5BC675C1635D0270059EC0F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DC89DD161258110083B183 /* JSONKit.m */; };
 		D5BC675E1635D0270059EC0F /* OALSimpleAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E6E960C162DF13D0095FC9F /* OALSimpleAudio.m */; };
 		D5BC675F1635D0270059EC0F /* OALAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E6E9620162DF5600095FC9F /* OALAction.m */; };
@@ -320,8 +316,6 @@
 		4E8493CC1651D06000C96B4A /* jsOverlay.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsOverlay.mm; sourceTree = "<group>"; };
 		4E8493CD1651D06000C96B4A /* jsPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsPhoto.h; sourceTree = "<group>"; };
 		4E8493CE1651D06000C96B4A /* jsPhoto.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsPhoto.mm; sourceTree = "<group>"; };
-		4E8493CF1651D06000C96B4A /* jsPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsPurchase.h; sourceTree = "<group>"; };
-		4E8493D01651D06000C96B4A /* jsPurchase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsPurchase.mm; sourceTree = "<group>"; };
 		4E8493D31651D06000C96B4A /* jsSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsSocket.h; sourceTree = "<group>"; };
 		4E8493D41651D06000C96B4A /* jsSocket.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsSocket.mm; sourceTree = "<group>"; };
 		4E8493D51651D06000C96B4A /* jsSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsSound.h; sourceTree = "<group>"; };
@@ -361,8 +355,6 @@
 		4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppTableViewController.mm; sourceTree = "<group>"; };
 		4EB0C68A16BBB4B900838A49 /* ServerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerTableViewController.h; sourceTree = "<group>"; };
 		4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ServerTableViewController.mm; sourceTree = "<group>"; };
-		4EBBC5BA16123368001E795E /* PaymentObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaymentObserver.h; sourceTree = "<group>"; };
-		4EBBC5BB16123368001E795E /* PaymentObserver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PaymentObserver.mm; sourceTree = "<group>"; };
 		4EC8F76915D1E264008DAED6 /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = resources.bundle; sourceTree = "<group>"; };
 		4ED6353D16AE1BB1008D3427 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		4ED6353F16AE1BB9008D3427 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -444,8 +436,6 @@
 		D55821E3150E7C7600549BF6 /* log.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = log.mm; sourceTree = "<group>"; };
 		D55821E4150E7C7600549BF6 /* photo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = photo.mm; sourceTree = "<group>"; };
 		D55821E5150E7C7600549BF6 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
-		D55821E6150E7C7600549BF6 /* purchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = purchase.h; sourceTree = "<group>"; };
-		D55821E7150E7C7600549BF6 /* purchase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = purchase.mm; sourceTree = "<group>"; };
 		D55821EA150E7C7600549BF6 /* ResourceLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceLoader.h; sourceTree = "<group>"; };
 		D55821EB150E7C7600549BF6 /* ResourceLoader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourceLoader.mm; sourceTree = "<group>"; };
 		D55821EC150E7C7600549BF6 /* SoundManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundManager.h; sourceTree = "<group>"; };
@@ -508,7 +498,6 @@
 				4EEFA211175555AB00570B4E /* AVFoundation.framework in Frameworks */,
 				4EEFA2101755559A00570B4E /* CoreGraphics.framework in Frameworks */,
 				4EEFA20F1755557A00570B4E /* UIKit.framework in Frameworks */,
-				4EEFA20E1755556C00570B4E /* StoreKit.framework in Frameworks */,
 				4EEFA20D1755553500570B4E /* MessageUI.framework in Frameworks */,
 				4E35EABB16BB0D94004FD452 /* libjs_static.a in Frameworks */,
 				4E35EABC16BB0D94004FD452 /* libnspr4.a in Frameworks */,
@@ -967,8 +956,6 @@
 				4E8493CC1651D06000C96B4A /* jsOverlay.mm */,
 				4E8493CD1651D06000C96B4A /* jsPhoto.h */,
 				4E8493CE1651D06000C96B4A /* jsPhoto.mm */,
-				4E8493CF1651D06000C96B4A /* jsPurchase.h */,
-				4E8493D01651D06000C96B4A /* jsPurchase.mm */,
 				4E8493D31651D06000C96B4A /* jsSocket.h */,
 				4E8493D41651D06000C96B4A /* jsSocket.mm */,
 				4E8493D51651D06000C96B4A /* jsSound.h */,
@@ -1013,10 +1000,6 @@
 				4E667D2315E5C5010089D48D /* jsonUtil.mm */,
 				4E9506D915E4383900FEF0E9 /* get_locale.mm */,
 				D5121A771593B42F00C2169F /* native.mm */,
-				D55821E6150E7C7600549BF6 /* purchase.h */,
-				D55821E7150E7C7600549BF6 /* purchase.mm */,
-				4EBBC5BA16123368001E795E /* PaymentObserver.h */,
-				4EBBC5BB16123368001E795E /* PaymentObserver.mm */,
 				D55821EA150E7C7600549BF6 /* ResourceLoader.h */,
 				D55821EB150E7C7600549BF6 /* ResourceLoader.mm */,
 				D55821EC150E7C7600549BF6 /* SoundManager.h */,
@@ -1167,7 +1150,6 @@
 				D5BC67281635D0270059EC0F /* location_manager.mm in Sources */,
 				D5BC67291635D0270059EC0F /* log.mm in Sources */,
 				D5BC672A1635D0270059EC0F /* photo.mm in Sources */,
-				D5BC672B1635D0270059EC0F /* purchase.mm in Sources */,
 				D5BC672D1635D0270059EC0F /* ResourceLoader.mm in Sources */,
 				D5BC672E1635D0270059EC0F /* SoundManager.mm in Sources */,
 				D5BC672F1635D0270059EC0F /* TeaLeafAppDelegate.mm in Sources */,
@@ -1200,7 +1182,6 @@
 				D5BC67531635D0270059EC0F /* value.c in Sources */,
 				D5BC67551635D0270059EC0F /* get_locale.mm in Sources */,
 				D5BC67561635D0270059EC0F /* jsonUtil.mm in Sources */,
-				D5BC675A1635D0270059EC0F /* PaymentObserver.mm in Sources */,
 				D5BC675C1635D0270059EC0F /* JSONKit.m in Sources */,
 				D5BC675E1635D0270059EC0F /* OALSimpleAudio.m in Sources */,
 				D5BC675F1635D0270059EC0F /* OALAction.m in Sources */,
@@ -1247,7 +1228,6 @@
 				4E8493F01651D06000C96B4A /* jsMarket.mm in Sources */,
 				4E8493F11651D06000C96B4A /* jsOverlay.mm in Sources */,
 				4E8493F21651D06000C96B4A /* jsPhoto.mm in Sources */,
-				4E8493F31651D06000C96B4A /* jsPurchase.mm in Sources */,
 				4E8493F51651D06000C96B4A /* jsSocket.mm in Sources */,
 				4E8493F61651D06000C96B4A /* jsSound.mm in Sources */,
 				4E8493F71651D06000C96B4A /* jsTextInput.mm in Sources */,

@@ -55,7 +55,6 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsSound addToRuntime:js];
 		[jsLocalStorage addToRuntime:js];
 		[jsXHR addToRuntime:js];
-		[jsPurchase addToRuntime:js];
 		[jsTextInput addToRuntime:js withSuperView:app.tealeafViewController.view];
 		[jsOverlay addToRuntime:js withSuperView:app.tealeafViewController.view];
 		[jsDialog addToRuntime:js];
@@ -101,7 +100,6 @@ CEXPORT bool destroy_js() {
 		[jsSound onDestroyRuntime];
 		[jsLocalStorage onDestroyRuntime];
 		[jsXHR onDestroyRuntime];
-		[jsPurchase onDestroyRuntime];
 		[jsTextInput onDestroyRuntime];
 		[jsOverlay onDestroyRuntime];
 		[jsDialog onDestroyRuntime];
@@ -121,8 +119,6 @@ CEXPORT bool destroy_js() {
 		[jsSocket onDestroyRuntime];
 		
 		core_timer_clear_all();
-
-		[PaymentObserver shutdown];
 
 		SoundManager *sm = [SoundManager get];
 		if (sm) {
