@@ -275,7 +275,7 @@ void def_animate_finish(void *a) {
 	view_animation *anim = (view_animation *)JS_GetPrivate(js_anim);
 	JSObject *js_group = (JSObject*)anim->js_group;
 	jsval finish_val;
-	JS_GetProperty(cx, js_anim, "onAnimationFinish", &finish_val);
+	JS_GetProperty(cx, js_group, "onAnimationFinish", &finish_val);
 	if (JSVAL_IS_OBJECT(finish_val)) {
 		JSObject *finish = JSVAL_TO_OBJECT(finish_val);
 		jsval args[] = {OBJECT_TO_JSVAL(js_anim)};
