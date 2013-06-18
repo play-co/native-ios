@@ -78,6 +78,15 @@ CEXPORT JSObject *get_global_object();
 
 @end
 
+struct LastErrorInfo {
+	bool valid;
+	char msg[2048];
+	char url[256];
+	int line_number;
+};
+
+extern LastErrorInfo LAST_ERROR;
+
 #endif
 
 
