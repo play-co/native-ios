@@ -44,10 +44,14 @@ CEXPORT JSObject *get_global_object() {
 	return lastJS.global;
 }
 
+LastErrorInfo LAST_ERROR = {
+	0
+};
 
 /* The error reporter callback. */
 static void reportError(JSContext *cx, const char *message, JSErrorReport *report) {
-	NSLOG(@"{js} JavaScript error in %s:%d", report->filename ? report->filename : "<no filename>", (unsigned int) report->lineno);
+	const char *url = report->filename ? report->filename : "<no filename>";
+	NSLOG(@"{js} JavaScript error in %s:%d", url, (unsigned int) report->lineno);
 	LOG("{js} Error: %s", message);
 
 	JS_BeginRequest(cx);
@@ -69,6 +73,14 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 			PERSIST_CSTR_RELEASE(cstr);
 		}
 	}
+	
+	// Store last error.  This is done because the reportError() callback cannot use JSAPI
+	LAST_ERROR.valid = true;
+	strncpy(LAST_ERROR.msg, message, sizeof(LAST_ERROR.msg));
+	LAST_ERROR.msg[sizeof(LAST_ERROR.msg) - 1] = '\0';
+	strncpy(LAST_ERROR.url, url, sizeof(LAST_ERROR.url));
+	LAST_ERROR.url[sizeof(LAST_ERROR.url) - 1] = '\0';
+	LAST_ERROR.line_number = report->lineno;
 
 	JS_EndRequest(cx);
 }
