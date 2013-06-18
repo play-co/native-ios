@@ -54,8 +54,6 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	NSLOG(@"{js} JavaScript error in %s:%d", url, (unsigned int) report->lineno);
 	LOG("{js} Error: %s", message);
 
-	char *stack_cstr = 0;
-	
 	JS_BeginRequest(cx);
 
 	jsval exception;
@@ -72,7 +70,7 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 
 			LOG("{js} Traceback:\n%s\n\n", cstr);
 
-			stack_cstr = cstr;
+			PERSIST_CSTR_RELEASE(cstr);
 		}
 	}
 
@@ -80,27 +78,11 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	LAST_ERROR.valid = true;
 	strncpy(LAST_ERROR.msg, message, sizeof(LAST_ERROR.msg));
 	LAST_ERROR.msg[sizeof(LAST_ERROR.msg) - 1] = '\0';
-	if (strcmp(url, "eval") == 0) {
-		strncpy(LAST_ERROR.url, stack_cstr, sizeof(LAST_ERROR.url));
-		for (int ii = 0; ii < sizeof(LAST_ERROR.url); ++ii) {
-			char ch = LAST_ERROR.url[ii];
-
-			if (ch <= ' ') {
-				LAST_ERROR.url[ii] = '\0';
-				break;
-			}
-		}
-	} else {
-		strncpy(LAST_ERROR.url, url, sizeof(LAST_ERROR.url));
-	}
+	strncpy(LAST_ERROR.url, url, sizeof(LAST_ERROR.url));
 	LAST_ERROR.url[sizeof(LAST_ERROR.url) - 1] = '\0';
 	LAST_ERROR.line_number = report->lineno;
 
 	JS_EndRequest(cx);
-
-	if (stack_cstr) {
-		PERSIST_CSTR_RELEASE(stack_cstr);
-	}
 }
 
 #define TIMER_DICT_KEY(timer) [[NSNumber numberWithInt:timer->timerId] stringValue]
