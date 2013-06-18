@@ -25,6 +25,28 @@ static js_core *m_core = nil;
 static unsigned int gc_tick_twiddle = 0;
 
 
+static void window_on_error(JSContext *cx, const char *msg, const char *url, int line_number) {
+	JS_BeginRequest(cx);
+		
+	JSObject *global = get_global_object();
+		
+	jsval onerror;
+	JS_GetProperty(cx, global, "onerror", &onerror);
+		
+	if (!JSVAL_IS_VOID(onerror)) {
+		jsval args[3] = {
+			CSTR_TO_JSVAL(cx, msg),
+			CSTR_TO_JSVAL(cx, url),
+			INT_TO_JSVAL(line_number)
+		};
+			
+		jsval ret;
+		JS_CallFunctionValue(cx, global, onerror, 3, args, &ret);
+	}
+		
+	JS_EndRequest(cx);
+}
+
 CEXPORT void js_tick(int dt) {
 	if (m_callback) {
 		jsval ret, args[] = {
@@ -44,6 +66,12 @@ CEXPORT void js_tick(int dt) {
 
 	if ((gc_tick_twiddle++ & 3) == 0) {
 		JS_MaybeGC(m_core.cx);
+
+		if (LAST_ERROR.valid) {
+			window_on_error(get_js_context(), LAST_ERROR.msg, LAST_ERROR.url, LAST_ERROR.line_number);
+			
+			LAST_ERROR.valid = false;
+		}
 	}
 	
 #ifdef GC_REPORT_INCREMENTAL_TIMES
