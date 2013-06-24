@@ -27,6 +27,7 @@
 #import "core/platform/location_manager.h"
 #import "js/jsBase.h"
 #import "platform/PluginManager.h"
+#import "iosVersioning.h"
 
 // JS Ready flag: Indicates that the JavaScript engine is running (see core/core_js.h)
 bool js_ready = false;
@@ -34,6 +35,7 @@ bool js_ready = false;
 static js_core *lastJS = nil;
 static JSObject *global_obj = nil;
 static NSDate *m_start_date = nil;
+static NSString *m_uuid = nil;
 
 
 CEXPORT JSContext *get_js_context() {
@@ -329,7 +331,7 @@ JSAG_OBJECT_END
 
 	self.native = JS_NewObject(self.cx, NULL, NULL, NULL);
 	JSContext *cx = self.cx;
-	jsval uuid = NSTR_TO_JSVAL(cx, [[UIDevice currentDevice] uniqueIdentifier]);
+	jsval uuid = NSTR_TO_JSVAL(cx, [js_core getDeviceId]);
 	JS_SetProperty(self.cx, self.native, "deviceUUID", &uuid);
 
 	JSAG_OBJECT_ATTACH_EXISTING(self.cx, self.global, GLOBAL, self.global);
@@ -364,16 +366,16 @@ JSAG_OBJECT_END
 	return self;
 }
 
-+(NSString*) getDeviceId {
-	NSString* devid = [[UIDevice currentDevice] uniqueIdentifier];
-	const char* bytes = [devid UTF8String];
-	CFUUIDRef uuidref = CFUUIDCreateWithBytes(NULL, bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7],
-	bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]);
-	CFStringRef uuidstr = CFUUIDCreateString(NULL, uuidref);
-	NSString* devidbytes = [NSString stringWithFormat:@"%@", uuidstr];
-	CFRelease(uuidref);
-	CFRelease(uuidstr);
-	return devidbytes;
++(NSString *) getDeviceId {
+	if (m_uuid == nil) {
+		if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
+			m_uuid = [[NSUUID UUID] UUIDString];
+		} else {
+			m_uuid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+		}
+	}
+
+	return m_uuid;
 }
 
 -(void) addExtension:(id)extension {
