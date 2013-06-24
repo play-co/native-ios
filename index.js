@@ -531,9 +531,11 @@ function updatePListFile(opts, next) {
 			//Change Bundle Diplay Name to title
 			for (var i = 0; i < contents.length; i++) {
 				if (/CFBundleDisplayName/.test(contents[i])) {
-					var titleLine = contents[i+1];
 					contents[i+1] = '<string>' + opts.title + '</string>';
-					break;
+				} else if (/CFBundleIdentifier/.test(contents[i])) {
+					contents[i+1] = '<string>' + opts.bundleID + '</string>';
+				} else if (/CFBundleName/.test(contents[i])) {
+					contents[i+1] = '<string>' + opts.bundleID + '</string>';
 				}
 			}
 
@@ -894,7 +896,8 @@ function makeIOSProject(builder, opts, next) {
 			orientations: manifest.supportedOrientations,
 			renderGloss: manifest.ios.icons && manifest.ios.icons.renderGloss,
 			version: manifest.ios.version,
-			title: opts.title
+			title: opts.title,
+			bundleID: manifest.ios.bundleID
 		}, f.wait());
 
 		writeConfigList({
