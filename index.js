@@ -1033,7 +1033,7 @@ exports.build = function(builder, project, opts, next) {
 	}, function() {
 		copyIcons(builder, manifest.ios.icons, destPath);
 		copyFonts(builder, manifest.ttf, destPath);
-		copySplash(builder, project, destPath, f.wait());
+		copySplash(builder, manifest, destPath, f.wait());
 	}, function() {
 		// If IPA generation was requested,
 		if (argv.ipa) {
