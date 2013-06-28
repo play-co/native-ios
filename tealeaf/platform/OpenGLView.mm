@@ -61,17 +61,17 @@ CADisplayLink* displayLink;
 }
 
 - (void)setupRenderBuffer {
-	glGenRenderbuffers(1, &_colorRenderBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);		  
+	GLTRACE(glGenRenderbuffers(1, &_colorRenderBuffer));
+	GLTRACE(glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer));
 	[_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:_eaglLayer];		
 }
 
 
 - (void)setupFrameBuffer {	  
 	GLuint framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);	  
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer);
+	GLTRACE(glGenFramebuffers(1, &framebuffer));
+	GLTRACE(glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
+	GLTRACE(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer));
 }
 
 static CFTimeInterval last_timestamp = 0.0f;
