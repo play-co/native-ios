@@ -26,6 +26,7 @@
 #include "core/image_loader.h"
 #include "core/config.h"
 #include "core/util/detect.h"
+#import <core/platform/gl.h>
 
 
 #define APP @"app.bundle"
