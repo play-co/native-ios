@@ -354,12 +354,12 @@ static int base_path_len = 0;
 
 - (void) finishLoadingRawImage:(RawImageInfo *)info {
 	GLuint texture = 0;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	GLTRACE(glGenTextures(1, &texture));
+	GLTRACE(glBindTexture(GL_TEXTURE_2D, texture));
+	GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
 	const char *url = [info.url UTF8String];
 
@@ -374,7 +374,7 @@ static int base_path_len = 0;
 
 	//create the texture
 	int shift = info.scale - 1;
-	glTexImage2D(GL_TEXTURE_2D, 0, format, info.w >> shift, info.h >> shift, 0, format, GL_UNSIGNED_BYTE, info.raw_data);
+	GLTRACE(glTexImage2D(GL_TEXTURE_2D, 0, format, info.w >> shift, info.h >> shift, 0, format, GL_UNSIGNED_BYTE, info.raw_data));
 	core_check_gl_error();
 
 	texture_manager_on_texture_loaded(texture_manager_get(), url, texture,
