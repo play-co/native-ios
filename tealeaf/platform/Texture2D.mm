@@ -68,6 +68,7 @@
 #include "geometry.h"
 #include "text_manager.h"
 #include "core/log.h"
+#import <core/platform/gl.h>
 
 static inline int NextPowerOfTwo(int n) {
 	n -= 1;
@@ -100,27 +101,27 @@ static inline int NextPowerOfTwo(int n) {
 {
 	//GLint saveName;
 	if((self = [super init])) {
-		glGenTextures(1, &_name);
+		GLTRACE(glGenTextures(1, &_name));
 		//glGetIntegerv(GL_TEXTURE_BINDING_2D, &saveName);
-		glBindTexture(GL_TEXTURE_2D, _name);
+		GLTRACE(glBindTexture(GL_TEXTURE_2D, _name));
 		
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+		GLTRACE(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
 		switch(pixelFormat) {
 			case kTexture2DPixelFormat_RGBA8888:
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, realSize.width, realSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+				GLTRACE(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, realSize.width, realSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data));
 				break;
 			case kTexture2DPixelFormat_RGB888:
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, realSize.width, realSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+				GLTRACE(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, realSize.width, realSize.height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
 				break;
 			case kTexture2DPixelFormat_RGB565:
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, realSize.width, realSize.height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data);
+				GLTRACE(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, realSize.width, realSize.height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data));
 				break;
 			case kTexture2DPixelFormat_A8:
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, realSize.width, realSize.height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
+				GLTRACE(glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, realSize.width, realSize.height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data));
 				break;
 			default:
 				[NSException raise:NSInternalInconsistencyException format:@""];
@@ -147,7 +148,7 @@ static inline int NextPowerOfTwo(int n) {
 
 - (void) bind
 {
-	glBindTexture(GL_TEXTURE_2D, _name);
+	GLTRACE(glBindTexture(GL_TEXTURE_2D, _name));
 }
 
 - (void) dealloc
@@ -420,15 +421,14 @@ static inline int NextPowerOfTwo(int n) {
 		rect.origin.x + rect.size.width,		rect.origin.y,						0.0
 	};
 	
-	glEnable(GL_TEXTURE_2D);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindTexture(GL_TEXTURE_2D, _name);
-	glVertexPointer(3, GL_FLOAT, 0, vertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);	
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisable(GL_TEXTURE_2D);
-	
+	GLTRACE(glEnable(GL_TEXTURE_2D));
+	GLTRACE(glEnableClientState(GL_TEXTURE_COORD_ARRAY));
+	GLTRACE(glBindTexture(GL_TEXTURE_2D, _name));
+	GLTRACE(glVertexPointer(3, GL_FLOAT, 0, vertices));
+	GLTRACE(glTexCoordPointer(2, GL_FLOAT, 0, coordinates));
+	GLTRACE(glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
+	GLTRACE(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
+	GLTRACE(glDisable(GL_TEXTURE_2D));
 }
 
 
