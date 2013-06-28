@@ -730,7 +730,7 @@ JSAG_MEMBER_BEGIN_NOARGS(disableScissor)
 
 	draw_textures_flush();
 	
-	glDisable(GL_SCISSOR_TEST);
+	GLTRACE(glDisable(GL_SCISSOR_TEST));
 }
 JSAG_MEMBER_END_NOARGS
 
