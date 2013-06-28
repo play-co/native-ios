@@ -68,6 +68,7 @@
 #include "geometry.h"
 #include "text_manager.h"
 #include "core/log.h"
+#import <core/platform/gl.h>
 
 static inline int NextPowerOfTwo(int n) {
 	n -= 1;
