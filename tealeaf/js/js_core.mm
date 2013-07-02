@@ -369,9 +369,9 @@ JSAG_OBJECT_END
 +(NSString *) getDeviceId {
 	if (m_uuid == nil) {
 		if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
-			m_uuid = [[NSUUID UUID] UUIDString];
+			m_uuid = [[[NSUUID UUID] UUIDString] retain];
 		} else {
-			m_uuid = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+			m_uuid = [[[[UIDevice currentDevice] identifierForVendor] UUIDString] retain];
 		}
 	}
 
