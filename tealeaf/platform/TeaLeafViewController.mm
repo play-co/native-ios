@@ -15,6 +15,7 @@
 
 #import "TeaLeafViewController.h"
 #import "RawImageInfo.h"
+#import "Base64.h"
 
 #import "jsMacros.h"
 #import "js_core.h"
@@ -479,14 +480,12 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
     //TODO send an event to JS
     [self dismissViewControllerAnimated:YES completion:NULL];
     
-    NSDictionary *event = [[NSMutableDictionary alloc] init];
-    
     [[ResourceLoader get] sendImageLoadedEventForURL:self.photoURL glName:texture->name width:texture->width height:texture->height
                                        originalWidth: texture->originalWidth originalHeight: texture->originalHeight];
 
-
-    [event setValue:@"PhotoLoaded" forKey:@"name"];
-    [event setValue:self.photoURL forKey:@"url"];
+    NSData *data = UIImagePNGRepresentation(image);
+    NSString *b64Image = encodeBase64(data);
+    NSDictionary *event = @{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image};
     [[PluginManager get] dispatchJSEvent: event];
 
 }
