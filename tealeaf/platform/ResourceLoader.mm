@@ -109,6 +109,11 @@ static int base_path_len = 0;
 	self.appBase = [[NSBundle mainBundle] resourcePath];
 	self.images = [[[NSMutableArray alloc] init] autorelease];
 	self.imageWaiter = [[[NSCondition alloc] init] autorelease];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    self.documentsDirectory = [paths objectAtIndex:0];
+
 
 	return self;
 }
@@ -168,6 +173,23 @@ static int base_path_len = 0;
 	return [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@", [[instance.appDelegate.config objectForKey:@"app_files_dir"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], url ]];
 	//return url to file on disk
 }
+- (NSString*) getFileNameFromURL: (NSString*) url {
+    return [NSString stringWithFormat:@"%@/%@", self.documentsDirectory, [url stringByReplacingOccurrencesOfString:@"/" withString:@"-"]];
+}
+- (void) cacheRemoteImage: (NSData*) data forURL: (NSString*) url {
+    NSString *path = [self getFileNameFromURL: url];
+    [data writeToFile:path atomically:NO];
+}
+
+- (NSData*) getCachedImageFromURL: (NSString*) url {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *path = [self getFileNameFromURL: url];
+    NSData *contents = nil;
+    if ([fileManager fileExistsAtPath:path]) {
+        contents = [fileManager contentsAtPath:path];
+    }
+    return contents;
+}
 
 - (void) imageThread {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -203,7 +225,16 @@ static int base_path_len = 0;
 						NSString* str = [url substringFromIndex: range.location+1];
 						data = decodeBase64(str);
 					} else {
-						data = [NSData dataWithContentsOfURL: [self resolve:url]];
+                        bool isRemote = [url hasPrefix:@"http"];
+                        if (isRemote) {
+                            data = [self getCachedImageFromURL:url];
+                        }
+                        if (!data) {
+                            data = [NSData dataWithContentsOfURL: [self resolve:url]];
+                            if (isRemote) {
+                                [self cacheRemoteImage: data forURL: url];
+                            }
+                        }
 					}
 
 					unsigned char *tex_data = NULL;

@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSString *appBase;		// Root resource path (includes splash screens)
 @property (nonatomic, retain) NSCondition *imageWaiter;
 @property (nonatomic, retain) NSMutableArray *images;
+@property (nonatomic, retain) NSString *documentsDirectory;
 
 - (NSString *) initStringWithContentsOfURL:(NSString *)url;
 - (NSURL *) resolve:(NSString *)url;
