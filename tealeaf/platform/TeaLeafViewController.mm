@@ -14,6 +14,8 @@
  */
 
 #import "TeaLeafViewController.h"
+#import "RawImageInfo.h"
+
 #import "jsMacros.h"
 #import "js_core.h"
 #import "core/log.h"
@@ -441,6 +443,58 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
 	// TODO replace with JS_* calls
 	sprintf(args, "{\"name\":\"smsStatus\", \"id\":%d, \"result\":%d}", callback, (int)result);
 	[self runCallback: args];
+}
+
+- (void)showImagePickerForCamera: (NSString *) url
+{
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL: url];
+}
+
+
+- (void)showImagePickerForPhotoPicker: (NSString *) url
+{
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL: url];
+}
+
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL: (NSString *) url
+{
+       
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    imagePickerController.sourceType = sourceType;
+    imagePickerController.delegate = self;
+    self.photoURL = url;
+    
+    self.imagePickerController = imagePickerController;
+    [self presentViewController:self.imagePickerController animated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    Texture2D *tex = [[Texture2D alloc] initWithImage: image];
+    texture_2d *texture = texture_2d_new_from_image((char*)[self.photoURL UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight);
+    texture_manager_add_texture_loaded(texture_manager_get(), texture);
+    //TODO send an event to JS
+    [self dismissViewControllerAnimated:YES completion:NULL];
+    
+    NSDictionary *event = [[NSMutableDictionary alloc] init];
+    
+    [[ResourceLoader get] sendImageLoadedEventForURL:self.photoURL glName:texture->name width:texture->width height:texture->height
+                                       originalWidth: texture->originalWidth originalHeight: texture->originalHeight];
+
+
+    [event setValue:@"PhotoLoaded" forKey:@"name"];
+    [event setValue:self.photoURL forKey:@"url"];
+    [[PluginManager get] dispatchJSEvent: event];
+
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 @end

@@ -18,7 +18,7 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
-@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate> {
+@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate> {
 @private
 int callback;
 //UIAlertView *message;
@@ -26,6 +26,8 @@ int callback;
 
 @property (nonatomic, retain) UIImageView *loading_image_view;
 @property (nonatomic, retain) UIAlertView *backAlertView;
+@property (nonatomic, retain) UIImagePickerController *imagePickerController;
+@property (nonatomic, retain) NSString *photoURL;
 - (TeaLeafViewController*) init;
 
 - (void)pickContact: (int) cb;
@@ -36,6 +38,9 @@ int callback;
 - (void)assignCallback: (int) cb;
 - (void)runCallback: (char*) arg;
 - (void)destroyDisplayLink;
+
+- (void)showImagePickerForCamera: (NSString *) url;
+- (void)showImagePickerForPhotoPicker: (NSString *) url;
 @end
 
 @interface UIAlertViewEx : UIAlertView {

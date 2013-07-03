@@ -14,11 +14,32 @@
  */
 
 #include "photo.h"
+#import "TeaLeafAppDelegate.h"
+
+int camera_get_photo(NSString *url) {
+    TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
+    TeaLeafViewController *viewController = [appDelegate tealeafViewController];
+    [viewController showImagePickerForCamera: url];
+    return 0;
+}
+
+int gallery_get_photo(NSString *url) {
+    TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
+    TeaLeafViewController *viewController = [appDelegate tealeafViewController];
+    [viewController showImagePickerForPhotoPicker: url];
+    return 0;
+}
 
 int camera_get_next_id() {
-	return 0;
+    TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
+    TeaLeafViewController *viewController = [appDelegate tealeafViewController];
+   // [viewController showImagePickerForPhotoPicker];
+    return 0;
 }
 
 int gallery_get_next_id() {
+    TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
+    TeaLeafViewController *viewController = [appDelegate tealeafViewController];
+   // [viewController showImagePickerForCamera];
 	return 0;
 }

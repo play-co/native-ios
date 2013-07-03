@@ -18,6 +18,8 @@
 #import "ResourceLoader.h"
 #import "Base64.h"
 #import "TeaLeafAppDelegate.h"
+#import "RawImageInfo.h"
+
 #include "text_manager.h"
 #include "texture_manager.h"
 #include "events.h"
@@ -41,41 +43,6 @@ static int base_path_len = 0;
 
 @interface ResourceLoader ()
 @property (nonatomic, assign) TeaLeafAppDelegate *appDelegate;
-@end
-
-
-@interface RawImageInfo : NSObject
-@property(nonatomic,retain) NSString *url;
-@property(nonatomic) unsigned char *raw_data;
-@property(nonatomic) int w;
-@property(nonatomic) int h;
-@property(nonatomic) int ow;
-@property(nonatomic) int oh;
-@property(nonatomic) int scale;
-@property(nonatomic) int channels;
-- (id) initWithData:(unsigned char*)raw_data andURL:(NSString *)url andW:(int)w andH:(int)h andOW:(int)ow andOH:(int)oh andScale:(int)scale andChannels:(int)channels;
-@end
-
-@implementation RawImageInfo
-- (void) dealloc {
-	self.url = nil;
-
-	[super dealloc];
-}
-
-- (id) initWithData:(unsigned char*)raw_data andURL:(NSString *)url andW:(int)w andH:(int)h andOW:(int)ow andOH:(int)oh andScale:(int)scale andChannels:(int)channels {
-	if ((self = [super init])) {
-		self.url = url;
-		self.raw_data = raw_data;
-		self.w = w;
-		self.h = h;
-		self.ow = ow;
-		self.oh = oh;
-		self.scale = scale;
-		self.channels = channels;
-	}
-	return self;
-}
 @end
 
 
@@ -381,19 +348,22 @@ static int base_path_len = 0;
 	texture_manager_on_texture_loaded(texture_manager_get(), url, texture,
 									  info.w, info.h, info.ow, info.oh,
 									  info.channels, info.scale, false);
+    
+    [self sendImageLoadedEventForURL:info.url glName:texture width:info.w height:info.h originalWidth:info.ow originalHeight:info.oh];
+}
 
+-(void) sendImageLoadedEventForURL: (NSString *) url glName: (int) glName width: (int) width height: (int) height originalWidth: (int) originalWidth originalHeight: (int) originalHeight {
 	//create json event string
 	char buf[512];
 	snprintf(buf, sizeof(buf),
 			 "{\"url\":\"%s\",\"height\":%d,\"originalHeight\":%d,\"originalWidth\":%d" \
 			 ",\"glName\":%d,\"width\":%d,\"name\":\"imageLoaded\",\"priority\":0}",
-			 url, (int)info.h,
-			 (int)info.oh, (int)info.ow,
-			 (int)texture, (int)info.w);
+			 url, (int)height,
+			 (int)originalWidth, (int)originalHeight,
+			 (int)glName, (int)width);
 
 	core_dispatch_event(buf);
 
-	[info release];
 }
 
 @end

@@ -30,6 +30,7 @@
 - (NSURL *) resolveFileUrl:(NSString *)url;
 
 - (void) finishLoadingText:(NSString *)url;
+-(void) sendImageLoadedEventForURL: (NSString *) url glName: (int) glName width: (int) width height: (int) height originalWidth: (int) originalWidth originalHeight: (int) originalHeight;
 
 - (void) imageThread;
 - (void) loadImage:(NSString *)url;
