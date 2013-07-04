@@ -389,7 +389,7 @@ static int base_path_len = 0;
 	snprintf(buf, sizeof(buf),
 			 "{\"url\":\"%s\",\"height\":%d,\"originalHeight\":%d,\"originalWidth\":%d" \
 			 ",\"glName\":%d,\"width\":%d,\"name\":\"imageLoaded\",\"priority\":0}",
-			 url, (int)height,
+			 [url UTF8String], (int)height,
 			 (int)originalWidth, (int)originalHeight,
 			 (int)glName, (int)width);
 
