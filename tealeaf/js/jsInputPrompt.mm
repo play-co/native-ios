@@ -68,12 +68,10 @@ static int32_t m_prompt_id = 0;
 		title = @"	";
 	}
 
-	UITextField *textField = [[[UITextField alloc] initWithFrame:CGRectMake(12.0, 45.0, 260.0, 25.0)] autorelease];
-	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title message:[NSString stringWithFormat:@"\n\n%@",message,nil] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil] autorelease];
-	
+	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title message: message delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil] autorelease];
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+	UITextField *textField = [alert textFieldAtIndex:0];
 	textField.delegate = self;
-	textField.borderStyle = UITextBorderStyleLine;
-	textField.font = [UIFont fontWithName:@"Helvetica" size:20];
 	textField.placeholder = @"";
 	textField.text = value;
 	textField.textAlignment = UITextAlignmentCenter;
@@ -82,9 +80,7 @@ static int32_t m_prompt_id = 0;
 	if (isPassword) {
 		textField.secureTextEntry = YES;
 	}
-	
-	[textField setBackgroundColor:[UIColor whiteColor]];
-	
+		
 	[alert addSubview:textField];
 	[alert show];
 	
