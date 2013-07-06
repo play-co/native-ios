@@ -471,9 +471,20 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
     [self presentViewController:self.imagePickerController animated:YES completion:nil];
 }
 
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    //UIGraphicsBeginImageContext(newSize);
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    CGSize size = CGSizeMake(128, 128);
+    image = [self imageWithImage: image scaledToSize: size];
     Texture2D *tex = [[Texture2D alloc] initWithImage: image];
     texture_2d *texture = texture_2d_new_from_image((char*)[self.photoURL UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight);
     texture_manager_add_texture_loaded(texture_manager_get(), texture);
