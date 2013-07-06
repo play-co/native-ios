@@ -397,6 +397,8 @@ CEXPORT JSBool def_timestep_view_getSuperview(JSContext *cx, unsigned argc, jsva
 	return JS_TRUE;
 }
 
+// we only call wrapRender from JS once on the root view
+// to start the render
 CEXPORT JSBool def_timestep_view_wrapRender(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
 	
@@ -412,6 +414,11 @@ CEXPORT JSBool def_timestep_view_wrapRender(JSContext *cx, unsigned argc, jsval 
 	jsval opts_val = *vals;
 	JSObject *js_opts = JSVAL_TO_OBJECT(opts_val);
 	context_2d *ctx = (context_2d*)JS_GetPrivate(_ctx);
+
+	// reset the render properties (e.g. absScale)
+	timestep_view_start_render();
+
+	// recursively render all views/subviews
 	timestep_view_wrap_render(view, ctx, js_ctx, js_opts);
 
 	JS_EndRequest(cx);
