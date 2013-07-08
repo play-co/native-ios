@@ -115,6 +115,7 @@ var installAddonsProject = function(builder, opts, next) {
 
 	var f = ff(this, function () {
 		var frameworks = {};
+		var frameworkPaths = {};
 
 		for (var key in addonConfig) {
 			var config = addonConfig[key];
@@ -130,6 +131,7 @@ var installAddonsProject = function(builder, opts, next) {
 					}
 
 					frameworks[framework] = 1;
+					frameworkPaths[path.dirname(framework)] = 1;
 				}
 			}
 		}
@@ -231,6 +233,49 @@ var installAddonsProject = function(builder, opts, next) {
 
 					break;
 				}
+			}
+		}
+
+		for (var ii = 0; ii < contents.length; ++ii) {
+			var line = contents[ii];
+
+			if (line.indexOf("FRAMEWORK_SEARCH_PATHS") == -1) {
+				continue;
+			}
+			logger.log(" - Found FRAMEWORK_SEARCH_PATHS property on line", ii);
+			var iiFw = ii;
+
+			var semiIdx = line.indexOf(";");
+			if (semiIdx > 0) {
+				// Convert single value field to multi-value field
+				var startIdx = line.indexOf("= ");
+				if (startIdx == -1) {
+					logger.log(" - Invalid FRAMEWORK_SEARCH_PATHS found.");
+				}
+
+				contents.splice(ii, 1, line.substring(0, startIdx + 2) + "(");
+				contents.splice(ii+1, 0, "\t\t\t\t)"+line.substring(semiIdx));
+				var existingPath = line.substring(startIdx + 2, semiIdx);
+				if (existingPath != '""') {
+					contents.splice(ii+1, 0, "\t\t\t\t\t"+existingPath);
+				}
+			}
+
+			// Look for the end to append new paths
+			for (++ii; ii < contents.length; ++ii) {
+				line = contents[ii];
+				if (line.indexOf(";") == -1) {
+					continue;
+				}
+
+				for (var key in frameworkPaths) {
+					// Only add the leading comma if there is a value before this line
+					if (ii-1 != iiFw) {
+						contents[ii-1] = contents[ii-1] + ",";
+					}
+					contents.splice(++ii-1, 0, "\t\t\t\t\t" + '"' + key + '"')
+				}
+				break;
 			}
 		}
 
