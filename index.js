@@ -126,7 +126,7 @@ var installAddonsProject = function(builder, opts, next) {
 					if (path.extname(framework) === "") {
 						framework = path.basename(framework);
 					} else {
-						framework = paths.addons(addon, 'ios', framework);
+						framework = paths.addons(key, 'ios', framework);
 					}
 
 					frameworks[framework] = 1;
