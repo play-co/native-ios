@@ -146,12 +146,12 @@ var installAddonsProject = function(builder, opts, next) {
 				logger.log("Installing library:", framework);
 				fileType = "archive.ar";
 				sourceTree = '"<group>"';
-				framework = path.relative(destDir, framework);
+				framework = path.relative(path.join(destDir, "tealeaf"), framework);
 			} else if (path.extname(framework) === ".framework") {
 				logger.log("Installing framework:", framework);
 				fileType = "wrapper.framework";
 				sourceTree = '"<group>"';
-				framework = path.relative(destDir, framework);
+				framework = path.relative(path.join(destDir, "tealeaf"), framework);
 			} else if (path.extname(framework) === "") {
 				logger.log("Installing system framework:", framework);
 				fileType = "wrapper.framework";
@@ -179,7 +179,7 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf("System/Library/Frameworks/UIKit.framework") > 0) {
 					uuid1_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = " + filename + "; path = " + framework + "; sourceTree = SDKROOT; };");
+					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; lastKnownFileType = " + fileType + "; name = " + filename + "; path = " + framework + "; sourceTree = " + sourceTree + "; };");
 
 					logger.log(" - Found PBXFileReference template on line", ii, "with uuid", uuid1_storekit);
 
