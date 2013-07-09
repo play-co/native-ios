@@ -31,6 +31,9 @@ CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned 
 	JS_BeginRequest(cx);
 
 	JSObject *thiz = timestep_image_map_create_ctor_object(cx, vp);
+	if (!thiz) {
+		return JS_FALSE;
+	}
 
 	timestep_image_map *map = timestep_image_map_init();
 	JS_SetPrivate(thiz, map);

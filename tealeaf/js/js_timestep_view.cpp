@@ -39,6 +39,9 @@ CEXPORT JSBool def_timestep_view_class_constructor(JSContext *cx, unsigned argc,
 	JS_BeginRequest(cx);
 
 	JSObject *thiz = timestep_view_create_ctor_object(cx, vp);
+	if (!thiz) {
+		return JS_FALSE;
+	}
 
 	timestep_view *view = timestep_view_init();
 
