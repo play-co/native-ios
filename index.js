@@ -154,6 +154,11 @@ var installAddonsProject = function(builder, opts, next) {
 				fileType = "wrapper.framework";
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
+			} else if (path.extname(framework) === ".dylib") {
+				logger.log("Installing dynamic library:", framework);
+				fileType = "compiled.mach-o.dylib";
+				sourceTree = 'SDKROOT';
+				framework = "usr/lib/" + path.basename(framework);
 			} else if (path.extname(framework) === "") {
 				logger.log("Installing system framework:", framework);
 				fileType = "wrapper.framework";
