@@ -60,7 +60,7 @@ static int32_t m_prompt_id = 0;
 	}
 }
 
-- (void) showAlertViewWithTitle:(NSString*)title message:(NSString*)message value:(NSString*)value autoShowKeyboard:(BOOL)autoShowKeyboard isPassword:(BOOL)isPassword {
+- (void) showAlertViewWithTitle:(NSString*)title message:(NSString*)message value:(NSString*)value autoShowKeyboard:(BOOL)autoShowKeyboard isPassword:(BOOL)isPassword keyboardType: (int) keyboardType {
 	
 	// TODO: autoShowKeyboard
 
@@ -75,7 +75,8 @@ static int32_t m_prompt_id = 0;
 	textField.placeholder = @"";
 	textField.text = value;
 	textField.textAlignment = UITextAlignmentCenter;
-	textField.keyboardAppearance = UIKeyboardAppearanceAlert;
+    textField.keyboardType = keyboardType;
+
 	
 	if (isPassword) {
 		textField.secureTextEntry = YES;
@@ -99,10 +100,11 @@ JSAG_MEMBER_BEGIN(show, 5)
 	JSAG_ARG_NSTR(value);
 	JSAG_ARG_BOOL(autoShowKeyboard);
 	JSAG_ARG_BOOL(isPassword);
+    JSAG_ARG_BOOL(keyboardType);
 
 	++m_prompt_id;
 
-	[[InputPromptView get] showAlertViewWithTitle:title message:msg value:value autoShowKeyboard:autoShowKeyboard isPassword:isPassword];
+	[[InputPromptView get] showAlertViewWithTitle:title message:msg value:value autoShowKeyboard:autoShowKeyboard isPassword:isPassword keyboardType: keyboardType];
 
 	JSAG_RETURN_INT32(m_prompt_id);
 }

@@ -23,7 +23,7 @@
 @property (nonatomic, retain) UIAlertView *inputPromptAlertView;
 @property (nonatomic, retain) UITextField *inputPromptTextField;
 
-- (void) showAlertViewWithTitle:(NSString*)title message:(NSString*)message value:(NSString*)value autoShowKeyboard:(BOOL)autoShowKeyboard isPassword:(BOOL)isPassword;
+- (void) showAlertViewWithTitle:(NSString*)title message:(NSString*)message value:(NSString*)value autoShowKeyboard:(BOOL)autoShowKeyboard isPassword:(BOOL)isPassword keyboardType: (int) keyboardType;
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 
