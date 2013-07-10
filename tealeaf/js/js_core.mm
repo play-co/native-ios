@@ -85,6 +85,13 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	LAST_ERROR.line_number = report->lineno;
 
 	JS_EndRequest(cx);
+
+	// If getting an out of memory error,
+	if (strcmp(message, "out of memory") == 0) {
+		// Restart JS from main thread
+		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
+		[app restartJS];
+	}
 }
 
 #define TIMER_DICT_KEY(timer) [[NSNumber numberWithInt:timer->timerId] stringValue]
@@ -275,6 +282,7 @@ JSAG_OBJECT_END
 		LoggerSetDebugger(nil);
 	}
 
+	JS_GC(self.rt);
 	JS_DestroyContext(self.cx);
 	JS_DestroyRuntime(self.rt);
 	JS_ShutDown();

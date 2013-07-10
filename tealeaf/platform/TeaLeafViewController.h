@@ -13,38 +13,45 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import <UIKit/UIKit.h>
 #import "js_core.h"
+
+#import <UIKit/UIKit.h>
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
+
 
 @interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate> {
 @private
 int callback;
-//UIAlertView *message;
 }
 
 @property (nonatomic, retain) UIImageView *loading_image_view;
 @property (nonatomic, retain) UIAlertView *backAlertView;
-- (TeaLeafViewController*) init;
 
-- (void)pickContact: (int) cb;
-- (void)sendSMSTo: (NSString*)number withMessage: (NSString*)message andCallback: (int) callback;
-- (void)messageComposeViewController: (MFMessageComposeViewController*) controller didFinishWithResult: (MessageComposeResult) result;
-- (void)alertView: (UIAlertView*) sheet clickedButtonAtIndex: (NSInteger) buttonIndex;
+- (TeaLeafViewController *) init;
 
-- (void)assignCallback: (int) cb;
-- (void)runCallback: (char*) arg;
-- (void)destroyDisplayLink;
+- (void) pickContact:(int)cb;
+- (void) sendSMSTo:(NSString *)number withMessage:(NSString *)message andCallback:(int)callback;
+- (void) messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result;
+- (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+
+- (void) restartJS;
+
+- (void) assignCallback:(int)cb;
+- (void) runCallback:(char *)arg;
+- (void) destroyDisplayLink;
+
 @end
 
+
 @interface UIAlertViewEx : UIAlertView {
+
 @private
-    int* callbacks;
+    int *callbacks;
 	int length;
 }
-- (void) dispatch: (int) callback;
-- (void) registerCallbacks: (int*) callbacks length: (int) length;
+- (void) dispatch:(int)callback;
+- (void) registerCallbacks:(int *)callbacks length:(int)length;
 - (void) dealloc;
 
 @end
