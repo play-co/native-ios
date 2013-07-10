@@ -38,6 +38,7 @@ struct SplashDescriptor {
 @property (nonatomic) BOOL isOnline;                        // Indicates that upon the previous notice, that the internet was reachable
 @property (nonatomic) BOOL wasPaused;                       // Indicates that upon the previous notice, that the app was paused
 @property (nonatomic) BOOL tealeafShowing;
+@property (nonatomic) BOOL signalRestart;
 @property (nonatomic, retain) TeaLeafViewController *tealeafViewController;
 @property (nonatomic, retain) ServerTableViewController *tableViewController;
 @property (nonatomic, retain) AppTableViewController *appTableViewController;
@@ -82,6 +83,7 @@ struct SplashDescriptor {
 - (void) setJSReady:(bool)isReady;
 - (BOOL) getJSReady;
 - (void) onJSReady;
+- (void) restartJS;
 
 // JavaScript event generators
 - (void) postNetworkStatusEvent: (BOOL) isOnline;

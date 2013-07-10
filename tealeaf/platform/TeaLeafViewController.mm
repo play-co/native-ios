@@ -127,24 +127,28 @@ CEXPORT void device_hide_splash() {
 	[super dealloc];
 }
 
+- (void) restartJS {
+	if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
+		[self.view removeFromSuperview];
+
+		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window addSubview:self.appDelegate.appTableViewController.view];
+	} else {
+		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window setRootViewController:self.appDelegate.appTableViewController ];
+	}
+
+	self.appDelegate.tealeafShowing = NO;
+
+	if (js_ready) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			core_reset();
+		});
+	}
+}
+
 - (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	NSString *title = [sheet buttonTitleAtIndex:buttonIndex];
 	if ([title isEqualToString:@"Yes"]) {
-		if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
-			[self.view removeFromSuperview];
-			
-			[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window addSubview:self.appDelegate.appTableViewController.view];
-		} else {
-			[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window setRootViewController:self.appDelegate.appTableViewController ];
-		}
-
-		self.appDelegate.tealeafShowing = NO;
-
-		if (js_ready) {
-			dispatch_async(dispatch_get_main_queue(), ^{
-				core_reset();
-			});
-		}
+		[self restartJS];
 	} else if ([title isEqualToString:@"No"]) {
 		//do nothing
 	} else {
