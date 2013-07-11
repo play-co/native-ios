@@ -128,7 +128,8 @@ var installAddonsProject = function(builder, opts, next) {
 					} else {
 						framework = paths.addons(key, 'ios', framework);
 
-						var frameworkRelPath = "$(SRCROOT)" + path.relative(path.join(destDir, "tealeaf"), path.dirname(framework));
+						//var frameworkRelPath = "$(SRCROOT)" + path.relative(path.join(destDir, "tealeaf"), path.dirname(framework));
+						var frameworkRelPath = path.dirname(framework);
 						frameworkPaths[frameworkRelPath] = 1;
 					}
 
