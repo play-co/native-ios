@@ -243,99 +243,58 @@ var installAddonsProject = function(builder, opts, next) {
 			}
 		}
 
-		// Set up framework search paths
-		for (var ii = 0; ii < contents.length; ++ii) {
-			var line = contents[ii];
+		var searchKeys = ["FRAMEWORK_SEARCH_PATHS", "LIBRARY_SEARCH_PATHS"];
 
-			if (line.indexOf("FRAMEWORK_SEARCH_PATHS") == -1) {
-				continue;
-			}
-			logger.log(" - Found FRAMEWORK_SEARCH_PATHS property on line", ii);
-			var iiFw = ii;
+		for (var searchKeyIndex = 0; searchKeyIndex < searchKeys.length; ++searchKeyIndex) {
+			var searchKey = searchKeys[searchKeyIndex];
 
-			var semiIdx = line.indexOf(";");
-			if (semiIdx > 0) {
-				// Convert single value field to multi-value field
-				var startIdx = line.indexOf("= ");
-				if (startIdx == -1) {
-					logger.log(" - Invalid FRAMEWORK_SEARCH_PATHS found.");
-				}
+			// Set up framework search paths
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
 
-				contents.splice(ii, 1, line.substring(0, startIdx + 2) + "(");
-				contents.splice(ii+1, 0, "\t\t\t\t)"+line.substring(semiIdx));
-				var existingPath = line.substring(startIdx + 2, semiIdx);
-				if (existingPath != '""') {
-					contents.splice(ii+1, 0, "\t\t\t\t\t"+existingPath);
-				}
-			}
-
-			// Look for the end to append new paths
-			for (++ii; ii < contents.length; ++ii) {
-				line = contents[ii];
-				if (line.indexOf(";") == -1) {
+				if (line.indexOf(searchKey) == -1) {
 					continue;
 				}
+				logger.log("Found", searchKey, "property on line", ii);
+				var iiFw = ii;
 
-				for (var key in frameworkPaths) {
-					// Only add the leading comma if there is a value before this line
-					if (ii-1 != iiFw) {
-						// If previous line does not already have a comma,
-						var prevLine = contents[ii-1];
-						if (prevLine.indexOf(",", prevLine.length - 1) === -1) {
-							contents[ii-1] = prevLine + ",";
+				var semiIdx = line.indexOf(";");
+				if (semiIdx > 0) {
+					// Convert single value field to multi-value field
+					var startIdx = line.indexOf("= ");
+					if (startIdx == -1) {
+						logger.log(" - Invalid",searchKey,"found.");
+					} else {
+						contents.splice(ii, 1, line.substring(0, startIdx + 2) + "(");
+						contents.splice(ii+1, 0, "\t\t\t\t)"+line.substring(semiIdx));
+						var existingPath = line.substring(startIdx + 2, semiIdx);
+						if (existingPath != '""') {
+							contents.splice(ii+1, 0, "\t\t\t\t\t"+existingPath);
 						}
 					}
-					contents.splice(++ii-1, 0, "\t\t\t\t\t" + '"' + key + '"')
-				}
-				break;
-			}
-		}
-
-		// Set up library search paths
-		for (var ii = 0; ii < contents.length; ++ii) {
-			var line = contents[ii];
-
-			if (line.indexOf("LIBRARY_SEARCH_PATHS") == -1) {
-				continue;
-			}
-			logger.log(" - Found FRAMEWORK_SEARCH_PATHS property on line", ii);
-			var iiFw = ii;
-
-			var semiIdx = line.indexOf(";");
-			if (semiIdx > 0) {
-				// Convert single value field to multi-value field
-				var startIdx = line.indexOf("= ");
-				if (startIdx == -1) {
-					logger.log(" - Invalid FRAMEWORK_SEARCH_PATHS found.");
 				}
 
-				contents.splice(ii, 1, line.substring(0, startIdx + 2) + "(");
-				contents.splice(ii+1, 0, "\t\t\t\t)"+line.substring(semiIdx));
-				var existingPath = line.substring(startIdx + 2, semiIdx);
-				if (existingPath != '""') {
-					contents.splice(ii+1, 0, "\t\t\t\t\t"+existingPath);
-				}
-			}
-
-			// Look for the end to append new paths
-			for (++ii; ii < contents.length; ++ii) {
-				line = contents[ii];
-				if (line.indexOf(";") == -1) {
-					continue;
-				}
-
-				for (var key in frameworkPaths) {
-					// Only add the leading comma if there is a value before this line
-					if (ii-1 != iiFw) {
-						// If previous line does not already have a comma,
-						var prevLine = contents[ii-1];
-						if (prevLine.indexOf(",", prevLine.length - 1) === -1) {
-							contents[ii-1] = prevLine + ",";
-						}
+				// Look for the end to append new paths
+				for (++ii; ii < contents.length; ++ii) {
+					line = contents[ii];
+					if (line.indexOf(";") == -1) {
+						continue;
 					}
-					contents.splice(++ii-1, 0, "\t\t\t\t\t" + '"' + key + '"')
+
+					for (var key in frameworkPaths) {
+						// Only add the leading comma if there is a value before this line
+						if (ii-1 != iiFw) {
+							// If previous line does not already have a comma,
+							var prevLine = contents[ii-1];
+							if (prevLine.indexOf(",", prevLine.length - 1) === -1) {
+								contents[ii-1] = prevLine + ",";
+							}
+						}
+						contents.splice(++ii-1, 0, "\t\t\t\t\t" + '"' + key + '"')
+						logger.log(" - Installing", key, "search path on line", ii);
+					}
+					break;
 				}
-				break;
 			}
 		}
 
