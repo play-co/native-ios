@@ -47,6 +47,7 @@ struct SplashDescriptor {
 @property (nonatomic, retain) NSMutableArray *services;
 @property (nonatomic, strong) NSNotification *launchNotification;
 @property (nonatomic, retain) NSDictionary *appManifest;
+@property (nonatomic, retain) NSString *deviceToken;
 
 // Test app
 @property (nonatomic, retain) NSDictionary *testAppManifest;

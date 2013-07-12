@@ -72,6 +72,9 @@
 	UIApplication *app = [UIApplication sharedApplication];
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 	[self.window makeKeyAndVisible];
+    
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
@@ -343,6 +346,9 @@
 
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken
 {
+    self.deviceToken = [[[deviceToken description]
+                         stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]
+                         stringByReplacingOccurrencesOfString:@" " withString: @"-"];
 	[self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
 }
 
