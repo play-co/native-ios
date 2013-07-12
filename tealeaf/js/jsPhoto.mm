@@ -21,7 +21,7 @@
 
 JSAG_MEMBER_BEGIN(getPhoto, 1)
 {
-    JSAG_ARG_NSTR(url)
+    JSAG_ARG_CSTR(url)
     camera_get_photo(url);
 	JSAG_RETURN_INT32(3);
 }
@@ -34,7 +34,7 @@ JSAG_OBJECT_END
 
 JSAG_MEMBER_BEGIN(galleryGetPhoto, 1)
 {
-    JSAG_ARG_NSTR(url)
+    JSAG_ARG_CSTR(url)
     gallery_get_photo(url);
 	JSAG_RETURN_INT32(3);
 }

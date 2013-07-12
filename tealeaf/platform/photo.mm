@@ -16,14 +16,16 @@
 #include "photo.h"
 #import "TeaLeafAppDelegate.h"
 
-int camera_get_photo(NSString *url) {
+int camera_get_photo(const char *url_str) {
+	NSString  *url = [NSString stringWithUTF8String: url_str];
     TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
     TeaLeafViewController *viewController = [appDelegate tealeafViewController];
     [viewController showImagePickerForCamera: url];
     return 0;
 }
 
-int gallery_get_photo(NSString *url) {
+int gallery_get_photo(const char *url_str) {
+	NSString  *url = [NSString stringWithUTF8String: url_str];
     TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
     TeaLeafViewController *viewController = [appDelegate tealeafViewController];
     [viewController showImagePickerForPhotoPicker: url];
