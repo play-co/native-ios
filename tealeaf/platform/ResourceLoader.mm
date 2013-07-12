@@ -28,6 +28,9 @@
 #include "core/image_loader.h"
 #include "core/config.h"
 #include "core/util/detect.h"
+extern "C" {
+#include "image_cache.h"
+}
 #import <core/platform/gl.h>
 
 
@@ -76,6 +79,7 @@ static int base_path_len = 0;
 
 + (void) release {
 	if (instance != nil) {
+        image_cache_destroy();
 		[instance release];
 		instance = nil;
 	}
@@ -84,6 +88,7 @@ static int base_path_len = 0;
 + (ResourceLoader *) get {
 	if (instance == nil) {
 		instance = [[ResourceLoader alloc] init];
+        image_cache_init([instance.documentsDirectory UTF8String]);
 		imgThread = [[NSThread alloc] initWithTarget:instance selector:@selector(imageThread) object:nil];
 		instance.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
 		[imgThread start];
@@ -109,6 +114,7 @@ static int base_path_len = 0;
 	self.appBase = [[NSBundle mainBundle] resourcePath];
 	self.images = [[[NSMutableArray alloc] init] autorelease];
 	self.imageWaiter = [[[NSCondition alloc] init] autorelease];
+    self.httpQueue = dispatch_queue_create("com.example.MyQueue", NULL);
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains
     (NSDocumentDirectory, NSUserDomainMask, YES);
@@ -191,6 +197,27 @@ static int base_path_len = 0;
     return contents;
 }
 
+- (void) loadingPartTwo: (NSData*) data url: (NSString*) url {
+    unsigned char *tex_data = NULL;
+    int ch, w, h, ow, oh, scale;
+    unsigned int raw_length = [data length];
+    if (raw_length > 0) {
+        const void *raw_data = [data bytes];
+        
+        if (raw_data) {
+            tex_data = texture_2d_load_texture_raw([url UTF8String], raw_data, raw_length, &ch, &w, &h, &ow, &oh, &scale);
+        }
+    }
+    
+    if(tex_data) {
+        RawImageInfo* info = [[RawImageInfo alloc] initWithData:tex_data andURL:url andW:w andH:h andOW:ow andOH:oh andScale:scale andChannels:ch];
+        [self performSelectorOnMainThread:@selector(finishLoadingRawImage:) withObject:info waitUntilDone:NO];
+    } else {
+        LOG("{resources} WARNING: 404 %s", [url UTF8String]);
+        [self performSelectorOnMainThread:@selector(failedLoadImage:) withObject: url waitUntilDone:NO];
+    }
+}
+
 - (void) imageThread {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	while(true) {
@@ -227,33 +254,15 @@ static int base_path_len = 0;
 					} else {
                         bool isRemote = [url hasPrefix:@"http"];
                         if (isRemote) {
-                            data = [self getCachedImageFromURL:url];
-                        }
-                        if (!data) {
+                            dispatch_async(self.httpQueue, ^{
+                                        image_data *image_data = image_cache_get_image([url UTF8String]);
+                                        NSData *data = [NSData dataWithBytes:image_data->bytes length: image_data->size];
+                                        [self loadingPartTwo:data url:url];
+                                    });
+                        } else {
                             data = [NSData dataWithContentsOfURL: [self resolve:url]];
-                            if (isRemote) {
-                                [self cacheRemoteImage: data forURL: url];
-                            }
+                            [self loadingPartTwo: data url: url];
                         }
-					}
-
-					unsigned char *tex_data = NULL;
-					int ch, w, h, ow, oh, scale;
-					unsigned int raw_length = [data length];
-					if (raw_length > 0) {
-						const void *raw_data = [data bytes];
-
-						if (raw_data) {
-							tex_data = texture_2d_load_texture_raw([url UTF8String], raw_data, raw_length, &ch, &w, &h, &ow, &oh, &scale);
-						}
-					}
-
-					if(tex_data) {
-						RawImageInfo* info = [[RawImageInfo alloc] initWithData:tex_data andURL:url andW:w andH:h andOW:ow andOH:oh andScale:scale andChannels:ch];
-						[self performSelectorOnMainThread:@selector(finishLoadingRawImage:) withObject:info waitUntilDone:NO];
-					} else {
-						LOG("{resources} WARNING: 404 %s", [url UTF8String]);
-						[self performSelectorOnMainThread:@selector(failedLoadImage:) withObject: url waitUntilDone:NO];
 					}
 				}
 			}
