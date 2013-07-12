@@ -114,7 +114,6 @@ static int base_path_len = 0;
 	self.appBase = [[NSBundle mainBundle] resourcePath];
 	self.images = [[[NSMutableArray alloc] init] autorelease];
 	self.imageWaiter = [[[NSCondition alloc] init] autorelease];
-    self.httpQueue = dispatch_queue_create("com.example.MyQueue", NULL);
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains
     (NSDocumentDirectory, NSUserDomainMask, YES);
@@ -197,7 +196,7 @@ static int base_path_len = 0;
     return contents;
 }
 
-- (void) loadingPartTwo: (NSData*) data url: (NSString*) url {
+- (void) makeTexture2DFromData: (NSData*) data url: (NSString*) url {
     unsigned char *tex_data = NULL;
     int ch, w, h, ow, oh, scale;
     unsigned int raw_length = [data length];
@@ -252,17 +251,8 @@ static int base_path_len = 0;
 						NSString* str = [url substringFromIndex: range.location+1];
 						data = decodeBase64(str);
 					} else {
-                        bool isRemote = [url hasPrefix:@"http"];
-                        if (isRemote) {
-                            dispatch_async(self.httpQueue, ^{
-                                        image_data *image_data = image_cache_get_image([url UTF8String]);
-                                        NSData *data = [NSData dataWithBytes:image_data->bytes length: image_data->size];
-                                        [self loadingPartTwo:data url:url];
-                                    });
-                        } else {
-                            data = [NSData dataWithContentsOfURL: [self resolve:url]];
-                            [self loadingPartTwo: data url: url];
-                        }
+                        data = [NSData dataWithContentsOfURL: [self resolve:url]];
+                        [self makeTexture2DFromData: data url: url];
 					}
 				}
 			}

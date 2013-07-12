@@ -24,7 +24,6 @@
 @property (nonatomic, retain) NSCondition *imageWaiter;
 @property (nonatomic, retain) NSMutableArray *images;
 @property (nonatomic, retain) NSString *documentsDirectory;
-@property (nonatomic) dispatch_queue_t httpQueue;
 
 - (NSString *) initStringWithContentsOfURL:(NSString *)url;
 - (NSURL *) resolve:(NSString *)url;
