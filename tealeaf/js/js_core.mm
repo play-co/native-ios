@@ -245,20 +245,8 @@ JSAG_MEMBER_BEGIN_NOARGS(doneLoading)
 }
 JSAG_MEMBER_END_NOARGS
 
-JSAG_MEMBER_BEGIN_NOARGS(getDeviceToken)
-{
-    TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSString *deviceToken = app.deviceToken;
-    if (!deviceToken) {
-        deviceToken = @"";
-    }
-    JSAG_RETURN_NSTR(deviceToken);
-}
-JSAG_MEMBER_END_NOARGS
-
 JSAG_OBJECT_START(NATIVE)
 JSAG_OBJECT_MEMBER(doneLoading)
-JSAG_OBJECT_MEMBER(getDeviceToken)
 JSAG_OBJECT_END
 
 

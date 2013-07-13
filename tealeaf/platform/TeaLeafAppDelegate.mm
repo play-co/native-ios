@@ -346,10 +346,7 @@
 
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken
 {
-    self.deviceToken = [[[deviceToken description]
-                         stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]]
-                         stringByReplacingOccurrencesOfString:@" " withString: @"-"];
-	[self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
+    [self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
 }
 
 - (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error

@@ -528,8 +528,6 @@
 		D5CA493A158A4DE30017224F /* js_animate_template.gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = js_animate_template.gen.h; sourceTree = "<group>"; };
 		D5E8D6791385C2E200246261 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D5E8D67A1385C2E200246261 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
-		D5FFFA82178356CB007917E2 /* jsImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsImageCache.h; sourceTree = "<group>"; };
-		D5FFFA83178356CB007917E2 /* jsImageCache.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsImageCache.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1098,8 +1096,6 @@
 				4E8493DC1651D06000C96B4A /* jsTimestep.mm */,
 				4E8493DD1651D06000C96B4A /* jsXHR.h */,
 				4E8493DE1651D06000C96B4A /* jsXHR.mm */,
-				D5FFFA82178356CB007917E2 /* jsImageCache.h */,
-				D5FFFA83178356CB007917E2 /* jsImageCache.mm */,
 			);
 			path = js;
 			sourceTree = "<group>";
