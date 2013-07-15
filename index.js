@@ -853,7 +853,11 @@ function validateIOSManifest(manifest) {
 	return checkSchema(manifest.ios, schema, "ios");
 }
 
-function makeIOSProject(builder, opts, next) {
+function makeIOSProject(builder, opts, skip, next) {
+	if (skip) {
+		next();
+		return;
+	}
 	// Unpack options
 	var debug = opts.debug;
 	var servicesURL = opts.servicesURL;
@@ -999,6 +1003,8 @@ exports.build = function(builder, project, opts, next) {
 		}
 	}
 
+	var skip = argv['js-only'];
+
 	// Print out --debug state
 	if (argv.debug) {
 		logger.log("Debug: Debug mode enabled");
@@ -1027,7 +1033,7 @@ exports.build = function(builder, project, opts, next) {
 			servicesURL: manifest.servicesURL,
 			title: title,
 			addonConfig: addonConfig
-		}, f());
+		}, skip, f());
 	}, function() {
 		require(builder.common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
 	}, function() {
