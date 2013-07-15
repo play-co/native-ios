@@ -141,8 +141,7 @@ var installAddonsProject = function(builder, opts, next) {
 		var frameworkId = 1;
 
 		for (var framework in frameworks) {
-			var fileType;
-			var sourceTree;
+			var fileType, sourceTree, demoKey;
 			var filename = path.basename(framework);
 
 			// If extension is framework,
@@ -151,21 +150,31 @@ var installAddonsProject = function(builder, opts, next) {
 				fileType = "archive.ar";
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
+				demoKey = "System/Library/Frameworks/UIKit.framework";
+			} else if (path.extname(framework) === ".bundle") {
+				logger.log("Installing resource bundle:", framework);
+				fileType = '"wrapper.plug-in"'
+				sourceTree = '"<group>"';
+				framework = path.relative(path.join(destDir, "tealeaf/resources"), framework);
+				demoKey = "path = resources.bundle";
 			} else if (path.extname(framework) === ".framework") {
 				logger.log("Installing framework:", framework);
 				fileType = "wrapper.framework";
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
+				demoKey = "System/Library/Frameworks/UIKit.framework";
 			} else if (path.extname(framework) === ".dylib") {
 				logger.log("Installing dynamic library:", framework);
 				fileType = "compiled.mach-o.dylib";
 				sourceTree = 'SDKROOT';
 				framework = "usr/lib/" + path.basename(framework);
+				demoKey = "System/Library/Frameworks/UIKit.framework";
 			} else if (path.extname(framework) === "") {
 				logger.log("Installing system framework:", framework);
 				fileType = "wrapper.framework";
 				sourceTree = 'SDKROOT';
 				framework = "System/Library/Frameworks/" + path.basename(framework) + ".framework";
+				demoKey = "System/Library/Frameworks/UIKit.framework";
 			}
 
 			var uuid1 = "BAADBEEF";
@@ -185,7 +194,7 @@ var installAddonsProject = function(builder, opts, next) {
 			for (var ii = 0; ii < contents.length; ++ii) {
 				var line = contents[ii];
 
-				if (line.indexOf("System/Library/Frameworks/UIKit.framework") > 0) {
+				if (line.indexOf(demoKey) > 0) {
 					uuid1_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
 					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; lastKnownFileType = " + fileType + "; name = " + filename + "; path = " + framework + "; sourceTree = " + sourceTree + "; };");
@@ -263,7 +272,7 @@ var installAddonsProject = function(builder, opts, next) {
 					// Convert single value field to multi-value field
 					var startIdx = line.indexOf("= ");
 					if (startIdx == -1) {
-						logger.log(" - Invalid",searchKey,"found.");
+						logger.log(" - Invalid", searchKey, "found.");
 					} else {
 						contents.splice(ii, 1, line.substring(0, startIdx + 2) + "(");
 						contents.splice(ii+1, 0, "\t\t\t\t)"+line.substring(semiIdx));
