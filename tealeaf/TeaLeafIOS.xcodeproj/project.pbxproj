@@ -395,7 +395,6 @@
 		D558213C150E7C7500549BF6 /* location_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = location_manager.h; sourceTree = "<group>"; };
 		D558213D150E7C7500549BF6 /* overlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = overlay.h; sourceTree = "<group>"; };
 		D558213E150E7C7500549BF6 /* photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = photo.h; sourceTree = "<group>"; };
-		D558213F150E7C7500549BF6 /* purchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = purchase.h; sourceTree = "<group>"; };
 		D5582141150E7C7500549BF6 /* resource_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resource_loader.h; sourceTree = "<group>"; };
 		D5582142150E7C7500549BF6 /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
 		D5582143150E7C7500549BF6 /* sound_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound_manager.h; sourceTree = "<group>"; };
@@ -827,7 +826,6 @@
 				D558213C150E7C7500549BF6 /* location_manager.h */,
 				D558213D150E7C7500549BF6 /* overlay.h */,
 				D558213E150E7C7500549BF6 /* photo.h */,
-				D558213F150E7C7500549BF6 /* purchase.h */,
 				D5582141150E7C7500549BF6 /* resource_loader.h */,
 				D5582142150E7C7500549BF6 /* socket.h */,
 				D5582143150E7C7500549BF6 /* sound_manager.h */,
