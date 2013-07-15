@@ -738,7 +738,7 @@ JSAG_MEMBER_BEGIN(deleteTexture, 1)
 {
     JSAG_ARG_CSTR(url);
     texture_2d *tex = texture_manager_get_texture(texture_manager_get(), url);
-    if (tex) {
+    if (tex && tex->loaded) {
         texture_manager_free_texture(texture_manager_get(), tex);
     }
 }
