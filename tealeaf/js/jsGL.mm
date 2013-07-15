@@ -742,6 +742,7 @@ JSAG_MEMBER_BEGIN(deleteTexture, 1)
         texture_manager_free_texture(texture_manager_get(), tex);
     }
 }
+JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN(touchTexture, 1)
 {
