@@ -1188,6 +1188,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D5BC678F1635D0270059EC0F /* Build configuration list for PBXNativeTarget "TeaLeafIOS" */;
 			buildPhases = (
+				D5295D3617947FF600BEEEE5 /* ShellScript */,
 				D5BC66E91635D0270059EC0F /* Resources */,
 				D5BC67001635D0270059EC0F /* Sources */,
 				D5BC677A1635D0270059EC0F /* Frameworks */,
@@ -1254,6 +1255,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D5295D3617947FF600BEEEE5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "find ./resources/resources.bundle -exec touch {} \\;";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D5BC67001635D0270059EC0F /* Sources */ = {
