@@ -59,32 +59,75 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 	var addons = project && project.manifest && project.manifest.addons;
 
 	var f = ff(this, function() {
-		var group = f.group();
 
-		// For each addon,
+		var addonConfigMap = {};
+		var next = f.slotPlain();
+		var addonQueue = [];
+		var checkedAddonMap = {};
 		if (addons) {
+			var missingAddons = [];
 			for (var ii = 0; ii < addons.length; ++ii) {
-				var addon = addons[ii];
+				addonQueue.push(addons[ii]);
+			}
+
+			var processAddonQueue = function() {
+				var addon = null;
+				if (addonQueue.length > 0) {
+					addon = addonQueue.shift();
+				} else {
+					if (missingAddons.length > 0) {
+						logger.error("=========================================================================");
+						logger.error("Missing addons =>", JSON.stringify(missingAddons));
+						logger.error("=========================================================================");
+						process.exit(1);
+					}
+
+					next(addonConfigMap);
+					return;
+				}
 				var addonConfig = paths.addons(addon, 'ios', 'config.json');
 
 				if (fs.existsSync(addonConfig)) {
-					fs.readFile(addonConfig, 'utf8', group.slot());
+					fs.readFile(addonConfig, 'utf8', function(err, data) {
+						if (!err && data) {
+							var config = JSON.parse(data);
+							addonConfigMap[addon] = data;
+							if (config.addonDependencies && config.addonDependencies.length > 0) {
+								for (var a in config.addonDependencies) {
+									var dep = config.addonDependencies[a];
+									if (!checkedAddonMap[dep]) {
+										checkedAddonMap[dep] = true;
+										addonQueue.push(dep);
+									}
+								}
+							}
+						}
+						processAddonQueue();
+					});
 				} else {
-					logger.warn("Unable to find iOS addon config file", addonConfig);
+					if (!checkedAddonMap[addon]) {
+						checkedAddonMap[addon] = true;
+					}
+					if (missingAddons.indexOf(addon) == -1) {
+						missingAddons.push(addon);
+						logger.warn("Unable to find iOS addon config file", addonConfig);
+					}
+					processAddonQueue();
 				}
-			}
-		}
-	}, function(results) {
-		if (results) {
-			for (var ii = 0; ii < results.length; ++ii) {
-				var addon = addons[ii];
-				addonConfig[addon] = JSON.parse(results[ii]);
+			};
 
-				logger.log("Configured addon:", addon);
-			}
+			processAddonQueue();
+
 		}
+	}, function(addonConfigMap) {
+		if (addonConfigMap) {
+            for (var addon in addonConfigMap) {
+                addonConfig[addon] = JSON.parse(addonConfigMap[addon]);
+				logger.log("Configured addon:", addon);
+            }
+        }
 	}).error(function(err) {
-		logger.error(err);
+		logger.error("Failure to install addons:", err, err.stack);
 	}).cb(next);
 }
 
