@@ -231,7 +231,7 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf("fileRef = " + uuid1_storekit) > 0) {
 					uuid2_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Frameworks */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; };");
+					contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Frameworks */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; settings = {ATTRIBUTES = (Weak, ); }; };");
 
 					logger.log(" - Found PBXBuildFile template on line", ii, "with uuid", uuid2_storekit);
 
