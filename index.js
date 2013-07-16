@@ -47,7 +47,7 @@ exports.testapp = function(common, opts, next) {
 	}, function() {
 		require(common.paths.root('src', 'serve')).cli();
 	}).error(function(err) {
-		console.log(clc.red("ERROR"), err);
+		console.log("Error during testapp:", err, err.stack);
 	}).cb(next);
 }
 
@@ -84,7 +84,7 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 			}
 		}
 	}).error(function(err) {
-		logger.error(err);
+		logger.error("Error while installing addons:", err, err.stack);
 	}).cb(next);
 }
 
@@ -430,10 +430,31 @@ var installAddonsProject = function(builder, opts, next) {
 			}
 		}
 	}).error(function(err) {
-		logger.error("Failure in installing addon project changes:", err);
+		logger.error("Failure in installing addon project changes:", err, err.stack);
 	}).cb(next);
 }
 
+function installAddonsFiles(builder, opts, next) {
+	var destPath = opts.destPath;
+	var addonConfig = opts.addonConfig;
+
+	var f = ff(function () {
+		for (var addon in addonConfig) {
+			var config = addonConfig[addon];
+
+			if (config.resources) {
+				for (var ii = 0; ii < config.resources.length; ++ii) {
+					var destFile = builder.common.paths.addons(addon, 'ios', config.resources[ii]);
+
+					logger.log("Installing addon resource:", destFile, "for", addon);
+					builder.common.copyFileSync(destFile, path.join(destPath, path.basename(config.resources[ii])));
+				}
+			}
+		}
+	}).error(function(err) {
+		logger.error("Failure in installing addon files:", err, err.stack);
+	}).cb(next);
+}
 
 //// Build
 
@@ -1004,7 +1025,7 @@ function makeIOSProject(builder, opts, next) {
 			studio_name: manifest.studio && manifest.studio.name
 		}, f.wait());
 	}).error(function(code) {
-		logger.log("Error while making iOS project file changes: " + code);
+		logger.log("Error while making iOS project file changes: " + code, code.stack);
 		process.exit(2);
 	}).cb(next);
 }
@@ -1107,6 +1128,10 @@ exports.build = function(builder, project, opts, next) {
 		copyIcons(builder, manifest.ios.icons, destPath);
 		copyFonts(builder, manifest.ttf, destPath);
 		copySplash(builder, manifest, destPath, f.wait());
+		installAddonsFiles(builder, {
+			destPath: opts.output,
+			addonConfig: addonConfig
+		}, f.wait());
 	}, function() {
 		// If IPA generation was requested,
 		if (argv.ipa) {
@@ -1130,7 +1155,7 @@ exports.build = function(builder, project, opts, next) {
 		}
 		process.exit(0);
 	}).error(function(err) {
-		logger.error(err);
+		logger.error("Error during build process:", err, err.stack);
 		process.exit(2);
 	});
 }
