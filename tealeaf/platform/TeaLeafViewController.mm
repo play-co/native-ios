@@ -485,20 +485,13 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
     CGSize size = CGSizeMake(128, 128);
     image = [self imageWithImage: image scaledToSize: size];
-    Texture2D *tex = [[Texture2D alloc] initWithImage: image];
-    texture_2d *texture = texture_2d_new_from_image((char*)[self.photoURL UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight);
-    texture_manager_add_texture_loaded(texture_manager_get(), texture);
     //TODO send an event to JS
-    [self dismissViewControllerAnimated:YES completion:NULL];
     
-    [[ResourceLoader get] sendImageLoadedEventForURL:self.photoURL glName:texture->name width:texture->width height:texture->height
-                                       originalWidth: texture->originalWidth originalHeight: texture->originalHeight];
-
     NSData *data = UIImagePNGRepresentation(image);
     NSString *b64Image = encodeBase64(data);
     NSDictionary *event = @{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image};
     [[PluginManager get] dispatchJSEvent: event];
-
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 
