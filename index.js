@@ -78,9 +78,13 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 		if (results) {
 			for (var ii = 0; ii < results.length; ++ii) {
 				var addon = addons[ii];
-				addonConfig[addon] = JSON.parse(results[ii]);
-
-				logger.log("Configured addon:", addon);
+				try {
+					addonConfig[addon] = JSON.parse(results[ii]);
+				
+					logger.log("Configured addon:", addon);
+				} catch (err) {
+					throw new Error("Unable to parse addon configuration for: " + addon + "\r\nError: " + err + "\r\n" + err.stack);
+				}
 			}
 		}
 	}).error(function(err) {
