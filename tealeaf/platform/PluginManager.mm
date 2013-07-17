@@ -184,16 +184,26 @@ JSAG_OBJECT_END
     [self dispatchJSEventWithJSONString:evt_nstr];
 }
 
-- (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
+- (NSDictionary *) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
+    id returnValue = nil;
 	id instance = [self.plugins valueForKey:plugin];
 	if (instance) {
 		SEL selector = NSSelectorFromString([name stringByAppendingString:@":"]);
+		SEL selectorWithReturnValue = NSSelectorFromString([name stringByAppendingString:@"WithReturnValue:"]);
 		if ([instance respondsToSelector:selector]) {
 			[instance performSelector:selector withObject:event];
-		}
+		} else if ([instance respondsToSelector:selectorWithReturnValue]) {
+            returnValue = [instance performSelector:selectorWithReturnValue withObject:event];
+        }
 	} else {
 		NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin: %@", plugin);
 	}
+    
+    if (![returnValue isKindOfClass:[NSDictionary class]]) {
+        returnValue = nil;
+    }
+    
+    return returnValue;
 }
 
 @end
