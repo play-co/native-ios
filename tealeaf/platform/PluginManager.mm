@@ -41,7 +41,8 @@ JSAG_MEMBER_BEGIN(sendEvent, 3)
 	if (!json || err) {
 		NSLOG(@"{plugins} WARNING: Event passed to NATIVE.plugins.sendEvent does not contain a valid JSON string.");
 	} else {
-		[m_pluginManager plugin:pluginName name:eventName event:json];
+		NSDictionary *returnValue = [m_pluginManager plugin:pluginName name:eventName event:json];
+        JSAG_RETURN_NSTR([returnValue JSONString]);
 	}
 }
 JSAG_MEMBER_END
