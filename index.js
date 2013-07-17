@@ -59,34 +59,78 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 	var addons = project && project.manifest && project.manifest.addons;
 
 	var f = ff(this, function() {
-		var group = f.group();
 
-		// For each addon,
+		var addonConfigMap = {};
+		var next = f.slotPlain();
+		var addonQueue = [];
+		var checkedAddonMap = {};
 		if (addons) {
+			var missingAddons = [];
 			for (var ii = 0; ii < addons.length; ++ii) {
-				var addon = addons[ii];
+				addonQueue.push(addons[ii]);
+			}
+
+			var processAddonQueue = function() {
+				var addon = null;
+				if (addonQueue.length > 0) {
+					addon = addonQueue.shift();
+				} else {
+					if (missingAddons.length > 0) {
+						logger.error("=========================================================================");
+						logger.error("Missing addons =>", JSON.stringify(missingAddons));
+						logger.error("=========================================================================");
+						process.exit(1);
+					}
+
+					next(addonConfigMap);
+					return;
+				}
 				var addonConfig = paths.addons(addon, 'ios', 'config.json');
 
 				if (fs.existsSync(addonConfig)) {
-					fs.readFile(addonConfig, 'utf8', group.slot());
+					fs.readFile(addonConfig, 'utf8', function(err, data) {
+						if (!err && data) {
+							var config = JSON.parse(data);
+							addonConfigMap[addon] = data;
+							if (config.addonDependencies && config.addonDependencies.length > 0) {
+								for (var a in config.addonDependencies) {
+									var dep = config.addonDependencies[a];
+									if (!checkedAddonMap[dep]) {
+										checkedAddonMap[dep] = true;
+										addonQueue.push(dep);
+									}
+								}
+							}
+						}
+						processAddonQueue();
+					});
 				} else {
-					logger.warn("Unable to find iOS addon config file", addonConfig);
+					if (!checkedAddonMap[addon]) {
+						checkedAddonMap[addon] = true;
+					}
+					if (missingAddons.indexOf(addon) == -1) {
+						missingAddons.push(addon);
+						logger.warn("Unable to find iOS addon config file", addonConfig);
+					}
+					processAddonQueue();
 				}
-			}
+			};
+
+			processAddonQueue();
+
 		}
-	}, function(results) {
-		if (results) {
-			for (var ii = 0; ii < results.length; ++ii) {
-				var addon = addons[ii];
+	}, function(addonConfigMap) {
+		if (addonConfigMap) {
+            for (var addon in addonConfigMap) {
 				try {
-					addonConfig[addon] = JSON.parse(results[ii]);
-				
+					addonConfig[addon] = JSON.parse(addonConfigMap[addon]);
 					logger.log("Configured addon:", addon);
 				} catch (err) {
 					throw new Error("Unable to parse addon configuration for: " + addon + "\r\nError: " + err + "\r\n" + err.stack);
 				}
-			}
-		}
+
+            }
+        }
 	}).error(function(err) {
 		logger.error("Error while installing addons:", err, err.stack);
 	}).cb(next);
@@ -147,6 +191,7 @@ var installAddonsProject = function(builder, opts, next) {
 		for (var framework in frameworks) {
 			var fileType, sourceTree, demoKey;
 			var filename = path.basename(framework);
+			var fileEncoding = "";
 
 			// If extension is framework,
 			if (path.extname(framework) === ".a") {
@@ -155,6 +200,13 @@ var installAddonsProject = function(builder, opts, next) {
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
 				demoKey = "System/Library/Frameworks/UIKit.framework";
+			} else if (path.extname(framework) === ".xib") {
+				logger.log("Installing xib:", framework);
+				fileType = 'file.xib'
+				sourceTree = '"<group>"';
+				framework = path.relative(path.join(destDir, "tealeaf"), framework);
+				demoKey = "path = MainWindow.xib";
+				fileEncoding = "fileEncoding = 4; ";
 			} else if (path.extname(framework) === ".bundle") {
 				logger.log("Installing resource bundle:", framework);
 				fileType = '"wrapper.plug-in"'
@@ -201,7 +253,7 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf(demoKey) > 0) {
 					uuid1_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; lastKnownFileType = " + fileType + "; name = " + filename + "; path = " + framework + "; sourceTree = " + sourceTree + "; };");
+					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; " + fileEncoding + "lastKnownFileType = " + fileType + "; name = " + filename + "; path = " + framework + "; sourceTree = " + sourceTree + "; };");
 
 					logger.log(" - Found PBXFileReference template on line", ii, "with uuid", uuid1_storekit);
 
@@ -231,7 +283,7 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf("fileRef = " + uuid1_storekit) > 0) {
 					uuid2_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Frameworks */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; };");
+					contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Frameworks */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; settings = {ATTRIBUTES = (Weak, ); }; };");
 
 					logger.log(" - Found PBXBuildFile template on line", ii, "with uuid", uuid2_storekit);
 
