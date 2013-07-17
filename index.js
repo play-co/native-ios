@@ -191,6 +191,7 @@ var installAddonsProject = function(builder, opts, next) {
 		for (var framework in frameworks) {
 			var fileType, sourceTree, demoKey;
 			var filename = path.basename(framework);
+			var fileEncoding = "";
 
 			// If extension is framework,
 			if (path.extname(framework) === ".a") {
@@ -199,6 +200,13 @@ var installAddonsProject = function(builder, opts, next) {
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
 				demoKey = "System/Library/Frameworks/UIKit.framework";
+			} else if (path.extname(framework) === ".xib") {
+				logger.log("Installing xib:", framework);
+				fileType = 'file.xib'
+				sourceTree = '"<group>"';
+				framework = path.relative(path.join(destDir, "tealeaf"), framework);
+				demoKey = "path = MainWindow.xib";
+				fileEncoding = "fileEncoding = 4; ";
 			} else if (path.extname(framework) === ".bundle") {
 				logger.log("Installing resource bundle:", framework);
 				fileType = '"wrapper.plug-in"'
@@ -245,7 +253,7 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf(demoKey) > 0) {
 					uuid1_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; lastKnownFileType = " + fileType + "; name = " + filename + "; path = " + framework + "; sourceTree = " + sourceTree + "; };");
+					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; " + fileEncoding + "lastKnownFileType = " + fileType + "; name = " + filename + "; path = " + framework + "; sourceTree = " + sourceTree + "; };");
 
 					logger.log(" - Found PBXFileReference template on line", ii, "with uuid", uuid1_storekit);
 
