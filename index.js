@@ -118,6 +118,8 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 
 			processAddonQueue();
 
+		} else {
+			next({});
 		}
 	}, function(addonConfigMap) {
 		if (addonConfigMap) {
