@@ -1259,14 +1259,14 @@
 /* Begin PBXShellScriptBuildPhase section */
 		D5295D3617947FF600BEEEE5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "find ./resources/resources.bundle -exec touch {} \\;";
 		};
