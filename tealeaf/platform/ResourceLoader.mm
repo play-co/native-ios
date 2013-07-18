@@ -382,18 +382,43 @@ static int base_path_len = 0;
 									  info.w, info.h, info.ow, info.oh,
 									  info.channels, info.scale, false);
 
+	char *event_str;
+	int event_len;
+	
+	char *dynamic_str = 0;
+	char stack_str[512];
+	
+	// Generate event string
+	{
+		int url_len = (int)strlen(url);
+		
+		if (url_len > 300) {
+			event_len = url_len + 212;
+			dynamic_str = (char*)malloc(event_len);
+			event_str = dynamic_str;
+		} else {
+			event_len = 512;
+			event_str = stack_str;
+		}
+	}
+	
 	//create json event string
-	char buf[512];
-	snprintf(buf, sizeof(buf),
-			 "{\"url\":\"%s\",\"height\":%d,\"originalHeight\":%d,\"originalWidth\":%d" \
-			 ",\"glName\":%d,\"width\":%d,\"name\":\"imageLoaded\",\"priority\":0}",
-			 url, (int)info.h,
-			 (int)info.oh, (int)info.ow,
-			 (int)texture, (int)info.w);
-
-	core_dispatch_event(buf);
+	event_len = snprintf(event_str, event_len,
+						  "{\"url\":\"%s\",\"height\":%d,\"originalHeight\":%d,\"originalWidth\":%d" \
+						  ",\"glName\":%d,\"width\":%d,\"name\":\"imageLoaded\",\"priority\":0}",
+						  url, (int)info.h,
+						  (int)info.oh, (int)info.ow,
+						  (int)texture, (int)info.w);
+	event_str[event_len] = '\0';
+	
+	core_dispatch_event(event_str);
 
 	[info release];
+	
+	// If dynamically allocated the string,
+	if (dynamic_str) {
+		free(dynamic_str);
+	}
 }
 
 @end
