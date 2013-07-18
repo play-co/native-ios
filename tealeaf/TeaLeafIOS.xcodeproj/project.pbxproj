@@ -51,6 +51,7 @@
 		4EEFA2101755559A00570B4E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		4EEFA211175555AB00570B4E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1695630A1338639B0052334D /* AVFoundation.framework */; };
 		4EEFA212175555CD00570B4E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B469A40121A6B1300E414EA /* QuartzCore.framework */; };
+		5BAE3E111797939900E8058E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BAE3E101797939900E8058E /* CoreTelephony.framework */; };
 		8BC3D5E21639FFD2007942C3 /* OALSourceInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8BC3D5E11639FFD2007942C3 /* OALSourceInfo.mm */; };
 		D53E17F1178506BF000BAC10 /* RawImageInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D54113A61783E7AD002B6E3E /* RawImageInfo.m */; };
 		D551A73C178E50AF0028DACC /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D551A73B178E50AF0028DACC /* Security.framework */; };
@@ -377,6 +378,7 @@
 		54DC89DD161258110083B183 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		5B2BEA6912AEF41100AE98C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		5B469A40121A6B1300E414EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		5BAE3E101797939900E8058E /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		8BC3D5E01639FFD1007942C3 /* OALSourceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OALSourceInfo.h; sourceTree = "<group>"; };
 		8BC3D5E11639FFD2007942C3 /* OALSourceInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OALSourceInfo.mm; sourceTree = "<group>"; };
 		A23214D313D8AFD600FA4C7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -535,6 +537,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BAE3E111797939900E8058E /* CoreTelephony.framework in Frameworks */,
 				D560D1C6178F563F00556388 /* libcurl.a in Frameworks */,
 				D551A73C178E50AF0028DACC /* Security.framework in Frameworks */,
 				4EEFA212175555CD00570B4E /* QuartzCore.framework in Frameworks */,
@@ -637,6 +640,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5BAE3E101797939900E8058E /* CoreTelephony.framework */,
 				D560D1C5178F563F00556388 /* libcurl.a */,
 				D551A73B178E50AF0028DACC /* Security.framework */,
 				4E72C65715D9E253000404EF /* SystemConfiguration.framework */,
