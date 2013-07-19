@@ -350,7 +350,7 @@
 		 annotation:(id)annotation
 {
 	if (self.pluginManager) {
-		[self.pluginManager handleOpenURL:url];
+		[self.pluginManager handleOpenURL:url  sourceApplication:sourceApplication];
 	}
 
 	return YES;
