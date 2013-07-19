@@ -48,7 +48,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>${PRODUCT_NAME}</string>
-				<string>fbtealeaf</string>
 			</array>
 		</dict>
 		<dict>
