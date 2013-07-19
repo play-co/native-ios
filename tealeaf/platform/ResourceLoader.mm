@@ -478,6 +478,27 @@ CEXPORT bool resource_loader_load_image_with_c(texture_2d *texture) {
 	unsigned long sz = 0;
 	unsigned char *data;
 
+	// If base64 data used,
+	if (texture->url[0] == 'd' &&
+		texture->url[1] == 'a' &&
+		texture->url[2] == 't' &&
+		texture->url[3] == 'a' &&
+		texture->url[4] == ':') {
+		char *after = strchr(texture->url, ',');
+		if (after) {
+			NSString *urlstr = [NSString stringWithUTF8String:(after + 1)];
+			NSData *nsd = decodeBase64(urlstr);
+			data = (unsigned char*)[nsd bytes];
+			
+			texture->pixel_data = texture_2d_load_texture_raw(texture->url, data, sz, &texture->num_channels, &texture->width, &texture->height, &texture->originalWidth, &texture->originalHeight, &texture->scale);
+			
+			[nsd release];
+			[urlstr release];
+			
+			return true;
+		}
+	}
+	
 	if (!read_file(texture->url, &sz, &data)) {
 		texture->pixel_data = NULL;
 
