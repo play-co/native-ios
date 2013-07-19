@@ -90,16 +90,20 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 				if (fs.existsSync(addonConfig)) {
 					fs.readFile(addonConfig, 'utf8', function(err, data) {
 						if (!err && data) {
-							var config = JSON.parse(data);
-							addonConfigMap[addon] = data;
-							if (config.addonDependencies && config.addonDependencies.length > 0) {
-								for (var a in config.addonDependencies) {
-									var dep = config.addonDependencies[a];
-									if (!checkedAddonMap[dep]) {
-										checkedAddonMap[dep] = true;
-										addonQueue.push(dep);
+							try {
+								var config = JSON.parse(data);
+								addonConfigMap[addon] = data;
+								if (config.addonDependencies && config.addonDependencies.length > 0) {
+									for (var a in config.addonDependencies) {
+										var dep = config.addonDependencies[a];
+										if (!checkedAddonMap[dep]) {
+											checkedAddonMap[dep] = true;
+											addonQueue.push(dep);
+										}
 									}
 								}
+							} catch (err) {
+								throw new Error("Malformed ios config file (bad JSON?) for addon '" + addon + "'\r\n" + err + "\r\n" + err.stack);
 							}
 						}
 						processAddonQueue();
@@ -610,7 +614,7 @@ function writeConfigList(opts, next) {
 var LANDSCAPE_ORIENTATIONS = /(UIInterfaceOrientationLandscapeRight)|(UIInterfaceOrientationLandscapeLeft)/;
 var PORTRAIT_ORIENTATIONS = /(UIInterfaceOrientationPortraitUpsideDown)|(UIInterfaceOrientationPortrait)/;
 
-// Updates the given TeaLeafIOS-Info.plist file to include fonts
+// Updates the given TeaLeafIOS-Info.plist file
 function updatePListFile(opts, next) {
 	var f = ff(this, function() {
 		fs.readFile(opts.plistFilePath, 'utf8', function(err, data) {
@@ -688,6 +692,10 @@ function updatePListFile(opts, next) {
 					contents[i+1] = '<string>' + opts.bundleID + '</string>';
 				} else if (/CFBundleName/.test(contents[i])) {
 					contents[i+1] = '<string>' + opts.bundleID + '</string>';
+				} else if (/CFBundleURLName/.test(contents[i])) {
+					contents[i+1] = '<string>' + opts.bundleID + '</string>';
+				} else if (/CFBundleURLSchemes/.test(contents[i])) {
+					contents[i+2] = '<string>' + opts.bundleID + '</string>';
 				}
 			}
 
