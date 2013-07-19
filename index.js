@@ -569,10 +569,6 @@ function writeConfigList(opts, next) {
 	config.push('\t<string>' + opts.entry_point + '</string>');
 	config.push('\t<key>app_id</key>');
 	config.push('\t<string>' + opts.app_id + '</string>');
-	config.push('\t<key>tapjoy_id</key>');
-	config.push('\t<string>' + opts.tapjoy_id + '</string>');
-	config.push('\t<key>tapjoy_key</key>');
-	config.push('\t<string>' + opts.tapjoy_key + '</string>');
 	config.push('\t<key>tcp_host</key>');
 	config.push('\t<string>' + opts.tcp_host + '</string>');
 	config.push('\t<key>source_dir</key>');
@@ -1071,8 +1067,6 @@ function makeIOSProject(builder, opts, next) {
 			code_host: 'localhost',
 			entry_point: 'gc.native.launchClient',
 			app_id: manifest.appID,
-			tapjoy_id: manifest.ios.tapjoyId,
-			tapjoy_key: manifest.ios.tapjoyKey,
 			tcp_host: 'localhost',
 			source_dir: '/',
 			game_hash: gameHash,
