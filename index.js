@@ -518,6 +518,50 @@ function installAddonsFiles(builder, opts, next) {
 	}).cb(next);
 }
 
+function installAddonsPList(builder, opts, next) {
+	var contents = opts.contents;
+	var addonConfig = opts.addonConfig;
+
+	var f = ff(function () {
+		for (var addon in addonConfig) {
+			var config = addonConfig[addon];
+
+			if (config.plist) {
+				for (var plistKey in config.plist) {
+					var manifestKey = config.plist[plistKey];
+					var manifestValue = opts.manifest.ios && opts.manifest.ios[manifestKey];
+
+					var plistLine = "<key>" + plistKey + "</key>";
+					var insertLine = "<string>" + manifestValue + "</string>";
+
+					// For each line,
+					var found = false;
+					for (var ii = 0; ii < contents.length; ++ii) {
+						var line = contents[ii];
+
+						if (line.indexOf(plistLine) != -1) {
+							contents[ii + 1] = insertLine;
+
+							logger.log("Installing plist key:", plistKey, "=", manifestValue, "for key", manifestKey, "- modified on line", ii + 1);
+
+							found = true;
+							break;
+						}
+					}
+
+					if (!found) {
+						logger.log("Installing plist key:", plistKey, "=", manifestValue, "for key", manifestKey, "- At top level (inserted, not modified)");
+						contents.splice(4, 0, plistLine, insertLine);
+					}
+				}
+			}
+		}
+	}).error(function(err) {
+		logger.error("Failure in installing PList keys:", err, err.stack);
+	}).cb(next);
+}
+
+
 //// Build
 
 function validateSubmodules(next) {
@@ -611,98 +655,104 @@ var LANDSCAPE_ORIENTATIONS = /(UIInterfaceOrientationLandscapeRight)|(UIInterfac
 var PORTRAIT_ORIENTATIONS = /(UIInterfaceOrientationPortraitUpsideDown)|(UIInterfaceOrientationPortrait)/;
 
 // Updates the given TeaLeafIOS-Info.plist file
-function updatePListFile(opts, next) {
+function updatePListFile(builder, opts, next) {
 	var f = ff(this, function() {
-		fs.readFile(opts.plistFilePath, 'utf8', function(err, data) {
-			logger.log("Updating Info.plist file: ", opts.plistFilePath);
+		fs.readFile(opts.plistFilePath, 'utf8', f());
+	}, function(data) {
+		logger.log("Updating Info.plist file: ", opts.plistFilePath);
 
-			var contents = data.split('\n');
+		var contents = data.split('\n');
 
-			// For each line,
-			contents = contents.map(function(line) {
-				// If it has an orientation to remove,
-				if (line.match(LANDSCAPE_ORIENTATIONS) && opts.orientations.indexOf("landscape") == -1) {
-					line = "";
-				} else if (line.match(PORTRAIT_ORIENTATIONS) && opts.orientations.indexOf("portrait") == -1) {
-					line = "";
-				} else if (line.indexOf("13375566") >= 0) {
-					line = line.replace("13375566", opts.version);
-				}
-				return line;
-			});
+		installAddonsPList(builder, {
+			contents: contents,
+			addonConfig: opts.addonConfig,
+			manifest: opts.manifest
+		}, next);
 
-			if (!opts.fonts || !opts.fonts.length) {
-				logger.log("Fonts: Skipping PList update step because no fonts are to be installed");
-			} else {
-				// For each line,
-				for (var i = 0; i < contents.length; ++i) {
-					var line = contents[i];
-
-					if (line.indexOf("UIAppFonts") >= 0) {
-						logger.log("Updating UIAppFonts section: Injecting section members for " + opts.fonts.length + " font(s)");
-
-						var insertIndex = i + 2;
-
-						// If empty array exists currently,
-						if (contents[i + 1].indexOf("<array/>") >= 0) {
-							// Eliminate empty array and insert <array> tags
-							contents[i + 1] = "\t\t<array>"; // TODO: Guessing at indentation here
-							contents.splice(i + 2, 0, "\t\t</array>");
-						} else if (contents[i + 1].indexOf("<array>") >= 0) {
-							// No changes needed!
-						} else {
-							logger.warn("Unable to find <array> tag right after UIAppFonts section, so failing!");
-							break;
-						}
-
-						for (var j = 0, jlen = opts.fonts.length; j < jlen; ++j) {
-							contents.splice(insertIndex++, 0, "\t\t\t<string>" + path.basename(opts.fonts[j]) + "</string>");
-						}
-
-						// Done searching
-						break;
-					}
-				}
+		f.pass(contents);
+	}, function(contents) {
+		// For each line,
+		contents = contents.map(function(line) {
+			// If it has an orientation to remove,
+			if (line.match(LANDSCAPE_ORIENTATIONS) && opts.orientations.indexOf("landscape") == -1) {
+				line = "";
+			} else if (line.match(PORTRAIT_ORIENTATIONS) && opts.orientations.indexOf("portrait") == -1) {
+				line = "";
+			} else if (line.indexOf("13375566") >= 0) {
+				line = line.replace("13375566", opts.version);
 			}
+			return line;
+		});
 
+		if (!opts.fonts || !opts.fonts.length) {
+			logger.log("Fonts: Skipping PList update step because no fonts are to be installed");
+		} else {
+			// For each line,
 			for (var i = 0; i < contents.length; ++i) {
 				var line = contents[i];
 
-				if (line.indexOf("UIPrerenderedIcon") >= 0) {
-					logger.log("Updating UIPrerenderedIcon section: Set to", (opts.renderGloss ? "true" : "false"));
+				if (line.indexOf("UIAppFonts") >= 0) {
+					logger.log("Updating UIAppFonts section: Injecting section members for " + opts.fonts.length + " font(s)");
 
-					// NOTE: By default, necessarily, UIPrerenderedIcon=true
-					if (opts.renderGloss) {
-						// Pull out this and next line
-						contents[i] = "";
-						contents[i+1] = "";
+					var insertIndex = i + 2;
+
+					// If empty array exists currently,
+					if (contents[i + 1].indexOf("<array/>") >= 0) {
+						// Eliminate empty array and insert <array> tags
+						contents[i + 1] = "\t\t<array>"; // TODO: Guessing at indentation here
+						contents.splice(i + 2, 0, "\t\t</array>");
+					} else if (contents[i + 1].indexOf("<array>") >= 0) {
+						// No changes needed!
+					} else {
+						logger.warn("Unable to find <array> tag right after UIAppFonts section, so failing!");
+						break;
 					}
+
+					for (var j = 0, jlen = opts.fonts.length; j < jlen; ++j) {
+						contents.splice(insertIndex++, 0, "\t\t\t<string>" + path.basename(opts.fonts[j]) + "</string>");
+					}
+
+					// Done searching
+					break;
 				}
 			}
+		}
 
-			//Change Bundle Diplay Name to title
-			for (var i = 0; i < contents.length; i++) {
-				if (/CFBundleDisplayName/.test(contents[i])) {
-					contents[i+1] = '<string>' + opts.title + '</string>';
-				} else if (/CFBundleIdentifier/.test(contents[i])) {
-					contents[i+1] = '<string>' + opts.bundleID + '</string>';
-				} else if (/CFBundleName/.test(contents[i])) {
-					contents[i+1] = '<string>' + opts.bundleID + '</string>';
-				} else if (/CFBundleURLName/.test(contents[i])) {
-					contents[i+1] = '<string>' + opts.bundleID + '</string>';
-				} else if (/CFBundleURLSchemes/.test(contents[i])) {
-					contents[i+2] = '<string>' + opts.bundleID + '</string>';
+		for (var i = 0; i < contents.length; ++i) {
+			var line = contents[i];
+
+			if (line.indexOf("UIPrerenderedIcon") >= 0) {
+				logger.log("Updating UIPrerenderedIcon section: Set to", (opts.renderGloss ? "true" : "false"));
+
+				// NOTE: By default, necessarily, UIPrerenderedIcon=true
+				if (opts.renderGloss) {
+					// Pull out this and next line
+					contents[i] = "";
+					contents[i+1] = "";
 				}
 			}
+		}
 
-			contents = contents.join('\n');
+		//Change Bundle Diplay Name to title
+		for (var i = 0; i < contents.length; i++) {
+			if (/CFBundleDisplayName/.test(contents[i])) {
+				contents[i+1] = '<string>' + opts.title + '</string>';
+			} else if (/CFBundleIdentifier/.test(contents[i])) {
+				contents[i+1] = '<string>' + opts.bundleID + '</string>';
+			} else if (/CFBundleName/.test(contents[i])) {
+				contents[i+1] = '<string>' + opts.bundleID + '</string>';
+			} else if (/CFBundleURLName/.test(contents[i])) {
+				contents[i+1] = '<string>' + opts.bundleID + '</string>';
+			} else if (/CFBundleURLSchemes/.test(contents[i])) {
+				contents[i+2] = '<string>' + opts.bundleID + '</string>';
+			}
+		}
 
-			fs.writeFile(opts.plistFilePath, contents, function(err) {
-				next(err);
-			});
-		});
-	});
-	
+		fs.writeFile(opts.plistFilePath, contents.join('\n'), f());
+	}).error(function(err) {
+		logger.error("Failure while updating PList file:", err, err.stack);
+		process.exit(1);
+	}).cb(next);
 }
 
 // Create the iOS project
@@ -1046,8 +1096,10 @@ function makeIOSProject(builder, opts, next) {
 		}, f.wait());
 
 		var plistFile = path.join(opts.destPath, 'tealeaf/TeaLeafIOS-Info.plist');
-		updatePListFile({
+		updatePListFile(builder, {
 			plistFilePath: plistFile,
+			addonConfig: opts.addonConfig,
+			manifest: manifest,
 			fonts: manifest.ttf,
 			orientations: manifest.supportedOrientations,
 			renderGloss: manifest.ios.icons && manifest.ios.icons.renderGloss,
