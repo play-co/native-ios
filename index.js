@@ -523,19 +523,18 @@ function installAddonsFiles(builder, opts, next) {
 
 function installAddonsPList(builder, opts, next) {
 	var contents = opts.contents;
-	var addonConfig = opts.addonConfig;
 
 	var f = ff(function () {
-		for (var addon in addonConfig) {
-			var config = addonConfig[addon];
+		for (var addon in opts.addonConfig) {
+			var config = opts.addonConfig[addon];
 
 			if (config.plist) {
 				for (var plistKey in config.plist) {
 					var manifestKey = config.plist[plistKey];
 					var manifestValue = opts.manifest.ios && opts.manifest.ios[manifestKey];
 
-					var plistLine = "<key>" + plistKey + "</key>";
-					var insertLine = "<string>" + manifestValue + "</string>";
+					var plistLine = "\t<key>" + plistKey + "</key>";
+					var insertLine = "\t<string>" + manifestValue + "</string>";
 
 					// For each line,
 					var found = false;
@@ -559,6 +558,8 @@ function installAddonsPList(builder, opts, next) {
 				}
 			}
 		}
+
+		f.pass(contents);
 	}).error(function(err) {
 		logger.error("Failure in installing PList keys:", err, err.stack);
 	}).cb(next);
@@ -670,9 +671,7 @@ function updatePListFile(builder, opts, next) {
 			contents: contents,
 			addonConfig: opts.addonConfig,
 			manifest: opts.manifest
-		}, next);
-
-		f.pass(contents);
+		}, f());
 	}, function(contents) {
 		// For each line,
 		contents = contents.map(function(line) {
