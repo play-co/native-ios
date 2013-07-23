@@ -23,7 +23,7 @@
     UIButton *inputAccBtnDone;
     UIButton *inputAccBtnNext;
     UIButton *inputAccBtnPrev;
-    UITextField *field;
+    UITextField *inputAccTextField;
     
     NSString *currVal;
     NSString *hint;
@@ -41,7 +41,7 @@
 @property (nonatomic, retain) UIButton *inputAccBtnDone;
 @property (nonatomic, retain) UIButton *inputAccBtnNext;
 @property (nonatomic, retain) UIButton *inputAccBtnPrev;
-@property (nonatomic, retain) UITextField *field;
+@property (nonatomic, retain) UITextField *inputAccTextField;
 
 @property (nonatomic, retain) NSString *currVal;
 @property (nonatomic, retain) NSString *inputType;

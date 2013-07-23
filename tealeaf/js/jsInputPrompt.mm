@@ -41,7 +41,7 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 @synthesize inputAccBtnPrev;
 @synthesize inputAccBtnNext;
 @synthesize inputAccBtnDone;
-@synthesize field;
+@synthesize inputAccTextField;
 
 @synthesize currVal;
 @synthesize inputType;
@@ -54,7 +54,7 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 + (InputPromptView *) get {
 	if (m_view == nil) {
 		m_view = [InputPromptView alloc];
-		m_view.field = NULL;
+		m_view.inputAccTextField = NULL;
 	}
     
 	return m_view;
@@ -116,12 +116,15 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 }
 
 -(void)createInputAccessoryView {
-	if (field == NULL) {
+	//will get set to null when keyboard is sent away
+	if (inputAccTextField == NULL) {
 		TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
+
+		//define a width and height for now
 		float width = controller.view.bounds.size.width;
         float height = 50;
 		inputAccView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
-        
+		//light gray bg
 		[inputAccView setBackgroundColor:[UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1.0]];
         
         //add a top border
@@ -130,16 +133,15 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
         topBorder.backgroundColor = [UIColor grayColor].CGColor;
         [inputAccView.layer addSublayer:topBorder];
         
-		field = [[UITextField alloc] initWithFrame:CGRectMake(5, 5, width - 80, height - 10)];
-        
-        [field setBorderStyle:UITextBorderStyleRoundedRect];
+		inputAccTextField = [[UITextField alloc] initWithFrame:CGRectMake(5, 5, width - 80, height - 10)];
+        [inputAccTextField setBorderStyle:UITextBorderStyleRoundedRect];
 		UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 5, height - 10)];
-		field.leftView = paddingView;
-		field.leftViewMode = UITextFieldViewModeAlways;
-		[field.font fontWithSize:height - 10];
-		field.delegate = self;
-		field.backgroundColor = [UIColor whiteColor];
-		field.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+		inputAccTextField.leftView = paddingView;
+		inputAccTextField.leftViewMode = UITextFieldViewModeAlways;
+		[inputAccTextField.font fontWithSize:height - 10];
+		inputAccTextField.delegate = self;
+		inputAccTextField.backgroundColor = [UIColor whiteColor];
+		inputAccTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         
 		if (!hasBackward && !hasForward) {
 			inputAccBtnDone = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -161,61 +163,55 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
             
 			[inputAccBtnNext addTarget:self action:@selector(gotoNextTextfield) forControlEvents:UIControlEventTouchUpInside];
             
-			
 			[inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler"] forState:UIControlStateNormal];
 			[inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_pressed"] forState:UIControlStateSelected];
 			[inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_disabled"] forState:UIControlStateDisabled];
             
-			
 			[inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler"] forState:UIControlStateNormal];
 			[inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_pressed"] forState:UIControlStateSelected];
 			[inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_disabled"] forState:UIControlStateDisabled ];
 			
-            
 			[inputAccView addSubview:inputAccBtnPrev];
 			[inputAccView addSubview:inputAccBtnNext];
             
 		}
         
-		[inputAccView addSubview:field];
+		[inputAccView addSubview:inputAccTextField];
 	}
 	[inputAccBtnPrev setEnabled:hasBackward];
 	[inputAccBtnNext setEnabled:hasForward];
     
-	field.text = currVal;
-	field.placeholder = hint;
+	inputAccTextField.text = currVal;
+	inputAccTextField.placeholder = hint;
 	//Set keyboard and input type
 	NSString *inputTypeUpper = [inputType uppercaseString];
-    
-    
 	if ([inputTypeUpper isEqualToString:INPUTTYPE_NUMBER]) {
-		field.keyboardType = UIKeyboardTypeNumberPad;
+		inputAccTextField.keyboardType = UIKeyboardTypeNumberPad;
 	} else if ([inputTypeUpper isEqualToString:INPUTTYPE_PHONE]) {
-		field.keyboardType = UIKeyboardTypePhonePad;
+		inputAccTextField.keyboardType = UIKeyboardTypePhonePad;
 	} else if ([inputTypeUpper isEqualToString:INPUTTYPE_PASSWORD]) {
-        field.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		field.keyboardType = UIKeyboardTypeDefault;
-		field.secureTextEntry = YES;
+        inputAccTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		inputAccTextField.keyboardType = UIKeyboardTypeDefault;
+		inputAccTextField.secureTextEntry = YES;
 	} else if ([inputTypeUpper isEqualToString:INPUTTYPE_CAPITAL]) {
-		field.keyboardType = UIKeyboardTypeDefault;
-		field.autocapitalizationType = UITextAutocapitalizationTypeWords;
+		inputAccTextField.keyboardType = UIKeyboardTypeDefault;
+		inputAccTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
 	} else {
-        field.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		field.keyboardType = UIKeyboardTypeDefault;
+        inputAccTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+		inputAccTextField.keyboardType = UIKeyboardTypeDefault;
 	}
-    [field reloadInputViews];
+	//refresh the input pview
+    [inputAccTextField reloadInputViews];
     
 }
 
 
-//This delegate is called everytime a character is inserted in an UITextfield.
+
 - (BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    
 	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptKeyUp\",\"text\":\"%@\"}", [textField.text stringByReplacingCharactersInRange:range withString:string]];
 	core_dispatch_event([evt UTF8String]);
     
-	//Returning yes allows the entered chars to be processed
 	return YES;
 }
 
@@ -232,9 +228,9 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField {
-	if (textField == field) {
-		[field resignFirstResponder];
-		field = NULL;
+	if (textField == inputAccTextField) {
+		[inputAccTextField resignFirstResponder];
+		inputAccTextField = NULL;
 	}
 }
 
@@ -250,15 +246,11 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 }
 
 -(void)doneTyping{
-	// When the "done" button is tapped, the keyboard should go away.
-	// That simply means that we just have to resign our first responder.
-    
 	[self hideSoftKeyboard];
 }
 
 
 - (void) showSoftKeyboard {
-    
 	TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
 	[self createInputAccessoryView];
 	controller.inputAccTextField.delegate = self;
@@ -271,14 +263,14 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
     [controller.view addGestureRecognizer:tapGestureRecognizer];
     
 	//switch first responder to the view on the input accessory view
-	[field becomeFirstResponder];
+	[inputAccTextField becomeFirstResponder];
     
 }
 
 - (void) hideSoftKeyboard {
     TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
     [controller.view removeGestureRecognizer:tapGestureRecognizer];
-	[self.field endEditing:YES];
+	[inputAccTextField endEditing:YES];
 }
 
 @end
