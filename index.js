@@ -19,6 +19,7 @@ var clc = require("cli-color");
 var wrench = require('wrench');
 var async = require('async');
 var fs = require('fs');
+var plist = require('plist');
 
 var logger;
 
@@ -169,6 +170,8 @@ var installAddonsProject = function(builder, opts, next) {
 	var contents = opts.contents;
 	var destDir = opts.destDir;
 	var paths = builder.common.paths;
+	var manifest = opts.manifest;
+	var userDefined = {};
 
 	var f = ff(this, function () {
 		var frameworks = {}, frameworkPaths = {};
@@ -191,6 +194,14 @@ var installAddonsProject = function(builder, opts, next) {
 					}
 
 					frameworks[framework] = 1;
+				}
+			}
+
+			if (config.userDefined) {
+				for (var ii = 0; ii < config.userDefined.length; ++ii) {
+					var ud = config.userDefined[ii];
+
+					userDefined[ud] = 1;
 				}
 			}
 		}
@@ -372,6 +383,38 @@ var installAddonsProject = function(builder, opts, next) {
 			}
 		}
 
+		// Install user-defined keys:
+
+		var injectOffset = 0;
+
+		for (var ii = 0; ii < contents.length; ++ii) {
+			var line = contents[ii];
+
+			if (line.indexOf("INFOPLIST_FILE") != -1) {
+				injectOffset = ii + 1;
+				break;
+			}
+		}
+
+		if (!injectOffset) {
+			logger.error("Unable to find INFOPLIST_FILE injection line for user-defined keys for some reason.");
+			process.exit(1);
+		}
+
+		for (var key in userDefined) {
+			var value = manifest.ios && manifest.ios[key];
+			if (!value) {
+				logger.error("Installing user-defined key", key, "failed: Could not find value in game manifest under ios section.");
+				process.exit(1);
+			} else {
+				var injectLine = '\t\t\t\t' + key + ' = "' + value + '";';
+
+				contents.splice(injectOffset, 0, injectLine);
+
+				logger.log("Installed user-defined key", key, "=", value);
+			}
+		}
+
 		var codes = {};
 
 		for (var key in addonConfig) {
@@ -525,40 +568,82 @@ function installAddonsPList(builder, opts, next) {
 	var contents = opts.contents;
 
 	var f = ff(function () {
+		// For each addon,
 		for (var addon in opts.addonConfig) {
 			var config = opts.addonConfig[addon];
 
+			// If addon specifies PList mods,
 			if (config.plist) {
+				// For each PList mod,
 				for (var plistKey in config.plist) {
-					var manifestKey = config.plist[plistKey];
-					var manifestValue = opts.manifest.ios && opts.manifest.ios[manifestKey];
+					// Read value to inject
+					var manifestValue = config.plist[plistKey];
 
-					var plistLine = "\t<key>" + plistKey + "</key>";
-					var insertLine = "\t<string>" + manifestValue + "</string>";
+					// Find injection point by walking JS object tree
+					var keys = plistKey.split('.');
+					var obj = contents;
+					var wrote = false;
+					for (var ii = 0; ii < keys.length; ++ii) {
+						var key = keys[ii];
+						var subkey = obj[key];
 
-					// For each line,
-					var found = false;
-					for (var ii = 0; ii < contents.length; ++ii) {
-						var line = contents[ii];
+						// If key DNE,
+						if (!subkey) {
+							if (ii != keys.length - 1) {
+								throw new Error("Manifest parent key not found:", plistKey);
+							}
 
-						if (line.indexOf(plistLine) != -1) {
-							contents[ii + 1] = insertLine;
-
-							logger.log("Installing plist key:", plistKey, "=", manifestValue, "for key", manifestKey, "- modified on line", ii + 1);
-
-							found = true;
+							obj[key] = manifestValue;
+							logger.log("Installing plist new key:", plistKey, "=", manifestValue);
+							wrote = true;
 							break;
+						} else {
+							var type = typeof subkey;
+
+							if (type === "object") {
+								if (subkey.length === undefined) {
+									obj = subkey;
+								} else {
+									if (ii != keys.length - 1) {
+										var foundSubKey = false;
+										for (var jj = 0; jj < keys.length; ++jj) {
+											if (subkey[jj][keys[ii + 1]]) {
+												foundSubKey = true;
+												obj = subkey[jj];
+												break;
+											}
+										}
+										if (!foundSubKey) {
+											throw new Error("Manifest array subkey is not found:", plistKey);
+										}
+									} else {
+										subkey.push(manifestValue);
+										logger.log("Installing plist array key:", plistKey, "=", manifestValue);
+										wrote = true;
+										break;
+									}
+								}
+							} else {
+								if (ii != keys.length - 1) {
+									throw new Error("Manifest parent key is value:", plistKey);
+								}
+
+								obj[key] = manifestValue;
+								logger.log("Installing plist object key:", plistKey, "=", manifestValue);
+								wrote = true;
+								break;
+							}
 						}
 					}
 
-					if (!found) {
-						logger.log("Installing plist key:", plistKey, "=", manifestValue, "for key", manifestKey, "- At top level (inserted, not modified)");
-						contents.splice(4, 0, plistLine, insertLine);
+					if (!wrote) {
+						throw new Error("Manifest key not found:", plistKey);
 					}
 				}
 			}
 		}
 
+		// Push modified contents along
 		f.pass(contents);
 	}).error(function(err) {
 		logger.error("Failure in installing PList keys:", err, err.stack);
@@ -594,78 +679,98 @@ function validateSubmodules(next) {
 	}).cb(next);
 }
 
-function writeConfigList(opts, next) {
-	var config = [];
+function removeKeysForObjects(parentObject, objects, keys) {
+	for (var ii = 0; ii < objects.length; ++ii) {
+		var objectName = objects[ii];
+		var obj = parentObject[objectName];
 
-	config.push('<?xml version="1.0" encoding="UTF-8"?>');
-	config.push('<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">');
-	config.push('<plist version="1.0">');
-	config.push('<dict>');
-	config.push('\t<key>remote_loading</key>');
-	config.push('\t<' + opts.remote_loading + '/>');
-	config.push('\t<key>tcp_port</key>');
-	config.push('\t<integer>' + opts.tcp_port + '</integer>');
-	config.push('\t<key>code_port</key>');
-	config.push('\t<integer>' + opts.code_port + '</integer>');
-	config.push('\t<key>screen_width</key>');
-	config.push('\t<integer>' + opts.screen_width + '</integer>');
-	config.push('\t<key>screen_height</key>');
-	config.push('\t<integer>' + opts.screen_height + '</integer>');
-	config.push('\t<key>code_host</key>');
-	config.push('\t<string>' + opts.code_host + '</string>');
-	config.push('\t<key>entry_point</key>');
-	config.push('\t<string>' + opts.entry_point + '</string>');
-	config.push('\t<key>app_id</key>');
-	config.push('\t<string>' + opts.app_id + '</string>');
-	config.push('\t<key>tcp_host</key>');
-	config.push('\t<string>' + opts.tcp_host + '</string>');
-	config.push('\t<key>source_dir</key>');
-	config.push('\t<string>' + opts.source_dir + '</string>');
-	config.push('\t<key>code_path</key>');
-	config.push('\t<string>' + opts.code_path + '</string>');
-	config.push('\t<key>game_hash</key>');
-	config.push('\t<string>' + opts.game_hash + '</string>');
-	config.push('\t<key>sdk_hash</key>');
-	config.push('\t<string>' + opts.sdk_hash + '</string>');
-	config.push('\t<key>native_hash</key>');
-	config.push('\t<string>' + opts.native_hash + '</string>');
-	config.push('\t<key>apple_id</key>');
-	config.push('\t<string>' + opts.apple_id + '</string>');
-	config.push('\t<key>bundle_id</key>');
-	config.push('\t<string>' + opts.bundle_id + '</string>');
-	config.push('\t<key>version</key>');
-	config.push('\t<string>' + opts.version + '</string>');
-	config.push('\t<key>userdata_url</key>');
-	config.push('\t<string>' + opts.userdata_url + '</string>');
-	config.push('\t<key>services_url</key>');
-	config.push('\t<string>' + opts.services_url + '</string>');
-	config.push('\t<key>push_url</key>');
-	config.push('\t<string>' + opts.push_url + '</string>');
-	config.push('\t<key>contacts_url</key>');
-	config.push('\t<string>' + opts.contacts_url + '</string>');
-	config.push('\t<key>studio_name</key>');
-	config.push('\t<string>' + opts.studio_name + '</string>');
-	config.push('</dict>');
-	config.push('</plist>');
+		for (var jj = 0; jj < keys.length; ++jj) {
+			var key = keys[jj];
 
-	var fileData = config.join('\n');
+			var index = obj.indexOf(key);
 
-	fs.writeFile(opts.filePath, fileData, function(err) {
-		next(err);
-	});
+			if (index !== -1) {
+				obj.splice(index, 1);
+			}
+		}
+	}
 }
-
-var LANDSCAPE_ORIENTATIONS = /(UIInterfaceOrientationLandscapeRight)|(UIInterfaceOrientationLandscapeLeft)/;
-var PORTRAIT_ORIENTATIONS = /(UIInterfaceOrientationPortraitUpsideDown)|(UIInterfaceOrientationPortrait)/;
 
 // Updates the given TeaLeafIOS-Info.plist file
 function updatePListFile(builder, opts, next) {
+	var manifest = opts.manifest;
+	var bundleID = manifest.ios.bundleID;
+	if (!bundleID) {
+		throw new Error("Manifest file does not specify a bundleID under the ios section");
+	}
+
 	var f = ff(this, function() {
 		fs.readFile(opts.plistFilePath, 'utf8', f());
 	}, function(data) {
 		logger.log("Updating Info.plist file: ", opts.plistFilePath);
 
-		var contents = data.split('\n');
+		var contents = plist.parseStringSync(data);
+
+		// Remove unsupported modes
+		var orient = manifest.supportedOrientations;
+		if (orient.indexOf("landscape") == -1) {
+			logger.log("Orientations: Removing landscape support");
+			removeKeysForObjects(contents, ["UISupportedInterfaceOrientations", "UISupportedInterfaceOrientations~ipad"],
+				["UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationLandscapeLeft"]);
+		}
+		if (orient.indexOf("portrait") == -1) {
+			logger.log("Orientations: Removing portrait support");
+			removeKeysForObjects(contents, ["UISupportedInterfaceOrientations", "UISupportedInterfaceOrientations~ipad"],
+				["UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown"]);
+		}
+
+		contents.CFBundleShortVersionString = manifest.ios.version;
+
+		var ttf = manifest.ttf;
+		if (!ttf || !ttf.length) {
+			logger.log("Fonts: No fonts to install from ttf section in manifest");
+		} else {
+			for (var ii = 0; ii < ttf.length; ++ii) {
+				var file = path.basename(ttf[ii]);
+
+				contents.UIAppFonts.push(file);
+				logger.log("Fonts: Installing", file);
+			}
+		}
+
+		// If RenderGloss enabled,
+		if (manifest.ios.icons && manifest.ios.icons.renderGloss) {
+			// Note: Default is for Xcode to render it for you
+			logger.log("RenderGloss: Removing pre-rendered icon flag");
+			delete contents.UIPrerenderedIcon;
+			delete contents.CFBundleIcons.CFBundlePrimaryIcon.UIPrerenderedIcon;
+		}
+
+		contents.CFBundleDisplayName = opts.title;
+		contents.CFBundleIdentifier = bundleID;
+		contents.CFBundleName = bundleID;
+
+		// For each URLTypes array entry,
+		var found = 0;
+		for (var ii = 0; ii < contents.CFBundleURLTypes.length; ++ii) {
+			var obj = contents.CFBundleURLTypes[ii];
+
+			// If it's the URLName one,
+			if (obj.CFBundleURLName) {
+				obj.CFBundleURLName = bundleID;
+				++found;
+			}
+
+			// If it's the URLSchemes one,
+			if (obj.CFBundleURLSchemes) {
+				// Note this blows away all the array entries
+				obj.CFBundleURLSchemes = [bundleID];
+				++found;
+			}
+		}
+		if (found != 2) {
+			throw new Error("Unable to update URLTypes");
+		}
 
 		installAddonsPList(builder, {
 			contents: contents,
@@ -673,84 +778,7 @@ function updatePListFile(builder, opts, next) {
 			manifest: opts.manifest
 		}, f());
 	}, function(contents) {
-		// For each line,
-		contents = contents.map(function(line) {
-			// If it has an orientation to remove,
-			if (line.match(LANDSCAPE_ORIENTATIONS) && opts.orientations.indexOf("landscape") == -1) {
-				line = "";
-			} else if (line.match(PORTRAIT_ORIENTATIONS) && opts.orientations.indexOf("portrait") == -1) {
-				line = "";
-			} else if (line.indexOf("13375566") >= 0) {
-				line = line.replace("13375566", opts.version);
-			}
-			return line;
-		});
-
-		if (!opts.fonts || !opts.fonts.length) {
-			logger.log("Fonts: Skipping PList update step because no fonts are to be installed");
-		} else {
-			// For each line,
-			for (var i = 0; i < contents.length; ++i) {
-				var line = contents[i];
-
-				if (line.indexOf("UIAppFonts") >= 0) {
-					logger.log("Updating UIAppFonts section: Injecting section members for " + opts.fonts.length + " font(s)");
-
-					var insertIndex = i + 2;
-
-					// If empty array exists currently,
-					if (contents[i + 1].indexOf("<array/>") >= 0) {
-						// Eliminate empty array and insert <array> tags
-						contents[i + 1] = "\t\t<array>"; // TODO: Guessing at indentation here
-						contents.splice(i + 2, 0, "\t\t</array>");
-					} else if (contents[i + 1].indexOf("<array>") >= 0) {
-						// No changes needed!
-					} else {
-						logger.warn("Unable to find <array> tag right after UIAppFonts section, so failing!");
-						break;
-					}
-
-					for (var j = 0, jlen = opts.fonts.length; j < jlen; ++j) {
-						contents.splice(insertIndex++, 0, "\t\t\t<string>" + path.basename(opts.fonts[j]) + "</string>");
-					}
-
-					// Done searching
-					break;
-				}
-			}
-		}
-
-		for (var i = 0; i < contents.length; ++i) {
-			var line = contents[i];
-
-			if (line.indexOf("UIPrerenderedIcon") >= 0) {
-				logger.log("Updating UIPrerenderedIcon section: Set to", (opts.renderGloss ? "true" : "false"));
-
-				// NOTE: By default, necessarily, UIPrerenderedIcon=true
-				if (opts.renderGloss) {
-					// Pull out this and next line
-					contents[i] = "";
-					contents[i+1] = "";
-				}
-			}
-		}
-
-		//Change Bundle Diplay Name to title
-		for (var i = 0; i < contents.length; i++) {
-			if (/CFBundleDisplayName/.test(contents[i])) {
-				contents[i+1] = '<string>' + opts.title + '</string>';
-			} else if (/CFBundleIdentifier/.test(contents[i])) {
-				contents[i+1] = '<string>' + opts.bundleID + '</string>';
-			} else if (/CFBundleName/.test(contents[i])) {
-				contents[i+1] = '<string>' + opts.bundleID + '</string>';
-			} else if (/CFBundleURLName/.test(contents[i])) {
-				contents[i+1] = '<string>' + opts.bundleID + '</string>';
-			} else if (/CFBundleURLSchemes/.test(contents[i])) {
-				contents[i+2] = '<string>' + opts.bundleID + '</string>';
-			}
-		}
-
-		fs.writeFile(opts.plistFilePath, contents.join('\n'), f());
+		fs.writeFile(opts.plistFilePath, plist.build(contents).toString(), f());
 	}).error(function(err) {
 		logger.error("Failure while updating PList file:", err, err.stack);
 		process.exit(1);
@@ -870,7 +898,8 @@ function updateIOSProjectFile(builder, opts, next) {
 			installAddonsProject(builder, {
 				addonConfig: opts.addonConfig,
 				contents: contents,
-				destDir: opts.destDir
+				destDir: opts.destDir,
+				manifest: opts.manifest
 			}, function() {
 				contents = contents.join('\n');
 
@@ -1094,7 +1123,8 @@ function makeIOSProject(builder, opts, next) {
 			ttf: manifest.ttf,
 			bundleID: manifest.ios.bundleID,
 			addonConfig: opts.addonConfig,
-			destDir: opts.destPath
+			destDir: opts.destPath,
+			manifest: manifest
 		}, f.wait());
 
 		var plistFile = path.join(opts.destPath, 'tealeaf/TeaLeafIOS-Info.plist');
@@ -1102,17 +1132,12 @@ function makeIOSProject(builder, opts, next) {
 			plistFilePath: plistFile,
 			addonConfig: opts.addonConfig,
 			manifest: manifest,
-			fonts: manifest.ttf,
-			orientations: manifest.supportedOrientations,
-			renderGloss: manifest.ios.icons && manifest.ios.icons.renderGloss,
-			version: manifest.ios.version,
-			title: opts.title,
-			bundleID: manifest.ios.bundleID
+			title: opts.title
 		}, f.wait());
 
-		writeConfigList({
-			filePath: path.join(opts.destPath, "tealeaf/resources/config.plist"),
+		var configPath = path.join(opts.destPath, "tealeaf/resources/config.plist");
 
+		fs.writeFile(configPath, plist.build({
 			remote_loading: 'false',
 			tcp_port: 4747,
 			code_port: 9201,
@@ -1120,24 +1145,19 @@ function makeIOSProject(builder, opts, next) {
 			screen_height: 800,
 			code_host: 'localhost',
 			entry_point: 'gc.native.launchClient',
-			app_id: manifest.appID,
+			app_id: manifest.appID || "example.appid",
 			tcp_host: 'localhost',
 			source_dir: '/',
-			game_hash: gameHash,
-			sdk_hash: sdkHash,
-			native_hash: nativeHash,
+			game_hash: gameHash || "ios",
+			sdk_hash: sdkHash || "ios",
+			native_hash: nativeHash || "ios",
 			code_path: 'native.js.mp3',
+			studio_name: (manifest.studio && manifest.studio.name) || "example.studio",
 
-			apple_id: manifest.ios.appleID,
-			bundle_id: manifest.ios.bundleID,
-			version: manifest.ios.version,
-
-			services_url: servicesURL,
-			push_url: servicesURL + "/push/%s/?key=%s&amp;version=%s",
-			contacts_url: servicesURL + "/users/me/contacts/?key=%s",
-			userdata_url: "",
-			studio_name: manifest.studio && manifest.studio.name
-		}, f.wait());
+			apple_id: manifest.ios.appleID || "example.appleid",
+			bundle_id: manifest.ios.bundleID || "example.bundle",
+			version: manifest.ios.version || "1.0"
+		}).toString(), f.wait());
 	}).error(function(code) {
 		logger.log("Error while making iOS project file changes: " + code, code.stack);
 		process.exit(2);

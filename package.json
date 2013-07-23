@@ -6,7 +6,8 @@
 	"dependencies": {
 		"cli-color": "0.1.7",
 		"wrench": "~1.3.9",
-		"ff": "0.0.18"
+		"ff": "0.0.18",
+		"plist": "0.4.3"
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
