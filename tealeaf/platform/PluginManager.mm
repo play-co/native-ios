@@ -161,7 +161,7 @@ JSAG_OBJECT_END
 }
 
 - (void) handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication {
-	[self postNotification:@"handleOpenURL:" obj1:url obj2:sourceApplication];
+	[self postNotification:@"handleOpenURL:sourceApplication:" obj1:url obj2:sourceApplication];
 }
 
 - (void) dispatchJSEvent:(NSDictionary *)evt {
