@@ -689,7 +689,7 @@ function removeKeysForObjects(parentObject, objects, keys) {
 
 			var index = obj.indexOf(key);
 
-			if (index !=== -1) {
+			if (index !== -1) {
 				obj.splice(index, 1);
 			}
 		}
@@ -747,8 +747,8 @@ function updatePListFile(builder, opts, next) {
 		}
 
 		contents.CFBundleDisplayName = opts.title;
-		contents.CFBundleIdentifier = opts.bundleID;
-		contents.CFBundleName = opts.bundleID;
+		contents.CFBundleIdentifier = bundleID;
+		contents.CFBundleName = bundleID;
 
 		// For each URLTypes array entry,
 		var found = 0;
@@ -757,14 +757,14 @@ function updatePListFile(builder, opts, next) {
 
 			// If it's the URLName one,
 			if (obj.CFBundleURLName) {
-				obj.CFBundleURLName = opts.bundleID;
+				obj.CFBundleURLName = bundleID;
 				++found;
 			}
 
 			// If it's the URLSchemes one,
 			if (obj.CFBundleURLSchemes) {
 				// Note this blows away all the array entries
-				obj.CFBundleURLSchemes = [opts.bundleID];
+				obj.CFBundleURLSchemes = [bundleID];
 				++found;
 			}
 		}
@@ -1152,16 +1152,11 @@ function makeIOSProject(builder, opts, next) {
 			sdk_hash: sdkHash,
 			native_hash: nativeHash,
 			code_path: 'native.js.mp3',
+			studio_name: (manifest.studio && manifest.studio.name) || "example.studio",
 
-			apple_id: manifest.ios.appleID,
-			bundle_id: manifest.ios.bundleID,
-			version: manifest.ios.version,
-
-			services_url: servicesURL,
-			push_url: servicesURL + "/push/%s/?key=%s&amp;version=%s",
-			contacts_url: servicesURL + "/users/me/contacts/?key=%s",
-			userdata_url: "",
-			studio_name: manifest.studio && manifest.studio.name
+			apple_id: manifest.ios.appleID || "example.appleid",
+			bundle_id: manifest.ios.bundleID || "example.bundle",
+			version: manifest.ios.version || "1.0"
 		}).toString(), f.wait());
 	}).error(function(code) {
 		logger.log("Error while making iOS project file changes: " + code, code.stack);
