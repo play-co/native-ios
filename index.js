@@ -614,7 +614,7 @@ function installAddonsPList(builder, opts, next) {
 											}
 										}
 										if (!foundSubKey) {
-											throw new Error("Manifest array subkey is not fond:", plistKey);
+											throw new Error("Manifest array subkey is not found:", plistKey);
 										}
 									} else {
 										subkey.push(manifestValue);
