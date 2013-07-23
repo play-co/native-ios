@@ -3,12 +3,12 @@
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
  * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
- 
+
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License v. 2.0 for more details.
- 
+
  * You should have received a copy of the Mozilla Public License v. 2.0
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
@@ -19,20 +19,21 @@
 
 
 @interface InputPromptView : NSObject <UIAlertViewDelegate, UITextFieldDelegate> {
-    UIView *inputAccView;
-    UIButton *inputAccBtnDone;
-    UIButton *inputAccBtnNext;
-    UIButton *inputAccBtnPrev;
-    UITextField *inputAccTextField;
-    
-    NSString *currVal;
-    NSString *hint;
+	UIView *inputAccView;
+	UIButton *inputAccBtnDone;
+	UIButton *inputAccBtnNext;
+	UIButton *inputAccBtnPrev;
+	UITextField *inputAccTextField;
+
+	NSString *currVal;
+	NSString *hint;
 	bool hasBackward;
 	bool hasForward;
-   	NSString *inputType;
-    
-    UITapGestureRecognizer *tapGestureRecognizer;
-    
+	NSString *inputType;
+	int maxLength;
+
+	UITapGestureRecognizer *tapGestureRecognizer;
+
 }
 
 @property (nonatomic, retain) UIAlertView *inputPromptAlertView;
@@ -48,6 +49,7 @@
 @property (nonatomic, retain) NSString *hint;
 @property (nonatomic) bool hasBackward;
 @property (nonatomic) bool hasForward;
+@property (nonatomic) int maxLength;
 
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
 
