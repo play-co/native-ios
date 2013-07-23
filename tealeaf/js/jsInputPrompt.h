@@ -18,10 +18,38 @@
 #import "js/js_core.h"
 
 
-@interface InputPromptView : NSObject <UIAlertViewDelegate, UITextFieldDelegate>
+@interface InputPromptView : NSObject <UIAlertViewDelegate, UITextFieldDelegate> {
+    UIView *inputAccView;
+    UIButton *inputAccBtnDone;
+    UIButton *inputAccBtnNext;
+    UIButton *inputAccBtnPrev;
+    UITextField *field;
+    
+    NSString *currVal;
+    NSString *hint;
+	bool hasBackward;
+	bool hasForward;
+   	NSString *inputType;
+    
+    UITapGestureRecognizer *tapGestureRecognizer;
+    
+}
 
 @property (nonatomic, retain) UIAlertView *inputPromptAlertView;
 @property (nonatomic, retain) UITextField *inputPromptTextField;
+@property (nonatomic, retain) UIView *inputAccView;
+@property (nonatomic, retain) UIButton *inputAccBtnDone;
+@property (nonatomic, retain) UIButton *inputAccBtnNext;
+@property (nonatomic, retain) UIButton *inputAccBtnPrev;
+@property (nonatomic, retain) UITextField *field;
+
+@property (nonatomic, retain) NSString *currVal;
+@property (nonatomic, retain) NSString *inputType;
+@property (nonatomic, retain) NSString *hint;
+@property (nonatomic) bool hasBackward;
+@property (nonatomic) bool hasForward;
+
+@property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
 
 - (void) showAlertViewWithTitle:(NSString*)title message:(NSString*)message value:(NSString*)value autoShowKeyboard:(BOOL)autoShowKeyboard isPassword:(BOOL)isPassword keyboardType: (int) keyboardType;
 

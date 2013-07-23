@@ -74,6 +74,9 @@ CEXPORT void device_hide_splash() {
 
 @implementation TeaLeafViewController
 
+@synthesize inputAccTextField;
+
+
 - (TeaLeafViewController*) init {
 	self = [super init];
 	
@@ -127,8 +130,69 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) dealloc {
+   /* [inputAccTextField release];
+    [inputAccView release];
+    [inputAccBtnDone release];
+    [inputAccBtnPrev release];
+    [inputAccBtnNext release];*/
 	[super dealloc];
 }
+
+-(void)createInputAccessoryView{
+/*    inputAccView = [[UIView alloc] initWithFrame:CGRectMake(10.0, 0.0, 310.0, 40.0)];
+    
+    [inputAccView setBackgroundColor:[UIColor lightGrayColor]];
+    
+    [inputAccView setAlpha: 1.0];
+    
+    inputAccBtnPrev = [UIButton buttonWithType: UIButtonTypeCustom];
+    
+    [inputAccBtnPrev setFrame: CGRectMake(0.0, 0.0, 80.0, 40.0)];
+    [inputAccBtnPrev setTitle: @"Prev" forState: UIControlStateNormal];
+    [inputAccBtnPrev setBackgroundColor: [UIColor blueColor]];
+    [inputAccBtnPrev addTarget: self action: @selector(gotoPrevTextfield) forControlEvents: UIControlEventTouchUpInside];
+    
+    inputAccBtnNext = [UIButton buttonWithType:UIButtonTypeCustom];
+    [inputAccBtnNext setFrame:CGRectMake(85.0f, 0.0f, 80.0f, 40.0f)];
+    [inputAccBtnNext setTitle:@"Next" forState:UIControlStateNormal];
+    [inputAccBtnNext setBackgroundColor:[UIColor blueColor]];
+    [inputAccBtnNext addTarget:self action:@selector(gotoNextTextfield) forControlEvents:UIControlEventTouchUpInside];
+    
+    inputAccBtnDone = [UIButton buttonWithType:UIButtonTypeCustom];
+    [inputAccBtnDone setFrame:CGRectMake(240.0, 0.0f, 80.0f, 40.0f)];
+    [inputAccBtnDone setTitle:@"Done" forState:UIControlStateNormal];
+    [inputAccBtnDone setBackgroundColor:[UIColor greenColor]];
+    [inputAccBtnDone setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [inputAccBtnDone addTarget:self action:@selector(doneTyping) forControlEvents:UIControlEventTouchUpInside];
+    
+    [inputAccView addSubview:inputAccBtnPrev];
+    [inputAccView addSubview:inputAccBtnNext];
+    [inputAccView addSubview:inputAccBtnDone];*/
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField{
+    [self createInputAccessoryView];
+    
+//    [textField setInputAccessoryView:inputAccView];
+    
+    //need to set the active text field somehow...
+//    txtActiveField = textField;
+}
+
+-(void)gotoPrevTextfield{
+  //  [inputAccActiveTextField becomeFirstResponder];
+}
+
+-(void)gotoNextTextfield{
+  //  [inputAccActiveTextField becomeFirstResponder];
+}
+
+-(void)doneTyping{
+    // When the "done" button is tapped, the keyboard should go away.
+    // That simply means that we just have to resign our first responder.
+    //[inputAccActiveTextField resignFirstResponder];
+}
+
 
 - (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	NSString *title = [sheet buttonTitleAtIndex:buttonIndex];
@@ -345,9 +409,14 @@ CEXPORT void device_hide_splash() {
 	self.loading_image_view.frame = CGRectMake(0, 0, frameWidth, frameHeight);
 
 	//add the openglview to our window
+
 	[self.appDelegate.window addSubview:self.view];
 	self.appDelegate.window.rootViewController = self;
 	[self.appDelegate.window.rootViewController.view addSubview:self.loading_image_view];
+    
+    self.inputAccTextField = [[[UITextField alloc] init] autorelease];
+    self.inputAccTextField.hidden = true;
+    [self.appDelegate.window.rootViewController.view addSubview:self.inputAccTextField];
 	m_showing_splash = YES;
 
 	// Initialize text manager

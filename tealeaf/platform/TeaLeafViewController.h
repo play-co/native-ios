@@ -18,12 +18,16 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
-@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate> {
+@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate> {
 @private
 int callback;
+UITextField *inputAccTextField;
+    
 //UIAlertView *message;
 }
 
+//input accessory view
+@property (nonatomic, retain) UITextField *inputAccTextField;
 @property (nonatomic, retain) UIImageView *loading_image_view;
 @property (nonatomic, retain) UIAlertView *backAlertView;
 @property (nonatomic, retain) UIImagePickerController *imagePickerController;
