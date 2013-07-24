@@ -56,7 +56,7 @@ exports.testapp = function(common, opts, next) {
 
 var installAddons = function(builder, project, opts, addonConfig, next) {
 	var paths = builder.common.paths;
-	var addons = project && project.manifest && project.manifest.addons;
+	var addons = Object.keys(project.getAddonConfig());
 
 	var f = ff(this, function() {
 
