@@ -129,6 +129,11 @@ CEXPORT void device_hide_splash() {
 	return self;
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 - (void) dealloc {
    /* [inputAccTextField release];
     [inputAccView release];
@@ -335,6 +340,13 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void)viewDidLoad {
+    
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        // iOS 7 hide status bar
+        [self prefersStatusBarHidden];
+        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+    }
+    
 	/*
 	 * based on reported width and height, calculate the width and
 	 * height we care about with respect to scale (retina displays)
