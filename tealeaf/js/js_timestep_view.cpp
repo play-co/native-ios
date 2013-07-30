@@ -123,7 +123,9 @@ CEXPORT JSBool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp)
 		double field = view->field; \
 		view->field = vp.isNumber() ? vp.toNumber() : UNDEFINED_DIMENSION; \
 		if (field != view->field) { \
-			def_timestep_view_needs_reflow(view->js_view, true); \
+			if (view->js_view) { \
+				def_timestep_view_needs_reflow(view->js_view, false); \
+			} \
 		} \
 	}
 
