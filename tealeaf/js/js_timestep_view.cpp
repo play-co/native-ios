@@ -271,20 +271,14 @@ CEXPORT JSObject *def_get_viewport(JSObject *js_opts) {
 
 	JS_GetProperty(cx, js_opts, "viewport", &val);
 
-	if (JSVAL_IS_OBJECT(val)) {
-		return JSVAL_TO_OBJECT(val);
-	} else {
-		return NULL;
-	}
+	return val.isObject() && !val.isNullOrUndefined() ? JSVAL_TO_OBJECT(val) : NULL;
 }
 
 CEXPORT void def_restore_viewport(JSObject *js_opts, JSObject *js_viewport) {
-	if (js_viewport) {
-		JSContext *cx = get_js_context();
-		jsval val = OBJECT_TO_JSVAL(js_viewport);
+	JSContext *cx = get_js_context();
+	jsval val = OBJECT_TO_JSVAL(js_viewport);
 
-		JS_SetProperty(cx, js_opts, "viewport", &val);
-	}
+	JS_SetProperty(cx, js_opts, "viewport", &val);
 }
 
 CEXPORT void def_timestep_view_tick(void *data, double dt) {
