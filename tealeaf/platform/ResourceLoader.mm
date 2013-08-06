@@ -379,22 +379,46 @@ static int base_path_len = 0;
 									  info.w, info.h, info.ow, info.oh,
 									  info.channels, info.scale, false);
     
-    [self sendImageLoadedEventForURL:info.url glName:texture width:info.w height:info.h originalWidth:info.ow originalHeight:info.oh];
+    [self sendImageLoadedEventForURL: [info.url UTF8String] glName:texture width:info.w height:info.h originalWidth:info.ow originalHeight:info.oh];
    	[info release];
 }
 
--(void) sendImageLoadedEventForURL: (NSString *) url glName: (int) glName width: (int) width height: (int) height originalWidth: (int) originalWidth originalHeight: (int) originalHeight {
+-(void) sendImageLoadedEventForURL: (const char *) url glName: (int) glName width: (int) width height: (int) height originalWidth: (int) originalWidth originalHeight: (int) originalHeight {
+	char *event_str;
+	int event_len;
+	
+	char *dynamic_str = 0;
+	char stack_str[512];
+	
+	// Generate event string
+	{
+		int url_len = (int)strlen(url);
+		
+		if (url_len > 300) {
+			event_len = url_len + 212;
+			dynamic_str = (char*)malloc(event_len);
+			event_str = dynamic_str;
+		} else {
+			event_len = 512;
+			event_str = stack_str;
+		}
+	}
+	
 	//create json event string
-	char buf[512];
-	snprintf(buf, sizeof(buf),
-			 "{\"url\":\"%s\",\"height\":%d,\"originalHeight\":%d,\"originalWidth\":%d" \
-			 ",\"glName\":%d,\"width\":%d,\"name\":\"imageLoaded\",\"priority\":0}",
-			 [url UTF8String], (int)height,
-			 (int)originalWidth, (int)originalHeight,
-			 (int)glName, (int)width);
-
-	core_dispatch_event(buf);
-
+	event_len = snprintf(event_str, event_len,
+						  "{\"url\":\"%s\",\"height\":%d,\"originalHeight\":%d,\"originalWidth\":%d" \
+						  ",\"glName\":%d,\"width\":%d,\"name\":\"imageLoaded\",\"priority\":0}",
+						  url, (int)height,
+						  (int)originalHeight, (int)originalWidth,
+						  (int)glName, (int)width);
+	event_str[event_len] = '\0';
+	
+	core_dispatch_event(event_str);
+	
+	// If dynamically allocated the string,
+	if (dynamic_str) {
+		free(dynamic_str);
+	}
 }
 
 @end
@@ -454,6 +478,27 @@ CEXPORT bool resource_loader_load_image_with_c(texture_2d *texture) {
 	unsigned long sz = 0;
 	unsigned char *data;
 
+	// If base64 data used,
+	if (texture->url[0] == 'd' &&
+		texture->url[1] == 'a' &&
+		texture->url[2] == 't' &&
+		texture->url[3] == 'a' &&
+		texture->url[4] == ':') {
+		char *after = strchr(texture->url, ',');
+		if (after) {
+			NSString *urlstr = [NSString stringWithUTF8String:(after + 1)];
+			NSData *nsd = decodeBase64(urlstr);
+			data = (unsigned char*)[nsd bytes];
+			
+			texture->pixel_data = texture_2d_load_texture_raw(texture->url, data, sz, &texture->num_channels, &texture->width, &texture->height, &texture->originalWidth, &texture->originalHeight, &texture->scale);
+			
+			[nsd release];
+			[urlstr release];
+			
+			return true;
+		}
+	}
+	
 	if (!read_file(texture->url, &sz, &data)) {
 		texture->pixel_data = NULL;
 

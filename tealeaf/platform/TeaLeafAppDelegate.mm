@@ -78,6 +78,7 @@
 
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
+	self.signalRestart = NO;
 	
 	NSString *path = [[NSBundle mainBundle] resourcePath];
 	NSString *finalPath = [path stringByAppendingPathComponent:@"config.plist"];
@@ -102,6 +103,33 @@
 	[self.window makeKeyAndVisible];
 
 	return YES;
+}
+
+- (void) restartJS {
+	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
+	if (!isRemoteLoading) {
+		if (js_ready) {
+			if (!self.signalRestart) {
+				self.signalRestart = YES;
+
+				dispatch_async(dispatch_get_main_queue(), ^{
+					self.signalRestart = NO;
+					core_reset();
+					
+					[self.tealeafViewController release];
+					
+					self.tealeafViewController = [[TeaLeafViewController alloc] init];
+					
+					[self.window addSubview:self.tealeafViewController.view];
+					self.window.rootViewController = self.tealeafViewController;
+				});
+			}
+		}
+	} else {
+		// NOTE: This works but in the TestApp case I would rather allow it to hang
+		// so that remote debugging can be performed posthumously.
+		//[self.tealeafViewController restartJS];
+	}
 }
 
 
@@ -325,7 +353,7 @@
 		 annotation:(id)annotation
 {
 	if (self.pluginManager) {
-		[self.pluginManager handleOpenURL:url];
+		[self.pluginManager handleOpenURL:url  sourceApplication:sourceApplication];
 	}
 
 	return YES;

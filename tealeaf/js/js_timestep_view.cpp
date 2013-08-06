@@ -39,6 +39,9 @@ CEXPORT JSBool def_timestep_view_class_constructor(JSContext *cx, unsigned argc,
 	JS_BeginRequest(cx);
 
 	JSObject *thiz = timestep_view_create_ctor_object(cx, vp);
+	if (!thiz) {
+		return JS_FALSE;
+	}
 
 	timestep_view *view = timestep_view_init();
 
@@ -120,7 +123,9 @@ CEXPORT JSBool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp)
 		double field = view->field; \
 		view->field = vp.isNumber() ? vp.toNumber() : UNDEFINED_DIMENSION; \
 		if (field != view->field) { \
-			def_timestep_view_needs_reflow(view->js_view, true); \
+			if (view->js_view) { \
+				def_timestep_view_needs_reflow(view->js_view, false); \
+			} \
 		} \
 	}
 

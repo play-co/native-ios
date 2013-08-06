@@ -235,6 +235,9 @@ CEXPORT JSBool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval
 	JS_BeginRequest(cx);
 
 	JSObject *thiz = animate_create_ctor_object(cx, vp);
+	if (!thiz) {
+		return JS_FALSE;
+	}
 
 	jsval *argv = JS_ARGV(cx, vp);
 

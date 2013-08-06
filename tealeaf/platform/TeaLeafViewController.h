@@ -13,8 +13,9 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import <UIKit/UIKit.h>
 #import "js_core.h"
+
+#import <UIKit/UIKit.h>
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
@@ -22,8 +23,6 @@
 @private
 int callback;
 UITextField *inputAccTextField;
-    
-//UIAlertView *message;
 }
 
 //input accessory view
@@ -32,28 +31,34 @@ UITextField *inputAccTextField;
 @property (nonatomic, retain) UIAlertView *backAlertView;
 @property (nonatomic, retain) UIImagePickerController *imagePickerController;
 @property (nonatomic, retain) NSString *photoURL;
-- (TeaLeafViewController*) init;
 
-- (void)pickContact: (int) cb;
-- (void)sendSMSTo: (NSString*)number withMessage: (NSString*)message andCallback: (int) callback;
-- (void)messageComposeViewController: (MFMessageComposeViewController*) controller didFinishWithResult: (MessageComposeResult) result;
-- (void)alertView: (UIAlertView*) sheet clickedButtonAtIndex: (NSInteger) buttonIndex;
+- (TeaLeafViewController *) init;
 
-- (void)assignCallback: (int) cb;
-- (void)runCallback: (char*) arg;
-- (void)destroyDisplayLink;
+- (void) pickContact:(int)cb;
+- (void) sendSMSTo:(NSString *)number withMessage:(NSString *)message andCallback:(int)callback;
+- (void) messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result;
+- (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+
+- (void) restartJS;
+
+- (void) assignCallback:(int)cb;
+- (void) runCallback:(char *)arg;
+- (void) destroyDisplayLink;
 
 - (void)showImagePickerForCamera: (NSString *) url;
 - (void)showImagePickerForPhotoPicker: (NSString *) url;
+
 @end
 
+
 @interface UIAlertViewEx : UIAlertView {
+
 @private
-    int* callbacks;
+    int *callbacks;
 	int length;
 }
-- (void) dispatch: (int) callback;
-- (void) registerCallbacks: (int*) callbacks length: (int) length;
+- (void) dispatch:(int)callback;
+- (void) registerCallbacks:(int *)callbacks length:(int)length;
 - (void) dealloc;
 
 @end

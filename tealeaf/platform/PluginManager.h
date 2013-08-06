@@ -36,7 +36,7 @@
 - (void) didReceiveLocalNotification:(UILocalNotification *)notification application:(UIApplication *)app;
 - (void) applicationDidBecomeActive:(UIApplication *)app;
 - (void) applicationWillTerminate:(UIApplication *)app;
-- (void) handleOpenURL:(NSURL *)url;
+- (void) handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication;
 @end
 
 
