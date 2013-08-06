@@ -90,11 +90,12 @@ CEXPORT void device_hide_splash() {
 	NSError *err = nil;
 	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
 	NSDictionary *dict = nil;
-	int length = 0;
+	NSUInteger length = 0;
 	if (manifest_file) {
 		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
-		length = [manifest_file length];
-		dict = [decoder objectWithUTF8String:(const unsigned char *)[manifest_file UTF8String] length:(NSUInteger)length error:&err];
+		const char *manifest_utf8 = (const char *) [manifest_file UTF8String];
+		length = strlen(manifest_utf8);
+		dict = [decoder objectWithUTF8String:(const unsigned char *)manifest_utf8 length:length error:&err];
 	}
 	
 	// If failed to load,
