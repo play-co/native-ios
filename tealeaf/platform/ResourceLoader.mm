@@ -380,6 +380,7 @@ static int base_path_len = 0;
 									  info.channels, info.scale, false);
     
     [self sendImageLoadedEventForURL:info.url glName:texture width:info.w height:info.h originalWidth:info.ow originalHeight:info.oh];
+   	[info release];
 }
 
 -(void) sendImageLoadedEventForURL: (NSString *) url glName: (int) glName width: (int) width height: (int) height originalWidth: (int) originalWidth originalHeight: (int) originalHeight {
