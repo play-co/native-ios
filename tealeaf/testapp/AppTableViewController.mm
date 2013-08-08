@@ -324,9 +324,16 @@ static NSThread *appLoadListThread = nil;
 	NSString *ip = [self.appDelegate.config objectForKey:@"code_host"];
 	NSString *port = [self.appDelegate.config objectForKey:@"code_port"];
 	NSString *url = [NSString stringWithFormat:@"http://%@:%@", ip, port];
-	NSString *simulateURL = [NSString stringWithFormat:@"%@/simulate/%@/native-ios/", url, appInfo._id];
+	NSString *simulateURL = [NSString stringWithFormat:@"%@/simulate/debug/%@/native-ios/", url, appInfo._id];
 	//get native.js.mp3
-	NSData *jsData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@native.js.mp3", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    NSString *nativeJSURL = [[NSString stringWithFormat:@"%@native.js.mp3", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSData *jsData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:nativeJSURL]];
+    
+    if (!jsData) {
+        NSLog(@"native.js.mp3 failed to download from %@", nativeJSURL);
+        exit(1);
+    }
+    
 	//write native.js.mp3 to file
 	[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"native.js.mp3"] withData:jsData];
 	
