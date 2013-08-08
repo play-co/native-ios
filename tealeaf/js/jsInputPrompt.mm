@@ -243,14 +243,6 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
     
 }
 
--(void)textFieldDidEndEditing:(UITextField *)textField {
-	if (textField == inputAccTextField) {
-		[inputAccTextField resignFirstResponder];
-		inputAccTextField = NULL;
-	}
-}
-
-
 -(void)gotoPrevTextfield{
     NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptMove\",\"next\":%@}", @"false"];
     core_dispatch_event([evt UTF8String]);
@@ -290,7 +282,11 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 - (void) hideSoftKeyboard {
     TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
     [controller.view removeGestureRecognizer:tapGestureRecognizer];
-	[inputAccTextField endEditing:YES];
+    
+    [controller.inputAccTextField endEditing:YES];
+    [inputAccTextField endEditing:YES];
+    [controller.inputAccTextField endEditing:YES];
+    [inputAccTextField endEditing:YES];
 }
 
 @end
