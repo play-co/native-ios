@@ -46,7 +46,7 @@ static int base_path_len = 0;
 
 @interface RawImageInfo : NSObject
 @property(nonatomic,retain) NSString *url;
-@property(nonatomic) unsigned char *raw_data;
+@property(nonatomic,assign) unsigned char *raw_data;
 @property(nonatomic) int w;
 @property(nonatomic) int h;
 @property(nonatomic) int ow;
@@ -332,7 +332,7 @@ static int base_path_len = 0;
 		Texture2D *tex = [[[Texture2D alloc] initWithString:str fontName:family fontSize:size color:colorf maxWidth:maxWidth textStyle:textStyle strokeWidth:strokeWidth] autorelease];
 
 		if (tex) {
-			texture_manager_on_texture_loaded(texture_manager_get(), [url UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight, 4, 1, true);
+			texture_manager_on_texture_loaded(texture_manager_get(), [url UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight, 4, 1, true, 0);
 			if (VERBOSE_LOGS) {
 				NSLOG(@"{resources} Loaded text %@ id:%d (%d,%d)->(%u,%u)", url, tex.name, tex.originalWidth, tex.originalHeight, tex.width, tex.height);
 			}
@@ -343,7 +343,7 @@ static int base_path_len = 0;
 - (void) finishLoadingImage:(ImageInfo *)info {
 	Texture2D* tex = [[Texture2D alloc] initWithImage:info.image andUrl: info.url];
 	int scale = use_halfsized_textures ? 2 : 1;
-	texture_manager_on_texture_loaded(texture_manager_get(), [tex.src UTF8String], tex.name, tex.width * scale, tex.height * scale, tex.originalWidth * scale, tex.originalHeight * scale, 4, scale, false);
+	texture_manager_on_texture_loaded(texture_manager_get(), [tex.src UTF8String], tex.name, tex.width * scale, tex.height * scale, tex.originalWidth * scale, tex.originalHeight * scale, 4, scale, false, 0);
 	NSString* evt = [NSString stringWithFormat: @"{\"name\":\"imageLoaded\",\"url\":\"%@\",\"glName\":%d,\"width\":%d,\"height\":%d,\"originalWidth\":%d,\"originalHeight\":%d}",
 					 tex.src, tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight];
 	core_dispatch_event([evt UTF8String]);
@@ -380,7 +380,7 @@ static int base_path_len = 0;
 
 	texture_manager_on_texture_loaded(texture_manager_get(), url, texture,
 									  info.w, info.h, info.ow, info.oh,
-									  info.channels, info.scale, false);
+									  info.channels, info.scale, false, info.raw_data);
 
 	char *event_str;
 	int event_len;
@@ -505,7 +505,7 @@ CEXPORT bool resource_loader_load_image_with_c(texture_2d *texture) {
 		return false;
 	} else {
 		texture->pixel_data = texture_2d_load_texture_raw(texture->url, data, sz, &texture->num_channels, &texture->width, &texture->height, &texture->originalWidth, &texture->originalHeight, &texture->scale);
-
+		
 		// Release map
 		munmap(data, sz);
 		return true;
