@@ -9,13 +9,17 @@
 #import <UIKit/UIKit.h>
 
 @interface RawImageInfo : NSObject
+
 @property(nonatomic,retain) NSString *url;
-@property(nonatomic) unsigned char *raw_data;
+@property(nonatomic, assign) unsigned char *raw_data;
 @property(nonatomic) int w;
 @property(nonatomic) int h;
 @property(nonatomic) int ow;
 @property(nonatomic) int oh;
 @property(nonatomic) int scale;
 @property(nonatomic) int channels;
+
 - (id) initWithData:(unsigned char*)raw_data andURL:(NSString *)url andW:(int)w andH:(int)h andOW:(int)ow andOH:(int)oh andScale:(int)scale andChannels:(int)channels;
+
 @end
+
