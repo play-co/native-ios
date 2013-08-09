@@ -41,8 +41,12 @@ JSAG_MEMBER_BEGIN(sendEvent, 3)
 	if (!json || err) {
 		NSLOG(@"{plugins} WARNING: Event passed to NATIVE.plugins.sendEvent does not contain a valid JSON string.");
 	} else {
-		NSDictionary *returnValue = [m_pluginManager plugin:pluginName name:eventName event:json];
-        JSAG_RETURN_NSTR([returnValue JSONString]);
+		id returnValue = [m_pluginManager plugin:pluginName name:eventName event:json];
+        if ([returnValue isKindOfClass: [NSDictionary class]]) {
+            JSAG_RETURN_NSTR([((NSDictionary *) returnValue) JSONString]);
+        } else {
+            JSAG_RETURN_NSTR((NSString *) returnValue);
+        }
 	}
 }
 JSAG_MEMBER_END
@@ -200,7 +204,7 @@ JSAG_OBJECT_END
 		NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin: %@", plugin);
 	}
     
-    if (![returnValue isKindOfClass:[NSDictionary class]]) {
+    if (![returnValue isKindOfClass:[NSDictionary class]] && ![returnValue isKindOfClass:[NSString class]]) {
         returnValue = nil;
     }
     

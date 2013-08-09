@@ -47,7 +47,7 @@
 - (void) dispatchJSEvent:(NSDictionary *)evt;
 - (void) dispatchJSEventWithJSONString: (NSString*) str;
 
-- (NSDictionary *) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event;
+- (id) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event;
 
 + (PluginManager *) get;
 @end
