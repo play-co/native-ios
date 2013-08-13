@@ -55,7 +55,14 @@
 
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
 
-- (void) showAlertViewWithTitle:(NSString*)title message:(NSString*)message value:(NSString*)value autoShowKeyboard:(BOOL)autoShowKeyboard isPassword:(BOOL)isPassword keyboardType: (int) keyboardType;
+- (void) showAlertViewWithTitle:(NSString*)title
+                        message:(NSString*)message
+                         okText:(NSString*)okText
+                     cancelText:(NSString*)cancelText
+                          value:(NSString*)value
+               autoShowKeyboard:(BOOL)autoShowKeyboard
+                     isPassword:(BOOL)isPassword
+                   keyboardType:(int)keyboardType;
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 

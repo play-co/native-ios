@@ -97,7 +97,15 @@ static NSString *RETURN_KEY_EMERGENCYCALL = @"emergencycall";
 	}
 }
 
-- (void) showAlertViewWithTitle:(NSString*)title message:(NSString*)message value:(NSString*)value autoShowKeyboard:(BOOL)autoShowKeyboard isPassword:(BOOL)isPassword keyboardType: (int) keyboardType {
+- (void) showAlertViewWithTitle:(NSString*)title
+                        message:(NSString*)message
+                         okText:(NSString*)okText
+                     cancelText:(NSString*)cancelText
+                          value:(NSString*)value
+               autoShowKeyboard:(BOOL)autoShowKeyboard
+                     isPassword:(BOOL)isPassword
+                   keyboardType:(int)keyboardType
+{
     
 	// TODO: autoShowKeyboard
     
@@ -105,7 +113,7 @@ static NSString *RETURN_KEY_EMERGENCYCALL = @"emergencycall";
 		title = @"	";
 	}
     
-	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title message: message delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil] autorelease];
+	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title message: message delegate:self cancelButtonTitle:okText otherButtonTitles:cancelText, nil] autorelease];
 	alert.alertViewStyle = UIAlertViewStylePlainTextInput;
 	UITextField *textField = [alert textFieldAtIndex:0];
 	textField.delegate = self;
@@ -113,7 +121,6 @@ static NSString *RETURN_KEY_EMERGENCYCALL = @"emergencycall";
 	textField.text = value;
 	textField.textAlignment = UITextAlignmentCenter;
 	textField.keyboardType = keyboardType;
-    
     
 	if (isPassword) {
 		textField.secureTextEntry = YES;
@@ -352,6 +359,8 @@ JSAG_MEMBER_BEGIN(show, 5)
 {
 	JSAG_ARG_NSTR(title);
 	JSAG_ARG_NSTR(msg);
+    JSAG_ARG_NSTR(okText);
+    JSAG_ARG_NSTR(cancelText);
 	JSAG_ARG_NSTR(value);
 	JSAG_ARG_BOOL(autoShowKeyboard);
 	JSAG_ARG_BOOL(isPassword);
@@ -359,7 +368,14 @@ JSAG_MEMBER_BEGIN(show, 5)
     
 	++m_prompt_id;
     
-	[[InputPromptView get] showAlertViewWithTitle:title message:msg value:value autoShowKeyboard:autoShowKeyboard isPassword:isPassword keyboardType: keyboardType];
+	[[InputPromptView get] showAlertViewWithTitle:title
+                                          message:msg
+                                           okText:okText
+                                       cancelText:cancelText
+                                            value:value
+                                 autoShowKeyboard:autoShowKeyboard
+                                       isPassword:isPassword
+                                     keyboardType:keyboardType];
     
 	JSAG_RETURN_INT32(m_prompt_id);
 }
