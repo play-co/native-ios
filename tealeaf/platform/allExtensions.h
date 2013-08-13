@@ -32,6 +32,6 @@
 #import "js/jsAds.h"
 #import "js/jsMarket.h"
 #import "js/jsBuild.h"
-#import "js/jsInputPrompt.h"
+#import "js/jsInput.h"
 #import "js/jsHaptics.h"
 #import "platform/PluginManager.h"

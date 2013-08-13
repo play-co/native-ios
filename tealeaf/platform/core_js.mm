@@ -65,7 +65,7 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsPluginManager addToRuntime:js];
 		[jsMarket addToRuntime:js];
 		[jsBuild addToRuntime:js];
-		[jsInputPrompt addToRuntime:js];
+		[jsInput addToRuntime:js];
 		[jsHaptics addToRuntime:js];
 		[jsBase addToRuntime:js];
 		[jsTimer addToRuntime:js];
@@ -110,7 +110,7 @@ CEXPORT bool destroy_js() {
 		[jsPluginManager onDestroyRuntime];
 		[jsMarket onDestroyRuntime];
 		[jsBuild onDestroyRuntime];
-		[jsInputPrompt onDestroyRuntime];
+		[jsInput onDestroyRuntime];
 		[jsHaptics onDestroyRuntime];
 		[jsBase onDestroyRuntime];
 		[jsTimer onDestroyRuntime];
