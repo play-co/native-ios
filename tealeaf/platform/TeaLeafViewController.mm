@@ -358,6 +358,9 @@ CEXPORT void device_hide_splash() {
 	 */
 	
 	[self.appDelegate updateScreenProperties];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillShowNotification object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillHideNotification object: nil];
 
 	// Lookup source path
 	const char *source_path = [[ResourceLoader get].appBundle UTF8String];
@@ -475,6 +478,23 @@ CEXPORT void device_hide_splash() {
 								   cancelButtonTitle:@"No"
 								   otherButtonTitles:@"Yes", nil];
 	}
+}
+
+- (void) onKeyboardChange:(NSNotification *)info {
+    NSDictionary *userInfo = [info userInfo];
+    CGRect rawKeyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect properlyRotatedCoords = [self.view.window convertRect:rawKeyboardRect toView:self.view];
+    CGSize size = self.view.frame.size;
+
+	JSContext* cx = [[js_core lastJS] cx];
+	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
+	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "keyboardScreenResize"));
+	jsval height = INT_TO_JSVAL(properlyRotatedCoords.origin.y);
+	JS_SetProperty(cx, event, "name", &name);
+	JS_SetProperty(cx, event, "height", &height);
+    
+	jsval evt = OBJECT_TO_JSVAL(event);
+	[[js_core lastJS] dispatchEvent:&evt count:1];
 }
 
 - (IBAction)rotationDetected:(UIGestureRecognizer *)sender {

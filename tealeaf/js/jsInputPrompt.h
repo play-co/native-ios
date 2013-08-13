@@ -46,10 +46,12 @@
 
 @property (nonatomic, retain) NSString *currVal;
 @property (nonatomic, retain) NSString *inputType;
+@property (nonatomic, retain) NSString *inputReturnButton;
 @property (nonatomic, retain) NSString *hint;
 @property (nonatomic) bool hasBackward;
 @property (nonatomic) bool hasForward;
 @property (nonatomic) int maxLength;
+@property (nonatomic) int cursorPos;
 
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
 

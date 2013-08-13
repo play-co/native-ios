@@ -26,14 +26,24 @@ static js_core *m_js = nil;
 // Instance of the prompt view
 static InputPromptView *m_view = nil;
 static int32_t m_prompt_id = 0;
-static UITextField *textField;
 
-static NSString *INPUTTYPE_DEFAULT = @"DEFAULT";
+// static NSString *INPUTTYPE_DEFAULT = @"DEFAULT";
 static NSString *INPUTTYPE_NUMBER = @"NUMBER";
 static NSString *INPUTTYPE_PHONE = @"PHONE";
 static NSString *INPUTTYPE_PASSWORD = @"PASSWORD";
 static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 
+// default | go | google | join | next | route | search | send | yahoo | done | emergencycall
+static NSString *RETURN_KEY_GO = @"go";
+static NSString *RETURN_KEY_GOOGLE = @"google";
+static NSString *RETURN_KEY_JOIN = @"join";
+static NSString *RETURN_KEY_NEXT = @"next";
+static NSString *RETURN_KEY_ROUTE = @"route";
+static NSString *RETURN_KEY_SEARCH = @"search";
+static NSString *RETURN_KEY_SEND = @"send";
+static NSString *RETURN_KEY_YAHOO = @"yahoo";
+static NSString *RETURN_KEY_DONE = @"done";
+static NSString *RETURN_KEY_EMERGENCYCALL = @"emergencycall";
 
 @implementation InputPromptView
 
@@ -45,10 +55,12 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 
 @synthesize currVal;
 @synthesize inputType;
+@synthesize inputReturnButton;
 @synthesize hint;
 @synthesize hasForward;
 @synthesize hasBackward;
 @synthesize maxLength;
+@synthesize cursorPos;
 
 @synthesize tapGestureRecognizer;
 
@@ -142,45 +154,48 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
 		inputAccTextField.backgroundColor = [UIColor whiteColor];
 		inputAccTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         
-		if (!hasBackward && !hasForward) {
-			inputAccBtnDone = [UIButton buttonWithType:UIButtonTypeCustom];
-			[inputAccBtnDone setFrame:CGRectMake(width - 70, 10.0f, 60, 30.0f)];
-			[inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button"] forState:UIControlStateNormal];
-            [inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button_pressed"] forState:UIControlStateHighlighted];
-			[inputAccBtnDone addTarget:self action:@selector(doneTyping) forControlEvents:UIControlEventTouchUpInside];
-			[inputAccView addSubview:inputAccBtnDone];
-		} else {
-            if (hasForward) {
-                inputAccTextField.returnKeyType = UIReturnKeyNext;
-            }
-			inputAccBtnPrev = [UIButton buttonWithType: UIButtonTypeCustom];
-			[inputAccBtnPrev setFrame: CGRectMake(width - 70, 10.0, 30, 30.0)];
-			[inputAccBtnPrev addTarget: self action: @selector(gotoPrevTextfield) forControlEvents: UIControlEventTouchUpInside];
-            
-			inputAccBtnNext = [UIButton buttonWithType:UIButtonTypeCustom];
-			[inputAccBtnNext setFrame:CGRectMake(width - 40, 10.0f, 30, 30.0f)];
-			[inputAccBtnNext addTarget:self action:@selector(gotoNextTextfield) forControlEvents:UIControlEventTouchUpInside];
-            
-			
-			[inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler"] forState:UIControlStateNormal];
-			[inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_pressed"] forState:UIControlStateHighlighted];
-			[inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_disabled"] forState:UIControlStateDisabled];
-            
-			
-			[inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler"] forState:UIControlStateNormal];
-			[inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_pressed"] forState:UIControlStateHighlighted];
-			[inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_disabled"] forState:UIControlStateDisabled ];
-			
-            
-			[inputAccView addSubview:inputAccBtnPrev];
-			[inputAccView addSubview:inputAccBtnNext];
-            
-		}
+        inputAccBtnDone = [UIButton buttonWithType:UIButtonTypeCustom];
+        [inputAccBtnDone setFrame:CGRectMake(width - 70, 10.0f, 60, 30.0f)];
+        [inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button"] forState:UIControlStateNormal];
+        [inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button_pressed"] forState:UIControlStateHighlighted];
+        [inputAccBtnDone addTarget:self action:@selector(doneTyping) forControlEvents:UIControlEventTouchUpInside];
+        [inputAccView addSubview:inputAccBtnDone];
         
+        inputAccBtnPrev = [UIButton buttonWithType: UIButtonTypeCustom];
+        [inputAccBtnPrev setFrame: CGRectMake(width - 70, 10.0, 30, 30.0)];
+        [inputAccBtnPrev addTarget: self action: @selector(gotoPrevTextfield) forControlEvents: UIControlEventTouchUpInside];
+        
+        inputAccBtnNext = [UIButton buttonWithType:UIButtonTypeCustom];
+        [inputAccBtnNext setFrame:CGRectMake(width - 40, 10.0f, 30, 30.0f)];
+        [inputAccBtnNext addTarget:self action:@selector(gotoNextTextfield) forControlEvents:UIControlEventTouchUpInside];
+        
+        
+        [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler"] forState:UIControlStateNormal];
+        [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_pressed"] forState:UIControlStateHighlighted];
+        [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_disabled"] forState:UIControlStateDisabled];
+        
+        
+        [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler"] forState:UIControlStateNormal];
+        [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_pressed"] forState:UIControlStateHighlighted];
+        [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_disabled"] forState:UIControlStateDisabled ];
+        
+        [inputAccView addSubview:inputAccBtnPrev];
+        [inputAccView addSubview:inputAccBtnNext];
 		[inputAccView addSubview:inputAccTextField];
 	}
-	[inputAccBtnPrev setEnabled:hasBackward];
-	[inputAccBtnNext setEnabled:hasForward];
+    
+	
+    if (!hasBackward && !hasForward) {
+        [inputAccBtnDone setHidden:NO];
+        [inputAccBtnNext setHidden:YES];
+        [inputAccBtnPrev setHidden:YES];
+    } else {
+        [inputAccBtnDone setHidden:YES];
+        [inputAccBtnNext setHidden:NO];
+        [inputAccBtnPrev setHidden:NO];
+        [inputAccBtnPrev setEnabled:hasBackward];
+        [inputAccBtnNext setEnabled:hasForward];
+    }
     
 	inputAccTextField.text = currVal;
 	inputAccTextField.placeholder = hint;
@@ -203,8 +218,44 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
         inputAccTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		inputAccTextField.keyboardType = UIKeyboardTypeDefault;
 	}
-    [inputAccTextField reloadInputViews];
     
+    UIReturnKeyType returnKeyType = UIReturnKeyDefault;
+    NSString *returnKeyTypeUpper = [inputReturnButton uppercaseString];
+    if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_GO]) {
+        returnKeyType = UIReturnKeyGo;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_GOOGLE]) {
+        returnKeyType = UIReturnKeyGoogle;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_JOIN]) {
+        returnKeyType = UIReturnKeyJoin;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_NEXT]) {
+        returnKeyType = UIReturnKeyNext;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_ROUTE]) {
+        returnKeyType = UIReturnKeyRoute;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_SEARCH]) {
+        returnKeyType = UIReturnKeySearch;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_SEND]) {
+        returnKeyType = UIReturnKeySend;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_YAHOO]) {
+        returnKeyType = UIReturnKeyYahoo;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_DONE]) {
+        returnKeyType = UIReturnKeyDone;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_EMERGENCYCALL]) {
+        returnKeyType = UIReturnKeyEmergencyCall;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_SEND]) {
+        returnKeyType = UIReturnKeySend;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_GO]) {
+        returnKeyType = UIReturnKeyGo;
+    } else if ([returnKeyTypeUpper isEqualToString:RETURN_KEY_GOOGLE]) {
+        returnKeyType = UIReturnKeyGoogle;
+    }
+    
+    if (returnKeyType == UIReturnKeyDefault && hasForward) {
+        returnKeyType = UIReturnKeyNext;
+    }
+    
+    inputAccTextField.returnKeyType = returnKeyType;
+    
+    [inputAccTextField reloadInputViews];
 }
 
 
@@ -232,34 +283,39 @@ static NSString *INPUTTYPE_CAPITAL = @"CAPITAL";
         [self gotoNextTextfield];
         return NO;
     } else {
-        [self hideSoftKeyboard];
+        [self submit];
         return YES;
     }
 }
 
 
--(void)textFieldDidBeginEditing:(UITextField *)textField{
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
 	[textField setInputAccessoryView:inputAccView];
-    
 }
 
--(void)gotoPrevTextfield{
+-(void)textFieldDidEndEditing:(UITextField *)textField {
+}
+
+-(void)gotoPrevTextfield {
     NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptMove\",\"next\":%@}", @"false"];
     core_dispatch_event([evt UTF8String]);
 }
 
--(void)gotoNextTextfield{
+-(void)gotoNextTextfield {
     NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptMove\",\"next\":%@}", @"true"];
     core_dispatch_event([evt UTF8String]);
 }
 
--(void)doneTyping{
-	// When the "done" button is tapped, the keyboard should go away.
-	// That simply means that we just have to resign our first responder.
-    
-	[self hideSoftKeyboard];
+// called when the done button is pressed
+-(void)doneTyping {
+    [self submit];
 }
 
+-(void)submit {
+    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptSubmit\"}"];
+    core_dispatch_event([evt UTF8String]);
+    [self hideSoftKeyboard];
+}
 
 - (void) showSoftKeyboard {
     
@@ -299,7 +355,7 @@ JSAG_MEMBER_BEGIN(show, 5)
 	JSAG_ARG_NSTR(value);
 	JSAG_ARG_BOOL(autoShowKeyboard);
 	JSAG_ARG_BOOL(isPassword);
-	JSAG_ARG_BOOL(keyboardType);
+	JSAG_ARG_INT32(keyboardType);
     
 	++m_prompt_id;
     
@@ -316,16 +372,19 @@ JSAG_MEMBER_BEGIN(showSoftKeyboard, 6)
 	JSAG_ARG_BOOL(hasBackward);
 	JSAG_ARG_BOOL(hasForward);
 	JSAG_ARG_NSTR(inputType);
+    JSAG_ARG_NSTR(inputReturnButton);
 	JSAG_ARG_INT32(maxLength);
+    JSAG_ARG_INT32(cursorPos);
     
 	InputPromptView *ip = [InputPromptView get];
 	ip.hint = hint;
 	ip.currVal = currVal;
 	ip.inputType = inputType;
+    ip.inputReturnButton = inputReturnButton;
 	ip.hasForward = hasForward;
 	ip.hasBackward = hasBackward;
 	ip.maxLength = maxLength;
-    
+    ip.cursorPos = cursorPos;
     
 	[[InputPromptView get] showSoftKeyboard];
 }
