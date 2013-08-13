@@ -164,6 +164,14 @@ JSAG_OBJECT_END
 	[self postNotification:@"handleOpenURL:sourceApplication:" obj1:url obj2:sourceApplication];
 }
 
+- (void) onPause {
+	[self postNotification:@"onPause" obj1:nil obj2:nil];
+}
+
+- (void) onResume {
+	[self postNotification:@"onResume" obj1:nil obj2:nil];
+}
+
 - (void) dispatchJSEvent:(NSDictionary *)evt {
 	if (m_core) {
 		// Run JS synchronously in the main thread
