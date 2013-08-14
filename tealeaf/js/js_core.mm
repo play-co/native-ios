@@ -25,6 +25,7 @@
 #include "gen/js_timestep_image_map_template.gen.h"
 #include "gen/js_timestep_view_template.gen.h"
 #import "core/platform/location_manager.h"
+#import "core/platform/native.h"
 #import "js/jsBase.h"
 #import "platform/PluginManager.h"
 #import "iosVersioning.h"
@@ -252,8 +253,21 @@ JSAG_MEMBER_BEGIN_NOARGS(doneLoading)
 }
 JSAG_MEMBER_END_NOARGS
 
+JSAG_MEMBER_BEGIN(stayAwake, 1)
+{
+	JSAG_ARG_INT32(enable);
+
+	bool on = (enable != 0);
+	
+	LOG("{js} Setting stay-awake: %d", on);
+
+	native_stay_awake(on);
+}
+JSAG_MEMBER_END
+
 JSAG_OBJECT_START(NATIVE)
 JSAG_OBJECT_MEMBER(doneLoading)
+JSAG_OBJECT_MEMBER(stayAwake)
 JSAG_OBJECT_END
 
 
