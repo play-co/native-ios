@@ -38,7 +38,7 @@ static int32_t m_prompt_id = 0;
 
 + (InputPrompt *) get {
 	if (m_view == nil) {
-		m_view = [InputPrompt alloc];
+		m_view = [[InputPrompt alloc] init];
 	}
     
 	return m_view;
