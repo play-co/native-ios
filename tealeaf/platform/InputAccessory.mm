@@ -159,7 +159,7 @@ static InputAccessory *m_view = nil;
         return NO;
     }
     
-	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptKeyUp\",\"text\":\"%@\"}", [textField.text stringByReplacingCharactersInRange:range withString:string]];
+	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardKeyUp\",\"text\":\"%@\"}", [textField.text stringByReplacingCharactersInRange:range withString:string]];
 	core_dispatch_event([evt UTF8String]);
     
 	//Returning yes allows the entered chars to be processed
@@ -188,12 +188,12 @@ static InputAccessory *m_view = nil;
 }
 
 -(void)gotoPrevTextfield {
-    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptMove\",\"next\":%@}", @"false"];
+    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardFocusNext\",\"next\":%@}", @"false"];
     core_dispatch_event([evt UTF8String]);
 }
 
 -(void)gotoNextTextfield {
-    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptMove\",\"next\":%@}", @"true"];
+    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardFocusNext\",\"next\":%@}", @"true"];
     core_dispatch_event([evt UTF8String]);
 }
 
@@ -203,7 +203,7 @@ static InputAccessory *m_view = nil;
 }
 
 -(void)submit {
-    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptSubmit\"}"];
+    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardSubmit\"}"];
     core_dispatch_event([evt UTF8String]);
     [self hide];
 }

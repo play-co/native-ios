@@ -63,7 +63,7 @@ static int32_t m_prompt_id = 0;
 	if (buttonIndex == 1) {
         [self submit];
 	} else {
-		NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptCancel\",\"id\":%d}", m_prompt_id];
+		NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardCancel\",\"id\":%d}", m_prompt_id];
 		core_dispatch_event([evt UTF8String]);
         
 		NSLOG(@"{prompt} Alert text input cancelled");
@@ -72,7 +72,7 @@ static int32_t m_prompt_id = 0;
 
 - (void) submit {
     NSString *detailString = self.inputPromptTextField.text;
-    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptSubmit\",\"id\":%d,\"text\":\"%@\"}", m_prompt_id, detailString];
+    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardSubmit\",\"id\":%d,\"text\":\"%@\"}", m_prompt_id, detailString];
     core_dispatch_event([evt UTF8String]);
     // NOTE: If JS engine is shutdown at this point core_dispatch_event will just drop the event, which is OK.
     
@@ -132,7 +132,7 @@ static int32_t m_prompt_id = 0;
         return NO;
     }
     
-	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"inputPromptKeyUp\",\"text\":\"%@\"}", [textField.text stringByReplacingCharactersInRange:range withString:string]];
+	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardKeyUp\",\"text\":\"%@\"}", [textField.text stringByReplacingCharactersInRange:range withString:string]];
 	core_dispatch_event([evt UTF8String]);
     
 	//Returning yes allows the entered chars to be processed
