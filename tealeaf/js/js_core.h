@@ -68,7 +68,8 @@ CEXPORT JSObject *get_global_object();
 
 -(void) addExtension: (id) extension;
 
--(void) dispatchEvent: (jsval*) args count: (int) count;
+-(void) dispatchEvent:(jsval*)args count:(int)count;
+-(void) dispatchEvent:(NSString *)evt;
 
 -(void) performGC;
 -(void) performMaybeGC;

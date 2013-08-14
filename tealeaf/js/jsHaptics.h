@@ -19,6 +19,5 @@
 
 + (void) addToRuntime:(js_core *)js;
 + (void) onDestroyRuntime;
-+(void) addToRuntime:(js_core *)js;
 
 @end
