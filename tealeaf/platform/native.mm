@@ -72,6 +72,10 @@ CEXPORT void set_halfsized_textures(bool on) {
 	texture_manager_set_use_halfsized_textures();
 }
 
+CEXPORT void native_stay_awake(bool on) {
+	[[UIApplication sharedApplication] setIdleTimerDisabled:(on ? YES : NO)];
+}
+
 const char *get_version_code() {
 	// Incrementing number Info.plist
 	return "TODO";
