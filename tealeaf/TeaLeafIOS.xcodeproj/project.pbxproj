@@ -6,21 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		4EE0B9C517BC8486002A18DA /* Framework */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 4EE0B9C617BC8486002A18DA /* Build configuration list for PBXAggregateTarget "Framework" */;
-			buildPhases = (
-				4EE0B9CB17BC872F002A18DA /* ShellScript */,
-			);
-			dependencies = (
-				4EE0B9CA17BC8713002A18DA /* PBXTargetDependency */,
-			);
-			name = Framework;
-			productName = Framework;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		36ACCF03179F2A63002AE65C /* left_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFD179F2A63002AE65C /* left_text_handler_disabled.png */; };
 		36ACCF04179F2A63002AE65C /* left_text_handler_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFE179F2A63002AE65C /* left_text_handler_pressed.png */; };
@@ -32,6 +17,21 @@
 		36ACCF2C179F595D002AE65C /* done_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF2A179F595D002AE65C /* done_button.png */; };
 		36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36E6F37B16C45FB50016CD1A /* PluginManager.mm */; };
 		37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37EEF09B173485A30017511A /* ResumeInfo.mm */; };
+		4E0809B217BEE33D00AAB8F9 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E0809AD17BEE33D00AAB8F9 /* png.h */; };
+		4E0809B317BEE33D00AAB8F9 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E0809AE17BEE33D00AAB8F9 /* pngconf.h */; };
+		4E0809B417BEE33D00AAB8F9 /* Weeby-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 4E0809AF17BEE33D00AAB8F9 /* Weeby-Prefix.pch */; };
+		4E0809B517BEE33D00AAB8F9 /* Weeby.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E0809B017BEE33D00AAB8F9 /* Weeby.h */; };
+		4E0809B617BEE33D00AAB8F9 /* Weeby.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E0809B117BEE33D00AAB8F9 /* Weeby.mm */; };
+		4E0809C217BEE3AE00AAB8F9 /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809B817BEE3AE00AAB8F9 /* config.plist */; };
+		4E0809C317BEE3AE00AAB8F9 /* done_button_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809B917BEE3AE00AAB8F9 /* done_button_pressed.png */; };
+		4E0809C417BEE3AE00AAB8F9 /* done_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809BA17BEE3AE00AAB8F9 /* done_button.png */; };
+		4E0809C517BEE3AE00AAB8F9 /* left_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809BB17BEE3AE00AAB8F9 /* left_text_handler_disabled.png */; };
+		4E0809C617BEE3AE00AAB8F9 /* left_text_handler_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809BC17BEE3AE00AAB8F9 /* left_text_handler_pressed.png */; };
+		4E0809C717BEE3AE00AAB8F9 /* left_text_handler.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809BD17BEE3AE00AAB8F9 /* left_text_handler.png */; };
+		4E0809C817BEE3AE00AAB8F9 /* resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809BE17BEE3AE00AAB8F9 /* resources.bundle */; };
+		4E0809C917BEE3AE00AAB8F9 /* right_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809BF17BEE3AE00AAB8F9 /* right_text_handler_disabled.png */; };
+		4E0809CA17BEE3AE00AAB8F9 /* right_text_handler_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809C017BEE3AE00AAB8F9 /* right_text_handler_pressed.png */; };
+		4E0809CB17BEE3AE00AAB8F9 /* right_text_handler.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E0809C117BEE3AE00AAB8F9 /* right_text_handler.png */; };
 		4E35EA8716B9FEEE004FD452 /* timestep_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */; };
 		4E35EA8816B9FEEE004FD452 /* timestep_events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7F16B9FEEE004FD452 /* timestep_events.cpp */; };
 		4E35EA8916B9FEEE004FD452 /* timestep_image_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA8116B9FEEE004FD452 /* timestep_image_map.cpp */; };
@@ -69,18 +69,7 @@
 		4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */; };
 		4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */; };
 		4EE0B9A617BC70BD002A18DA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */; };
-		4EE0B9AC17BC70BE002A18DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4EE0B9AA17BC70BD002A18DA /* InfoPlist.strings */; };
 		4EE0B9B717BC7DEF002A18DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		4EE0B9C317BC7F1E002A18DA /* Weeby.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0B9BB17BC7DEF002A18DA /* Weeby.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4EE0B9CC17BC87F0002A18DA /* done_button_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF29179F595D002AE65C /* done_button_pressed.png */; };
-		4EE0B9CD17BC87F0002A18DA /* done_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF2A179F595D002AE65C /* done_button.png */; };
-		4EE0B9CE17BC87F0002A18DA /* left_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFD179F2A63002AE65C /* left_text_handler_disabled.png */; };
-		4EE0B9CF17BC87F0002A18DA /* left_text_handler_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFE179F2A63002AE65C /* left_text_handler_pressed.png */; };
-		4EE0B9D017BC87F0002A18DA /* left_text_handler.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFF179F2A63002AE65C /* left_text_handler.png */; };
-		4EE0B9D117BC87F0002A18DA /* right_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF00179F2A63002AE65C /* right_text_handler_disabled.png */; };
-		4EE0B9D217BC87F0002A18DA /* right_text_handler_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF01179F2A63002AE65C /* right_text_handler_pressed.png */; };
-		4EE0B9D317BC87F0002A18DA /* right_text_handler.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF02179F2A63002AE65C /* right_text_handler.png */; };
-		4EE0B9D517BC8811002A18DA /* resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4EE0B9D417BC8811002A18DA /* resources.bundle */; };
 		4EE0B9D617BC8898002A18DA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BAE3E101797939900E8058E /* CoreTelephony.framework */; };
 		4EE0B9D717BC88A8002A18DA /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56CAAB3178F7C3900C00D96 /* libcrypto.a */; };
 		4EE0B9D817BC88A8002A18DA /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56CAAB4178F7C3900C00D96 /* libcurl.a */; };
@@ -88,7 +77,6 @@
 		4EE0B9DA17BC88A8002A18DA /* libgcrypt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56CAAB6178F7C3900C00D96 /* libgcrypt.a */; };
 		4EE0B9DB17BC88A8002A18DA /* libgpgerror.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56CAAB7178F7C3900C00D96 /* libgpgerror.a */; };
 		4EE0B9DC17BC88A8002A18DA /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EFF545B16165167000C3AFD /* libjpeg.a */; };
-		4EE0B9DD17BC88A8002A18DA /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EFF545C16165167000C3AFD /* libpng.a */; };
 		4EE0B9DE17BC88A8002A18DA /* libsasl2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56CAAB8178F7C3900C00D96 /* libsasl2.a */; };
 		4EE0B9DF17BC88A8002A18DA /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56CAAB9178F7C3900C00D96 /* libssh2.a */; };
 		4EE0B9E017BC88A8002A18DA /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D56CAABA178F7C3900C00D96 /* libssl.a */; };
@@ -232,7 +220,29 @@
 		4EE0BA7417BDA01E002A18DA /* ServerTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */; };
 		4EE0BA7517BDA01E002A18DA /* DebugServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E77EAE61666B90000FD6430 /* DebugServer.mm */; };
 		4EE0BA7617BDA178002A18DA /* TeaLeafAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = D55821EE150E7C7600549BF6 /* TeaLeafAppDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4EE0BA7A17BDAA25002A18DA /* Weeby.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA7917BDAA25002A18DA /* Weeby.mm */; };
+		4EE0BA8D17BDFBF1002A18DA /* ContactList.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA8617BDFBF1002A18DA /* ContactList.h */; };
+		4EE0BA8E17BDFBF1002A18DA /* ContactList.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA8717BDFBF1002A18DA /* ContactList.mm */; };
+		4EE0BA8F17BDFBF1002A18DA /* libstrophe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0BA8817BDFBF1002A18DA /* libstrophe.a */; };
+		4EE0BA9017BDFBF2002A18DA /* WeebyGlobalStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA8917BDFBF1002A18DA /* WeebyGlobalStorage.h */; };
+		4EE0BA9117BDFBF2002A18DA /* WeebyGlobalStorage.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA8A17BDFBF1002A18DA /* WeebyGlobalStorage.mm */; };
+		4EE0BA9217BDFBF2002A18DA /* WeebyPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA8B17BDFBF1002A18DA /* WeebyPlugin.h */; };
+		4EE0BA9317BDFBF2002A18DA /* WeebyPlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA8C17BDFBF1002A18DA /* WeebyPlugin.mm */; };
+		4EE0BAA017BDFC5F002A18DA /* NBNumberFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA9517BDFC5F002A18DA /* NBNumberFormat.h */; };
+		4EE0BAA117BDFC5F002A18DA /* NBNumberFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA9617BDFC5F002A18DA /* NBNumberFormat.m */; };
+		4EE0BAA217BDFC5F002A18DA /* NBPhoneMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA9717BDFC5F002A18DA /* NBPhoneMetaData.h */; };
+		4EE0BAA317BDFC5F002A18DA /* NBPhoneMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA9817BDFC5F002A18DA /* NBPhoneMetaData.m */; };
+		4EE0BAA417BDFC5F002A18DA /* NBPhoneNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA9917BDFC5F002A18DA /* NBPhoneNumber.h */; };
+		4EE0BAA517BDFC5F002A18DA /* NBPhoneNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA9A17BDFC5F002A18DA /* NBPhoneNumber.m */; };
+		4EE0BAA617BDFC5F002A18DA /* NBPhoneNumberDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA9B17BDFC5F002A18DA /* NBPhoneNumberDefines.h */; };
+		4EE0BAA717BDFC5F002A18DA /* NBPhoneNumberDesc.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA9C17BDFC5F002A18DA /* NBPhoneNumberDesc.h */; };
+		4EE0BAA817BDFC5F002A18DA /* NBPhoneNumberDesc.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA9D17BDFC5F002A18DA /* NBPhoneNumberDesc.m */; };
+		4EE0BAA917BDFC5F002A18DA /* NBPhoneNumberUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BA9E17BDFC5F002A18DA /* NBPhoneNumberUtil.h */; };
+		4EE0BAAA17BDFC5F002A18DA /* NBPhoneNumberUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BA9F17BDFC5F002A18DA /* NBPhoneNumberUtil.m */; };
+		4EE0BAAC17BDFC7B002A18DA /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EE0BAAB17BDFC7B002A18DA /* AddressBook.framework */; };
+		4EE0BAB117BDFD42002A18DA /* chat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4EE0BAAF17BDFD42002A18DA /* chat.cpp */; };
+		4EE0BAB617BDFD59002A18DA /* chat.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BAB317BDFD59002A18DA /* chat.h */; };
+		4EE0BAB717BDFD59002A18DA /* strophe.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BAB417BDFD59002A18DA /* strophe.h */; };
+		4EE0BAB817BDFD59002A18DA /* strophepp.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE0BAB517BDFD59002A18DA /* strophepp.h */; };
 		4EEFA20D1755553500570B4E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A23214D313D8AFD600FA4C7D /* MessageUI.framework */; };
 		4EEFA20F1755557A00570B4E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		4EEFA2101755559A00570B4E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
@@ -364,16 +374,6 @@
 		D5BC678D1635D0270059EC0F /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EFF545C16165167000C3AFD /* libpng.a */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		4EE0B9C917BC8713002A18DA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4EE0B9B517BC7DEF002A18DA;
-			remoteInfo = Weeby;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		4EE0B9B417BC7DEF002A18DA /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -406,6 +406,21 @@
 		36E6F37B16C45FB50016CD1A /* PluginManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PluginManager.mm; sourceTree = "<group>"; };
 		37EEF09A173485A30017511A /* ResumeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeInfo.h; sourceTree = "<group>"; };
 		37EEF09B173485A30017511A /* ResumeInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResumeInfo.mm; sourceTree = "<group>"; };
+		4E0809AD17BEE33D00AAB8F9 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../WeebyUnity/png.h; sourceTree = "<group>"; };
+		4E0809AE17BEE33D00AAB8F9 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = ../WeebyUnity/pngconf.h; sourceTree = "<group>"; };
+		4E0809AF17BEE33D00AAB8F9 /* Weeby-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Weeby-Prefix.pch"; path = "../WeebyUnity/Weeby-Prefix.pch"; sourceTree = "<group>"; };
+		4E0809B017BEE33D00AAB8F9 /* Weeby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Weeby.h; path = ../WeebyUnity/Weeby.h; sourceTree = "<group>"; };
+		4E0809B117BEE33D00AAB8F9 /* Weeby.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = Weeby.mm; path = ../WeebyUnity/Weeby.mm; sourceTree = "<group>"; };
+		4E0809B817BEE3AE00AAB8F9 /* config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = config.plist; path = ../WeebyUnityResources/config.plist; sourceTree = "<group>"; };
+		4E0809B917BEE3AE00AAB8F9 /* done_button_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = done_button_pressed.png; path = ../WeebyUnityResources/done_button_pressed.png; sourceTree = "<group>"; };
+		4E0809BA17BEE3AE00AAB8F9 /* done_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = done_button.png; path = ../WeebyUnityResources/done_button.png; sourceTree = "<group>"; };
+		4E0809BB17BEE3AE00AAB8F9 /* left_text_handler_disabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = left_text_handler_disabled.png; path = ../WeebyUnityResources/left_text_handler_disabled.png; sourceTree = "<group>"; };
+		4E0809BC17BEE3AE00AAB8F9 /* left_text_handler_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = left_text_handler_pressed.png; path = ../WeebyUnityResources/left_text_handler_pressed.png; sourceTree = "<group>"; };
+		4E0809BD17BEE3AE00AAB8F9 /* left_text_handler.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = left_text_handler.png; path = ../WeebyUnityResources/left_text_handler.png; sourceTree = "<group>"; };
+		4E0809BE17BEE3AE00AAB8F9 /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = resources.bundle; path = ../WeebyUnityResources/resources.bundle; sourceTree = "<group>"; };
+		4E0809BF17BEE3AE00AAB8F9 /* right_text_handler_disabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = right_text_handler_disabled.png; path = ../WeebyUnityResources/right_text_handler_disabled.png; sourceTree = "<group>"; };
+		4E0809C017BEE3AE00AAB8F9 /* right_text_handler_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = right_text_handler_pressed.png; path = ../WeebyUnityResources/right_text_handler_pressed.png; sourceTree = "<group>"; };
+		4E0809C117BEE3AE00AAB8F9 /* right_text_handler.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = right_text_handler.png; path = ../WeebyUnityResources/right_text_handler.png; sourceTree = "<group>"; };
 		4E35EA7C16B9FEEE004FD452 /* timestep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep.h; sourceTree = "<group>"; };
 		4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_animate.cpp; sourceTree = "<group>"; };
 		4E35EA7E16B9FEEE004FD452 /* timestep_animate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_animate.h; sourceTree = "<group>"; };
@@ -589,15 +604,31 @@
 		4EC8F76915D1E264008DAED6 /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = resources.bundle; sourceTree = "<group>"; };
 		4EE0B9A417BC70BD002A18DA /* Weeby.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Weeby.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		4EE0B9A917BC70BD002A18DA /* WeebyResources-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WeebyResources-Info.plist"; sourceTree = "<group>"; };
-		4EE0B9AB17BC70BD002A18DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		4EE0B9AD17BC70BE002A18DA /* WeebyResources-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WeebyResources-Prefix.pch"; sourceTree = "<group>"; };
-		4EE0B9B617BC7DEF002A18DA /* libWeeby.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libWeeby.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		4EE0B9BA17BC7DEF002A18DA /* Weeby-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Weeby-Prefix.pch"; sourceTree = "<group>"; };
-		4EE0B9BB17BC7DEF002A18DA /* Weeby.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Weeby.h; sourceTree = "<group>"; };
-		4EE0B9D417BC8811002A18DA /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = resources.bundle; path = ../resources/resources.bundle; sourceTree = "<group>"; };
+		4EE0B9B617BC7DEF002A18DA /* libWeeby.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libWeeby.a; path = libWeebyUnity.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EE0B9E117BC88A8002A18DA /* libgpg-error.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libgpg-error.a"; sourceTree = "<group>"; };
-		4EE0BA7917BDAA25002A18DA /* Weeby.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Weeby.mm; sourceTree = "<group>"; };
+		4EE0BA8617BDFBF1002A18DA /* ContactList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactList.h; path = "../../../../weeby-js/plugin/ios/ContactList.h"; sourceTree = "<group>"; };
+		4EE0BA8717BDFBF1002A18DA /* ContactList.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ContactList.mm; path = "../../../../weeby-js/plugin/ios/ContactList.mm"; sourceTree = "<group>"; };
+		4EE0BA8817BDFBF1002A18DA /* libstrophe.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstrophe.a; path = "../../../../weeby-js/plugin/ios/libstrophe.a"; sourceTree = "<group>"; };
+		4EE0BA8917BDFBF1002A18DA /* WeebyGlobalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeebyGlobalStorage.h; path = "../../../../weeby-js/plugin/ios/WeebyGlobalStorage.h"; sourceTree = "<group>"; };
+		4EE0BA8A17BDFBF1002A18DA /* WeebyGlobalStorage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = WeebyGlobalStorage.mm; path = "../../../../weeby-js/plugin/ios/WeebyGlobalStorage.mm"; sourceTree = "<group>"; };
+		4EE0BA8B17BDFBF1002A18DA /* WeebyPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeebyPlugin.h; path = "../../../../weeby-js/plugin/ios/WeebyPlugin.h"; sourceTree = "<group>"; };
+		4EE0BA8C17BDFBF1002A18DA /* WeebyPlugin.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = WeebyPlugin.mm; path = "../../../../weeby-js/plugin/ios/WeebyPlugin.mm"; sourceTree = "<group>"; };
+		4EE0BA9517BDFC5F002A18DA /* NBNumberFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBNumberFormat.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBNumberFormat.h"; sourceTree = "<group>"; };
+		4EE0BA9617BDFC5F002A18DA /* NBNumberFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBNumberFormat.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBNumberFormat.m"; sourceTree = "<group>"; };
+		4EE0BA9717BDFC5F002A18DA /* NBPhoneMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneMetaData.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneMetaData.h"; sourceTree = "<group>"; };
+		4EE0BA9817BDFC5F002A18DA /* NBPhoneMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneMetaData.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneMetaData.m"; sourceTree = "<group>"; };
+		4EE0BA9917BDFC5F002A18DA /* NBPhoneNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumber.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumber.h"; sourceTree = "<group>"; };
+		4EE0BA9A17BDFC5F002A18DA /* NBPhoneNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneNumber.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumber.m"; sourceTree = "<group>"; };
+		4EE0BA9B17BDFC5F002A18DA /* NBPhoneNumberDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumberDefines.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberDefines.h"; sourceTree = "<group>"; };
+		4EE0BA9C17BDFC5F002A18DA /* NBPhoneNumberDesc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumberDesc.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberDesc.h"; sourceTree = "<group>"; };
+		4EE0BA9D17BDFC5F002A18DA /* NBPhoneNumberDesc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneNumberDesc.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberDesc.m"; sourceTree = "<group>"; };
+		4EE0BA9E17BDFC5F002A18DA /* NBPhoneNumberUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumberUtil.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberUtil.h"; sourceTree = "<group>"; };
+		4EE0BA9F17BDFC5F002A18DA /* NBPhoneNumberUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneNumberUtil.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberUtil.m"; sourceTree = "<group>"; };
+		4EE0BAAB17BDFC7B002A18DA /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		4EE0BAAF17BDFD42002A18DA /* chat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = chat.cpp; path = "../../../../weeby-js/plugin/native_shared/src/chat.cpp"; sourceTree = "<group>"; };
+		4EE0BAB317BDFD59002A18DA /* chat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = chat.h; path = "../../../../weeby-js/plugin/native_shared/include/chat.h"; sourceTree = "<group>"; };
+		4EE0BAB417BDFD59002A18DA /* strophe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strophe.h; path = "../../../../weeby-js/plugin/native_shared/include/strophe.h"; sourceTree = "<group>"; };
+		4EE0BAB517BDFD59002A18DA /* strophepp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strophepp.h; path = "../../../../weeby-js/plugin/native_shared/include/strophepp.h"; sourceTree = "<group>"; };
 		4EFF545B16165167000C3AFD /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		4EFF545C16165167000C3AFD /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		54212FAD162D0AD4004625D0 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
@@ -782,6 +813,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EE0BAAC17BDFC7B002A18DA /* AddressBook.framework in Frameworks */,
 				4EE0BA6A17BD9A9B002A18DA /* libz.dylib in Frameworks */,
 				4EE0B9EF17BC8920002A18DA /* CFNetwork.framework in Frameworks */,
 				4EE0B9B717BC7DEF002A18DA /* Foundation.framework in Frameworks */,
@@ -804,11 +836,11 @@
 				4EE0B9DA17BC88A8002A18DA /* libgcrypt.a in Frameworks */,
 				4EE0B9DB17BC88A8002A18DA /* libgpgerror.a in Frameworks */,
 				4EE0B9DC17BC88A8002A18DA /* libjpeg.a in Frameworks */,
-				4EE0B9DD17BC88A8002A18DA /* libpng.a in Frameworks */,
 				4EE0B9DE17BC88A8002A18DA /* libsasl2.a in Frameworks */,
 				4EE0B9DF17BC88A8002A18DA /* libssh2.a in Frameworks */,
 				4EE0B9E017BC88A8002A18DA /* libssl.a in Frameworks */,
 				4EE0B9D617BC8898002A18DA /* CoreTelephony.framework in Frameworks */,
+				4EE0BA8F17BDFBF1002A18DA /* libstrophe.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -863,6 +895,9 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				4E0809CC17BEE3B100AAB8F9 /* WeebyUnityBundle */,
+				4E0809B717BEE34200AAB8F9 /* WeebyUnity */,
+				4EE0BAAB17BDFC7B002A18DA /* AddressBook.framework */,
 				4EE0B9E117BC88A8002A18DA /* libgpg-error.a */,
 				D56CAAB3178F7C3900C00D96 /* libcrypto.a */,
 				D56CAAB4178F7C3900C00D96 /* libcurl.a */,
@@ -893,8 +928,7 @@
 				D510CFBE139059A20066D881 /* Entitlements.plist */,
 				29B97315FDCFA39411CA2CEA /* Main */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				4EE0B9A717BC70BD002A18DA /* WeebyResources */,
-				4EE0B9B817BC7DEF002A18DA /* Weeby */,
+				4EE0BA8517BDFBC2002A18DA /* WeebySpecific */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				D579562F159A7B7E000DDEA3 /* Default-Landscape@2x~ipad.png */,
@@ -942,6 +976,35 @@
 				4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4E0809B717BEE34200AAB8F9 /* WeebyUnity */ = {
+			isa = PBXGroup;
+			children = (
+				4E0809AD17BEE33D00AAB8F9 /* png.h */,
+				4E0809AE17BEE33D00AAB8F9 /* pngconf.h */,
+				4E0809AF17BEE33D00AAB8F9 /* Weeby-Prefix.pch */,
+				4E0809B017BEE33D00AAB8F9 /* Weeby.h */,
+				4E0809B117BEE33D00AAB8F9 /* Weeby.mm */,
+			);
+			name = WeebyUnity;
+			sourceTree = "<group>";
+		};
+		4E0809CC17BEE3B100AAB8F9 /* WeebyUnityBundle */ = {
+			isa = PBXGroup;
+			children = (
+				4E0809B817BEE3AE00AAB8F9 /* config.plist */,
+				4E0809B917BEE3AE00AAB8F9 /* done_button_pressed.png */,
+				4E0809BA17BEE3AE00AAB8F9 /* done_button.png */,
+				4E0809BB17BEE3AE00AAB8F9 /* left_text_handler_disabled.png */,
+				4E0809BC17BEE3AE00AAB8F9 /* left_text_handler_pressed.png */,
+				4E0809BD17BEE3AE00AAB8F9 /* left_text_handler.png */,
+				4E0809BE17BEE3AE00AAB8F9 /* resources.bundle */,
+				4E0809BF17BEE3AE00AAB8F9 /* right_text_handler_disabled.png */,
+				4E0809C017BEE3AE00AAB8F9 /* right_text_handler_pressed.png */,
+				4E0809C117BEE3AE00AAB8F9 /* right_text_handler.png */,
+			);
+			name = WeebyUnityBundle;
 			sourceTree = "<group>";
 		};
 		4E35EA7B16B9FEEE004FD452 /* timestep */ = {
@@ -1097,41 +1160,41 @@
 			path = testapp;
 			sourceTree = "<group>";
 		};
-		4EE0B9A717BC70BD002A18DA /* WeebyResources */ = {
+		4EE0BA8517BDFBC2002A18DA /* WeebySpecific */ = {
 			isa = PBXGroup;
 			children = (
-				4EE0B9A817BC70BD002A18DA /* Supporting Files */,
+				4EE0BAB317BDFD59002A18DA /* chat.h */,
+				4EE0BAB417BDFD59002A18DA /* strophe.h */,
+				4EE0BAB517BDFD59002A18DA /* strophepp.h */,
+				4EE0BAAF17BDFD42002A18DA /* chat.cpp */,
+				4EE0BA9417BDFBFE002A18DA /* libPhoneNumber */,
+				4EE0BA8617BDFBF1002A18DA /* ContactList.h */,
+				4EE0BA8717BDFBF1002A18DA /* ContactList.mm */,
+				4EE0BA8817BDFBF1002A18DA /* libstrophe.a */,
+				4EE0BA8917BDFBF1002A18DA /* WeebyGlobalStorage.h */,
+				4EE0BA8A17BDFBF1002A18DA /* WeebyGlobalStorage.mm */,
+				4EE0BA8B17BDFBF1002A18DA /* WeebyPlugin.h */,
+				4EE0BA8C17BDFBF1002A18DA /* WeebyPlugin.mm */,
 			);
-			path = WeebyResources;
+			name = WeebySpecific;
 			sourceTree = "<group>";
 		};
-		4EE0B9A817BC70BD002A18DA /* Supporting Files */ = {
+		4EE0BA9417BDFBFE002A18DA /* libPhoneNumber */ = {
 			isa = PBXGroup;
 			children = (
-				4EE0B9D417BC8811002A18DA /* resources.bundle */,
-				4EE0B9A917BC70BD002A18DA /* WeebyResources-Info.plist */,
-				4EE0B9AA17BC70BD002A18DA /* InfoPlist.strings */,
-				4EE0B9AD17BC70BE002A18DA /* WeebyResources-Prefix.pch */,
+				4EE0BA9517BDFC5F002A18DA /* NBNumberFormat.h */,
+				4EE0BA9617BDFC5F002A18DA /* NBNumberFormat.m */,
+				4EE0BA9717BDFC5F002A18DA /* NBPhoneMetaData.h */,
+				4EE0BA9817BDFC5F002A18DA /* NBPhoneMetaData.m */,
+				4EE0BA9917BDFC5F002A18DA /* NBPhoneNumber.h */,
+				4EE0BA9A17BDFC5F002A18DA /* NBPhoneNumber.m */,
+				4EE0BA9B17BDFC5F002A18DA /* NBPhoneNumberDefines.h */,
+				4EE0BA9C17BDFC5F002A18DA /* NBPhoneNumberDesc.h */,
+				4EE0BA9D17BDFC5F002A18DA /* NBPhoneNumberDesc.m */,
+				4EE0BA9E17BDFC5F002A18DA /* NBPhoneNumberUtil.h */,
+				4EE0BA9F17BDFC5F002A18DA /* NBPhoneNumberUtil.m */,
 			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		4EE0B9B817BC7DEF002A18DA /* Weeby */ = {
-			isa = PBXGroup;
-			children = (
-				4EE0BA7917BDAA25002A18DA /* Weeby.mm */,
-				4EE0B9BB17BC7DEF002A18DA /* Weeby.h */,
-				4EE0B9B917BC7DEF002A18DA /* Supporting Files */,
-			);
-			path = Weeby;
-			sourceTree = "<group>";
-		};
-		4EE0B9B917BC7DEF002A18DA /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				4EE0B9BA17BC7DEF002A18DA /* Weeby-Prefix.pch */,
-			);
-			name = "Supporting Files";
+			name = libPhoneNumber;
 			sourceTree = "<group>";
 		};
 		54212FAC162D0AAE004625D0 /* Base64 */ = {
@@ -1527,17 +1590,32 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4EE0B9C317BC7F1E002A18DA /* Weeby.h in Headers */,
 				4EE0BA7617BDA178002A18DA /* TeaLeafAppDelegate.h in Headers */,
+				4EE0BA8D17BDFBF1002A18DA /* ContactList.h in Headers */,
+				4EE0BA9017BDFBF2002A18DA /* WeebyGlobalStorage.h in Headers */,
+				4EE0BA9217BDFBF2002A18DA /* WeebyPlugin.h in Headers */,
+				4EE0BAA017BDFC5F002A18DA /* NBNumberFormat.h in Headers */,
+				4EE0BAA217BDFC5F002A18DA /* NBPhoneMetaData.h in Headers */,
+				4EE0BAA417BDFC5F002A18DA /* NBPhoneNumber.h in Headers */,
+				4EE0BAA617BDFC5F002A18DA /* NBPhoneNumberDefines.h in Headers */,
+				4EE0BAA717BDFC5F002A18DA /* NBPhoneNumberDesc.h in Headers */,
+				4EE0BAA917BDFC5F002A18DA /* NBPhoneNumberUtil.h in Headers */,
+				4EE0BAB617BDFD59002A18DA /* chat.h in Headers */,
+				4EE0BAB717BDFD59002A18DA /* strophe.h in Headers */,
+				4EE0BAB817BDFD59002A18DA /* strophepp.h in Headers */,
+				4E0809B217BEE33D00AAB8F9 /* png.h in Headers */,
+				4E0809B317BEE33D00AAB8F9 /* pngconf.h in Headers */,
+				4E0809B417BEE33D00AAB8F9 /* Weeby-Prefix.pch in Headers */,
+				4E0809B517BEE33D00AAB8F9 /* Weeby.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		4EE0B9A317BC70BD002A18DA /* WeebyResources */ = {
+		4EE0B9A317BC70BD002A18DA /* WeebyUnityBundle */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4EE0B9B017BC70BE002A18DA /* Build configuration list for PBXNativeTarget "WeebyResources" */;
+			buildConfigurationList = 4EE0B9B017BC70BE002A18DA /* Build configuration list for PBXNativeTarget "WeebyUnityBundle" */;
 			buildPhases = (
 				4EE0B9A017BC70BD002A18DA /* Sources */,
 				4EE0B9A117BC70BD002A18DA /* Frameworks */,
@@ -1548,14 +1626,14 @@
 			);
 			dependencies = (
 			);
-			name = WeebyResources;
-			productName = WeebyResources;
+			name = WeebyUnityBundle;
+			productName = WeebyUnityBundle;
 			productReference = 4EE0B9A417BC70BD002A18DA /* Weeby.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
-		4EE0B9B517BC7DEF002A18DA /* Weeby */ = {
+		4EE0B9B517BC7DEF002A18DA /* WeebyUnity */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4EE0B9BF17BC7DEF002A18DA /* Build configuration list for PBXNativeTarget "Weeby" */;
+			buildConfigurationList = 4EE0B9BF17BC7DEF002A18DA /* Build configuration list for PBXNativeTarget "WeebyUnity" */;
 			buildPhases = (
 				4EE0B9B217BC7DEF002A18DA /* Sources */,
 				4EE0B9B317BC7DEF002A18DA /* Frameworks */,
@@ -1567,8 +1645,8 @@
 			);
 			dependencies = (
 			);
-			name = Weeby;
-			productName = Weeby;
+			name = WeebyUnity;
+			productName = WeebyUnity;
 			productReference = 4EE0B9B617BC7DEF002A18DA /* libWeeby.a */;
 			productType = "com.apple.product-type.library.static";
 		};
@@ -1615,9 +1693,8 @@
 			projectRoot = "";
 			targets = (
 				D5BC66E71635D0270059EC0F /* TeaLeafIOS */,
-				4EE0B9A317BC70BD002A18DA /* WeebyResources */,
-				4EE0B9B517BC7DEF002A18DA /* Weeby */,
-				4EE0B9C517BC8486002A18DA /* Framework */,
+				4EE0B9A317BC70BD002A18DA /* WeebyUnityBundle */,
+				4EE0B9B517BC7DEF002A18DA /* WeebyUnity */,
 			);
 		};
 /* End PBXProject section */
@@ -1627,16 +1704,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4EE0B9D517BC8811002A18DA /* resources.bundle in Resources */,
-				4EE0B9CC17BC87F0002A18DA /* done_button_pressed.png in Resources */,
-				4EE0B9CD17BC87F0002A18DA /* done_button.png in Resources */,
-				4EE0B9CE17BC87F0002A18DA /* left_text_handler_disabled.png in Resources */,
-				4EE0B9CF17BC87F0002A18DA /* left_text_handler_pressed.png in Resources */,
-				4EE0B9D017BC87F0002A18DA /* left_text_handler.png in Resources */,
-				4EE0B9D117BC87F0002A18DA /* right_text_handler_disabled.png in Resources */,
-				4EE0B9D217BC87F0002A18DA /* right_text_handler_pressed.png in Resources */,
-				4EE0B9D317BC87F0002A18DA /* right_text_handler.png in Resources */,
-				4EE0B9AC17BC70BE002A18DA /* InfoPlist.strings in Resources */,
+				4E0809C217BEE3AE00AAB8F9 /* config.plist in Resources */,
+				4E0809C317BEE3AE00AAB8F9 /* done_button_pressed.png in Resources */,
+				4E0809C417BEE3AE00AAB8F9 /* done_button.png in Resources */,
+				4E0809C517BEE3AE00AAB8F9 /* left_text_handler_disabled.png in Resources */,
+				4E0809C617BEE3AE00AAB8F9 /* left_text_handler_pressed.png in Resources */,
+				4E0809C717BEE3AE00AAB8F9 /* left_text_handler.png in Resources */,
+				4E0809C817BEE3AE00AAB8F9 /* resources.bundle in Resources */,
+				4E0809C917BEE3AE00AAB8F9 /* right_text_handler_disabled.png in Resources */,
+				4E0809CA17BEE3AE00AAB8F9 /* right_text_handler_pressed.png in Resources */,
+				4E0809CB17BEE3AE00AAB8F9 /* right_text_handler.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1698,19 +1775,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"\n\n# Link the \"Current\" version to \"A\"\n/bin/ln -sfh A \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/Current\"\n/bin/ln -sfh Versions/Current/Headers \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers\"\n/bin/ln -sfh \"Versions/Current/${PRODUCT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/${PRODUCT_NAME}\"\n\n# The -a ensures that the headers maintain the source modification date so that we don't constantly\n# cause propagating rebuilds of files that import these headers.\n/bin/cp -a \"${TARGET_BUILD_DIR}/${PUBLIC_HEADERS_FOLDER_PATH}/\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"\n";
-		};
-		4EE0B9CB17BC872F002A18DA /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=Weeby\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nlipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n";
 		};
 		D5295D3617947FF600BEEEE5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1863,7 +1927,16 @@
 				4EE0B9F317BD8DA2002A18DA /* timestep_image_map.cpp in Sources */,
 				4EE0B9F417BD8DA2002A18DA /* timestep_text_data.cpp in Sources */,
 				4EE0B9F517BD8DA2002A18DA /* timestep_view.cpp in Sources */,
-				4EE0BA7A17BDAA25002A18DA /* Weeby.mm in Sources */,
+				4EE0BA8E17BDFBF1002A18DA /* ContactList.mm in Sources */,
+				4EE0BA9117BDFBF2002A18DA /* WeebyGlobalStorage.mm in Sources */,
+				4EE0BA9317BDFBF2002A18DA /* WeebyPlugin.mm in Sources */,
+				4EE0BAA117BDFC5F002A18DA /* NBNumberFormat.m in Sources */,
+				4EE0BAA317BDFC5F002A18DA /* NBPhoneMetaData.m in Sources */,
+				4EE0BAA517BDFC5F002A18DA /* NBPhoneNumber.m in Sources */,
+				4EE0BAA817BDFC5F002A18DA /* NBPhoneNumberDesc.m in Sources */,
+				4EE0BAAA17BDFC5F002A18DA /* NBPhoneNumberUtil.m in Sources */,
+				4EE0BAB117BDFD42002A18DA /* chat.cpp in Sources */,
+				4E0809B617BEE33D00AAB8F9 /* Weeby.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2001,25 +2074,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		4EE0B9CA17BC8713002A18DA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4EE0B9B517BC7DEF002A18DA /* Weeby */;
-			targetProxy = 4EE0B9C917BC8713002A18DA /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		4EE0B9AA17BC70BD002A18DA /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4EE0B9AB17BC70BD002A18DA /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		4EE0B9AE17BC70BE002A18DA /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2035,12 +2089,12 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "WeebyResources/WeebyResources-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				INFOPLIST_FILE = "WeebyResources/WeebyResources-Info.plist";
+				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = "";
-				PRODUCT_NAME = Weeby;
+				PRODUCT_NAME = WeebyUnity;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 i386";
@@ -2068,7 +2122,7 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "WeebyResources/WeebyResources-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -2078,11 +2132,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "WeebyResources/WeebyResources-Info.plist";
+				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = Weeby;
+				PRODUCT_NAME = WeebyUnity;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 i386";
@@ -2106,6 +2160,10 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Weeby/Weeby-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"UNITY=1",
+					"$(inherited)",
+				);
 				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = (
 					"./deps/jansson/**",
@@ -2118,9 +2176,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/deps/spidermonkey\"",
+					"\"$(SRCROOT)/../../../../weeby-js/plugin/ios\"",
 				);
 				LLVM_LTO = YES;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)Headers";
 				SKIP_INSTALL = YES;
@@ -2155,6 +2214,7 @@
 				GCC_PREFIX_HEADER = "Weeby/Weeby-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
+					"UNITY=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -2173,66 +2233,15 @@
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/deps/spidermonkey\"",
+					"\"$(SRCROOT)/../../../../weeby-js/plugin/ios\"",
 				);
 				LLVM_LTO = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)Headers";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				STRIP_STYLE = "non-global";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 i386";
-			};
-			name = debug;
-		};
-		4EE0B9C717BC8486002A18DA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMPRESS_PNG_FILES = NO;
-				HEADER_SEARCH_PATHS = (
-					"./deps/jansson/**",
-					.,
-					./deps/spidermonkey,
-					"./native-core/deps/**",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/deps/spidermonkey\"",
-				);
-				OTHER_LDFLAGS = (
-					"-lsqlite3.0",
-					"-lstdc++",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRIP_STYLE = "non-global";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 i386";
-			};
-			name = Release;
-		};
-		4EE0B9C817BC8486002A18DA /* debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMPRESS_PNG_FILES = NO;
-				HEADER_SEARCH_PATHS = (
-					"./deps/jansson/**",
-					.,
-					./deps/spidermonkey,
-					"./native-core/deps/**",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/deps/spidermonkey\"",
-				);
-				OTHER_LDFLAGS = (
-					"-lsqlite3.0",
-					"-lstdc++",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 i386";
@@ -2436,7 +2445,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4EE0B9B017BC70BE002A18DA /* Build configuration list for PBXNativeTarget "WeebyResources" */ = {
+		4EE0B9B017BC70BE002A18DA /* Build configuration list for PBXNativeTarget "WeebyUnityBundle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4EE0B9AE17BC70BE002A18DA /* Release */,
@@ -2445,20 +2454,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4EE0B9BF17BC7DEF002A18DA /* Build configuration list for PBXNativeTarget "Weeby" */ = {
+		4EE0B9BF17BC7DEF002A18DA /* Build configuration list for PBXNativeTarget "WeebyUnity" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4EE0B9C017BC7DEF002A18DA /* Release */,
 				4EE0B9C117BC7DEF002A18DA /* debug */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4EE0B9C617BC8486002A18DA /* Build configuration list for PBXAggregateTarget "Framework" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4EE0B9C717BC8486002A18DA /* Release */,
-				4EE0B9C817BC8486002A18DA /* debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

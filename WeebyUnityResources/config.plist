@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>remote_loading</key>
+    <string>false</string>
+    <key>tcp_port</key>
+    <integer>4747</integer>
+    <key>code_port</key>
+    <integer>9201</integer>
+    <key>screen_width</key>
+    <integer>480</integer>
+    <key>screen_height</key>
+    <integer>800</integer>
+    <key>code_host</key>
+    <string>localhost</string>
+    <key>entry_point</key>
+    <string>gc.native.launchClient</string>
+    <key>app_id</key>
+    <string>6c6f7c977d6a4d4698d66b3b5e36aa2f</string>
+    <key>tcp_host</key>
+    <string>localhost</string>
+    <key>source_dir</key>
+    <string>/</string>
+    <key>game_hash</key>
+    <string>unknown</string>
+    <key>sdk_hash</key>
+    <string>release-0.1.27-85-gaacb7e0</string>
+    <key>native_hash</key>
+    <string>release-0.1.31-63-g5d2b1b7</string>
+    <key>code_path</key>
+    <string>native.js.mp3</string>
+    <key>studio_name</key>
+    <string>Example Studio Name</string>
+    <key>apple_id</key>
+    <string>12345678</string>
+    <key>bundle_id</key>
+    <string>example.bundle</string>
+    <key>version</key>
+    <string>1.0.0</string>
+  </dict>
+</plist>
