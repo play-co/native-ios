@@ -14,6 +14,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "js/js_core.h"
 
 @interface jsTextInput : NSObject

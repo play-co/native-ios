@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'WeebyResources' target in the 'WeebyResources' project
+//
+
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+#endif

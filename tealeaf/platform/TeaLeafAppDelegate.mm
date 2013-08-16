@@ -72,18 +72,18 @@
 	UIApplication *app = [UIApplication sharedApplication];
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 	[self.window makeKeyAndVisible];
-    
+
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
 	self.signalRestart = NO;
-	
+
 	NSString *path = [[NSBundle mainBundle] resourcePath];
 	NSString *finalPath = [path stringByAppendingPathComponent:@"config.plist"];
 	self.config = [NSMutableDictionary dictionaryWithContentsOfFile:finalPath];
-	 
+
 	for (id key in self.config) {
 		NSLOG(@"{tealeaf} Config[%@] = %@", key, [self.config objectForKey:key]);
 	}
@@ -536,6 +536,10 @@ SplashDescriptor SPLASHES[] = {
 	}
 
 	return splashResource;
+}
+
++ (void)initPluginMode {
+	NSLog(@"{tealeaf} Initializing in plugin mode");
 }
 
 @end

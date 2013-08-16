@@ -16,10 +16,9 @@
 #import "js_core.h"
 
 #import <UIKit/UIKit.h>
-#import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
-@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate> {
+@interface TeaLeafViewController : UIViewController <UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate> {
 @private
 int callback;
 UITextField *inputAccTextField;
@@ -35,8 +34,6 @@ UITextField *inputAccTextField;
 - (TeaLeafViewController *) init;
 
 - (void) pickContact:(int)cb;
-- (void) sendSMSTo:(NSString *)number withMessage:(NSString *)message andCallback:(int)callback;
-- (void) messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result;
 - (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
 - (void) restartJS;

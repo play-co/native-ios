@@ -362,12 +362,19 @@ CEXPORT void device_hide_splash() {
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillShowNotification object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillHideNotification object: nil];
 
-	// Lookup source path
-	const char *source_path = [[ResourceLoader get].appBundle UTF8String];
+	NSString *appBundle = [ResourceLoader get].appBundle;
+	const char *source_path = 0;
+
+	if (!appBundle) {
+		NSLog(@"WTF");
+	} else {
+		source_path = [[ResourceLoader get].appBundle UTF8String];
+	}
+
 	if (!source_path || *source_path == '\0') {
 		source_path = [[self.appDelegate.config objectForKey:@"source_dir"] UTF8String];
 	}
-
+	
 	core_init([[self.appDelegate.config objectForKey:@"entry_point"] UTF8String],
 			  [[self.appDelegate.config	objectForKey:@"tcp_host"] UTF8String],
 			  [[self.appDelegate.config	objectForKey:@"code_host"] UTF8String],
@@ -528,27 +535,6 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
 	js_core* instance = [js_core lastJS];
 	jsval args[] = { STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)) };
 	[instance dispatchEvent: args count: 1];
-}
-
-- (void)sendSMSTo:(NSString *)number withMessage:(NSString *)msg andCallback:(int)cb {
-	if([MFMessageComposeViewController canSendText]) {
-		MFMessageComposeViewController* sms = [[MFMessageComposeViewController alloc] init];
-		sms.body = msg;
-		sms.recipients = [NSArray arrayWithObject: number];
-		sms.messageComposeDelegate = self;
-		sms.delegate = self;
-		[self assignCallback: cb];
-		[self presentModalViewController: sms animated:YES];
-		[sms release];
-	}
-}
-
-- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
-	[self dismissModalViewControllerAnimated: YES];
-	char args[128];
-	// TODO replace with JS_* calls
-	sprintf(args, "{\"name\":\"smsStatus\", \"id\":%d, \"result\":%d}", callback, (int)result);
-	[self runCallback: args];
 }
 
 - (void)showImagePickerForCamera: (NSString *) url

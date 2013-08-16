@@ -379,8 +379,7 @@ JSAG_OBJECT_END
 	jsval tcphost = NSTR_TO_JSVAL(cx, [self.config objectForKey:@"tcp_host"]);
 	JS_SetProperty(self.cx, self.native, "tcpHost", &tcphost);
 	JS_SetProperty(self.cx, self.native, "tcpPort", &tcpport);
-    
-    
+
 	// If remote loading is enabled,
 	if ([[self.config objectForKey:@"remote_loading"] boolValue]) {
 		self.debugServer = [[[DebugServer alloc] init:self] autorelease];

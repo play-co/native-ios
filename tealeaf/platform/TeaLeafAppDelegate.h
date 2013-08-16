@@ -108,4 +108,6 @@ struct SplashDescriptor {
          didRemoveService:(NSNetService *)aNetService
                moreComing:(BOOL)moreComing;
 
++ (void)initPluginMode;
+
 @end
