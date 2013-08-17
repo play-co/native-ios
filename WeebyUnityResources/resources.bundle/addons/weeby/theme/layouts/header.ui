@@ -1,0 +1,117 @@
+$header = view [
+	size: 576x100
+
+	view [
+		y: 10
+		size: 576x100
+		
+		$commonHeaderItem = view(headerItem) [
+			x: 30
+
+			$commonIcon = view(headerIcon) [
+				background: icon_common.png
+			]
+
+			$commonText = score(headerText) [
+				text: inboxCountDefaultText
+			]
+
+			$commonPlusButton =button (headerPlus) [
+				background: button_plus.png
+			]
+		]
+
+		$premiumHeaderItem = view(headerItem) [
+
+			x: 215
+			
+			$premiumIcon = view(headerIcon) [
+				background: icon_premium.png
+			]
+
+			$premiumText = score(headerText) [
+				text: inboxCountDefaultText
+			]
+
+			$premiumPlusButton =button (headerPlus) [
+				background: button_plus.png
+			]
+		]
+
+		view(headerItem) [
+
+			x: 400
+
+			$xpClipper = view [
+				x: 0
+				y: -4
+				size: 154x68
+				emptyWidth: 41
+				clip: true
+
+				$xpBar = view [
+					x: 0
+					y: 2
+					size: 163x68
+					background: bar_xp.png
+				]
+			]
+
+			$xpIcon = view(headerIcon) [
+				background: icon_xp.png
+
+				$level [
+					size: 70x70
+					text: inboxCountDefaultText
+					font: 22px #793D16 
+					x: 27
+					y: -1
+				]
+			]
+
+			$xpText = score(xpText) [
+				text: inboxCountDefaultText
+				spacing: -25
+			]
+		]
+	]
+
+]
+
+headerItem = style [
+	background: frame_currency.9.png 9slice
+	clip: false
+	slices: 7 36 7 36
+	size: 165x65
+]
+
+headerIcon = style [
+	size: 70x70
+	x: -13
+	y: -6
+]
+
+headerText = style [
+	size: 55x30
+	x: 55
+	y: 16
+	horizontalAlign: center
+]
+
+xpText = style [
+	size: 68x35
+	x: 65
+	y: 15
+	horizontalAlign: center
+	useAlt: true
+]
+
+headerPlus = style [
+	size: 70x72
+	x: 105
+	y: -4
+    
+    state(pressed)[
+    	background: button_plus_down.png
+    ]
+]

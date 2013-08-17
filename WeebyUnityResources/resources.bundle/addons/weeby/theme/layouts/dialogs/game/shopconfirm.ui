@@ -1,0 +1,56 @@
+$dialog = view(dialog) [
+    size: 500x370
+    y: 270
+
+    $title = view [
+        x: 50
+        y: 50
+        size: 400x60
+        font: #793D16 40px
+        text: confirmPurchase
+        horizontalAlign: center
+    ]
+    $text = text [
+        x: 50
+        y: 110
+        size: 400x120
+        font: #793D14 30px
+        horizontalAlign: center
+        wrap: true
+    ]
+
+// grassy top
+        view [
+            x: -10
+            y: -50
+            background: header.png
+            size: 520x176
+            zIndex: 10
+            canHandleEvents: false
+        ]
+
+    $closeButton = button(mainButton) [
+        x: 50
+        y: 240
+        size: 200x90
+        
+        view [
+            text: cancel
+            size: 200x90
+            horizontalAlign: center
+            font: 30px #FFF 8px #1F6A99
+        ]
+    ]
+    $okButton = button(mainButton) [
+        x: 250
+        y: 240
+        size: 200x90
+        
+        view [
+            text: ok
+            size: 200x90
+            horizontalAlign: center
+            font: 30px #FFF 8px #1F6A99
+        ]
+    ]
+]

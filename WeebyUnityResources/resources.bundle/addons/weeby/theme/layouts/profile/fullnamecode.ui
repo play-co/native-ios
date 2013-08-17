@@ -1,0 +1,127 @@
+
+$background = view [
+    size: 576x1024
+    transition: slideleft
+    pushTransition: slideup
+]
+
+
+$fullnamecode = view [
+    size: 576x1024
+    zIndex: 2000
+    showStatusBar: true
+    weebyFullScreen: true
+    
+    $back = view [
+        zIndex: 15
+        height: 100
+        width: 100
+        y: 0
+        x: 0
+        
+  		$backImage = view [
+        	background: weeby/icon_back.png
+  			size: 45x45
+  			x: 15
+            y: 15
+		]
+    ]
+        // background header bar
+    view [
+    	zIndex: 9
+        background: weeby/header_bg.png
+        size: 576x80
+
+        sep = view [
+            background: weeby/divider.png
+            height: 70
+            width: 4
+            x: 75
+            y: 0
+            font: 11px
+        ]
+        
+        $title = view [
+            text: fullnameCodeTitle
+            textAlign: left
+            font: 25px #fff Helvetica
+            x: 105
+            y: 8
+            autoFontSize: true
+            width: 300
+            height: 50
+        ]
+        
+        weebyLogo = view [
+            background: weeby/icon_weebylogo.png
+            size: 135x37
+            x: 432
+            y: 17
+       	]
+    ]
+
+    contents = view [
+        background: #f2f2f2
+        x: 0
+        y: 70
+        size: 576x794
+        weebyExpand: true
+
+        view [
+            x: 30
+            y: 40
+            size: 520x70
+            font: 24px #000000
+            text: fullnameCodeText
+            textAlign: center
+            wrap: true
+        ]
+
+        $codeText = editText(textBoxAuth) [
+            x: 20
+            y: 130
+            size: 538x80
+            font: #303030 28px
+            fontFamily: helvetica
+            hint: code
+            inputType: default
+            maxLength: 20
+            textAlign: left
+        ]
+
+        $confirmCodeButton = view(buttonAction) [
+            x: 20
+            y: 285
+            size: 541x103
+            
+            view [
+                x: 0
+                y: 11
+                size: 530x80
+                font: #ffffff 32px 
+                text: fullnameConfirmCode
+                horizontalAlign: center
+                wrap: true
+            ]
+        ]
+
+		$fullnameCodeText = view [
+            x: 30
+            y: 210
+            size: 520x70
+            font: 24px #000000
+            text: fullnameVerifyingCode
+            textAlign: center
+            wrap: true
+        ]
+		$fullnameCodeErrorText = view [
+            x: 30
+            y: 210
+            size: 520x70
+            font: 24px #FF0000
+            text: fullnameVerifyingCodeError
+            textAlign: center
+            wrap: true
+        ]
+    ]
+]

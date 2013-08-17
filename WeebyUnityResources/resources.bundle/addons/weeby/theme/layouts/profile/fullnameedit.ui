@@ -1,0 +1,115 @@
+
+$background = view [
+    size: 576x1024
+    transition: slideleft
+    pushTransition: slideup
+]
+
+
+$fullnameedit = view [
+    size: 576x1024
+    zIndex: 2000
+    showStatusBar: true
+    weebyFullScreen: true
+    
+    // click region for the back button
+    $back = view [
+        zIndex: 10
+        height: 100
+        width: 100
+        y: 0
+        x: 0
+
+        // back button image
+        $backImage = view [
+            background: weeby/icon_back.png
+            height: 45
+            width: 45
+            x: 15
+            y: 15
+        ]
+    ]
+    
+    // background header bar
+    view [
+    	zIndex: 9
+        background: weeby/header_bg.png
+        size: 576x80
+
+        sep = view [
+            background: weeby/divider.png
+            height: 70
+            width: 4
+            x: 75
+            y: 0
+        ]
+        
+        $title = view [
+            text: fullnameEditYour
+            textAlign: left
+            font: 30px #fff Helvetica
+            x: 105
+            y: 8
+            autoFontSize: true
+            width: 300
+            height: 50
+        ]
+        
+        weebyLogo = view [
+            background: weeby/icon_weebylogo.png
+            size: 135x37
+            x: 432
+            y: 17
+       	]
+    ]
+
+    contents = view [
+        background: #f2f2f2
+        x: 0
+        y: 70
+        size: 576x794
+        weebyExpand: true
+
+        view [
+            x: 50
+            y: 50
+            size: 480x170
+            font: 24px #000000
+            text: fullnameEditText
+            textAlign: left
+            wrap: true
+        ]
+
+        $changeNicknameButton = view(buttonAction) [
+            x: 20
+            y: 295
+            size: 541x103
+            
+            view [
+                x: 0
+                y: 11
+                size: 530x80
+                font: #ffffff 32px 
+                text: changeName
+                horizontalAlign: center
+                wrap: true
+            ]
+        ]
+
+		$changeFullnameButton = view(buttonActionDark) [
+            x: 20
+            y: 425
+            size: 541x103
+        
+	        view [
+                x: 0
+                y: 11
+                size: 530x80
+                font: #ff0000 32px 
+                text: changeNickname
+                horizontalAlign: center
+                wrap: true
+	        ]
+        ]
+    ]
+]

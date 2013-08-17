@@ -200,14 +200,26 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) restartJS {
+	UIViewController *controller = nil;
+
+#ifndef UNITY
+	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
+	if (!isRemoteLoading) {
+#endif
+		controller = self.appDelegate.tealeafViewController;
+#ifndef UNITY
+	} else {
+		controller = self.appDelegate.appTableViewController;
+	}
+#endif
+
 	if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
 		[self.view removeFromSuperview];
 
-		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window addSubview:self.appDelegate.appTableViewController.view];
+		[self.appDelegate.window addSubview:controller.view];
 	} else {
-		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window setRootViewController:self.appDelegate.appTableViewController ];
+		[self.appDelegate.window setRootViewController:controller];
 	}
-
 	self.appDelegate.tealeafShowing = NO;
 
 	if (js_ready) {

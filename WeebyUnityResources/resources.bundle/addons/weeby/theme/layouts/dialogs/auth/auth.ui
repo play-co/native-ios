@@ -1,0 +1,87 @@
+$dialog = view [
+	x: 11
+	y: 270
+	size: 550x420
+	background: authflow/modal.png 9slice
+	slices: 20 20 20 30
+    
+    $title = view [
+    	x: 25
+        y: 0
+        size: 500x100
+        text: title
+        font: 42px #f08f24
+        textAlign: center
+        fontFamily: helvetica
+    ]
+    
+    view [
+    	x: 11
+        y: 90
+        size: 528x5
+        background: #f08f24
+    ]
+    
+    $message = view [
+    	x: 25
+        y: 111
+        size: 500x180
+        text: iosMustEnableContacts
+        font: 28px #ffffff
+        textAlign: left
+        wrap: true
+        fontFamily: helvetica
+    ]
+    
+    $singleButton = button(buttonAuthModal) [
+    	x: 10
+        y: 306
+        size: 530x100
+        visible: true
+        
+        $singleButtonText = view [
+        	x: 0
+            y: 0
+            size: 530x100
+            text: cancel
+            font: 28px #ffffff
+            textAlign: center
+            fontFamily: helvetica
+        ]
+    ]
+    
+    $leftButton = button(buttonAuthModal) [
+    	x: 10
+        y: 306
+        size: 264x100
+        visible: true
+        
+        $leftButtonText = view [
+        	x: 0
+            y: 0
+            size: 264x100
+            text: cancel
+            font: 28px #ffffff
+            textAlign: center
+            fontFamily: helvetica
+        ]
+    ]
+    
+    $rightButton = button(buttonAuthModal) [
+    	x: 276
+        y: 306
+        size: 264x100
+        visible: true
+        
+        $rightButtonText = view [
+        	x: 0
+            y: 0
+            size: 264x100
+            text: ok
+            font: 28px #ffffff
+            textAlign: center
+            fontFamily: helvetica
+        ]
+    ]
+    
+]

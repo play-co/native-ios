@@ -1,0 +1,87 @@
+$dialog = view [
+	x: 11
+	y: 200
+	size: 550x527
+	background: authflow/modal.png 9slice
+	slices: 20 20 20 30
+    
+  	view [
+    	x: 20
+        y: 0
+        size: 510x100
+        font: 22px #ffffff
+        text: sendSMSTo
+        fontFamily: helvetica
+        textAlign: center
+    ]
+    
+    $phoneTitle = view [
+    	x: 20
+        y: 50
+        size: 510x100
+        font: 36px #fd9426
+        text: sendSMSTo
+        fontFamily: helvetica
+        textAlign: center
+    ]
+    
+    view [
+    	x: 12
+        y: 140
+        size: 531x5
+        background: #fd9426
+    ]
+    
+    $messageText  = view [
+    	x: 20
+        y: 150
+        size: 510x140
+        font: 22px #ffffff
+        text: sitBackAndRelax
+        fontFamily: helvetica
+        textAlign: center
+        wrap: true
+    ]
+    
+    $progressText = view [
+    	x: 20
+        y: 265
+        size: 510x80
+        font: 36px #ffffff
+        text: 99% Complete
+        fontFamily: helvetica
+        textAlign: center
+    ]
+    
+    $editButton = button(buttonAuthModal) [
+    	x: 10
+        y: 350
+        size: 532x80
+        
+        $singleButtonText = view [
+        	x: 0
+            y: 0
+            size: 532x80
+            text: editNumber
+            font: 22px #ffffff
+            textAlign: center
+            fontFamily: helvetica
+        ]
+    ]
+    
+    $manualButton = button(buttonAuthModal) [
+    	x: 10
+        y: 430
+        size: 532x80
+        
+        $singleButtonText = view [
+        	x: 0
+            y: 0
+            size: 532x80
+            text: enterManually
+            font: 22px #ffffff
+            textAlign: center
+            fontFamily: helvetica
+        ]
+    ]
+]

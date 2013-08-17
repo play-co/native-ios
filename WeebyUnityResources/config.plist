@@ -25,9 +25,9 @@
     <key>game_hash</key>
     <string>unknown</string>
     <key>sdk_hash</key>
-    <string>release-0.1.27-85-gaacb7e0</string>
+    <string>release-0.1.27-83-gb95f688</string>
     <key>native_hash</key>
-    <string>release-0.1.31-63-g5d2b1b7</string>
+    <string>release-0.1.31-61-g8b421a1</string>
     <key>code_path</key>
     <string>native.js.mp3</string>
     <key>studio_name</key>

@@ -1,0 +1,68 @@
+$dialog = view [
+
+    // background: frame_modal_new.9.png
+    margin: 90 10 27 12
+    size: 576x964
+
+    // main content area
+    view [
+        x: 40
+        y: 120
+        background: frame_modaldefault.9.png 9slice
+        slices: 40 40 40 40
+        size: 500x600
+        padding: 1 5
+        margin: 15 22 100
+        clip: false
+
+        view(mainTitle) [
+            text: giftsTitle
+            x:100
+            y:60
+        ]
+       
+       	$closeButton = button(buttonClose) [
+            x: 390
+            y: 30
+            size: 80x85
+            background: button_closeup.png
+            zIndex: 99
+        ]
+
+        view [
+            x: 40
+            y: 160
+            size: 420x390
+            background: frame_innermodal.9.png 9slice
+            slices: 28 27 28 29
+
+	       	view [
+    	        x: 100
+        	    y: 60
+            	size: 232x197
+	            background: char_sad.png
+    	    ]
+		]
+         view [
+        	x: 40
+            y: 420
+            size: 420x70
+            text: noGifts
+            font: #FFF 26px 
+            horizontalAlign: center
+            wrap: true
+        ]
+
+	]
+
+    // the bottom bar
+    $tabBar [
+        align: bottom
+    ]
+]
+buttonClose=style[
+	background: button_closeup.png
+    state(pressed)[
+    	background:button_close_down.png
+    ]
+]

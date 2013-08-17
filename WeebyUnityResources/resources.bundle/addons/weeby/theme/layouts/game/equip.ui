@@ -1,0 +1,197 @@
+$background = view [
+    background: bkgd_leaderboard_dark.png cover
+    size: 576x1024
+    hasStatus: true
+    hasProfileIcon: true
+]
+
+$equip = view [
+
+    // background: frame_modal_new.9.png
+    margin: 90 10 27 12
+    size: 576x1024
+
+    // main content area
+    view [
+        x: 10
+        y: 120
+        background: frame_modaldefault.9.png 9slice
+        slices: 40 40 40 40
+        size: 560x650
+        //padding: 1 5
+        //margin: 15 22 100
+        clip: false
+
+        // grassy top
+        view [
+            x: -10
+            y: -50
+            background: header.png
+            size: 582x197
+            
+            canHandleEvents: false
+        ]
+
+		$closeButton = button(button_close) [
+            x: 460
+            y: 45
+            size: 74x74
+            zIndex: 99
+		]
+
+        $equip0 = view [
+            x: 40
+            y: 45
+            size: 90x93
+            background: frame_equip.png
+
+            $icon0 = view [
+                x: 15
+                y: 17
+                size: 60x60
+                background: frame_equip.png
+            ]
+        ]
+        $equip1 = view [
+        	x: 140
+            y: 45
+            size: 90x93
+            background: frame_equip.png
+
+            $icon1 = view [
+                x: 15
+                y: 17
+                size: 60x60
+                background: frame_equip.png
+            ]
+        ]
+        $equip2 = view [
+			x: 240
+            y: 45
+            size: 90x93
+            background: frame_equip.png
+
+            $icon2 = view [
+                x: 15
+                y: 17
+                size: 60x60
+                background: frame_equip.png
+            ]
+        ]
+
+		// darker list bg
+        view [
+            x: 42
+            y: 152
+            size: 476x451
+            background: #c26313
+        ]
+
+        // list rows
+        view [
+            x: 40
+            y: 150
+            size: 480x455
+			clip: true
+
+            $rows [
+                x: 10
+                y: 10
+                size: 462x450
+                scrollY: false
+                clip: false
+            ]
+        ]
+        
+        // list rows frame
+		view [
+            x: 40
+            y: 150
+            size: 480x455
+            background: frame_innermodal_empty.9.png 9slice
+            slices: 26 26 26 26
+            canHandleEvents: false
+        ]
+    ]
+
+    $playButton = button(mainButton) [
+        view(mainButtonText)
+    ]
+]
+
+$row = view [
+    size: 460x108
+
+    view [
+        size: 460x105
+        background: frame_list.9.png 9slice
+        slices: 15 15 15 15
+    ]
+
+    view [
+        x: 15
+        y: 15
+        size: 75x75
+        background: frame_item.png
+    ]
+
+    $image = view [
+        x: 17
+        y: 18
+        size: 70x70
+        background: button_checkyes.png
+    ]
+
+    $title = view [
+        x: 100
+        y: 16
+        size: 100x20
+        font: #793D14 20px
+        text: yes
+    ]
+
+    $description = view [
+        x: 100
+        y: 42
+        size: 260x45
+        font: #793D14 18px
+        verticalAlign: top
+        text: yes
+        wrap: true
+    ]
+
+    view [
+    	x: 310
+        y: 12
+        size: 30x30
+        background: icon_common.png
+    ]
+
+    $price = view [
+        x: 345
+        y: 15
+        size: 100x20
+        font: #793D14 20px
+        text: yes
+    ]
+
+	$button = button(equipCheckbox)[]
+]
+
+equipCheckbox = style [
+    x: 373
+    y: 16
+    size: 75x75
+    background: button_checkno.png
+
+    state(checked) [
+    	background: button_checkyes.png
+  	]
+]
+
+button_close = style [
+    background: button_closeup.png
+    state(pressed) [
+        background: button_close_down.png
+    ]
+]

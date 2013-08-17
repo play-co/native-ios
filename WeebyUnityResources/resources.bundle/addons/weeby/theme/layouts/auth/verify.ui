@@ -1,0 +1,179 @@
+$background = view [
+    size: 576x1024
+    hasStatus: false
+    hasProfileIcon: false
+    pushTransition: slideup
+    x: 0
+    y: 0
+]
+
+$verify = view [
+
+    zIndex: 2000
+    // background: frame_modal_new.9.png
+    size: 576x1024
+    showStatusBar: true
+    weebyFullScreen: true
+    
+    view [
+        background: #ffffff
+        x: 0
+        y: 0
+        size: 576x1024
+    ]
+    
+    view [
+        background: authflow/header.png 9slice
+        slices: 1 1 9 1
+        x: 0
+        y: 0
+        size: 576x85
+        
+        view [
+            background: authflow/back.png
+            x: 10
+            y: 9
+            size: 55x55
+        ]
+        
+        view [
+            background: #2b2f37
+            x: 77
+            y: 7
+            size: 1x67
+        ]
+        
+        view [
+            background: #acbcda
+            x: 80
+            y: 7
+            size: 1x67
+        ]
+        
+        view [
+            text: logIn
+            font: 28px #ffffff
+            x: 100
+            y: 30
+            size: 10x10
+            strokeWidth: 0
+        ]
+        
+        $backButton = view [
+            x: 0
+            y: 0
+            size: 100x85
+        ]
+    ]
+    
+    // photo
+    $photoButton = view(textBoxAuth) [
+        x: 20
+        y: 110
+        size: 175x175
+        
+        $photo = view [
+            background: authflow/photo.png
+            x: 20
+            y: 20
+            size: 135x135
+        ]
+        
+        $photoOverlay = view [
+        	x: 0
+            y: 0
+            size: 175x175
+            background: authflow/text_overlay.png 9slice
+            slices: 15 15 15 15
+            visible: false
+            
+            view [
+            	text: statusDefaultText
+                font: 28px #ffffff
+                x: 0
+                y: 0
+                size: 175x175
+                textAlign: center
+            ]
+        ]
+    ]
+        
+    $firstNameText = editText(textBoxAuth) [
+        x: 218
+        y: 110
+        size: 339x80
+        font: #303030 28px
+        fontFamily: helvetica
+        hint: firstName
+        inputType: capital
+        maxLength: 20
+        textAlign: left
+    ]
+
+        
+    $lastNameText = editText(textBoxAuth) [
+        x: 218
+        y: 205
+        size: 339x80
+        font: #303030 28px
+        fontFamily: helvetica
+        hint: lastName
+        inputType: capital
+        maxLength: 20
+        textAlign: left
+    ]
+        
+    $usernameText = editText(textBoxAuth) [
+        x: 20
+        y: 300
+        size: 538x80
+        font: #303030 28px
+        fontFamily: helvetica
+        hint: username
+        inputType: default
+        maxLength: 20
+        textAlign: left
+    ]
+        
+    $promptCountry = editText(textBoxAuth) [
+        x: 20
+        y: 396
+        size: 100x80
+        font: #303030 28px
+        fontFamily: helvetica
+        hint: countryCode
+        hintJs: countryCodeAbbr
+        inputType: number
+        maxLength: 3
+        textAlign: center
+    ]
+        
+    $promptPhone = editText(textBoxAuth) [
+        x: 134
+        y: 396
+        size: 425x80
+        font: #303030 28px
+        fontFamily: helvetica
+        hint: phone
+        inputType: phone
+        maxLength: 17
+        textAlign: left
+        keyboardType: PhonePad
+    ]
+          
+    $verifyButton = view(buttonAction) [
+        x: 20
+        y: 510
+        size: 541x103
+            
+        view [
+            x: 0
+            y: 11
+            size: 530x80
+            font: #ffffff 32px 
+            text: register
+            horizontalAlign: center
+            wrap: true
+        ]
+    ]
+]

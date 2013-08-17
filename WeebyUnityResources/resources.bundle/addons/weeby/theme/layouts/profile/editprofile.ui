@@ -1,0 +1,213 @@
+
+$editprofile = view [
+    size: 576x1024
+    zIndex: 2000
+    weebyFullScreen: true
+    
+    // click region
+    $back = view [
+        zIndex: 4
+        height: 100
+        width: 100
+        y: 0
+        x: 0
+  
+  		// back button image
+        $backImage = view [
+            background: weeby/icon_back.png
+            size: 45x45
+            x: 15
+            y: 15
+        ]
+	]
+
+	// background header b ar
+    view [
+        background: weeby/header_bg.png
+        size: 576x80
+        zIndex: 3
+        
+        sep = view [
+            background: weeby/divider.png
+            height: 70
+            width: 4
+            x: 75
+            y: 0
+            font: 11px
+        ]
+        
+        $title = view [
+            text: editprofile
+            textAlign: left
+            font: 30px #fff Helvetica
+            x: 105
+            y: 8
+            width: 100
+            height: 50
+        ]
+
+        weebyLogo = view [
+            background: icon_weebylogo.png
+            size: 151x41
+            x: 410
+            y: 17
+       	]
+    ]
+
+    $contents = scroller [
+    	scrollX: false
+		
+        background: #e3eaf4
+        x: 0
+        y: 70
+        size: 576x794
+        margin: 25 0 0 10
+        weebyExpand: true
+        
+        coverLabel = view [
+        	width: 200
+            height: 80
+            text: coverphoto
+            font: 24px #444
+            background #ff0000
+            x: 60
+            y: 0
+        ]
+        
+        coverFrame = view [
+        	background: frame_weebytext.9.png 9slice
+            slices: 24 25 26 23
+            width: 550
+            height : 220
+            x: 13
+            y: 70
+            
+            cover = view [
+                background:coverphoto_weebydefault.png
+                width: 232
+                height: 184
+                x: 159
+                y: 15
+        	]
+        ]
+
+      	photoLabel = view [
+        	width: 200
+            height: 80
+            text: profilephoto
+            font: 24px #444
+            background #ff0000
+            x: 50
+            y: 290
+        ]
+        
+        $photoFrame = view [
+        	background: frame_weebytext.9.png 9slice
+            slices: 24 25 26 23
+            width: 550
+            height : 160
+            x: 13
+            y: 360
+            
+            $profilePhoto = image [
+                width: 100
+                height: 100
+                x: 225
+                y: 25
+            
+            	$profilePhotoOverlay = view [
+                	x: 0
+                    y: 0
+                    size: 100x100
+                    background:#000000
+             		opacity: 0.5
+                    visible: false
+                    
+                    view [
+                    	x: 0
+                        y: 0
+                        size: 100x100
+                        text: statusDefaultText
+                    	font: #ffffff 18px
+                        textAlign: center
+                    ]
+                ]
+            ]
+            
+            arrow = view [
+              background: icon_weebyforward.png
+              width: 50
+              height: 50
+              x: 475
+              y: 55
+            ]
+            
+        ]
+        
+        $fullnameFrame = view [
+        	background: frame_weebytext.9.png 9slice
+            slices: 24 25 26 23
+            width: 550
+            height : 120
+            x: 13
+            y: 531
+            
+            text = view [
+            	width: 200
+                height: 80
+                x: 40
+                y: 15
+                text: fullnameEdit
+                font: 24px #444
+                background #ff0000
+            ]
+            
+             arrow = view [
+              background: icon_weebyforward.png
+              width: 50
+              height: 50
+              x: 475
+              y: 35
+            ]
+            
+            $fullnamePrompt = prompt [
+            	prompt: enterFullname
+                visible: false
+            ]
+        ]
+        
+        $nicknameFrame = view [
+        	background: frame_weebytext.9.png 9slice
+            slices: 24 25 26 23
+            width: 550
+            height : 120
+            x: 13
+            y: 661
+            
+            text = view [
+            	width: 200
+                height: 80
+                x: 40
+                y: 15
+                text: editnickname
+                font: 24px #444
+                background #ff0000
+            ]
+            
+            arrow = view [
+              background: icon_weebyforward.png
+              width: 50
+              height: 50
+              x: 475
+              y: 35
+            ]
+            
+            $nicknamePrompt = view [
+            	prompt: enterNickname
+                visible: false
+            ]
+        ]
+    ]
+]
+
+

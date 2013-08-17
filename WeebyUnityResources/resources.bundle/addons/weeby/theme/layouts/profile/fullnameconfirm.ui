@@ -1,0 +1,82 @@
+$dialog = view [
+    size: 576x1024
+    zIndex: 3500
+
+    $contents = view [
+        background: frame_weebydefault.png 9slice
+        x: 35
+        y: 362
+        width: 506
+        height: 300
+        slices: 40 40 40 40
+    ]
+
+    $header = view [
+        background: frame_header_weebydefault.png 9slice
+        x: 33
+        y: 362
+        width: 508
+        height: 300
+        slices: 20 25 20 25
+
+        $back = view [
+            background: weeby/icon_back.png
+            height: 45
+            width: 45
+            x: 13
+            y: 7
+        ]
+
+        view [
+            text: fullnameConfirmChange
+            textAlign: center
+            font: 24px #000
+            x: 100
+            y: 0
+            width: 308
+            height: 50
+        ]
+        view [
+            x: 30
+            y: 80
+            size: 430x80
+            font: 24px #000000
+            text: fullnameConfirmChangeText
+            textAlign: center
+            wrap: true
+        ]
+
+        $cancelButton = view(buttonAction) [
+            x: 35
+            y: 180
+            size: 210x80
+            
+            view [
+                x: 0
+                y: 0
+                size: 210x78
+                font: #ffffff 32px 
+                text: cancel
+                horizontalAlign: center
+                wrap: true
+            ]
+        ]
+
+		$changeButton = view(buttonActionDark) [
+            x: 260
+            y: 180
+            size: 210x80
+            zIndex: 10
+            
+            view [
+                x: 0
+                y: 0
+                size: 210x78
+                font: #ff0000 32px 
+                text: ok
+                horizontalAlign: center
+                wrap: true
+            ]
+        ]
+    ]
+]

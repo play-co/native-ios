@@ -287,6 +287,7 @@ JSAG_OBJECT_END
 }
 
 -(void) shutdown {
+#ifndef DISABLE_DEBUG_SERVER
 	// Kill debug server immediately
 	if (self.debugServer) {
 		[self.debugServer close];
@@ -295,6 +296,7 @@ JSAG_OBJECT_END
 		
 		LoggerSetDebugger(nil);
 	}
+#endif
 
 	JS_GC(self.rt);
 	JS_DestroyContext(self.cx);
@@ -380,10 +382,12 @@ JSAG_OBJECT_END
 	JS_SetProperty(self.cx, self.native, "tcpHost", &tcphost);
 	JS_SetProperty(self.cx, self.native, "tcpPort", &tcpport);
 
+#ifndef DISABLE_DEBUG_SERVER
 	// If remote loading is enabled,
 	if ([[self.config objectForKey:@"remote_loading"] boolValue]) {
 		self.debugServer = [[[DebugServer alloc] init:self] autorelease];
 	}
+#endif
 	
 	return self;
 }
@@ -424,10 +428,13 @@ JSAG_OBJECT_END
 
 	NSString *uniqueName;
 
+#ifndef DISABLE_DEBUG_SERVER
 	if (self.debugServer) {
 		// Store off the script
 		uniqueName = [self.debugServer setScriptForPath:path source:source];
-	} else {
+	} else
+#endif
+	{
 		uniqueName = @"eval";
 	}
 

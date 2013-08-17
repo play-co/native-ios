@@ -1,0 +1,192 @@
+$dialog = view [
+
+    // background: frame_modal_new.9.png
+    margin: 90 10 27 12
+    size: 576x964
+
+    // main content area
+    view [
+        x: 10 
+        y: 120
+        background: frame_modaldefault.9.png 9slice
+        slices: 40 40 40 40
+        size: 560x650
+        padding: 1 5
+        margin: 15 22 100
+        clip: false
+
+        view(mainTitle) [
+            text: itemShop
+        ]
+        
+        $closeButton = view [
+            x: 450
+            y: 50
+            size: 80x85
+            background: button_close.png
+            zIndex: 99
+        ]
+        
+        //items
+        view [
+            x: 40
+            y: 150
+            size: 480x120
+            background: frame_innermodal.9.png 9slice
+            slices: 28 27 28 29
+            
+            view [
+                x: 10
+                y: 10
+                size: 90x90
+                background: frame_list.9.png 9slice
+                slices: 15 15 15 15
+    		]
+            
+            $selectedIcon = view [
+                x: 15
+                y: 15
+                size: 80x80
+                background: frame_list.9.png 9slice
+                slices: 15 15 15 15
+    		]
+            
+            $selectedTitle = view [
+            	x: 120
+                y: 25
+                size: 1x1
+                text: Best item Ever
+                font: #793D16 20px
+            ]
+            
+            $selectedDescription = view [
+            	x: 120
+                y: 55
+                size: 220x1
+                verticalAlign: top
+                horizontalAlign: left
+                text: You should probably buy this
+                wrap: true
+                font: #793D16 20px
+            ]
+            
+           	$actionButton = view [
+                x: 360
+                y: 19
+                size: 100x80
+                background: frame_list.9.png 9slice
+                slices: 15 15 15 15
+                
+                $actionButtonCenterText = view [
+                	x: 0
+                    y: 0
+                    size: 100x80
+                    text: equip
+                    font: #793D16 20px
+                    horizontalAlign: center
+                ]
+               
+                $actionButtonBuyView = view [
+                  $actionButtonTopText = view [
+                    x: 0
+                    y: 20
+                    size: 100x1
+                    text: unlock
+                    font: #793D16 20px
+                    horizontalAlign: center
+                  ]
+                  $actionButtonCurrency = view [
+                      x: 12
+                      y: 40
+                      size: 25x25
+                      background: icon_common.png
+                  ]
+                  $actionButtonCost = view [
+                    x: 40
+                    y: 49
+                    size: 1x1
+                    text: 4000
+                    font: #793D16 20px
+                  ]
+                ]
+    		]
+        ]
+        //items
+        view [
+            x: 40
+            y: 280
+            size: 480x320
+            background: frame_innermodal.9.png 9slice
+            slices: 28 27 28 29
+            
+            
+            $rows [
+            	backgroundColor: red
+                x: 10
+                y: 10
+                cols: 5,
+            	rows: 5,
+                autoCellSize: true
+                size: 460x320
+            ]
+        ]
+    ]
+]
+
+wrapContent = style [
+    height: wrapContent
+    width: wrapContent
+]
+
+expandHeight = style [
+    height: wrapContent
+    width: matchParent
+]
+
+matchParent = style [
+    height: matchParent
+    width: matchParent
+]
+
+footerButton = style(buttonBasic) [
+    width: 95
+    height: 95
+]
+
+footerButtonIcon = style [
+    size: 50x50
+    x: 22
+    y: 24
+    centerVertical: true
+    centerHorizontal: true
+]
+
+$item = view [
+    size: 100x100
+    backgroundColor: blue
+    $icon = view [
+    	x: 10
+        y: 10
+        size: 80x80
+        background: frame_list.9.png 9slice
+        slices: 15 15 15 15
+    ]
+
+    $level = view [
+        x: 0
+        y: 40
+        size: 100x80
+        font: 20px #FFFFFF 8px #000088
+        text: level
+        horizontalAlign: center
+    ]
+    
+    $count = view [
+        x: 90
+        y: 10
+        size: 1x1
+        font: 20px #FFFFFF 8px #000088
+        text: 1
+        horizontalAlign: center
+    ]
+]

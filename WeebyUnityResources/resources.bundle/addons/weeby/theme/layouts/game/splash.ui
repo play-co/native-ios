@@ -1,0 +1,39 @@
+$background = view [
+	background: authflow/splash.png cover
+	size: 576x1024
+]
+
+$splash = view [
+	size: 576x1024
+
+	$loginButton = button(buttonAction) [
+		x: 9
+		y: 680
+		size: 558x110
+
+        image [
+        	x: 25
+            y: 23
+            size: 60x60
+        	background: authflow/weebystar.png
+        ]
+        
+        view [
+        	text: loginToWeeby
+            font: 32px #FFFFFF
+            x: 170
+            y: 26
+            size: 60x50
+            shadowColor: #000000
+            strokeWidth: 10
+        ]
+        
+        image [
+        	x: 508
+            y: 41
+            size: 18x28           
+            background: authflow/arrow1.png
+        ]
+	]	
+]
+

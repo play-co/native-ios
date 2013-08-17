@@ -1,0 +1,90 @@
+$dialog = view [
+    size: 576x1024
+    zIndex: 3500
+
+    $contents = view [
+        background: frame_weebydefault.png 9slice
+        x: 0
+        y: 362
+        width: 576
+        height: 300
+        slices: 40 40 40 40
+
+        $camera = view [
+            background: icon_weebycam.png
+            x: 68
+            y: 95
+            width: 150
+            height: 121
+        ]
+
+        $cameraText = text [
+            text: takePhotoText
+            textAlign: center
+            font: 24px #000
+            x: 68
+            y: 223
+            width: 150
+            height: 30
+        ]
+
+        $divider = view [
+            background: #dae3ed
+            x: 286
+            y: 82
+            width: 4
+            height: 195
+        ]
+
+        $gallery = view [
+            background: icon_image.png
+            x: 354
+            y: 95
+            width: 150
+            height: 121
+        ]
+
+        $galleryText = text [
+            text: choosePhotoText
+            textAlign: center
+            font: 24px #000
+            x: 354
+            y: 223
+            width: 150
+            height: 30
+        ]
+    ]
+
+    $header = view [
+        background: frame_header_weebydefault.png 9slice
+        x: 3
+        y: 362
+        width: 568
+        height: 60
+        slices: 20 25 20 25
+
+        view [
+            background: icon_back.png
+            height: 45
+            width: 45
+            y: 7
+            x: 7
+        ]
+
+        $name = view [
+            text: changePhotoText
+            textAlign: center
+            font: 24px #000
+            x: 238
+            y: 0
+            width: 100
+            height: 50
+        ]
+        
+        $back = view [
+            x: 0
+            y: 0
+            size: 125x75
+        ]
+    ]
+]

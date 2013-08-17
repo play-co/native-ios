@@ -16,7 +16,9 @@
 #import <UIKit/UIKit.h>
 #import "TeaLeafViewController.h"
 #import "ServerTableViewController.h"
+#ifndef UNITY
 #import "AppTableViewController.h"
+#endif
 #import "PluginManager.h"
 #import "js_core.h"
 #import "OpenGLView.h"
@@ -40,8 +42,10 @@ struct SplashDescriptor {
 @property (nonatomic) BOOL tealeafShowing;
 @property (nonatomic) BOOL signalRestart;
 @property (nonatomic, retain) TeaLeafViewController *tealeafViewController;
+#ifndef UNITY
 @property (nonatomic, retain) ServerTableViewController *tableViewController;
 @property (nonatomic, retain) AppTableViewController *appTableViewController;
+#endif
 @property (nonatomic, retain) PluginManager *pluginManager;
 @property (nonatomic, retain) Reachability *reach;
 @property (nonatomic, retain) NSNetServiceBrowser *serviceBrowser;

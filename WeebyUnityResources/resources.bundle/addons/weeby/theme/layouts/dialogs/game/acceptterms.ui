@@ -1,0 +1,44 @@
+$dialog = view(dialog) [
+    y: 240
+
+   // grassy top
+        view [
+            x: -10
+            y: -50
+            background: header.png
+            size: 520x176
+            
+            canHandleEvents: false
+        ]
+	$closeButton = view [
+            x: 400
+            y: 40
+            size: 70x74
+            background: button_close.png
+            zIndex: 99
+		]
+
+    $text = view [
+        x: 50
+        y: 130
+        size: 400x90
+        font: #793D14 30px 7px
+        text: mustAcceptTerms
+        horizontalAlign: center
+        wrap: true
+    ]
+
+    $okButton = button(mainButton) [
+    	size: 310x110
+        x: 90
+        y: 260
+        
+        view [
+        	text: tosAcceptButton
+            size: 310x90
+            horizontalAlign: center
+            y: 7
+            font: 30px #FFF 8px #1F6A99
+        ]
+    ]
+]

@@ -1,0 +1,101 @@
+$background = view [
+    background: bkgd_leaderboard_dark.png cover
+    size: 576x1024
+]
+
+$verifying = view [
+
+    // background: frame_modal_new.9.png
+    margin: 90 10 27 12
+    size: 576x1024
+
+    // main content area
+    view [
+        x: 10
+        y: 120
+        background: frame_modaldefault.9.png 9slice
+        slices: 40 40 40 40
+        size: 560x650
+        padding: 1 5
+        margin: 15 22 100
+        clip: false
+
+        /// grassy top
+        view [
+            x: -10
+            y: -50
+            background: header.png
+            size: 582x197
+            zIndex: 10
+            canHandleEvents: false
+        ]
+
+        // SMS verification
+        view [
+            x: 50
+            y: 55
+            size: 460x40
+            font: #793D14 40px 
+            text: authProgressTitle
+            horizontalAlign: center
+        ]
+
+        $message = view [
+            x: 50
+            y: 300
+            size: 460x60
+            font: #FFFFFF 26px #000000 8px 
+            text: yes
+            horizontalAlign: center
+        ]
+
+		// Sending to
+        view [
+            x: 50
+            y: 120
+            size: 230x60
+            font: #793D16 28px 
+            text: authProgressDescription
+            horizontalAlign: left
+            wrap: true
+        ]
+        $number = view [
+            x: 280
+            y: 120
+            size: 230x60
+            font: #793D16 28px 
+            text: yes
+            horizontalAlign: right
+        ]
+        view [
+            x: 50
+            y: 170
+            size: 460x60
+            font: #793D16 26px 
+            text: authProgressNote
+            horizontalAlign: center
+            wrap: true
+        ]
+
+        $prompt = view [
+            x: 180
+            y: 240
+            size: 200x60
+            font: #000000 36px
+            background: #FFFFFF
+            prompt: enterCode
+        ]
+
+		view [
+            x: 190
+            y: 380
+            size: 200x200
+            background: char_happy.png
+        ]
+    ]
+
+    // the bottom bar
+    $tabBar [
+        align: bottom
+    ]
+]

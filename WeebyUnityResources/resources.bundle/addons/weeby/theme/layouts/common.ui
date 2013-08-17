@@ -1,0 +1,188 @@
+
+defaults = style [
+	font: 20px bpreplaybold
+]
+
+buttonBasic = style [
+    background: button_basic.png 9slice
+    slices: 55 55 55 55
+
+    state(pressed) [
+        background: button_basicdown.9.png
+    ]
+]
+
+buttonBack = style [
+    size: 73x77
+    background: button_back.png
+
+    state(pressed) [
+        background: button_back.png
+    ]
+]
+
+buttonAction = style [
+	background: authflow/action1up.png 9slice
+	slices: 12 20 12 20
+
+	state(pressed) [
+		background: authflow/action1down.png	
+	]
+]
+
+
+buttonActionDark = style [
+	background: authflow/action2up.png 9slice
+	slices: 20 19 20 21
+
+	state(pressed) [
+		background: authflow/action2down.png	
+	]
+]
+
+buttonAuthModal = style [
+	background: authflow/button_modal.png 9slice
+    slices: 3 3 3 3
+    
+    state(pressed) [
+    	background: authflow/button_modaldown.png
+    ]
+]
+
+textBoxAuth = style [
+	background: authflow/text.png 9slice
+    slices: 15 15 15 15
+    
+    state(focused) [
+    	background: authflow/textfocus.png
+    ]
+]
+
+countryPicker = style [
+    background: button_basic.png 9slice
+    slices: 40 40 38 38
+
+    state(pressed) [
+        background: button_basicdown.9.png
+    ]
+]
+
+buttonCheck = style [
+    background: button_checkno.png
+
+    state(pressed) [
+        background: button_checkno_down.png
+    ]
+
+    state(checked) [
+        background: button_checkyes.png
+    ]
+]
+
+buttonPrimary = style [
+	font: 24px bold #FFF 1px #0D6F0E;
+	padding: 5
+]
+
+buttonSecondary = style [
+	font: 24px bold #FFF 1px #0D6F0E;
+	padding: 5
+]
+
+mainTitle = style [
+    x: 140
+    y: 80
+    size: 100x20
+    font: #793D16 40px
+]
+
+mainButton = style [
+    x: 160
+    y: 760
+    size: 250x100
+    background: button_play.png
+
+    state(pressed) [
+        background: button_playpressed.png
+    ]
+]
+
+mainButtonText = style [
+	horizontalAlign: center
+    y: 17
+    size: 250x60
+	text: play
+	font: #FFF 40px 10px #3A66A6
+]
+
+brownButton = style [
+	x: 160
+    y: 760
+	size: 250x90
+    background: button_brown_medium_up.9.png 9slice
+	slices: 0 30 0 30
+
+    state(pressed) [
+		background: button_brown_medium_down.9.png 9slice
+		slices: 0 30 0 30
+    ]
+]
+
+greenButton = style [
+	x: 160
+    y: 760
+	size: 250x90
+    background: button_green_medium_up.9.png 9slice
+	slices: 0 30 0 30
+
+    state(pressed) [
+		background: button_green_medium_down.9.png 9slice
+		slices: 0 30 0 30
+    ]
+]
+
+actionButton = style [
+    x: 0
+    y: 0
+    size: 250x90
+    background: button_actionyesup.9.png 9slice
+    slices: 28 27 28 29
+    
+    state(pressed) [
+        background: button_actionyesdown.9.png 9slice
+        slices: 28 27 28 29
+    ]
+]
+
+actionButtonText = style [
+    horizontalAlign: center
+    y: 5
+    size: 250x60
+    text: play
+    font: #FFF 40px
+]
+
+dialog = style [
+    x: 40
+    y: 100
+    anchorX: 250
+    size: 500x400
+    background: frame_modaldefault.9.png 9slice
+    slices: 55 51 56 54
+    clip: false,
+    zIndex: 2000
+]
+
+dialogCloseButton = style(buttonBasic) [
+    size: 80x80
+    x: 390
+    y: 40
+]
+
+dialogCloseButtonContents = style [
+    background: icon_x.png
+    size: 50x55
+    x: 14
+    y: 8
+]
+

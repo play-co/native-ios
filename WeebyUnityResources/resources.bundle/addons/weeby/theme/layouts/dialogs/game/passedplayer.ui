@@ -1,0 +1,169 @@
+$background = view [
+    background: bkgd_leaderboard_dark.png cover
+    size: 576x1024
+    hasStatus: true
+]
+
+$dialog = view [
+
+    // background: frame_modal_new.9.png
+    margin: 90 10 27 12
+    size: 576x1024
+    zIndex: 3000
+
+    $radial = view [
+        x: 0
+        y: 0
+        size: 576x1024
+        background: bg_celebration.png
+    ]
+
+    // main content area
+    view [
+        x: 10
+        y: 120
+        size: 560x650
+        padding: 1 5
+        margin: 15 22 100
+        clip: false
+
+        view [
+            x: 30
+            y: 0
+            size: 500x117
+            background: banner.png
+            view [
+                x: 50
+                y: 5
+                size: 400x80
+                font: #FFFFFF 40px #0087D4 12px
+                text: rankUp
+                horizontalAlign: center
+            ]
+        ]
+ 
+
+        view [
+            x: 110
+            y: 200
+            size: 300x140
+            background: frame_score.9.png 9slice
+            slices: 40 40 40 40
+            
+            $user1 = view [
+                x: 90
+                y: 25
+                size: 180x40
+                font: #007EBD 32px 
+                text: yes
+                horizontalAlign: center
+                wrap: false
+            ]
+            $score1 = view [
+                x: 90
+                y: 65
+                size: 180x45
+                font: #000F70 40px 
+                text: yes
+                horizontalAlign: center
+            ]
+		]
+        view [
+            x: 30
+            y: 190
+            size: 160x160
+            background: frame_score.9.png 9slice
+            slices: 40 40 40 40
+            $icon1 = view [
+                x: 30
+                y: 30
+                size: 100x100
+                background: icon_pic.png
+            ]
+        ]
+		view [
+            x: 430
+            y: 210
+            size: 120x120
+            background: arrow_up.png
+            $rank1 = view [
+                x: 0
+                y: 0
+                size: 120x120
+                font: #FFFFFF 40px #000F70 8px
+                text: yes
+                horizontalAlign: center
+            ]
+        ]
+
+
+        view [
+            x: 150
+            y: 380
+            size: 300x140
+            background: frame_score.9.png 9slice
+            slices: 40 40 40 40
+            
+            $user2 = view [
+                x: 30
+                y: 25
+                size: 180x40
+                font: #007EBD 32px 
+                text: yes
+                horizontalAlign: center
+            ]
+            $score2 = view [
+                x: 30
+                y: 65
+                size: 180x45
+                font: #000F70 40px 
+                text: yes
+                horizontalAlign: center
+            ]
+		]
+        view [
+            x: 370
+            y: 370
+            size: 160x160
+            background: frame_score.9.png 9slice
+            slices: 40 40 40 40
+            $icon2 = view [
+                x: 30
+                y: 30
+                size: 100x100
+                background: icon_pic.png
+            ]
+        ]
+		view [
+            x: 30
+            y: 400
+            size: 120x120
+            background: arrow_down.png
+            $rank2 = view [
+                x: 0
+                y: 0
+                size: 120x120
+                font: #FFFFFF 40px #000F70 8px
+                text: yes
+                horizontalAlign: center
+            ]
+        ]
+
+        $closeButton = view(mainButton) [
+            x: 170
+            y: 580
+            size: 220x90
+            background: button_closecelebration.png
+
+            view [
+                x: 0
+                y: 0
+                size: 220x80
+                font: #FFFFFF 36px #008 8px 
+                text: close
+                horizontalAlign: center
+                wrap: true
+            ]
+		]		
+	]
+]

@@ -1,0 +1,638 @@
+$background = view [
+    background: bkgd_leaderboard_dark.png cover
+    size: 576x1024
+    hasStatus: true
+    hasProfileIcon: true
+    x: 0
+    y: 0
+]
+
+$ladder = view [
+    size: 576x1024
+    
+    // main content area
+    view [
+        x: 10
+        y: 120
+        background: frame_modaldefault.9.png 9slice
+        slices: 40 40 40 40
+        size: 560x650
+        clip: false
+        
+        // grassy top
+        view [
+            x: -10
+            y: -50
+            background: header.png
+            size: 582x197
+        ]
+        
+        // lifebar header
+        view [
+            x: 30
+            y: 50
+            size: 520x70
+            zIndex: 100
+        
+            view(heartFrame) [
+            	x: 10
+          		$heart0(heartIcon)
+        	]
+            
+            view(heartFrame) [
+            	x: 64
+                $heart1(heartIcon)
+            ]
+            view(heartFrame) [
+            	x: 118
+                $heart2(heartIcon)
+            ]
+            view(heartFrame) [
+            	x: 172
+                $heart3(heartIcon)
+            ]
+            view(heartFrame) [
+            	x: 226
+                $heart4(heartIcon)
+            ]
+            
+            $extraLives = view [
+                x: 285
+                y: 15
+                size: 80x45
+                horizontalAlign: left
+                verticalAlign: top
+                font: #f5dbb9 27px
+                text: lifebarFakeTimer
+            ]
+            
+            // the hearts life bar
+            $timeTillNextLife [
+                size: 130x46
+                x: 347
+                y: 9
+                background: frame_counter.9.png 9slice
+                slices: 0 25 0 25
+                clip: false
+                
+                $time = view [
+                    x: 30
+                    y: -4
+                    size: 80x45
+                    font: #f5dbb9 27px
+                    text: lifebarFakeTimer
+                ]
+                
+                $buyLivesButton = button(plusButton) [
+                    background: button_plus.png
+                    size: 60x60
+                    x: 87
+                    y: -7
+                ]
+            ]
+        ]
+
+		// darker ladder bg
+        view [
+            x: 42
+            y: 122
+            size: 476x401
+            background: #c26313
+        ]
+
+        // ladder rows
+        view [
+            x: 40
+            y: 120
+            size: 480x400
+            clip: true
+
+            $rows [
+                x: 10
+                y: 10
+                size: 470x390
+                clip: false
+            ]
+
+            $disabledOverlay [
+                x: 0
+                y: 0
+                size: 490x420
+                background: #000
+                opacity: 0.3
+            ]
+        ]
+
+		// ladder rows frame
+		view [
+        	x: 40
+            y: 120
+            size: 480x405
+            background: frame_innermodal_empty.9.png 9slice
+            slices: 26 26 26 26
+            canHandleEvents: false
+        ]
+
+        // ladder crosspromo
+        $ladderCrosspromo = view [
+            x: 50
+            y: 127
+            size: 460x387
+            background: frame_list.9.png 9slice
+        	slices: 15 15 15 15
+            visible: false
+
+            $messageFullCrosspromo = view [
+                x: 20
+                y: 20
+                size: 420x40
+                font: #915032 30px
+                text: installGame
+                horizontalAlign: center
+                verticalAlign: top
+            ]
+
+            $charFullCrosspromo = view [
+                x: 50
+                y: 220
+                flipX: true
+                size: 130x130
+                background: char_happy.png
+            ]
+
+            $gameIconFullCrosspromo = view [
+                x: 250
+                y: 220
+                size: 130x130
+                background: icon_common.png
+            ]
+
+            $installButtonFullCrosspromo = view [
+                x: 40
+                y: 80
+                size: 380x80
+                background: button_xpromo.png 9slice
+              	slices: 30 30 30 30
+
+                $rewardIconLeft = view [
+                    x: 20
+                    y: 5
+                    flipX: true
+                    size: 56x60
+                    background: icon_premium.png
+                ]
+
+                $rewardIconRight = view [
+                    x: 305
+                    y: 5
+                    size: 56x60
+                    background: icon_premium.png
+                ]
+
+                $rewardAmountFullCrosspromo = view [
+                    x: 80
+                    y: 23
+                    size: 220x40
+                    font: #FFF 24px 7px #007099
+        			text: getPremiumReward
+                    horizontalAlign: center
+                    verticalAlign: top
+                ]
+            ]
+        ]
+
+        // the ladder footer
+        view [
+            size: 470x100
+            x: 40
+            y: 525
+
+            $giftsButton =button (footerButtonInbox) [
+
+            ]
+    
+            $giftNotifications [
+                background: frame_notification.png
+                size: 50x50
+                x: 53
+                y: -7
+                $giftCount [
+                    x: 5
+                    y: 2
+                    size: 40x40
+                    text: inboxCountDefaultText
+                    font: 20px #FFF Helvetica
+                    autoFontSize: true
+                    horizontalAlign: center
+                ]
+            ]
+    
+            $resetCountdown [
+                background: frame_innermodal.9.png 9slice
+                slices: 28 27 28 29
+                x: 107
+                y: 30
+                size: 260x48
+                
+                view [
+                    horizontalAlign: center
+                    size: 240x48
+                ]
+                view [
+                    x: 20
+                    y: 4
+                    size: 68x30
+                    font: #F8FF91 22px
+                    text: reset
+                ]
+                $day = view [
+                    x: 92
+                    y: 4
+                    size: 20x30
+                    font: #FFFFFF 22px
+                    text: 0
+                    horizontalAlign: right
+                ]
+                view [
+                    x: 116
+                    y: 4
+                    size: 20x30
+                    font: #F8FF91 22px
+                    text: d
+                ]
+                $hour = view [
+                    x: 128
+                    y: 4
+                    size: 32x30
+                    font: #FFFFFF 22px
+                    text: 0
+                    horizontalAlign: right
+                ]
+                view [
+                    x: 163
+                    y: 4
+                    size: 20x30
+                    font: #F8FF91 22px
+                    text: h
+                ]
+                $min = view [
+                    x: 175
+                    y: 4
+                    size: 32x30
+                    font: #FFFFFF 22px
+                    text: 0
+                    horizontalAlign: right
+                ]
+                view [
+                    x: 210
+                    y: 4
+                    size: 20x30
+                    font: #F8FF91 22px
+                    text: m
+                ]
+            ]
+    
+            $settingsButton = button(footerButtonSettings) [
+                x: 380
+            ]
+        ]
+
+    ]
+    
+    $loginUpsell [
+        y: 300
+        size: 576x364
+        // the login character
+        loginCharacter = image [
+            x: 0
+            y: 10
+            background: char_tutorial.png
+            size: 194x211
+        ]
+        view [
+            x: 200
+            y: 30
+            width: 300
+            height: 300
+            
+            background: framespeech_left.9.png 9slice
+            slices: 55 15 13 41
+            
+            upsellText = view [
+            x: 50
+            y: 15
+            size: 230x180
+            horizontalAlign: center
+            font: #000 28px
+            text: leaderboardLogin
+            wrap: true
+        ]
+          
+          $loginButton [
+            background: button_play.png
+            x: 60
+            y: 180
+            size: 200x90
+            view [
+            x: 12
+            y: 20
+            size: 180x40
+            text: leaderboardLoginButton
+            font: #FFF 40px 8px #000
+            horizontalAlign: center
+          ]
+            ]
+              ]
+    ]
+
+    $playButton = button(mainButton) [
+        view(mainButtonText)
+    ]
+]
+
+footerButtonInbox = style [
+    width: 95
+    height: 95
+    background: button_inbox.png
+    state(pressed)[
+    	background: button_inbox_down.png
+    ]
+]
+
+footerButtonSettings = style [
+    width: 95
+    height: 95
+    background: button_settings.png
+    state(pressed)[
+    	background: button_settings_down.png
+    ]
+]
+
+footerButtonIcon = style [
+    x: 19
+    y: 22
+    size: 56x50
+    centerVertical: true
+    centerHorizontal: true
+]
+
+$iosSettings = view [
+	size: 460x200
+    
+    view [
+      	x: 22
+        y: 10
+        size: 420x40
+        font: #000 32px 1px #FFF
+        horizontalAlign: center
+        autoFontSize: true
+        text: findFriends
+    ]
+
+    $description = text [
+        y: 64
+        x: 50
+        size: 360x50
+        visible: true
+        wrap: true
+        verticalAlign: top
+        horizontalAlign: center
+        
+        font: #FFF 20px 4px #000
+        text: iosMustEnableContacts
+    ]
+]
+
+$iosSyncContacts = view [
+	size: 460x96
+    
+    view [
+      	x: 22
+        y: 3
+        size: 420x40
+        font: #000 32px 1px #FFF
+        horizontalAlign: center
+        autoFontSize: true
+        text: findFriends
+    ]
+
+    $description = text [
+        y: 44
+        x: 50
+        size: 360x50
+        visible: true
+        wrap: true
+        verticalAlign: top
+        horizontalAlign: center
+        
+        font: #FFF 20px 4px #000
+        text: syncContacts
+    ]
+]
+
+$crosspromoRow = view [
+	size: 460x96
+    
+    view [
+        size: 460x94
+        background: button_xpromo.png 9slice
+        slices: 30 30 30 30
+    ]
+    
+    $gameIcon = view [
+        x: 36
+        y: 17
+        horizontalAlign: center
+        size: 50x54
+        background: icon_common.png
+    ]
+    
+    $rowTitle = view [
+      	x: 90
+        y: 10
+        size: 240x30
+       	font: #FFF 24px 7px #007099
+        horizontalAlign: center
+        autoFontSize: true
+        text: crosspromoRowTitle
+    ]
+
+    $gameTitle = text [
+        x: 90
+        y: 40
+        size: 240x30
+       	visible: true
+        wrap: true
+        verticalAlign: top
+        horizontalAlign: center
+        
+        font: #FFF 32px 7px #007099
+        text: crosspromoMessage
+    ]
+    
+    $rewardIcon = view [
+        x: 340
+        y: 17
+        horizontalAlign: center
+        background: icon_premium.png
+        size: 50x54
+        spacing: -6
+    ]
+    
+    $rewardAmount = view [
+        x: 390
+        y: 14
+        horizontalAlign: center
+        size: 50x54
+        font: #FFF 30px 7px #007099
+        text: -99
+    ]
+]
+
+
+
+$row = view [
+
+    size: 460x96
+    
+    view [
+        size: 460x94
+        background: frame_list.9.png 9slice
+        slices: 15 15 15 15
+    ]
+    
+    rankWrapper = view [
+        $rank = score [
+            x: 16
+            y: 20
+            horizontalAlign: center
+            size: 50x54
+            spacing: -6
+        ]
+        
+        $rankImage = image(rankImages)
+    ]
+
+    $icon [
+        x: 90
+        y: 16
+        size: 65x65
+    ]
+    
+    view [
+        x:89
+        y:12
+        background:profile_border.png
+        size: 70x70
+    ]
+
+    $nickname [
+        y: 13
+        x: 170
+        size: 190x22
+        font: #b3775b 20px 0px
+        horizontalAlign: left
+        autoFontSize: true
+    ]
+
+    $score = score [
+        x: 170
+        y: 43
+        size: 180x40
+        horizontalAlign: left
+        spacing: -6
+    ]
+
+    $iconSent = view [
+        x: 380
+        y: 10
+        size: 70x70
+        background: icon_lifegot.png
+        visible: true
+    ]
+
+	// button click area
+    $sendHeartButton = button [
+    	size: 100x100
+        x: 363
+        y: 0
+        
+    	// button background
+    	view (buttonBasic, sendHeartButton) [
+        	// button icon
+            $sendHeartIcon(sendHeartButtonIcon)
+        ]
+    ]
+]
+
+// and some styles:
+
+rankImages = style [
+
+    x: 15
+    y: 10
+    width: 65
+    height: 65
+
+    state(rank1) [
+        background: icon_medal1.png
+    ]
+
+    state(rank2) [
+        background: icon_medal2.png
+    ]
+
+    state(rank3) [
+        background: icon_medal3.png
+    ]
+]
+
+heartFrame = style [
+    y: 9,
+    width: 50
+    height: 45
+    background: frame_life.png
+]
+
+heartIcon = style [
+    width: 52
+    height: 47
+    background: icon_life.png
+]
+
+sendHeartButton = style [
+    visible: true
+    size: 80x80
+    x: 10
+    y: 7
+    
+    centerVertical: true
+    centerHorizontal: true
+
+    state(enabled) [
+        visible: true
+    ]
+    state(sent) [
+        visible: false
+    ]
+]
+
+sendHeartButtonIcon = style [
+    size: 75x70
+    x: 8
+    y: 8
+    
+    background: icon_sendlife.png
+]
+plusButton = style [
+	background: button_plus.png
+    state(pressed)[
+    	background: button_plus_down.png
+    ]
+]
+footerbutton=style[
+	background: button_inbox.png
+   	state(pressed)[
+    	background: button_inbox_down.png 
+    ]
+]

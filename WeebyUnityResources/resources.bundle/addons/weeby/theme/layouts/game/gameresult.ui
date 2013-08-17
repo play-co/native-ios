@@ -1,0 +1,143 @@
+$background = view [
+    background: bkgd_leaderboard_dark.png cover
+    size: 576x1024
+    hasStatus: true
+    hasProfileIcon: true
+]
+
+$gameResult = view [
+
+    // background: frame_modal_new.9.png
+    margin: 90 10 27 12
+    size: 576x1024
+
+    // main content area
+    $mainContent = view [
+        x: 10
+        y: 120
+        background: frame_modaldefault.9.png 9slice
+        slices: 40 40 40 40
+        size: 560x650
+        padding: 1 5
+        margin: 15 22 100
+        clip: false
+
+        // grassy top
+        view [
+            x: -10
+            y: -50
+            background: header.png
+            size: 582x197
+            zIndex: 10
+            canHandleEvents: false
+        ]
+
+		$close = view [
+            x: 450
+            y: 50
+            size: 70x74
+            background: button_close.png
+            zIndex: 99
+        ]
+
+		// Best score
+       	$bestScore = view [
+            x: 50
+            y: 120
+            size: 460x40
+            font: #FBF037 28px #8D5A3D 6px
+            text: yes
+            horizontalAlign: center
+        ]
+		// Score
+        $score = score [
+            x: 50
+            y: 167
+            size: 460x70
+            text: yes
+            horizontalAlign: center
+        ]
+		// Score bonus
+       	$scoreBonus = view [
+            x: 50
+            y: 240
+            size: 460x40
+            font: #793D16 28px
+            text: yes
+            horizontalAlign: center
+        ]
+
+        $currencyFrame = view [
+            x: 40
+            y: 340
+            size: 225x240
+            background: frame_innermodal.9.png 9slice
+            slices: 28 27 28 29
+
+            $commonIcon = view [
+                x: 20
+                y: 4
+                size: 56x60
+                background: icon_common.png
+            ]
+            $commonText = view [
+                x: 70
+                y: 18
+                size: 100x40
+                font: #FFEE99 36px
+                text: yes
+                horizontalAlign: right
+                verticalAlign: top
+            ]
+
+            $premiumIcon = view [
+                x: 20
+                y: 68
+                size: 56x60
+                background: icon_premium.png
+            ]			
+            $premiumText = view [
+                x: 70
+                y: 78
+                size: 100x40
+                font: #FFEE99 36px
+                text: yes
+                horizontalAlign: right
+                verticalAlign: top
+            ]
+
+            $xpIcon = view [
+                x: 20
+                y: 80
+                size: 56x60
+                background: icon_xp.png
+            ]			
+            $xpText = view [
+                x: 70
+                y: 78
+                size: 100x40
+                font: #FFEE99 36px
+                text: yes
+                horizontalAlign: right
+             	verticalAlign: top
+                backgroundCo
+            ]	
+        ]
+
+       	view [
+            x: 280
+            y: 310
+            size: 245x231
+            background: char_happy.png
+        ]
+	]
+
+	$playButton = button(mainButton) [
+        view(mainButtonText)
+    ]
+
+    // the bottom bar
+    $tabBar [
+        align: bottom
+    ]
+]

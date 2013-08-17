@@ -1,0 +1,234 @@
+$background = view [
+    background: bkgd_leaderboard_dark.png cover
+    size: 576x1024
+    hasStatus: true
+    hasProfileIcon: true
+]
+
+$crosspromo = view [
+
+    // background: frame_modal_new.9.png
+    margin: 90 10 27 12
+    size: 576x1024
+
+    // main content area
+    $mainContent = view [
+        x: 10
+        y: 120
+        background: frame_modaldefault.9.png 9slice
+        slices: 40 40 40 40
+        size: 560x650
+        padding: 1 5
+        margin: 15 22 100
+        clip: false
+
+        // grassy top
+        view [
+            x: -10
+            y: -50
+            background: header.png
+            size: 582x197
+            zIndex: 10
+            canHandleEvents: false
+        ]
+
+		$close = view [
+            x: 450
+            y: 50
+            size: 70x74
+            background: button_close.png
+            zIndex: 99
+        ]
+
+		// Title
+        view [
+            x: 30
+            y: 60
+            size: 460x40
+            font: #6C3F1C 34px
+            text: newReward
+            horizontalAlign: center
+        ]
+        
+        // char
+        view [
+            x: 60
+            y: 120
+            size: 120x112
+            background: char_happy_right.png
+        ]
+        
+		// bubble
+       	view [
+            x: 180
+            y: 110
+            size: 280x110
+            background: frame_speech.png
+            horizontalAlign: center
+        ]
+        
+        // bubble text
+       	view [
+            x: 235
+            y: 110
+            size: 190x110
+            font: #5F1C17 20px
+            text: newGame
+            horizontalAlign: center
+            wrap: true
+        ]
+        
+        // inset
+		view [
+            x: 45
+            y: 250
+            size: 465x250
+            background: frame_innermodal.9.png 9slice
+            slices: 28 27 28 29
+
+            $message = view [
+                x: 20
+                y: 20
+                size: 420x40
+                font: #FFEE99 30px
+                text: crossPromoMessage
+                horizontalAlign: center
+                verticalAlign: top
+            ]
+			
+            $gameIcon = view [
+                x: 30
+                y: 80
+                size: 130x130
+                background: icon_common.png
+            ]
+            
+            $installButton = button(actionButton) [
+            	
+                x: 190
+                y: 95
+                size: 240x80
+                $installButtonText = button(actionButtonText) [
+                	text: install
+                ]
+            ]
+            
+            
+            
+            $rewardPrefix = view [
+                x: 190
+                y: 185
+                size: 100x40
+                font: #FFEE99 26px
+                text: crossPromoRewardPrefix
+                horizontalAlign: right
+                verticalAlign: top
+            ]
+            
+            $rewardIcon = view [
+                x: 300
+                y: 168
+                size: 56x60
+                background: icon_premium.png
+            ]			
+            
+		
+            $rewardAmount = view [
+                x: 300
+                y: 185
+                size: 100x40
+                font: #FFEE99 26px
+                text: 10
+                horizontalAlign: right
+             	verticalAlign: top
+            ]	
+        ]
+        
+        // friends playing
+       	$friendsPlaying = view [
+            x: 50
+            y: 510
+            size: 460x100
+            font: #6C3F1C 24px #F2E774 1px
+            text: friendsPlaying
+            horizontalAlign: center
+            verticalAlign: top
+            
+            $profile1 = view [
+                x: 15
+                y: 35
+                size: 64x64
+                background: icon_pic_rounded.png
+                
+                $friend1 = view [
+                    x: -3
+                    y: -3
+                    size: 70x70
+                    background: frame_profilepic.png
+        		]
+            ]
+            
+            $profile2 = view [
+                x: 105
+                y: 35
+                size: 64x64
+                background: icon_pic_rounded.png
+                
+                $friend2 = view [
+                    x: -3
+                    y: -3
+                    size: 70x70
+                    background: frame_profilepic.png
+        		]
+            ]
+            
+            $profile3 = view [
+                x: 195
+                y: 35
+                size: 64x64
+                background: icon_pic_rounded.png
+                
+                $friend3 = view [
+                    x: -3
+                    y: -3
+                    size: 70x70
+                    background: frame_profilepic.png
+        		]
+            ]
+            
+            $profile4 = view [
+                x: 285
+                y: 35
+                size: 64x64
+                background: icon_pic_rounded.png
+                
+                $friend4 = view [
+                    x: -3
+                    y: -3
+                    size: 70x70
+                    background: frame_profilepic.png
+        		]
+            ]
+            
+            $profile5 = view [
+                x: 375
+                y: 35
+                size: 64x64
+                background: icon_pic_rounded.png
+                
+                $friend5 = view [
+                    x: -3
+                    y: -3
+                    size: 70x70
+                    background: frame_profilepic.png
+        		]
+            ]
+            
+        ]
+	]
+
+    // the bottom bar
+    $tabBar [
+        align: bottom
+    ]
+]
