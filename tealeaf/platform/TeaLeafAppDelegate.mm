@@ -208,6 +208,14 @@
 - (void) postPauseEvent:(BOOL) isPaused {
 	NSString* evt = isPaused ? @"{\"name\":\"pause\"}" : @"{\"name\":\"resume\"}";
 	core_dispatch_event([evt UTF8String]);
+
+	if (self.pluginManager) {
+		if (isPaused) {
+			[self.pluginManager onPause];
+		} else {
+			[self.pluginManager onResume];
+		}
+	}
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -241,7 +249,7 @@
 	if (js_ready) {
 		[self postPauseEvent:self.wasPaused];
 	}
-	
+
 	LOG("{focus} Lost focus");
 }
 
@@ -257,7 +265,7 @@
 	if (self.pluginManager) {
 		[self.pluginManager applicationDidBecomeActive:application];
 	}
-	
+
 	LOG("{focus} Gained focus");
 }
 
