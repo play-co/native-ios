@@ -22,6 +22,7 @@ var fs = require('fs');
 var plist = require('plist');
 
 var logger;
+var rsyncLogger;
 
 
 //// Addons
@@ -386,25 +387,109 @@ var installAddonsProject = function(builder, opts, next) {
 			}
 		}
 
+		// groups will store one array per plugin containing the filenames for the plugin
+		var groups = {};
+
+		// codes will store a map between filenames and uuids that we should inject later
 		var codes = {};
 
+		// build the groups object from addonConfig
 		for (var key in addonConfig) {
 			var config = addonConfig[key];
 
 			if (config.code) {
+				var files = [];
 				for (var ii = 0; ii < config.code.length; ++ii) {
 					var code = config.code[ii];
 
 					code = paths.addons(key, 'ios', code);
 
 					var file = path.relative(path.join(destDir, "tealeaf/platform"), code);
+					files.push(file);
+				}
 
-					codes[file] = 1;
+				if (files.length) {
+					groups[key] = files;
 				}
 			}
 		}
 
+		// Find the UUID for plugin manager (it's in the plugins group, which
+		// is where we want to inject our new groups)
+		var pluginManagerUUID;
+		for (var ii = 0; ii < contents.length; ++ii) {
+			var line = contents[ii];
+
+			if (line.indexOf("path = PluginManager.mm") > 0) {
+				pluginManagerUUID = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
+				break;
+			}
+		}
+
+		if (!pluginManagerUUID) { throw new Error("Couldn't find PluginManager.mm for injection: looking for string 'path = PluginManager.mm'"); }
+
+		// find the group that contains PluginManager.mm UUID and create more groups above it
+		for (var ii = 0; ii < contents.length; ++ii) {
+			var line = contents[ii];
+			if (line.indexOf(pluginManagerUUID) > 0 && line.indexOf("PBXFileReference") == -1 && line.indexOf("PBXBuildFile") == -1) {
+				// we found the plugin group at line ii
+				break;
+			}
+		}
+
+		// line number where we insert the group ref in the parent group
+		// (add one since we want to insert *after* the reference to PluginManager.mm)
+		var insertGroupRefsAt = ii + 1;
+		
+		// search in reverse to get to the start of the plugins group
+		while (--ii) {
+			if (/(?=[ \t]*)([A-F,0-9]+?)\s+.*?=\s+\{/g.test(contents[ii])) {
+				logger.log(" - Found PBXGroup for PluginManager.mm");
+				break;
+			}
+		}
+
+		if (!ii) { throw new Error("Couldn't find a group containing PluginManager.mm"); }
+
+		// insert groups for each plugin
 		var codeId = 1;
+		Object.keys(groups).forEach(function (groupName, index) {
+			var groupUUID = "BAAFBEFF"
+							+ String('00000000' + index.toString(16).toUpperCase()).slice(-8)
+							+ "DEAFDEED";
+
+			// insert the group definition
+			contents.splice(ii++, 0, "\t\t" + groupUUID + " /* " + groupName + " */ = {\n"
+					+ "\t\t\tisa = PBXGroup;\n"
+					+ "\t\t\tchildren = (\n"
+						+ groups[groupName].map(function (filename) {
+							var basename = path.basename(filename);
+
+							// store UUIDs for insertion later
+							codes[filename] = {
+								uuid1: "BAAFBEEF"
+										+ String('00000000' + codeId.toString(16).toUpperCase()).slice(-8)
+										+ "DEAFDEED",
+								uuid2: "DEAFD00D"
+										+ String('00000000' + codeId.toString(16).toUpperCase()).slice(-8)
+										+ "BAAFFEED"
+							};
+
+							++codeId; // each file must have a unique ID
+							return "\t\t\t\t" + codes[filename].uuid1 + " /* " + basename + " */,";
+						}).join("\n") + "\n"
+					+ "\t\t\t);\n"
+					+ "\t\t\tname = " + groupName + ";\n"
+					+ "\t\t\tsourceTree = \"<group>\";\n"
+					+ "\t\t};");
+
+			// insert a reference to the group definition in the plugin group
+			++insertGroupRefsAt; // we inserted the full group definition above, so add 1
+			contents.splice(insertGroupRefsAt, 0, "\t\t\t\t" + groupUUID + " /* " + groupName + " */,");
+			++insertGroupRefsAt; // next group ref should be inserted on the line below this one
+
+			logger.log(" - Injected PBXGroup for " + groupName);
+		});
 
 		for (var code in codes) {
 			logger.log("Installing code:", code);
@@ -427,17 +512,10 @@ var installAddonsProject = function(builder, opts, next) {
 				throw new Error("Unsupported file type: " + code);
 			}
 
-			var filename = "code" + codeId + "_" + path.basename(code);
+			var filename = path.basename(code);
 
-			var uuid1 = "BAAFBEEF";
-			uuid1 += String('00000000' + codeId.toString(16).toUpperCase()).slice(-8);
-			uuid1 += "DEAFDEED"; // Unique from TTF installer
-
-			var uuid2 = "DEAFD00D";
-			uuid2 += String('00000000' + codeId.toString(16).toUpperCase()).slice(-8);
-			uuid2 += "BAAFFEED";
-
-			++codeId;
+			var uuid1 = codes[code].uuid1;
+			var uuid2 = codes[code].uuid2;
 
 			// Read out UUID for plugin manager
 			var uuid1_pm, uuid2_pm;
@@ -449,23 +527,17 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf("path = PluginManager.mm") > 0) {
 					uuid1_pm = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = " + fileType + "; path = \"" + code + "\"; sourceTree = \"<group>\"; };");
+					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = "
+						+ "{"
+							+ "isa = PBXFileReference;"
+							+ " fileEncoding = 4;"
+							+ " lastKnownFileType = " + fileType + ";"
+							+ " path = \"" + code + "\";"
+							+ " name = \"" + filename + "\";"
+							+ " sourceTree = \"<group>\";"
+						+ " };");
 
 					logger.log(" - Found PBXFileReference template on line", ii, "with uuid", uuid1_pm);
-
-					break;
-				}
-			}
-
-			// Inject reference to PBXFileReference
-			for (var ii = 0; ii < contents.length; ++ii) {
-				var line = contents[ii];
-
-				// If line has the storekit UUID,
-				if (line.indexOf(uuid1_pm) > 0 && line.indexOf("PBXFileReference") == -1 && line.indexOf("PBXBuildFile") == -1) {
-					contents.splice(++ii, 0, "\t\t\t" + uuid1 + " /* " + filename + " */,");
-
-					logger.log(" - Found PBXFileReference reference template on line", ii);
 
 					break;
 				}
@@ -977,23 +1049,49 @@ function copySplash(builder, manifest, destPath, next) {
 	}
 }
 
-function copyDir(srcPath, destPath, name) {
-	wrench.copyDirSyncRecursive(path.join(srcPath, name), path.join(destPath, name));
-	logger.log('copied', name, 'to', destPath);
+function copyIfChanged() {
+
 }
 
-function copyIOSProjectDir(srcPath, destPath, next) {
+function copyDir(srcPath, destPath, name, cb) {
+	var exec = require('child_process').exec;
+
+	// rsync requires trailing slashes
+	var srcDir = path.join(srcPath, name) + path.sep;
+	var destDir = path.join(destPath, name) + path.sep;
+
+	// -r: recursive
+	// -t: copy modified times (required for copying diff only)
+	// -p: copy permissions
+	// -l: copy symlinks rather than following them
+	rsyncLogger.log('rsync -r --delete -t -p -l ' + srcDir + ' ' + destDir);
+	exec('rsync -v -r --delete -t -p -l ' + srcDir + ' ' + destDir, function (err, stdout, stderr) {
+		if (err) {
+			rsyncLogger.log(stderr);
+			wrench.copyDirSyncRecursive(srcDir, destDir);
+			logger.log('(wrench) copied', name, 'to', destPath);
+			cb();
+		} else {
+			rsyncLogger.log(stdout);
+			logger.log('(rsync) copied', name, 'to', destPath);
+			cb();
+		}
+	});
+}
+
+function copyIOSProjectDir(srcPath, destPath, cb) {
 	logger.log('copying', srcPath, 'to', destPath);
+	
 	var parent = path.dirname(destPath);
 	if (!fs.existsSync(parent)) {
 		fs.mkdirSync(parent);
 	}
+	
 	if (!fs.existsSync(destPath)) {
 		fs.mkdirSync(destPath);
 	}
-	copyDir(srcPath, destPath, 'tealeaf');
 
-	next();
+	copyDir(srcPath, destPath, 'tealeaf', cb);
 }
 
 function getIOSHash(git, next) {
@@ -1137,6 +1235,7 @@ function makeIOSProject(builder, opts, next) {
 
 exports.build = function(builder, project, opts, next) {
 	logger = new builder.common.Formatter("native-ios");
+	rsyncLogger = new builder.common.Formatter("rsync");
 
 	var manifest = project.manifest;
 	var argv = opts.argv;
@@ -1159,7 +1258,7 @@ exports.build = function(builder, project, opts, next) {
 			developer = manifest.ios && manifest.ios.developer;
 		}
 		if (typeof developer !== "string") {
-			logger.error("IPA mode selected but developer name was not provided.  You can add it to your config.json under the ios:developer key, or with the --developer command-line option.");
+			logger.error("IPA mode selected but developer name was not provided.  You can add it to your manifest.json under the ios:developer key, or with the --developer command-line option.");
 			process.exit(2);
 		}
 		logger.log("Using developer name:", developer);
@@ -1169,7 +1268,7 @@ exports.build = function(builder, project, opts, next) {
 			provision = manifest.ios && manifest.ios.provision;
 		}
 		if (typeof provision !== "string") {
-			logger.error("IPA mode selected but .mobileprovision file was not provided.  You can add it to your config.json under the ios:provision key, or with the --provision command-line option.");
+			logger.error("IPA mode selected but .mobileprovision file was not provided.  You can add it to your manifest.json under the ios:provision key, or with the --provision command-line option.");
 			process.exit(2);
 		}
 		logger.log("Using provision file:", provision);

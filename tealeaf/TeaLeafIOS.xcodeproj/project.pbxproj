@@ -856,6 +856,15 @@
 			name = JSONKit;
 			sourceTree = "<group>";
 		};
+		5B73EB6917C2FAA90017077E /* plugins */ = {
+			isa = PBXGroup;
+			children = (
+				36E6F37A16C45FB50016CD1A /* PluginManager.h */,
+				36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
+			);
+			name = plugins;
+			sourceTree = "<group>";
+		};
 		D551A72F178E4EA30028DACC /* curl */ = {
 			isa = PBXGroup;
 			children = (
@@ -1130,6 +1139,7 @@
 		D55821D1150E7C7600549BF6 /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				5B73EB6917C2FAA90017077E /* plugins */,
 				5B5EBDA517BAE89400C4DD0A /* InputUtils.h */,
 				5B5EBDA617BAE89400C4DD0A /* InputUtils.mm */,
 				5B5EBD9E17BAE50F00C4DD0A /* InputAccessory.h */,
@@ -1138,8 +1148,6 @@
 				5B5EBDA217BAE62000C4DD0A /* InputPrompt.mm */,
 				37EEF09A173485A30017511A /* ResumeInfo.h */,
 				37EEF09B173485A30017511A /* ResumeInfo.mm */,
-				36E6F37A16C45FB50016CD1A /* PluginManager.h */,
-				36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
 				4E6B37FE16C0F90B006AC8FD /* threads.mm */,
 				D56C7E20157EE5C100DB8BDA /* OpenGLView.h */,
 				D56C7E21157EE5C100DB8BDA /* OpenGLView.mm */,
