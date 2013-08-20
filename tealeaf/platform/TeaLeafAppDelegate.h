@@ -82,7 +82,6 @@ struct SplashDescriptor {
 // Called when JavaScript engine is ready from another thread
 - (void) setJSReady:(bool)isReady;
 - (BOOL) getJSReady;
-- (void) onJSReady;
 - (void) restartJS;
 
 // JavaScript event generators

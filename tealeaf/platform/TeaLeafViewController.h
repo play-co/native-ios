@@ -19,7 +19,7 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
-@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate> {
+@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate> {
 @private
 int callback;
 UITextField *inputAccTextField;
@@ -34,7 +34,6 @@ UITextField *inputAccTextField;
 
 - (TeaLeafViewController *) init;
 
-- (void) pickContact:(int)cb;
 - (void) sendSMSTo:(NSString *)number withMessage:(NSString *)message andCallback:(int)callback;
 - (void) messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result;
 - (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex;
@@ -43,7 +42,6 @@ UITextField *inputAccTextField;
 
 - (void) assignCallback:(int)cb;
 - (void) runCallback:(char *)arg;
-- (void) destroyDisplayLink;
 
 - (void)showImagePickerForCamera: (NSString *) url;
 - (void)showImagePickerForPhotoPicker: (NSString *) url;
