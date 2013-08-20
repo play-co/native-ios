@@ -755,6 +755,15 @@
 			name = JSONKit;
 			sourceTree = "<group>";
 		};
+		5B73EB6917C2FAA90017077E /* plugins */ = {
+			isa = PBXGroup;
+			children = (
+					36E6F37A16C45FB50016CD1A /* PluginManager.h */,
+					36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
+					);
+			name = plugins;
+			sourceTree = "<group>";
+		};
 		D55820B0150E7C7500549BF6 /* core */ = {
 			isa = PBXGroup;
 			children = (
@@ -959,8 +968,7 @@
 			children = (
 				37EEF09A173485A30017511A /* ResumeInfo.h */,
 				37EEF09B173485A30017511A /* ResumeInfo.mm */,
-				36E6F37A16C45FB50016CD1A /* PluginManager.h */,
-				36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
+				5B73EB6917C2FAA90017077E /* plugins */,
 				4E6B37FE16C0F90B006AC8FD /* threads.mm */,
 				D56C7E20157EE5C100DB8BDA /* OpenGLView.h */,
 				D56C7E21157EE5C100DB8BDA /* OpenGLView.mm */,
