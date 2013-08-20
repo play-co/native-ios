@@ -484,7 +484,14 @@ CEXPORT void device_hide_splash() {
     NSDictionary *userInfo = [info userInfo];
     CGRect rawKeyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect properlyRotatedCoords = [self.view.window convertRect:rawKeyboardRect toView:self.view];
-    CGSize size = self.view.frame.size;
+    CGFloat scale = self.view.contentScaleFactor;
+    properlyRotatedCoords.origin.x *= scale;
+    properlyRotatedCoords.origin.y *= scale;
+    properlyRotatedCoords.size.width *= scale;
+    properlyRotatedCoords.size.height *= scale;
+
+    // TODO: might need this if the status bar is visible to compute the y-offset?
+    // CGSize size = self.view.frame.size;
 
 	JSContext* cx = [[js_core lastJS] cx];
 	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
