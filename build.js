@@ -1329,7 +1329,7 @@ exports.build = function(builder, project, opts, next) {
 			}, f());
 		}
 	}, function() {
-		require(builder.common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
+		require(builder.common.paths.nativeBuild('native')).writeNativeResources(builder, project, opts, f());
 	}, function() {
 		copyIcons(builder, manifest.ios.icons, destPath);
 		copyFonts(builder, manifest.ttf, destPath);
@@ -1345,24 +1345,28 @@ exports.build = function(builder, project, opts, next) {
 			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.shortName, false, provision, developer, manifest.shortName+'.ipa', f());
 		}
 	}, function() {
-		if (argv.ipa) {
-			logger.log('Done with compilation.  The output .ipa file has been placed at', manifest.shortName+'.ipa');
+		if (argv['js-only']) {
+			logger.log('Done with compilation.  The output files are at:', destPath);
+			f(destPath);
 		} else {
-			var projPath = path.join(destPath, 'tealeaf/TeaLeafIOS.xcodeproj');
+			if (argv.ipa) {
+				logger.log('Done with compilation.  The output .ipa file has been placed at:', manifest.shortName+'.ipa');
+			} else {
+				var projPath = path.join(destPath, 'tealeaf/TeaLeafIOS.xcodeproj');
 
-			logger.log('Done with compilation.  The XCode project has been placed at', projPath);
+				logger.log('Done with compilation.  The XCode project has been placed at', projPath);
 
-			// Launch XCode if requested
-			if (argv.open) {
-				logger.log('Open: Launching XCode project...');
+				// Launch XCode if requested
+				if (argv.open) {
+					logger.log('Open: Launching XCode project...');
 
-				require('child_process').exec('open "' + projPath + '"');
+					require('child_process').exec('open "' + projPath + '"');
+				}
 			}
 		}
-		process.exit(0);
 	}).error(function(err) {
 		logger.error("Error during build process:", err, err.stack);
 		process.exit(2);
-	});
+	}).next(next);
 }
 
