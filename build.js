@@ -1331,9 +1331,17 @@ exports.build = function(builder, project, opts, next) {
 	}, function() {
 		require(builder.common.paths.nativeBuild('native')).writeNativeResources(builder, project, opts, f());
 	}, function() {
-		copyIcons(builder, manifest.ios.icons, destPath);
+		if (!argv['no-icons']) {
+			copyIcons(builder, manifest.ios.icons, destPath);
+		} else {
+			logger.log("Not copying icons");
+		}
 		copyFonts(builder, manifest.ttf, destPath);
-		copySplash(builder, manifest, destPath, f.wait());
+		if (!argv['no-splash']) {
+			copySplash(builder, manifest, destPath, f.wait());
+		} else {
+			logger.log("Not copying splash");
+		}
 		installAddonsFiles(builder, {
 			destPath: opts.output,
 			addonConfig: addonConfig
