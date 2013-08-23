@@ -769,18 +769,6 @@ function updatePListFile(builder, opts, next) {
 
 		contents.CFBundleShortVersionString = manifest.ios.version;
 
-		var ttf = manifest.ttf;
-		if (!ttf || !ttf.length) {
-			logger.log("Fonts: No fonts to install from ttf section in manifest");
-		} else {
-			for (var ii = 0; ii < ttf.length; ++ii) {
-				var file = path.basename(ttf[ii]);
-
-				contents.UIAppFonts.push(file);
-				logger.log("Fonts: Installing", file);
-			}
-		}
-
 		// If RenderGloss enabled,
 		if (manifest.ios.icons && manifest.ios.icons.renderGloss) {
 			// Note: Default is for Xcode to render it for you
@@ -851,92 +839,6 @@ function updateIOSProjectFile(builder, opts, next) {
 				return line;
 			});
 
-			if (!opts.ttf) {
-				logger.warn("No \"ttf\" section found in the manifest.json, so no custom TTF fonts will be installed.  This does not affect bitmap fonts");
-			} else if (opts.ttf.length <= 0) {
-				logger.warn("No \"ttf\" fonts specified in manifest.json, so no custom TTF fonts will be built in.  This does not affect bitmap fonts");
-			} else {
-				var fonts = [];
-
-				// For each font,
-				for (i = 0, len = opts.ttf.length; i < len; ++i) {
-					var uuid1 = "BAADBEEF";
-					uuid1 += String('00000000' + i.toString(16).toUpperCase()).slice(-8);
-					uuid1 += "DEADD00D";
-
-					var uuid2 = "DEADD00D";
-					uuid2 += String('00000000' + i.toString(16).toUpperCase()).slice(-8);
-					uuid2 += "BAADF00D";
-
-					fonts.push({
-						path: opts.ttf[i],
-						basename: path.basename(opts.ttf[i]),
-						buildUUID: uuid1,
-						refUUID: uuid2
-					});
-				}
-
-				// For each line,
-				var updateCount = 0;
-				var inResourcesBuildPhase = false, inResourcesList = false, filesCount = 0;
-				for (i = 0; i < contents.length; ++i) {
-					var line = contents[i];
-
-					if (line === "/* Begin PBXBuildFile section */") {
-						logger.log("Updating project file: Injecting PBXBuildFile section members for " + fonts.length + " font(s)");
-
-						for (j = 0, jlen = fonts.length; j < jlen; ++j) {
-							contents.splice(++i, 0, "\t\t" + fonts[j].buildUUID + " /* " + fonts[j].basename + " in Resources */ = {isa = PBXBuildFile; fileRef = " + fonts[j].refUUID + " /* " + fonts[j].basename + " */; };");
-						}
-
-						++updateCount;
-					} else if (line === "/* Begin PBXFileReference section */") {
-						logger.log("Updating project file: Injecting PBXFileReference section members for " + fonts.length + " font(s)");
-
-						for (j = 0, jlen = fonts.length; j < jlen; ++j) {
-							contents.splice(++i, 0, "\t\t" + fonts[j].refUUID + " /* " + fonts[j].basename + " */ = {isa = PBXFileReference; lastKnownFileType = file; name = \"" + fonts[j].basename + "\"; path = \"fonts/" + fonts[j].basename + "\"; sourceTree = \"<group>\"; };");
-						}
-
-						++updateCount;
-					} else if (line === "/* Begin PBXResourcesBuildPhase section */") {
-						logger.log("Updating project file: Found PBXResourcesBuildPhase section");
-						inResourcesBuildPhase = true;
-						filesCount = 0;
-					} else if (inResourcesBuildPhase && line.indexOf("files = (") >= 0) {
-						if (++filesCount == 1) {
-							logger.log("Updating project file: Injecting PBXResourcesBuildPhase section members for " + fonts.length + " font(s)");
-
-							for (j = 0, jlen = fonts.length; j < jlen; ++j) {
-								contents.splice(++i, 0, "\t\t\t\t" + fonts[j].buildUUID + " /* " + fonts[j].basename + " */,");
-							}
-
-							inResourcesBuildPhase = false;
-
-							++updateCount;
-						}
-					} else if (line.indexOf("/* resources */ = {") >= 0) {
-						logger.log("Updating project file: Found resources list section");
-						inResourcesList = true;
-					} else if (inResourcesList && line.indexOf("children = (") >= 0) {
-						logger.log("Updating project file: Injecting resources children members for " + fonts.length + " font(s)");
-
-						for (j = 0, jlen = fonts.length; j < jlen; ++j) {
-							contents.splice(++i, 0, "\t\t\t\t" + fonts[j].refUUID + " /* " + fonts[j].basename + " */,");
-						}
-
-						inResourcesList = false;
-
-						++updateCount;
-					}
-				}
-
-				if (updateCount === 4) {
-					logger.log("Updating project file: Success!");
-				} else {
-					logger.error("Updating project file: Unable to find one of the sections to patch.  index.js has a bug -- it may not work with your version of XCode yet!");
-				}
-			}
-
 			// Run it through the plugin system before writing
 			installAddonsProject(builder, {
 				addonConfig: opts.addonConfig,
@@ -956,7 +858,7 @@ function updateIOSProjectFile(builder, opts, next) {
 
 function copyFonts(builder, ttf, destDir) {
 	if (ttf) {
-		var fontDir = path.join(destDir, 'tealeaf/resources/fonts');
+		var fontDir = path.join(destDir, 'tealeaf/resources/resources.bundle');
 		wrench.mkdirSyncRecursive(fontDir);
 
 		for (var i = 0, ilen = ttf.length; i < ilen; ++i) {
