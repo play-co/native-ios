@@ -44,6 +44,8 @@
 		4E8493F81651D06000C96B4A /* jsTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493DA1651D06000C96B4A /* jsTimer.mm */; };
 		4E8493F91651D06000C96B4A /* jsTimestep.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493DC1651D06000C96B4A /* jsTimestep.mm */; };
 		4E8493FA1651D06000C96B4A /* jsXHR.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493DE1651D06000C96B4A /* jsXHR.mm */; };
+		4E9D36B317C6F91D006AA71B /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9D36B117C6F8D1006AA71B /* MobileCoreServices.framework */; };
+		4E9D36B417C6F922006AA71B /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9D36AF17C6F8B0006AA71B /* CoreText.framework */; };
 		4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */; };
 		4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */; };
 		4EEFA20D1755553500570B4E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A23214D313D8AFD600FA4C7D /* MessageUI.framework */; };
@@ -327,6 +329,8 @@
 		4E8493DD1651D06000C96B4A /* jsXHR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsXHR.h; sourceTree = "<group>"; };
 		4E8493DE1651D06000C96B4A /* jsXHR.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsXHR.mm; sourceTree = "<group>"; };
 		4E9506D915E4383900FEF0E9 /* get_locale.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = get_locale.mm; sourceTree = "<group>"; };
+		4E9D36AF17C6F8B0006AA71B /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		4E9D36B117C6F8D1006AA71B /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		4EB0C66D16BBA2D800838A49 /* js-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "js-config.h"; path = "spidermonkey/js-config.h"; sourceTree = "<group>"; };
 		4EB0C66E16BBA2D800838A49 /* jsalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsalloc.h; path = spidermonkey/jsalloc.h; sourceTree = "<group>"; };
 		4EB0C66F16BBA2D800838A49 /* jsapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jsapi.h; path = spidermonkey/jsapi.h; sourceTree = "<group>"; };
@@ -485,6 +489,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E9D36B417C6F922006AA71B /* CoreText.framework in Frameworks */,
+				4E9D36B317C6F91D006AA71B /* MobileCoreServices.framework in Frameworks */,
 				4EEFA212175555CD00570B4E /* QuartzCore.framework in Frameworks */,
 				4EEFA211175555AB00570B4E /* AVFoundation.framework in Frameworks */,
 				4EEFA2101755559A00570B4E /* CoreGraphics.framework in Frameworks */,
@@ -566,6 +572,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4E9D36B117C6F8D1006AA71B /* MobileCoreServices.framework */,
+				4E9D36AF17C6F8B0006AA71B /* CoreText.framework */,
 				4E72C65715D9E253000404EF /* SystemConfiguration.framework */,
 				A25F91F61489AC0300B39375 /* OpenGLES.framework */,
 				5B2BEA6912AEF41100AE98C5 /* CFNetwork.framework */,
@@ -758,9 +766,9 @@
 		5B73EB6917C2FAA90017077E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
-					36E6F37A16C45FB50016CD1A /* PluginManager.h */,
-					36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
-					);
+				36E6F37A16C45FB50016CD1A /* PluginManager.h */,
+				36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
+			);
 			name = plugins;
 			sourceTree = "<group>";
 		};

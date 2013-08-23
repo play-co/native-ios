@@ -223,8 +223,33 @@ texture_2d *text_manager_get_stroked_text(const char *font_name, int size, const
 	return text_manager_get_text(font_name, size, text, color, max_width, TEXT_STYLE_STROKE, stroke_width);
 }
 
+#import <CoreText/CoreText.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 int text_manager_init() {
+
+	// Load any font resources from the resources.bundle file
+
+    CTFontManagerRegisterFontsForURLs((CFArrayRef)((^{
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *resourceURL = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"resources.bundle"];
+        NSArray *resourceURLs = [fileManager contentsOfDirectoryAtURL:resourceURL includingPropertiesForKeys:nil options:0 error:nil];
+
+        return [resourceURLs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSURL *url, NSDictionary *bindings) {
+            CFStringRef pathExtension = (CFStringRef)[url pathExtension];
+            NSArray *allIdentifiers = (NSArray *)UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, pathExtension, CFSTR("public.font"));
+            if (![allIdentifiers count]) {
+                return NO;
+            }
+            CFStringRef utType = (CFStringRef)[allIdentifiers lastObject];
+			if ((!CFStringHasPrefix(utType, CFSTR("dyn.")) && UTTypeConformsTo(utType, CFSTR("public.font")))) {
+				NSLog(@"{text} Installing font: %@", url);
+				return YES;
+			} else {
+				return NO;
+			}
+        }]];
+    })()), kCTFontManagerScopeProcess, nil);
 
 	NSError *error = NULL;
 	NSRegularExpression *regexBold = [NSRegularExpression regularExpressionWithPattern:@"[-].*(bold|W6|wide)"
