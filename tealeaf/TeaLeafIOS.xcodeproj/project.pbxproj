@@ -65,6 +65,7 @@
 		5B5EBDA317BAE62000C4DD0A /* InputPrompt.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBDA217BAE62000C4DD0A /* InputPrompt.mm */; };
 		5B5EBDA717BAE89400C4DD0A /* InputUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBDA617BAE89400C4DD0A /* InputUtils.mm */; };
 		5BAE3E111797939900E8058E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BAE3E101797939900E8058E /* CoreTelephony.framework */; };
+		5BB2AD9D17C82C1E003CA689 /* graphics_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 5BB2AD9B17C82C1E003CA689 /* graphics_utils.c */; };
 		8BC3D5E21639FFD2007942C3 /* OALSourceInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8BC3D5E11639FFD2007942C3 /* OALSourceInfo.mm */; };
 		D53E17F1178506BF000BAC10 /* RawImageInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D54113A61783E7AD002B6E3E /* RawImageInfo.m */; };
 		D551A73C178E50AF0028DACC /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D551A73B178E50AF0028DACC /* Security.framework */; };
@@ -408,6 +409,8 @@
 		5B5EBDA517BAE89400C4DD0A /* InputUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputUtils.h; sourceTree = "<group>"; };
 		5B5EBDA617BAE89400C4DD0A /* InputUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InputUtils.mm; sourceTree = "<group>"; };
 		5BAE3E101797939900E8058E /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		5BB2AD9B17C82C1E003CA689 /* graphics_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = graphics_utils.c; path = "native-core/graphics_utils.c"; sourceTree = SOURCE_ROOT; };
+		5BB2AD9C17C82C1E003CA689 /* graphics_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = graphics_utils.h; path = "native-core/graphics_utils.h"; sourceTree = SOURCE_ROOT; };
 		8BC3D5E01639FFD1007942C3 /* OALSourceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OALSourceInfo.h; sourceTree = "<group>"; };
 		8BC3D5E11639FFD2007942C3 /* OALSourceInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OALSourceInfo.mm; sourceTree = "<group>"; };
 		A23214D313D8AFD600FA4C7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -948,6 +951,8 @@
 		D55820B0150E7C7500549BF6 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				5BB2AD9B17C82C1E003CA689 /* graphics_utils.c */,
+				5BB2AD9C17C82C1E003CA689 /* graphics_utils.h */,
 				D5A6C94215800D2F0016985D /* timer.c */,
 				D5A6C94315800D2F0016985D /* timer.h */,
 				D56C7E16157EAACA00DB8BDA /* image_loader.c */,
@@ -1348,6 +1353,7 @@
 				D5BC67011635D0270059EC0F /* main.m in Sources */,
 				D5BC67021635D0270059EC0F /* config.c in Sources */,
 				D5BC67031635D0270059EC0F /* core.c in Sources */,
+				5BB2AD9D17C82C1E003CA689 /* graphics_utils.c in Sources */,
 				D5BC67051635D0270059EC0F /* draw_textures.c in Sources */,
 				D5BC67061635D0270059EC0F /* events.c in Sources */,
 				D5BC67071635D0270059EC0F /* geometry.c in Sources */,

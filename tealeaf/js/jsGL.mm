@@ -76,14 +76,13 @@ JSAG_MEMBER_BEGIN(clearRect, 4)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN(fillRect, 6)
+JSAG_MEMBER_BEGIN(fillRect, 5)
 {
 	JSAG_ARG_DOUBLE(x);
 	JSAG_ARG_DOUBLE(y);
 	JSAG_ARG_DOUBLE(w);
 	JSAG_ARG_DOUBLE(h);
 	JSAG_ARG_CSTR(scolor);
-	JSAG_ARG_INT32(cop);
 
 	rgba color;
 	rgba_parse(&color, scolor);
@@ -92,11 +91,11 @@ JSAG_MEMBER_BEGIN(fillRect, 6)
 		x, y, w, h
 	};
 
-	context_2d_fillRect(GET_CONTEXT_2D(), &rect, &color, cop);
+	context_2d_fillRect(GET_CONTEXT_2D(), &rect, &color);
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN(strokeRect, 7)
+JSAG_MEMBER_BEGIN(strokeRect, 6)
 {
 	JSAG_ARG_DOUBLE(x);
 	JSAG_ARG_DOUBLE(y);
@@ -104,7 +103,6 @@ JSAG_MEMBER_BEGIN(strokeRect, 7)
 	JSAG_ARG_DOUBLE(height);
 	JSAG_ARG_CSTR(scolor);
 	JSAG_ARG_DOUBLE(line_width1);
-	JSAG_ARG_INT32(composite_op);
 
 	rgba color;
 	rgba_parse(&color, scolor);
@@ -114,16 +112,16 @@ JSAG_MEMBER_BEGIN(strokeRect, 7)
 	context_2d *ctx = GET_CONTEXT_2D();
 	
 	rect_2d left_rect = {x - line_width2, y - line_width2, line_width1, height + line_width1};
-	context_2d_fillRect(ctx, &left_rect, &color, composite_op);
+	context_2d_fillRect(ctx, &left_rect, &color);
 	
 	rect_2d right_rect = {x + width - line_width2, y - line_width2, line_width1, height + line_width1};
-	context_2d_fillRect(ctx, &right_rect, &color, composite_op);
+	context_2d_fillRect(ctx, &right_rect, &color);
 	
 	rect_2d top_rect = {x + line_width2, y - line_width2, width - line_width1, line_width1};
-	context_2d_fillRect(ctx, &top_rect, &color, composite_op);
+	context_2d_fillRect(ctx, &top_rect, &color);
 	
 	rect_2d bottom_rect = {x + line_width2, y + height - line_width2, width - line_width1, line_width1};
-	context_2d_fillRect(ctx, &bottom_rect, &color, composite_op);
+	context_2d_fillRect(ctx, &bottom_rect, &color);
 }
 JSAG_MEMBER_END
 
@@ -153,6 +151,22 @@ JSAG_MEMBER_END
 JSAG_MEMBER_BEGIN_NOARGS(getGlobalAlpha)
 {
 	JSAG_RETURN_DOUBLE(context_2d_getGlobalAlpha(GET_CONTEXT_2D()));
+}
+JSAG_MEMBER_END_NOARGS
+
+JSAG_MEMBER_BEGIN(setGlobalCompositeOperation, 1)
+{
+	JSAG_ARG_INT32(composite_op);
+
+	context_2d_setGlobalCompositeOperation(GET_CONTEXT_2D(), (int)composite_op);
+	return JS_TRUE;
+}
+JSAG_MEMBER_END
+
+JSAG_MEMBER_BEGIN_NOARGS(getGlobalCompositeOperation)
+{
+	JSAG_RETURN_INT32(context_2d_getGlobalCompositeOperation(GET_CONTEXT_2D()));
+	return JS_TRUE;
 }
 JSAG_MEMBER_END_NOARGS
 
@@ -293,7 +307,7 @@ JSAG_MEMBER_BEGIN(measureTextBitmap, 2)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN(fillText, 10)
+JSAG_MEMBER_BEGIN(fillText, 9)
 {
 	JSAG_ARG_CSTR(str);
 	JSAG_ARG_DOUBLE(x);
@@ -304,7 +318,6 @@ JSAG_MEMBER_BEGIN(fillText, 10)
 	JSAG_ARG_CSTR(font);
 	JSAG_ARG_CSTR_FIRST(align, 1);
 	JSAG_ARG_CSTR_FIRST(baseline, 1);
-	JSAG_ARG_INT32(composite_op);
 
 	if (*str) {
 		rgba color;
@@ -352,13 +365,13 @@ JSAG_MEMBER_BEGIN(fillText, 10)
 			rect_2d src_rect = {0, 0, tex->originalWidth, tex->originalHeight};
 			rect_2d dest_rect = {x, y, tex->originalWidth, tex->originalHeight};
 
-			context_2d_fillText(GET_CONTEXT_2D(), tex, &src_rect, &dest_rect, color.a, composite_op);
+			context_2d_fillText(GET_CONTEXT_2D(), tex, &src_rect, &dest_rect, color.a);
 		}
 	}
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN(strokeText, 11)
+JSAG_MEMBER_BEGIN(strokeText, 10)
 {
 	JSAG_ARG_CSTR(str);
 	JSAG_ARG_DOUBLE(x);
@@ -369,7 +382,6 @@ JSAG_MEMBER_BEGIN(strokeText, 11)
 	JSAG_ARG_CSTR(font);
 	JSAG_ARG_CSTR_FIRST(align, 1);
 	JSAG_ARG_CSTR_FIRST(baseline, 1);
-	JSAG_ARG_INT32(composite_op);
 	JSAG_ARG_DOUBLE(line_width);
 
 	if (*str) {
@@ -418,13 +430,13 @@ JSAG_MEMBER_BEGIN(strokeText, 11)
 			rect_2d src_rect = {0, 0, tex->originalWidth, tex->originalHeight};
 			rect_2d dest_rect = {x, y, tex->originalWidth, tex->originalHeight};
 			
-			context_2d_fillText(GET_CONTEXT_2D(), tex, &src_rect, &dest_rect, color.a, composite_op);
+			context_2d_fillText(GET_CONTEXT_2D(), tex, &src_rect, &dest_rect, color.a);
 		}
 	}
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN(drawImage, 11)
+JSAG_MEMBER_BEGIN(drawImage, 10)
 {
 	JSAG_ARG_INT32(stex);
 	JSAG_ARG_CSTR(url);
@@ -436,12 +448,11 @@ JSAG_MEMBER_BEGIN(drawImage, 11)
 	JSAG_ARG_DOUBLE(dy);
 	JSAG_ARG_DOUBLE(dw);
 	JSAG_ARG_DOUBLE(dh);
-	JSAG_ARG_INT32(composite_op);
 
 	rect_2d src_rect = {sx, sy, sw, sh};
 	rect_2d dest_rect = {dx, dy, dw, dh};
 
-	context_2d_drawImage(GET_CONTEXT_2D(), stex, url, &src_rect, &dest_rect, composite_op);
+	context_2d_drawImage(GET_CONTEXT_2D(), stex, url, &src_rect, &dest_rect);
 }
 JSAG_MEMBER_END
 
@@ -665,7 +676,7 @@ JSAG_MEMBER_BEGIN(fillTextBitmap, 7)
 						}
 					}
 
-					context_2d_drawImage(context, 0, url, &src_rect, &dest_rect, source_over);
+					context_2d_drawImage(context, 0, url, &src_rect, &dest_rect);
 
 					x += (ow - 2) * scale + tracking - outline;
 				} else {
