@@ -169,9 +169,18 @@ JSAG_OBJECT_END
 	[self postNotification:@"handleOpenURL:sourceApplication:" obj1:url obj2:sourceApplication];
 }
 
+- (void) onPause {
+	[self postNotification:@"onPause" obj1:nil obj2:nil];
+}
+
+- (void) onResume {
+	[self postNotification:@"onResume" obj1:nil obj2:nil];
+}
+
 - (void) dispatchJSEventWithJSONString: (NSString*) str {
     if (m_core) {
         JSContext *cx = m_core.cx;
+
 		dispatch_async(dispatch_get_main_queue(), ^{
             if (m_core) {
                 JS_BeginRequest(cx);

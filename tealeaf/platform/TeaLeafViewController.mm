@@ -136,67 +136,7 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) dealloc {
-   /* [inputAccTextField release];
-    [inputAccView release];
-    [inputAccBtnDone release];
-    [inputAccBtnPrev release];
-    [inputAccBtnNext release];*/
 	[super dealloc];
-}
-
--(void)createInputAccessoryView{
-/*    inputAccView = [[UIView alloc] initWithFrame:CGRectMake(10.0, 0.0, 310.0, 40.0)];
-    
-    [inputAccView setBackgroundColor:[UIColor lightGrayColor]];
-    
-    [inputAccView setAlpha: 1.0];
-    
-    inputAccBtnPrev = [UIButton buttonWithType: UIButtonTypeCustom];
-    
-    [inputAccBtnPrev setFrame: CGRectMake(0.0, 0.0, 80.0, 40.0)];
-    [inputAccBtnPrev setTitle: @"Prev" forState: UIControlStateNormal];
-    [inputAccBtnPrev setBackgroundColor: [UIColor blueColor]];
-    [inputAccBtnPrev addTarget: self action: @selector(gotoPrevTextfield) forControlEvents: UIControlEventTouchUpInside];
-    
-    inputAccBtnNext = [UIButton buttonWithType:UIButtonTypeCustom];
-    [inputAccBtnNext setFrame:CGRectMake(85.0f, 0.0f, 80.0f, 40.0f)];
-    [inputAccBtnNext setTitle:@"Next" forState:UIControlStateNormal];
-    [inputAccBtnNext setBackgroundColor:[UIColor blueColor]];
-    [inputAccBtnNext addTarget:self action:@selector(gotoNextTextfield) forControlEvents:UIControlEventTouchUpInside];
-    
-    inputAccBtnDone = [UIButton buttonWithType:UIButtonTypeCustom];
-    [inputAccBtnDone setFrame:CGRectMake(240.0, 0.0f, 80.0f, 40.0f)];
-    [inputAccBtnDone setTitle:@"Done" forState:UIControlStateNormal];
-    [inputAccBtnDone setBackgroundColor:[UIColor greenColor]];
-    [inputAccBtnDone setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [inputAccBtnDone addTarget:self action:@selector(doneTyping) forControlEvents:UIControlEventTouchUpInside];
-    
-    [inputAccView addSubview:inputAccBtnPrev];
-    [inputAccView addSubview:inputAccBtnNext];
-    [inputAccView addSubview:inputAccBtnDone];*/
-}
-
--(void)textFieldDidBeginEditing:(UITextField *)textField{
-    [self createInputAccessoryView];
-    
-//    [textField setInputAccessoryView:inputAccView];
-    
-    //need to set the active text field somehow...
-//    txtActiveField = textField;
-}
-
--(void)gotoPrevTextfield{
-  //  [inputAccActiveTextField becomeFirstResponder];
-}
-
--(void)gotoNextTextfield{
-  //  [inputAccActiveTextField becomeFirstResponder];
-}
-
--(void)doneTyping{
-    // When the "done" button is tapped, the keyboard should go away.
-    // That simply means that we just have to resign our first responder.
-    //[inputAccActiveTextField resignFirstResponder];
 }
 
 - (void) restartJS {
@@ -503,7 +443,14 @@ CEXPORT void device_hide_splash() {
     NSDictionary *userInfo = [info userInfo];
     CGRect rawKeyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGRect properlyRotatedCoords = [self.view.window convertRect:rawKeyboardRect toView:self.view];
-    CGSize size = self.view.frame.size;
+    CGFloat scale = self.view.contentScaleFactor;
+    properlyRotatedCoords.origin.x *= scale;
+    properlyRotatedCoords.origin.y *= scale;
+    properlyRotatedCoords.size.width *= scale;
+    properlyRotatedCoords.size.height *= scale;
+
+    // TODO: might need this if the status bar is visible to compute the y-offset?
+    // CGSize size = self.view.frame.size;
 
 	JSContext* cx = [[js_core lastJS] cx];
 	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
@@ -524,18 +471,6 @@ CEXPORT void device_hide_splash() {
 		if (!self.backAlertView.isVisible) {
 			[self.backAlertView show];
 		}
-	}
-}
-
-static NSString *fixDictString(NSDictionary *dict, NSString *key) {
-	NSString *value = [dict objectForKey:key];
-	
-	if (!value) {
-		NSLOG(@"{settings} ERROR: Missing value for key %@", key);
-		
-		return @"";
-	} else {
-		return value;
 	}
 }
 

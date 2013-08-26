@@ -37,6 +37,8 @@
 - (void) applicationDidBecomeActive:(UIApplication *)app;
 - (void) applicationWillTerminate:(UIApplication *)app;
 - (void) handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication;
+- (void) onPause;
+- (void) onResume;
 @end
 
 

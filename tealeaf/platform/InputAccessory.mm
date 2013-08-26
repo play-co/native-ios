@@ -67,61 +67,64 @@ static InputAccessory *m_view = nil;
 }
 
 - (void) createInputAccessoryView {
-	if (inputAccTextField == NULL) {
-		TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-		float width = controller.view.bounds.size.width;
-        float height = 50;
-		inputAccView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
-        
-		[inputAccView setBackgroundColor:[UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1.0]];
-        
-        //add a top border
-        CALayer *topBorder = [CALayer layer];
-        topBorder.frame = CGRectMake(0.0f, 0.0f, inputAccView.frame.size.width, 1.0f);
-        topBorder.backgroundColor = [UIColor grayColor].CGColor;
-        [inputAccView.layer addSublayer:topBorder];
-        
-		inputAccTextField = [[UITextField alloc] initWithFrame:CGRectMake(5, 5, width - 80, height - 10)];
-        
-        [inputAccTextField setBorderStyle:UITextBorderStyleRoundedRect];
-		UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 5, height - 10)];
-		inputAccTextField.leftView = paddingView;
-		inputAccTextField.leftViewMode = UITextFieldViewModeAlways;
-		[inputAccTextField.font fontWithSize:height - 10];
-		inputAccTextField.delegate = self;
-		inputAccTextField.backgroundColor = [UIColor whiteColor];
-		inputAccTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        
-        inputAccBtnDone = [UIButton buttonWithType:UIButtonTypeCustom];
-        [inputAccBtnDone setFrame:CGRectMake(width - 70, 10.0f, 60, 30.0f)];
-        [inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button"] forState:UIControlStateNormal];
-        [inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button_pressed"] forState:UIControlStateHighlighted];
-        [inputAccBtnDone addTarget:self action:@selector(doneTyping) forControlEvents:UIControlEventTouchUpInside];
-        [inputAccView addSubview:inputAccBtnDone];
-        
-        inputAccBtnPrev = [UIButton buttonWithType: UIButtonTypeCustom];
-        [inputAccBtnPrev setFrame: CGRectMake(width - 70, 10.0, 30, 30.0)];
-        [inputAccBtnPrev addTarget: self action: @selector(gotoPrevTextfield) forControlEvents: UIControlEventTouchUpInside];
-        
-        inputAccBtnNext = [UIButton buttonWithType:UIButtonTypeCustom];
-        [inputAccBtnNext setFrame:CGRectMake(width - 40, 10.0f, 30, 30.0f)];
-        [inputAccBtnNext addTarget:self action:@selector(gotoNextTextfield) forControlEvents:UIControlEventTouchUpInside];
-        
-        
-        [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler"] forState:UIControlStateNormal];
-        [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_pressed"] forState:UIControlStateHighlighted];
-        [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_disabled"] forState:UIControlStateDisabled];
-        
-        
-        [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler"] forState:UIControlStateNormal];
-        [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_pressed"] forState:UIControlStateHighlighted];
-        [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_disabled"] forState:UIControlStateDisabled ];
-        
-        [inputAccView addSubview:inputAccBtnPrev];
-        [inputAccView addSubview:inputAccBtnNext];
-		[inputAccView addSubview:inputAccTextField];
-	}
+    TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
+    float width = controller.view.bounds.size.width;
+    float height = 50;
+    inputAccView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
     
+    [inputAccView setBackgroundColor:[UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1.0]];
+    
+    //add a top border
+    CALayer *topBorder = [CALayer layer];
+    topBorder.frame = CGRectMake(0.0f, 0.0f, inputAccView.frame.size.width, 1.0f);
+    topBorder.backgroundColor = [UIColor grayColor].CGColor;
+    [inputAccView.layer addSublayer:topBorder];
+    
+    inputAccTextField = [[UITextField alloc] initWithFrame:CGRectMake(5, 5, width - 80, height - 10)];
+    
+    [inputAccTextField setBorderStyle:UITextBorderStyleRoundedRect];
+    UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 5, height - 10)];
+    inputAccTextField.leftView = paddingView;
+    inputAccTextField.leftViewMode = UITextFieldViewModeAlways;
+    [inputAccTextField.font fontWithSize:height - 10];
+    inputAccTextField.delegate = self;
+    inputAccTextField.backgroundColor = [UIColor whiteColor];
+    inputAccTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    
+    inputAccBtnDone = [UIButton buttonWithType:UIButtonTypeCustom];
+    [inputAccBtnDone setFrame:CGRectMake(width - 70, 10.0f, 60, 30.0f)];
+    [inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button"] forState:UIControlStateNormal];
+    [inputAccBtnDone setBackgroundImage:[UIImage imageNamed:@"done_button_pressed"] forState:UIControlStateHighlighted];
+    [inputAccBtnDone addTarget:self action:@selector(doneTyping) forControlEvents:UIControlEventTouchUpInside];
+    [inputAccView addSubview:inputAccBtnDone];
+    
+    inputAccBtnPrev = [UIButton buttonWithType: UIButtonTypeCustom];
+    [inputAccBtnPrev setFrame: CGRectMake(width - 70, 10.0, 30, 30.0)];
+    [inputAccBtnPrev addTarget: self action: @selector(gotoPrevTextfield) forControlEvents: UIControlEventTouchUpInside];
+    
+    inputAccBtnNext = [UIButton buttonWithType:UIButtonTypeCustom];
+    [inputAccBtnNext setFrame:CGRectMake(width - 40, 10.0f, 30, 30.0f)];
+    [inputAccBtnNext addTarget:self action:@selector(gotoNextTextfield) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler"] forState:UIControlStateNormal];
+    [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_pressed"] forState:UIControlStateHighlighted];
+    [inputAccBtnPrev setBackgroundImage:[UIImage imageNamed:@"left_text_handler_disabled"] forState:UIControlStateDisabled];
+    
+    
+    [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler"] forState:UIControlStateNormal];
+    [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_pressed"] forState:UIControlStateHighlighted];
+    [inputAccBtnNext setBackgroundImage:[UIImage imageNamed:@"right_text_handler_disabled"] forState:UIControlStateDisabled ];
+    
+    [inputAccView addSubview:inputAccBtnPrev];
+    [inputAccView addSubview:inputAccBtnNext];
+    [inputAccView addSubview:inputAccTextField];
+}
+
+- (void) updateInputAccessoryView {
+	if (inputAccTextField == NULL) {
+        [self createInputAccessoryView];
+	}
 	
     if (!hasBackward && !hasForward) {
         [inputAccBtnDone setHidden:NO];
@@ -211,7 +214,7 @@ static InputAccessory *m_view = nil;
 - (void) show {
     
 	TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-	[self createInputAccessoryView];
+	[self updateInputAccessoryView];
 	controller.inputAccTextField.delegate = self;
 	[controller.inputAccTextField becomeFirstResponder];
     
