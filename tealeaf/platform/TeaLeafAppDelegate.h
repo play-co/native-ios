@@ -15,7 +15,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TeaLeafViewController.h"
-#ifndef UNITY
+#ifndef DISABLE_TESTAPP
 #import "ServerTableViewController.h"
 #import "AppTableViewController.h"
 #endif
@@ -42,7 +42,7 @@ struct SplashDescriptor {
 @property (nonatomic) BOOL tealeafShowing;
 @property (nonatomic) BOOL signalRestart;
 @property (nonatomic, retain) TeaLeafViewController *tealeafViewController;
-#ifndef UNITY
+#ifndef DISABLE_TESTAPP
 @property (nonatomic, retain) ServerTableViewController *tableViewController;
 @property (nonatomic, retain) AppTableViewController *appTableViewController;
 #endif

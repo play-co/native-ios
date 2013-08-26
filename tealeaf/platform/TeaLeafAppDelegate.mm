@@ -90,7 +90,7 @@
 		NSLOG(@"{tealeaf} Config[%@] = %@", key, [self.config objectForKey:key]);
 	}
 
-#ifndef UNITY
+#ifndef DISABLE_TESTAPP
 	self.tableViewController = [[[ServerTableViewController alloc] init] autorelease];
 	self.appTableViewController = [[[AppTableViewController alloc] init] autorelease];
 	//TEALEAF_SPECIFIC_END
@@ -100,7 +100,7 @@
 #endif
 		[self.window addSubview:self.tealeafViewController.view];
 		self.window.rootViewController = self.tealeafViewController;
-#ifndef UNITY
+#ifndef DISABLE_TESTAPP
 	} else {
 		[self.window addSubview:self.tableViewController.view];
 		self.window.rootViewController = self.tableViewController;
@@ -353,7 +353,7 @@
 }
 
 
-#ifndef UNITY
+#ifndef DISABLE_TESTAPP
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
 	//delegate of NSNetService resolution process
@@ -438,8 +438,6 @@
 	// Calculate screen dimensions
 	CGRect frame = [self.window frame];
 
-	NSLOG(@"{core} Window frame dimensions: (%d, %d)", (int)frame.size.width, (int)frame.size.height);
-	
 	float scale = 1.0;
 	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
 		scale = [[UIScreen mainScreen] scale];

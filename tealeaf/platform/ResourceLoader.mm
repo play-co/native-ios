@@ -111,10 +111,6 @@ static int base_path_len = 0;
 	self = [super init];
 
 	self.appBundle = [[NSBundle mainBundle] pathForResource:@"resources" ofType:@"bundle"];
-	if (!self.appBundle) {
-		self.appBundle = [[NSBundle mainBundle] pathForResource:@"Unity" ofType:@"bundle"];
-		self.appBundle = [self.appBundle stringByAppendingString:@"/resources.bundle"];
-	}
 
 	NSLog(@"Using resource path %@", self.appBundle);
 	

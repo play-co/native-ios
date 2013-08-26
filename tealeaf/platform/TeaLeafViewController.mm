@@ -151,12 +151,12 @@ CEXPORT void device_hide_splash() {
 - (void) restartJS {
 	UIViewController *controller = nil;
 
-#ifndef UNITY
+#ifndef DISABLE_TESTAPP
 	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
 	if (!isRemoteLoading) {
 #endif
 		controller = self.appDelegate.tealeafViewController;
-#ifndef UNITY
+#ifndef DISABLE_TESTAPP
 	} else {
 		controller = self.appDelegate.appTableViewController;
 	}
@@ -327,7 +327,7 @@ CEXPORT void device_hide_splash() {
 	const char *source_path = 0;
 
 	if (!appBundle) {
-		NSLog(@"WTF");
+		NSLog(@"{core} FATAL: Unable to load app bundle!");
 	} else {
 		source_path = [[ResourceLoader get].appBundle UTF8String];
 	}

@@ -55,11 +55,7 @@ SoundManager *globalSoundManager = NULL;
 	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
 	if (!isRemoteLoading) {
 		if ([url.scheme compare: @"http"] != NSOrderedSame) {
-#ifdef UNITY
-			filePath = [NSString stringWithFormat:@"Unity/resources.bundle/%@", path];
-#else
 			filePath = [NSString stringWithFormat:@"resources.bundle/%@", path];
-#endif
 		} else {
 			NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 			NSString *documentsDirectory = [paths objectAtIndex:0];
