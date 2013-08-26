@@ -112,7 +112,7 @@ static int base_path_len = 0;
 
 	self.appBundle = [[NSBundle mainBundle] pathForResource:@"resources" ofType:@"bundle"];
 	if (!self.appBundle) {
-		self.appBundle = [[NSBundle mainBundle] pathForResource:@"Weeby" ofType:@"bundle"];
+		self.appBundle = [[NSBundle mainBundle] pathForResource:@"Unity" ofType:@"bundle"];
 		self.appBundle = [self.appBundle stringByAppendingString:@"/resources.bundle"];
 	}
 

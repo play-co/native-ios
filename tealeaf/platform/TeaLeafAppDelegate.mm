@@ -71,6 +71,8 @@
 	self.wasPaused = NO;
 	UIApplication *app = [UIApplication sharedApplication];
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
+
+	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
 
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
@@ -436,6 +438,8 @@
 	// Calculate screen dimensions
 	CGRect frame = [self.window frame];
 
+	NSLOG(@"{core} Window frame dimensions: (%d, %d)", (int)frame.size.width, (int)frame.size.height);
+	
 	float scale = 1.0;
 	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
 		scale = [[UIScreen mainScreen] scale];

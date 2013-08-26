@@ -61,8 +61,6 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
 	<key>UIAppFonts</key>
 	<array/>
 	<key>UIApplicationExitsOnSuspend</key>
