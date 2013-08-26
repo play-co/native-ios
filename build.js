@@ -1257,7 +1257,6 @@ exports.build = function(builder, project, opts, next) {
 	}, function() {
 		if (argv['js-only']) {
 			logger.log('Done with compilation.  The output files are at:', destPath);
-			f(destPath);
 		} else {
 			if (argv.ipa) {
 				logger.log('Done with compilation.  The output .ipa file has been placed at:', manifest.shortName+'.ipa');
@@ -1274,6 +1273,8 @@ exports.build = function(builder, project, opts, next) {
 				}
 			}
 		}
+
+		f(destPath);
 	}).error(function(err) {
 		logger.error("Error during build process:", err, err.stack);
 		process.exit(2);
