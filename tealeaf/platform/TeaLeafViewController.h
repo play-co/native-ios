@@ -16,6 +16,7 @@
 #import "js_core.h"
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
 @interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate> {

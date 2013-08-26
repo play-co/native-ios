@@ -493,6 +493,27 @@ CEXPORT void device_hide_splash() {
 	[instance dispatchEvent: args count: 1];
 }
 
+- (void)sendSMSTo:(NSString *)number withMessage:(NSString *)msg andCallback:(int)cb {
+	if([MFMessageComposeViewController canSendText]) {
+		MFMessageComposeViewController* sms = [[MFMessageComposeViewController alloc] init];
+		sms.body = msg;
+		sms.recipients = [NSArray arrayWithObject: number];
+		sms.messageComposeDelegate = self;
+		sms.delegate = self;
+		[self assignCallback: cb];
+		[self presentModalViewController: sms animated:YES];
+		[sms release];
+	}
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+	[self dismissModalViewControllerAnimated: YES];
+	char args[128];
+	// TODO replace with JS_* calls
+	sprintf(args, "{\"name\":\"smsStatus\", \"id\":%d, \"result\":%d}", callback, (int)result);
+	[self runCallback: args];
+}
+
 - (void)showImagePickerForCamera: (NSString *) url
 {
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL: url];
