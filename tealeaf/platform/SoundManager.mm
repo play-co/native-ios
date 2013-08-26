@@ -56,7 +56,7 @@ SoundManager *globalSoundManager = NULL;
 	if (!isRemoteLoading) {
 		if ([url.scheme compare: @"http"] != NSOrderedSame) {
 #ifdef UNITY
-			filePath = [NSString stringWithFormat:@"Weeby.bundle/resources.bundle/%@", path];
+			filePath = [NSString stringWithFormat:@"Unity/resources.bundle/%@", path];
 #else
 			filePath = [NSString stringWithFormat:@"resources.bundle/%@", path];
 #endif

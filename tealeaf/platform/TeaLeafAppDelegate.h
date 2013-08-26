@@ -15,8 +15,8 @@
 
 #import <UIKit/UIKit.h>
 #import "TeaLeafViewController.h"
-#import "ServerTableViewController.h"
 #ifndef UNITY
+#import "ServerTableViewController.h"
 #import "AppTableViewController.h"
 #endif
 #import "PluginManager.h"
