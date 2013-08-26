@@ -16,25 +16,31 @@
 #include "log.h"
 #include "core/util/detect.h"
 
+#ifndef DISABLE_DEBUG_SERVER
+
 #include "debug/DebugServer.h"
 static DebugServer *m_debugger = nil;
-
 
 CEXPORT void LoggerSetDebugger(void *debugger) {
 	m_debugger = (DebugServer*)debugger;
 }
 
+#endif
+
 
 CEXPORT void _LOG(const char *f, ...) {
 	va_list args;
 	va_start(args, f);
+#ifndef DISABLE_DEBUG_SERVER
 	if (m_debugger) {
 		NSString *msg = [[[NSString alloc] initWithFormat:[NSString stringWithUTF8String:f] arguments:args] autorelease];
 
 		NSLog(@"%@", msg);
 
 		[m_debugger onLogMessage:msg];
-	} else {
+	} else
+#endif
+	{
 		NSLogv([NSString stringWithUTF8String:f], args);
 	}
 	va_end(args);
@@ -43,13 +49,16 @@ CEXPORT void _LOG(const char *f, ...) {
 CEXPORT void _NSLOG(NSString *f, ...) {
 	va_list args;
 	va_start(args, f);
+#ifndef DISABLE_DEBUG_SERVER
 	if (m_debugger) {
 		NSString *msg = [[[NSString alloc] initWithFormat:f arguments:args] autorelease];
 		
 		NSLog(@"%@", msg);
 
 		[m_debugger onLogMessage:msg];
-	} else {
+	} else
+#endif
+	{
 		NSLogv(f, args);
 	}
 	va_end(args);

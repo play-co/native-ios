@@ -71,35 +71,41 @@
 	self.wasPaused = NO;
 	UIApplication *app = [UIApplication sharedApplication];
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
+
+	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
-    
+
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
 	self.signalRestart = NO;
-	
+
 	NSString *path = [[NSBundle mainBundle] resourcePath];
 	NSString *finalPath = [path stringByAppendingPathComponent:@"config.plist"];
 	self.config = [NSMutableDictionary dictionaryWithContentsOfFile:finalPath];
-	 
+
 	for (id key in self.config) {
 		NSLOG(@"{tealeaf} Config[%@] = %@", key, [self.config objectForKey:key]);
 	}
 
+#ifndef DISABLE_TESTAPP
 	self.tableViewController = [[[ServerTableViewController alloc] init] autorelease];
 	self.appTableViewController = [[[AppTableViewController alloc] init] autorelease];
 	//TEALEAF_SPECIFIC_END
 
 	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
 	if (!isRemoteLoading) {
+#endif
 		[self.window addSubview:self.tealeafViewController.view];
 		self.window.rootViewController = self.tealeafViewController;
+#ifndef DISABLE_TESTAPP
 	} else {
 		[self.window addSubview:self.tableViewController.view];
 		self.window.rootViewController = self.tableViewController;
 	}
+#endif
 	[self.window makeKeyAndVisible];
 
 	return YES;
@@ -347,6 +353,7 @@
 }
 
 
+#ifndef DISABLE_TESTAPP
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
 	//delegate of NSNetService resolution process
@@ -354,6 +361,7 @@
 		[self.tableViewController addServerInfoFromAddressData:[sender.addresses objectAtIndex:0]];
 	}
 }
+#endif
 
 - (BOOL)application:(UIApplication *)application
 			openURL:(NSURL *)url
@@ -544,6 +552,10 @@ SplashDescriptor SPLASHES[] = {
 	}
 
 	return splashResource;
+}
+
++ (void)initPluginMode {
+	NSLog(@"{tealeaf} Initializing in plugin mode");
 }
 
 @end

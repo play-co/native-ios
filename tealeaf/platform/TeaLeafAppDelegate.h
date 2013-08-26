@@ -15,8 +15,10 @@
 
 #import <UIKit/UIKit.h>
 #import "TeaLeafViewController.h"
+#ifndef DISABLE_TESTAPP
 #import "ServerTableViewController.h"
 #import "AppTableViewController.h"
+#endif
 #import "PluginManager.h"
 #import "js_core.h"
 #import "OpenGLView.h"
@@ -40,8 +42,10 @@ struct SplashDescriptor {
 @property (nonatomic) BOOL tealeafShowing;
 @property (nonatomic) BOOL signalRestart;
 @property (nonatomic, retain) TeaLeafViewController *tealeafViewController;
+#ifndef DISABLE_TESTAPP
 @property (nonatomic, retain) ServerTableViewController *tableViewController;
 @property (nonatomic, retain) AppTableViewController *appTableViewController;
+#endif
 @property (nonatomic, retain) PluginManager *pluginManager;
 @property (nonatomic, retain) Reachability *reach;
 @property (nonatomic, retain) NSNetServiceBrowser *serviceBrowser;
@@ -106,5 +110,7 @@ struct SplashDescriptor {
 - (void)netServiceBrowser:(NSNetServiceBrowser *)browser
          didRemoveService:(NSNetService *)aNetService
                moreComing:(BOOL)moreComing;
+
++ (void)initPluginMode;
 
 @end

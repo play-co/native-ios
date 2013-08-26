@@ -160,6 +160,8 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 
 - (id)initWithFrame:(CGRect)frame {
+	NSLog(@"{OpenGL} Init with frame");
+
 	self = [super initWithFrame:frame];
 	if (self) {
 		// Adjust for retina displays

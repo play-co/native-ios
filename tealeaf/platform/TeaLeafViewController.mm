@@ -82,9 +82,39 @@ CEXPORT void device_hide_splash() {
 	
 	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
 	
-	// Default is to allow any sort of orientation on failure to read the manifest
-	self.appDelegate.gameSupportsLandscape = YES;
-	self.appDelegate.gameSupportsPortrait = YES;
+	NSArray *supportedOrientations = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"];
+
+	self.appDelegate.gameSupportsLandscape = NO;
+	self.appDelegate.gameSupportsPortrait = NO;
+
+	// If no orientations supported,
+	if (supportedOrientations) {
+		for (int ii = 0; ii < [supportedOrientations count]; ++ii) {
+			NSString *orientation = [supportedOrientations objectAtIndex:ii];
+
+			if ([orientation isEqualToString:@"UIInterfaceOrientationPortrait"]) {
+				NSLOG(@"{tealeaf} Game supports portrait mode: %@", orientation);
+				self.appDelegate.gameSupportsPortrait = YES;
+			} else if ([orientation isEqualToString:@"UIInterfaceOrientationPortraitUpsideDown"]) {
+				NSLOG(@"{tealeaf} Game supports portrait mode: %@", orientation);
+				self.appDelegate.gameSupportsPortrait = YES;
+			} else if ([orientation isEqualToString:@"UIInterfaceOrientationLandscapeLeft"]) {
+				NSLOG(@"{tealeaf} Game supports landscape mode: %@", orientation);
+				self.appDelegate.gameSupportsLandscape = YES;
+			} else if ([orientation isEqualToString:@"UIInterfaceOrientationLandscapeRight"]) {
+				NSLOG(@"{tealeaf} Game supports landscape mode: %@", orientation);
+				self.appDelegate.gameSupportsLandscape = YES;
+			}
+		}
+	}
+
+	// If no orientations supported,
+	if (!self.appDelegate.gameSupportsLandscape &&
+		!self.appDelegate.gameSupportsPortrait) {
+		// Support any orientation
+		self.appDelegate.gameSupportsLandscape = YES;
+		self.appDelegate.gameSupportsPortrait = YES;
+	}
 	
 	// Read manifest file
 	NSError *err = nil;
@@ -97,34 +127,13 @@ CEXPORT void device_hide_splash() {
 		length = strlen(manifest_utf8);
 		dict = [decoder objectWithUTF8String:(const unsigned char *)manifest_utf8 length:length error:&err];
 	}
-	
+
 	// If failed to load,
 	if (!dict) {
 		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", length);
 	} else {
 		self.appDelegate.appManifest = dict;
-		
-		@try {
-			// Look up supported orientations
-			NSArray *orientations = (NSArray *)[dict valueForKey:@"supportedOrientations"];
-			
-			// Now that we're getting some info from the manifest, just turn on the ones the game developer wanted
-			self.appDelegate.gameSupportsLandscape = NO;
-			self.appDelegate.gameSupportsPortrait = NO;
-			
-			for (int ii = 0, count = [orientations count]; ii < count; ++ii) {
-				NSString *str = (NSString *)[orientations objectAtIndex:ii];
-				NSLOG(@"{manifest} Read orientation: %@", str);
-				if ([str caseInsensitiveCompare:@"landscape"] == NSOrderedSame) {
-					self.appDelegate.gameSupportsLandscape = YES;
-				} else if ([str caseInsensitiveCompare:@"portrait"] == NSOrderedSame) {
-					self.appDelegate.gameSupportsPortrait = YES;
-				}
-			}
-		}
-		@catch (NSException *exception) {
-			NSLOG(@"{manifest} Failure to read orientation data: %@", [exception debugDescription]);
-		}
+		NSLOG(@"{manifest} Successfully read manifest file from bundle");
 	}
 	
 	return self;
@@ -140,14 +149,26 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) restartJS {
+	UIViewController *controller = nil;
+
+#ifndef DISABLE_TESTAPP
+	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
+	if (!isRemoteLoading) {
+#endif
+		controller = self.appDelegate.tealeafViewController;
+#ifndef DISABLE_TESTAPP
+	} else {
+		controller = self.appDelegate.appTableViewController;
+	}
+#endif
+
 	if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
 		[self.view removeFromSuperview];
 
-		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window addSubview:self.appDelegate.appTableViewController.view];
+		[self.appDelegate.window addSubview:controller.view];
 	} else {
-		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window setRootViewController:self.appDelegate.appTableViewController ];
+		[self.appDelegate.window setRootViewController:controller];
 	}
-
 	self.appDelegate.tealeafShowing = NO;
 
 	if (js_ready) {
@@ -302,12 +323,19 @@ CEXPORT void device_hide_splash() {
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillShowNotification object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillHideNotification object: nil];
 
-	// Lookup source path
-	const char *source_path = [[ResourceLoader get].appBundle UTF8String];
+	NSString *appBundle = [ResourceLoader get].appBundle;
+	const char *source_path = 0;
+
+	if (!appBundle) {
+		NSLog(@"{core} FATAL: Unable to load app bundle!");
+	} else {
+		source_path = [[ResourceLoader get].appBundle UTF8String];
+	}
+
 	if (!source_path || *source_path == '\0') {
 		source_path = [[self.appDelegate.config objectForKey:@"source_dir"] UTF8String];
 	}
-
+	
 	core_init([[self.appDelegate.config objectForKey:@"entry_point"] UTF8String],
 			  [[self.appDelegate.config	objectForKey:@"tcp_host"] UTF8String],
 			  [[self.appDelegate.config	objectForKey:@"code_host"] UTF8String],
