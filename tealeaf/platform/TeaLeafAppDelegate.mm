@@ -90,30 +90,35 @@
 		NSLOG(@"{tealeaf} Config[%@] = %@", key, [self.config objectForKey:key]);
 	}
 
+	// Detect test-app mode
+	self.isTestApp = NO;
 #ifndef DISABLE_TESTAPP
-	self.tableViewController = [[[ServerTableViewController alloc] init] autorelease];
-	self.appTableViewController = [[[AppTableViewController alloc] init] autorelease];
-	//TEALEAF_SPECIFIC_END
-
 	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
-	if (!isRemoteLoading) {
-#endif
-		[self.window addSubview:self.tealeafViewController.view];
-		self.window.rootViewController = self.tealeafViewController;
-#ifndef DISABLE_TESTAPP
-	} else {
+	if (isRemoteLoading) {
+		self.isTestApp = YES;
+
+		// Initialize test app controllers
+		self.tableViewController = [[[ServerTableViewController alloc] init] autorelease];
+		self.appTableViewController = [[[AppTableViewController alloc] init] autorelease];
+
+		// Start up in table view
 		[self.window addSubview:self.tableViewController.view];
 		self.window.rootViewController = self.tableViewController;
 	}
 #endif
+	
+	if (!self.isTestApp) {
+		[self.window addSubview:self.tealeafViewController.view];
+		self.window.rootViewController = self.tealeafViewController;
+	}
+
 	[self.window makeKeyAndVisible];
 
 	return YES;
 }
 
 - (void) restartJS {
-	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
-	if (!isRemoteLoading) {
+	if (!self.isTestApp) {
 		if (js_ready) {
 			if (!self.signalRestart) {
 				self.signalRestart = YES;

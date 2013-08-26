@@ -108,14 +108,6 @@ CEXPORT void device_hide_splash() {
 		}
 	}
 
-	// If no orientations supported,
-	if (!self.appDelegate.gameSupportsLandscape &&
-		!self.appDelegate.gameSupportsPortrait) {
-		// Support any orientation
-		self.appDelegate.gameSupportsLandscape = YES;
-		self.appDelegate.gameSupportsPortrait = YES;
-	}
-	
 	// Read manifest file
 	NSError *err = nil;
 	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
@@ -133,7 +125,41 @@ CEXPORT void device_hide_splash() {
 		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", length);
 	} else {
 		self.appDelegate.appManifest = dict;
+
 		NSLOG(@"{manifest} Successfully read manifest file from bundle");
+
+		// If in test-app mode,
+		if (self.appDelegate.isTestApp) {
+			@try {
+				// Look up supported orientations
+				NSArray *orientations = (NSArray *)[dict valueForKey:@"supportedOrientations"];
+				
+				// Now that we're getting some info from the manifest, just turn on the ones the game developer wanted
+				self.appDelegate.gameSupportsLandscape = NO;
+				self.appDelegate.gameSupportsPortrait = NO;
+				
+				for (int ii = 0, count = [orientations count]; ii < count; ++ii) {
+					NSString *str = (NSString *)[orientations objectAtIndex:ii];
+					NSLOG(@"{manifest} Read orientation: %@", str);
+					if ([str caseInsensitiveCompare:@"landscape"] == NSOrderedSame) {
+						self.appDelegate.gameSupportsLandscape = YES;
+					} else if ([str caseInsensitiveCompare:@"portrait"] == NSOrderedSame) {
+						self.appDelegate.gameSupportsPortrait = YES;
+					}
+				}
+			}
+			@catch (NSException *exception) {
+				NSLOG(@"{manifest} Failure to read orientation data: %@", [exception debugDescription]);
+			}
+		}
+	}
+
+	// If no orientations supported,
+	if (!self.appDelegate.gameSupportsLandscape &&
+		!self.appDelegate.gameSupportsPortrait) {
+		// Support any orientation
+		self.appDelegate.gameSupportsLandscape = YES;
+		self.appDelegate.gameSupportsPortrait = YES;
 	}
 	
 	return self;
@@ -152,8 +178,7 @@ CEXPORT void device_hide_splash() {
 	UIViewController *controller = nil;
 
 #ifndef DISABLE_TESTAPP
-	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
-	if (!isRemoteLoading) {
+	if (!self.appDelegate.isTestApp) {
 #endif
 		controller = self.appDelegate.tealeafViewController;
 #ifndef DISABLE_TESTAPP
@@ -342,7 +367,7 @@ CEXPORT void device_hide_splash() {
 			  [[self.appDelegate.config	objectForKey:@"tcp_port"] intValue],
 			  [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
 			  source_path, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels,
-			  [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue],
+			  self.appDelegate.isTestApp,
 			  [self.appDelegate.screenBestSplash UTF8String],
 			  "");
 	
@@ -432,8 +457,9 @@ CEXPORT void device_hide_splash() {
 	});
 	
 	[self.appDelegate.canvas startRendering];
-	
-	if ([[self.appDelegate.config objectForKey:@"remote_loading"] boolValue]) {
+
+#ifndef DISABLE_TESTAPP
+	if (self.appDelegate.isTestApp) {
 		UIRotationGestureRecognizer *rotationRecognizer =
 		[[UIRotationGestureRecognizer alloc]
 		initWithTarget:self
@@ -446,6 +472,7 @@ CEXPORT void device_hide_splash() {
 								   cancelButtonTitle:@"No"
 								   otherButtonTitles:@"Yes", nil];
 	}
+#endif
 }
 
 - (void) onKeyboardChange:(NSNotification *)info {

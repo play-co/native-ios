@@ -34,6 +34,7 @@ struct SplashDescriptor {
 @interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic) BOOL isTestApp;							// Is in test-app mode?
 @property (nonatomic, retain) NSMutableDictionary *config;         // Configuration config.plist file dictionary
 @property (nonatomic, retain) js_core *js;
 @property (nonatomic, retain) OpenGLView *canvas;

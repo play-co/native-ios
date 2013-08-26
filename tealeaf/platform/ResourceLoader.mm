@@ -160,12 +160,10 @@ static int base_path_len = 0;
 		url = [url substringFromIndex:8];
 	}
 	
-	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
-
-	if (!isRemoteLoading) {
-		return [self resolveFile:url inBundle:inBundle];
-	} else {
+	if (self.appDelegate.isTestApp) {
 		return [self resolveFileUrl:url];
+	} else {
+		return [self resolveFile:url inBundle:inBundle];
 	}
 }
 
