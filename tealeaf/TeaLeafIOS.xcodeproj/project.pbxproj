@@ -88,7 +88,6 @@
 		D5BC66F41635D0270059EC0F /* icon144.png in Resources */ = {isa = PBXBuildFile; fileRef = D5795622159A79DB000DDEA3 /* icon144.png */; };
 		D5BC66F51635D0270059EC0F /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = D579562F159A7B7E000DDEA3 /* Default-Landscape@2x~ipad.png */; };
 		D5BC66F61635D0270059EC0F /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = D5795631159A7B99000DDEA3 /* Default-Portrait@2x~ipad.png */; };
-		D5BC66F71635D0270059EC0F /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = D540B1BD15B9FAF600B0D6C0 /* MainWindow.xib */; };
 		D5BC66F81635D0270059EC0F /* config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E5D39B415D062030088D41D /* config.plist */; };
 		D5BC66F91635D0270059EC0F /* resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4EC8F76915D1E264008DAED6 /* resources.bundle */; };
 		D5BC66FA1635D0270059EC0F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E3BA03C160BDD5A0070C5FF /* Default-568h@2x.png */; };
@@ -387,29 +386,7 @@
 		4EC8F76915D1E264008DAED6 /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = resources.bundle; sourceTree = "<group>"; };
 		4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		4EE0B9E117BC88A8002A18DA /* libgpg-error.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libgpg-error.a"; sourceTree = "<group>"; };
-		4EE0BA8617BDFBF1002A18DA /* ContactList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContactList.h; path = "../../../../weeby-js/plugin/ios/ContactList.h"; sourceTree = "<group>"; };
-		4EE0BA8717BDFBF1002A18DA /* ContactList.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ContactList.mm; path = "../../../../weeby-js/plugin/ios/ContactList.mm"; sourceTree = "<group>"; };
-		4EE0BA8817BDFBF1002A18DA /* libstrophe.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstrophe.a; path = "../../../../weeby-js/plugin/ios/libstrophe.a"; sourceTree = "<group>"; };
-		4EE0BA8917BDFBF1002A18DA /* WeebyGlobalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeebyGlobalStorage.h; path = "../../../../weeby-js/plugin/ios/WeebyGlobalStorage.h"; sourceTree = "<group>"; };
-		4EE0BA8A17BDFBF1002A18DA /* WeebyGlobalStorage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = WeebyGlobalStorage.mm; path = "../../../../weeby-js/plugin/ios/WeebyGlobalStorage.mm"; sourceTree = "<group>"; };
-		4EE0BA8B17BDFBF1002A18DA /* WeebyPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeebyPlugin.h; path = "../../../../weeby-js/plugin/ios/WeebyPlugin.h"; sourceTree = "<group>"; };
-		4EE0BA8C17BDFBF1002A18DA /* WeebyPlugin.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = WeebyPlugin.mm; path = "../../../../weeby-js/plugin/ios/WeebyPlugin.mm"; sourceTree = "<group>"; };
-		4EE0BA9517BDFC5F002A18DA /* NBNumberFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBNumberFormat.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBNumberFormat.h"; sourceTree = "<group>"; };
-		4EE0BA9617BDFC5F002A18DA /* NBNumberFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBNumberFormat.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBNumberFormat.m"; sourceTree = "<group>"; };
-		4EE0BA9717BDFC5F002A18DA /* NBPhoneMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneMetaData.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneMetaData.h"; sourceTree = "<group>"; };
-		4EE0BA9817BDFC5F002A18DA /* NBPhoneMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneMetaData.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneMetaData.m"; sourceTree = "<group>"; };
-		4EE0BA9917BDFC5F002A18DA /* NBPhoneNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumber.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumber.h"; sourceTree = "<group>"; };
-		4EE0BA9A17BDFC5F002A18DA /* NBPhoneNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneNumber.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumber.m"; sourceTree = "<group>"; };
-		4EE0BA9B17BDFC5F002A18DA /* NBPhoneNumberDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumberDefines.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberDefines.h"; sourceTree = "<group>"; };
-		4EE0BA9C17BDFC5F002A18DA /* NBPhoneNumberDesc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumberDesc.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberDesc.h"; sourceTree = "<group>"; };
-		4EE0BA9D17BDFC5F002A18DA /* NBPhoneNumberDesc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneNumberDesc.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberDesc.m"; sourceTree = "<group>"; };
-		4EE0BA9E17BDFC5F002A18DA /* NBPhoneNumberUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBPhoneNumberUtil.h; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberUtil.h"; sourceTree = "<group>"; };
-		4EE0BA9F17BDFC5F002A18DA /* NBPhoneNumberUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBPhoneNumberUtil.m; path = "../../../../weeby-js/plugin/ios/libPhoneNumber-iOS/libPhoneNumber/NBPhoneNumberUtil.m"; sourceTree = "<group>"; };
 		4EE0BAAB17BDFC7B002A18DA /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
-		4EE0BAAF17BDFD42002A18DA /* chat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = chat.cpp; path = "../../../../weeby-js/plugin/native_shared/src/chat.cpp"; sourceTree = "<group>"; };
-		4EE0BAB317BDFD59002A18DA /* chat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = chat.h; path = "../../../../weeby-js/plugin/native_shared/include/chat.h"; sourceTree = "<group>"; };
-		4EE0BAB417BDFD59002A18DA /* strophe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strophe.h; path = "../../../../weeby-js/plugin/native_shared/include/strophe.h"; sourceTree = "<group>"; };
-		4EE0BAB517BDFD59002A18DA /* strophepp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strophepp.h; path = "../../../../weeby-js/plugin/native_shared/include/strophepp.h"; sourceTree = "<group>"; };
 		4EFF545B16165167000C3AFD /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		4EFF545C16165167000C3AFD /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		54212FAD162D0AD4004625D0 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
@@ -436,7 +413,6 @@
 		A25F91F81489AC0300B39375 /* TeaLeafIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeaLeafIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D510CFBE139059A20066D881 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		D5121A771593B42F00C2169F /* native.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = native.mm; sourceTree = "<group>"; };
-		D540B1BD15B9FAF600B0D6C0 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		D54113A51783E7AD002B6E3E /* RawImageInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawImageInfo.h; sourceTree = "<group>"; };
 		D54113A61783E7AD002B6E3E /* RawImageInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RawImageInfo.m; sourceTree = "<group>"; };
 		D551A730178E4EA30028DACC /* curl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curl.h; sourceTree = "<group>"; };
@@ -660,9 +636,7 @@
 				D55821D1150E7C7600549BF6 /* platform */,
 				D55821FF150E7C7600549BF6 /* resources */,
 				D510CFBE139059A20066D881 /* Entitlements.plist */,
-				29B97315FDCFA39411CA2CEA /* Main */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				4EE0BA8517BDFBC2002A18DA /* WeebySpecific */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				D579562F159A7B7E000DDEA3 /* Default-Landscape@2x~ipad.png */,
@@ -679,14 +653,6 @@
 				D57955FD159A771E000DDEA3 /* TeaLeafIOS-Info.plist */,
 			);
 			name = CustomTemplate;
-			sourceTree = "<group>";
-		};
-		29B97315FDCFA39411CA2CEA /* Main */ = {
-			isa = PBXGroup;
-			children = (
-				D540B1BD15B9FAF600B0D6C0 /* MainWindow.xib */,
-			);
-			name = Main;
 			sourceTree = "<group>";
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
@@ -863,43 +829,6 @@
 				4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */,
 			);
 			path = testapp;
-			sourceTree = "<group>";
-		};
-		4EE0BA8517BDFBC2002A18DA /* WeebySpecific */ = {
-			isa = PBXGroup;
-			children = (
-				4EE0BAB317BDFD59002A18DA /* chat.h */,
-				4EE0BAB417BDFD59002A18DA /* strophe.h */,
-				4EE0BAB517BDFD59002A18DA /* strophepp.h */,
-				4EE0BAAF17BDFD42002A18DA /* chat.cpp */,
-				4EE0BA9417BDFBFE002A18DA /* libPhoneNumber */,
-				4EE0BA8617BDFBF1002A18DA /* ContactList.h */,
-				4EE0BA8717BDFBF1002A18DA /* ContactList.mm */,
-				4EE0BA8817BDFBF1002A18DA /* libstrophe.a */,
-				4EE0BA8917BDFBF1002A18DA /* WeebyGlobalStorage.h */,
-				4EE0BA8A17BDFBF1002A18DA /* WeebyGlobalStorage.mm */,
-				4EE0BA8B17BDFBF1002A18DA /* WeebyPlugin.h */,
-				4EE0BA8C17BDFBF1002A18DA /* WeebyPlugin.mm */,
-			);
-			name = WeebySpecific;
-			sourceTree = "<group>";
-		};
-		4EE0BA9417BDFBFE002A18DA /* libPhoneNumber */ = {
-			isa = PBXGroup;
-			children = (
-				4EE0BA9517BDFC5F002A18DA /* NBNumberFormat.h */,
-				4EE0BA9617BDFC5F002A18DA /* NBNumberFormat.m */,
-				4EE0BA9717BDFC5F002A18DA /* NBPhoneMetaData.h */,
-				4EE0BA9817BDFC5F002A18DA /* NBPhoneMetaData.m */,
-				4EE0BA9917BDFC5F002A18DA /* NBPhoneNumber.h */,
-				4EE0BA9A17BDFC5F002A18DA /* NBPhoneNumber.m */,
-				4EE0BA9B17BDFC5F002A18DA /* NBPhoneNumberDefines.h */,
-				4EE0BA9C17BDFC5F002A18DA /* NBPhoneNumberDesc.h */,
-				4EE0BA9D17BDFC5F002A18DA /* NBPhoneNumberDesc.m */,
-				4EE0BA9E17BDFC5F002A18DA /* NBPhoneNumberUtil.h */,
-				4EE0BA9F17BDFC5F002A18DA /* NBPhoneNumberUtil.m */,
-			);
-			name = libPhoneNumber;
 			sourceTree = "<group>";
 		};
 		54212FAC162D0AAE004625D0 /* Base64 */ = {
@@ -1354,7 +1283,6 @@
 				D5BC66F41635D0270059EC0F /* icon144.png in Resources */,
 				D5BC66F51635D0270059EC0F /* Default-Landscape@2x~ipad.png in Resources */,
 				D5BC66F61635D0270059EC0F /* Default-Portrait@2x~ipad.png in Resources */,
-				D5BC66F71635D0270059EC0F /* MainWindow.xib in Resources */,
 				D5BC66F81635D0270059EC0F /* config.plist in Resources */,
 				D5BC66F91635D0270059EC0F /* resources.bundle in Resources */,
 				D5BC66FA1635D0270059EC0F /* Default-568h@2x.png in Resources */,

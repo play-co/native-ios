@@ -212,7 +212,7 @@ CEXPORT void device_hide_splash() {
 	UIViewController *controller = nil;
 
 #ifndef UNITY
-	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
+	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
 	if (!isRemoteLoading) {
 #endif
 		controller = self.appDelegate.tealeafViewController;
