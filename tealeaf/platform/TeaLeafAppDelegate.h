@@ -98,6 +98,7 @@ struct SplashDescriptor {
 - (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *) userInfo;
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken;
 
+#ifndef DISABLE_TESTAPP
 // NSNetServiceBrowser delegate methods for service browsing
 - (void)netServiceDidResolveAddress:(NSNetService *)sender;
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict;
@@ -111,6 +112,7 @@ struct SplashDescriptor {
 - (void)netServiceBrowser:(NSNetServiceBrowser *)browser
          didRemoveService:(NSNetService *)aNetService
                moreComing:(BOOL)moreComing;
+#endif
 
 + (void)initPluginMode;
 

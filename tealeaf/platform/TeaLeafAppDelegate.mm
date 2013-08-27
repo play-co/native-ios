@@ -296,6 +296,8 @@
 }
 
 
+#ifndef DISABLE_TESTAPP
+
 #pragma mark Network Search
 // Sent when browsing begins
 - (void)netServiceBrowserWillSearch:(NSNetServiceBrowser *)browser
@@ -335,20 +337,6 @@
 	[aNetService resolveWithTimeout:20.0];
 }
 
-- (NSString *)getStringFromAddressData:(NSData *)dataIn {
-	//Function to parse address from NSData
-	struct sockaddr_in	*socketAddress = nil;
-	NSMutableString			   *ipString = nil;
-	
-	socketAddress = (struct sockaddr_in *)[dataIn bytes];
-	ipString = [NSMutableString stringWithFormat: @"%s",
-				inet_ntoa(socketAddress->sin_addr)];  ///problem here
-	[ipString appendString:@":"];
-	int port = ntohs(socketAddress->sin_port);
-	[ipString appendFormat:@"%d", port];
-	return ipString;
-}
-
 // Sent when a service disappears
 - (void)netServiceBrowser:(NSNetServiceBrowser *)browser
 		 didRemoveService:(NSNetService *)aNetService
@@ -357,8 +345,6 @@
 	[self.services removeObject:aNetService];
 }
 
-
-#ifndef DISABLE_TESTAPP
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
 	//delegate of NSNetService resolution process
@@ -366,7 +352,8 @@
 		[self.tableViewController addServerInfoFromAddressData:[sender.addresses objectAtIndex:0]];
 	}
 }
-#endif
+
+#endif // DISABLE_TESTAPP
 
 - (BOOL)application:(UIApplication *)application
 			openURL:(NSURL *)url

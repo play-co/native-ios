@@ -443,7 +443,7 @@ JSAG_OBJECT_END
 
 	if (JS_EvaluateUCScript(self.cx, self.global, buffer, unicode_length,
 	[uniqueName cStringUsingEncoding:NSASCIIStringEncoding], 1, &rval) != JS_TRUE) {
-		NSLOG(@"{js} Error while evaluating JavaScript from %@", path);
+		NSLOG(@"{js} Error while evaluating JavaScript from %@ (%d script chars)", path, (int)length);
 	}
 
 	JS_EndRequest(self.cx);
