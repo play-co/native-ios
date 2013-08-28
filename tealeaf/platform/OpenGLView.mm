@@ -23,9 +23,9 @@
 
 void timestep_animation_tick_animations(double);
 
-CADisplayLink* displayLink;
 @implementation OpenGLView
 
+static CADisplayLink *displayLink;
 
 - (id)init {
 	self = [super init];
@@ -36,6 +36,14 @@ CADisplayLink* displayLink;
 	return self;
 }
 
+- (void)dealloc
+{
+	NSLog(@"Exciting: Deallocating OpenGLView");
+	
+	[self destroyDisplayLink];
+
+	[super dealloc];
+}
 
 + (Class)layerClass {
 	return [CAEAGLLayer class];
@@ -154,8 +162,13 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
-- (void) destroyDisplayLink {
+- (void)destroyDisplayLink {
+	[self stopRendering];
+
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+
+	[_context release];
+	_context = nil;
 }
 
 
@@ -245,14 +258,6 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	if ([touchData count] == 0) {
 		_id = 0;
 	}
-}
-
-- (void)dealloc
-{
-	[self destroyDisplayLink];
-	[_context release];
-	_context = nil;
-	[super dealloc];
 }
 
 @end

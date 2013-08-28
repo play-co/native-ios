@@ -37,6 +37,9 @@
 
 - (void)stopRendering;
 
+- (void)setupDisplayLink;
+
+- (void)destroyDisplayLink;
 
 
 @end

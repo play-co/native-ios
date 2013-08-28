@@ -272,3 +272,14 @@ SoundManager *globalSoundManager = NULL;
 }
 
 @end
+
+extern "C" {
+
+void sound_manager_halt() {
+	SoundManager *mgr = [SoundManager get];
+
+	[mgr clearEffects];
+	[mgr stopBackgroundMusic];
+}
+
+} // extern C

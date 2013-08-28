@@ -60,7 +60,7 @@
 	return js_ready;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *) options {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options {
 	//SEARCH FOR NETWORKS
 	self.services = [NSMutableArray array];
 	self.serviceBrowser = [[NSNetServiceBrowser alloc] init];
@@ -69,6 +69,8 @@
 	self.tealeafShowing = NO;
 	self.launchNotification = [options objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
 	self.wasPaused = NO;
+	self.startOptions = options;
+
 	UIApplication *app = [UIApplication sharedApplication];
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 
@@ -128,7 +130,7 @@
 					core_reset();
 					
 					[self.tealeafViewController release];
-					
+
 					self.tealeafViewController = [[TeaLeafViewController alloc] init];
 					
 					[self.window addSubview:self.tealeafViewController.view];
