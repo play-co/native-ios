@@ -30,7 +30,6 @@ exports.init = function(common) {
 
 exports.load = function(common) {
 	common.config.set("ios:root", path.resolve(__dirname))
-	common.config.write();
 
 	require(common.paths.root('src', 'testapp')).registerTarget("native-ios", path.join(__dirname, "build"));
 }
