@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C4B37BE7-5DF0-4B6E-9B96-58E69274B19F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TeaLeafIOS</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>2B6BDB0B-A208-41E9-AB44-369BB4330F06</key>
+		<string>https://github.com/gameclosure/native-core-priv.git</string>
+		<key>79686336-5538-4689-B3CD-7F2B247309C8</key>
+		<string>https://github.com/gameclosure/native-ios-priv</string>
+		<key>D36A392F-1E2A-4404-A45D-2C7F67FC0CEF</key>
+		<string>https://github.com/gameclosure/jansson.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>tealeaf/TeaLeafIOS.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>2B6BDB0B-A208-41E9-AB44-369BB4330F06</key>
+		<string>../../native-core</string>
+		<key>79686336-5538-4689-B3CD-7F2B247309C8</key>
+		<string>../../..</string>
+		<key>D36A392F-1E2A-4404-A45D-2C7F67FC0CEF</key>
+		<string>../../deps/jansson</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/gameclosure/native-ios-priv</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>79686336-5538-4689-B3CD-7F2B247309C8</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D36A392F-1E2A-4404-A45D-2C7F67FC0CEF</string>
+			<key>IDESourceControlWCCName</key>
+			<string>jansson</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2B6BDB0B-A208-41E9-AB44-369BB4330F06</string>
+			<key>IDESourceControlWCCName</key>
+			<string>native-core</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>79686336-5538-4689-B3CD-7F2B247309C8</string>
+			<key>IDESourceControlWCCName</key>
+			<string>native-ios-priv</string>
+		</dict>
+	</array>
+</dict>
+</plist>

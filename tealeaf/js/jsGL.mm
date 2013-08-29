@@ -763,6 +763,29 @@ JSAG_MEMBER_BEGIN(touchTexture, 1)
 }
 JSAG_MEMBER_END
 
+JSAG_MEMBER_BEGIN(toDataURL, 1)
+{
+	JSAG_ARG_OBJECT(js_ctx);
+    jsval ctx_val;
+	JSObject *_ctx;
+	JS_GetProperty(cx, js_ctx, "_ctx", &ctx_val);
+    JS_ValueToObject(cx, ctx_val, &_ctx);
+	context_2d* ctx = static_cast<context_2d*>(JSAG_GET_PRIVATE(_ctx));
+    char * data = context_2d_save_buffer_to_base64(ctx, "PNG");
+	LOG("jared %s", data);
+
+	if (data != NULL) {
+		JSAG_RETURN_CSTR(data)
+		free(data);
+	} else {
+        JSAG_RETURN_CSTR("")
+	}
+;
+
+}
+JSAG_MEMBER_END
+
+
 JSAG_MEMBER_BEGIN_NOARGS(destroy)
 {
 	context_2d_delete(GET_CONTEXT_2D());
@@ -772,6 +795,7 @@ JSAG_MEMBER_END_NOARGS
 JSAG_OBJECT_START(gl)
 JSAG_OBJECT_MEMBER_NAMED(_loadImage, loadImage)
 JSAG_OBJECT_MEMBER(flushImages)
+JSAG_OBJECT_MEMBER(toDataURL)
 JSAG_OBJECT_MEMBER(newTexture)
 JSAG_OBJECT_MEMBER(deleteAllTextures)
 JSAG_OBJECT_MEMBER(deleteTexture)
