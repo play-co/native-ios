@@ -29,7 +29,10 @@ var rsyncLogger;
 
 var installAddons = function(builder, project, opts, addonConfig, next) {
 	var paths = builder.common.paths;
-	var addons = Object.keys(project.getAddonConfig());
+	var addons = project.getAddonConfig();
+	if (!Array.isArray(addons)) {
+		addons = Object.keys(addons);
+	}
 
 	var f = ff(this, function() {
 
