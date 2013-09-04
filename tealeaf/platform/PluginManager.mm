@@ -180,7 +180,6 @@ JSAG_OBJECT_END
 - (void) dispatchJSEventWithJSONString: (NSString*) str {
     if (m_core) {
         JSContext *cx = m_core.cx;
-
 		dispatch_async(dispatch_get_main_queue(), ^{
             if (m_core) {
                 JS_BeginRequest(cx);
