@@ -1255,7 +1255,7 @@ exports.build = function(builder, project, opts, next) {
 		// If IPA generation was requested,
 		if (argv.ipa) {
 			// TODO: Debug mode is currently turned off because it does not build
-			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.shortName, false, provision, developer, manifest.shortName+'.ipa', f());
+			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.ios.bundleID, false, provision, developer, manifest.shortName+'.ipa', false, f());
 		}
 	}, function() {
 		if (argv['js-only']) {
