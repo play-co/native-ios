@@ -1158,7 +1158,7 @@ exports.build = function(builder, project, opts, next) {
 	// If IPA mode,
 	var developer, provision;
 	if (argv.ipa) {
-		developer = argv.name;
+		developer = argv.developer;
 		if (typeof developer !== "string") {
 			developer = manifest.ios && manifest.ios.developer;
 		}
