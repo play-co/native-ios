@@ -116,7 +116,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		CFTimeInterval timestamp = CFAbsoluteTimeGetCurrent();
 		int dt = (int)(1000 * (timestamp - last_timestamp));
 		core_tick(dt);
-
+		
 		// Measure time to perform a tick
 		// CFTimeInterval after_tick = CFAbsoluteTimeGetCurrent();
 
