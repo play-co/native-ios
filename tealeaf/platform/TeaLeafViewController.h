@@ -31,6 +31,9 @@ UITextField *inputAccTextField;
 @property (nonatomic, retain) UIAlertView *backAlertView;
 @property (nonatomic, retain) UIImagePickerController *imagePickerController;
 @property (nonatomic, retain) NSString *photoURL;
+@property int photoWidth;
+@property int photoHeight;
+- (TeaLeafViewController*) init;
 
 - (TeaLeafViewController *) init;
 

@@ -11,7 +11,7 @@
 	<key>code_host</key>
 	<string>localhost</string>
 	<key>code_path</key>
-	<string>native.js.mp3</string>
+	<string>native.js</string>
 	<key>code_port</key>
 	<integer>9200</integer>
 	<key>contacts_url</key>

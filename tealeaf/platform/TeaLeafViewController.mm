@@ -563,19 +563,19 @@ CEXPORT void device_hide_splash() {
 	[self runCallback: args];
 }
 
-- (void)showImagePickerForCamera: (NSString *) url
+- (void)showImagePickerForCamera: (NSString *) url width: (int)width height: (int)height
 {
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL: url];
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL: url width: width height: height];
 }
 
 
-- (void)showImagePickerForPhotoPicker: (NSString *) url
+- (void)showImagePickerForPhotoPicker: (NSString *) url width: (int)width height: (int)height
 {
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL: url];
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL: url width: width height: height];
 }
 
 
-- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL: (NSString *) url
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL: (NSString *) url width: (int)width height: (int)height
 {
        
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
@@ -583,6 +583,8 @@ CEXPORT void device_hide_splash() {
     imagePickerController.sourceType = sourceType;
     imagePickerController.delegate = self;
     self.photoURL = url;
+	self.photoWidth = width;
+    self.photoHeight = height;
     
     self.imagePickerController = imagePickerController;
     [self presentViewController:self.imagePickerController animated:YES completion:nil];
@@ -597,11 +599,36 @@ CEXPORT void device_hide_splash() {
     return newImage;
 }
 
+- (UIImage *)cropWithImage:(UIImage *)image withRect:(CGRect)rect {
+    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+    UIImage *result = [UIImage imageWithCGImage:imageRef scale:1.f orientation:UIImageOrientationUp];
+    CGImageRelease(imageRef);
+    return result;
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    CGSize size = CGSizeMake(128, 128);
+    float bmpWidth = image.size.width;
+    float bmpHeight = image.size.height;
+    float scale = 1.f;
+    int clampedSize = 0;
+    if (self.photoWidth / bmpWidth > self.photoHeight / bmpHeight) {
+        scale =self.photoWidth / bmpWidth;
+        clampedSize = self.photoHeight;
+    } else {
+        scale =self.photoHeight / bmpHeight;
+        clampedSize = self.photoWidth;
+    }
+    
+    CGSize size = CGSizeMake(scale * bmpWidth, scale * bmpHeight);
     image = [self imageWithImage: image scaledToSize: size];
+    image = [self cropWithImage:image withRect:CGRectMake(
+                                                    (image.size.width / 2) - self.photoWidth / 2,
+                                                    (image.size.height / 2.f) - self.photoHeight / 2.f,
+                                                    self.photoWidth,
+                                                    self.photoHeight)];
     //TODO send an event to JS
     
     NSData *data = UIImagePNGRepresentation(image);

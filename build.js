@@ -1122,7 +1122,7 @@ function makeIOSProject(builder, opts, next) {
 			game_hash: gameHash || "ios",
 			sdk_hash: sdkHash || "ios",
 			native_hash: nativeHash || "ios",
-			code_path: 'native.js.mp3',
+			code_path: 'native.js',
 			studio_name: (manifest.studio && manifest.studio.name) || "example.studio",
 
 			apple_id: manifest.ios.appleID || "example.appleid",

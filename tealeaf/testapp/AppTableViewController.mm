@@ -325,17 +325,17 @@ static NSThread *appLoadListThread = nil;
 	NSString *port = [self.appDelegate.config objectForKey:@"code_port"];
 	NSString *url = [NSString stringWithFormat:@"http://%@:%@", ip, port];
 	NSString *simulateURL = [NSString stringWithFormat:@"%@/simulate/debug/%@/native-ios/", url, appInfo._id];
-	//get native.js.mp3
-    NSString *nativeJSURL = [[NSString stringWithFormat:@"%@native.js.mp3", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	//get native.js
+    NSString *nativeJSURL = [[NSString stringWithFormat:@"%@native.js", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	NSData *jsData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:nativeJSURL]];
     
     if (!jsData) {
-        NSLog(@"native.js.mp3 failed to download from %@", nativeJSURL);
+        NSLog(@"native.js failed to download from %@", nativeJSURL);
         exit(1);
     }
     
-	//write native.js.mp3 to file
-	[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"native.js.mp3"] withData:jsData];
+	//write native.js to file
+	[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"native.js"] withData:jsData];
 	
 	//get the correct loading.png
 	SplashDescriptor* bestSplash = [self.appDelegate findBestSplashDescriptor];
@@ -369,8 +369,8 @@ static NSThread *appLoadListThread = nil;
 		NSString *documentsDirectory = [paths objectAtIndex:0];
 
 		json_object_foreach(res_obj, key, value) {
-			//skip native.js.mp3
-			if (strcmp(key, "native.js.mp3") == 0) {
+			//skip native.js
+			if (strcmp(key, "native.js") == 0) {
 				continue;
 			}
 
