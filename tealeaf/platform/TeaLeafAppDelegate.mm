@@ -23,6 +23,7 @@
 #include "texture_manager.h"
 #include "core/config.h"
 #include "core/events.h"
+#include "core/platform/sound_manager.h"
 #import "core/core_js.h"
 #include "platform.h"
 #include "jsonUtil.h"
@@ -60,7 +61,7 @@
 	return js_ready;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)options {
+- (BOOL)application:(UIApplication *)app didFinishLaunchingWithOptions:(NSDictionary *)options {
 	//SEARCH FOR NETWORKS
 	self.services = [NSMutableArray array];
 	self.serviceBrowser = [[NSNetServiceBrowser alloc] init];
@@ -71,13 +72,12 @@
 	self.wasPaused = NO;
 	self.startOptions = options;
 
-	UIApplication *app = [UIApplication sharedApplication];
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
 
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+    [app registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 
 	//TEALEAF_SPECIFIC_START
@@ -257,6 +257,53 @@
 	[self.canvas stopRendering];
 }
 
+// This function is used to put Tealeaf into a deep sleep.
+// It pauses JS without destroying the JS engine state and
+// frees all memory for native resources.
+- (void) sleepJS {
+	LOG("{tealeaf} Going to sleep...");
+	
+	self.wasPaused = YES;
+	
+	[self.canvas stopRendering];
+	
+	if (js_ready) {
+		[self postPauseEvent:self.wasPaused];
+	}
+
+	// Remove tealeaf window from screen
+	[self.window removeFromSuperview];
+	self.tealeafShowing = NO;
+
+	texture_manager_destroy(texture_manager_get());
+	sound_manager_halt();
+
+	[self.tealeafViewController destroyGLView];
+}
+
+- (void) wakeJS {
+	LOG("{tealeaf} Waking up...");
+
+	[self.tealeafViewController createGLView];
+
+	[self.window makeKeyAndVisible];
+	[self.window addSubview:self.tealeafViewController.view];
+	[self.window setRootViewController:self.tealeafViewController];
+	[self.window bringSubviewToFront:self.tealeafViewController.view];
+
+	self.wasPaused = NO;
+	[self.canvas startRendering];
+	[self postPauseEvent:self.wasPaused];
+	
+	if (js_ready) {
+		[self postPauseEvent:self.wasPaused];
+	}
+
+	if (self.pluginManager) {
+		[self.pluginManager applicationDidBecomeActive:[UIApplication sharedApplication]];
+	}
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
 	self.wasPaused = YES;
 	
@@ -273,7 +320,7 @@
 	self.wasPaused = NO;
 	[self.canvas startRendering];
 	[self postPauseEvent:self.wasPaused];
-	
+
 	if (js_ready) {
 		[self postPauseEvent:self.wasPaused];
 	}
@@ -546,10 +593,6 @@ SplashDescriptor SPLASHES[] = {
 	}
 
 	return splashResource;
-}
-
-+ (void)initPluginMode {
-	NSLog(@"{tealeaf} Initializing in plugin mode");
 }
 
 @end

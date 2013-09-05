@@ -115,6 +115,7 @@ struct SplashDescriptor {
                moreComing:(BOOL)moreComing;
 #endif
 
-+ (void)initPluginMode;
+- (void) sleepJS;
+- (void) wakeJS;
 
 @end

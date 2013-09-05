@@ -329,6 +329,33 @@ CEXPORT void device_hide_splash() {
 	core_dispatch_event([evt UTF8String]);
 }
 
+- (void) destroyGLView {
+	OpenGLView *glView = self.appDelegate.canvas;
+
+	[glView destroyDisplayLink];
+
+	[glView removeFromSuperview];
+
+	self.view = nil;
+	self.appDelegate.canvas = nil;
+}
+
+- (void) createGLView {
+	//create our openglview and size it correctly
+	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
+
+	self.view = glView;
+	self.appDelegate.canvas = glView;
+
+	core_init_gl(1);
+
+	int w = self.appDelegate.screenWidthPixels;
+	int h = self.appDelegate.screenHeightPixels;
+	tealeaf_canvas_resize(w, h);
+
+	NSLog(@"{tealeaf} Created GLView (%d, %d)", w, h);
+}
+
 - (void)viewDidLoad {
     
     if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
@@ -377,15 +404,7 @@ CEXPORT void device_hide_splash() {
 
 	texture_manager_set_max_memory(texture_manager_get(), get_platform_memory_limit());
 
-	//create our openglview and size it correctly
-	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
-	self.view = glView;
-	self.appDelegate.canvas = glView;
-	core_init_gl(1);
-
-	int w = self.appDelegate.screenWidthPixels;
-	int h = self.appDelegate.screenHeightPixels;
-	tealeaf_canvas_resize(w, h);
+	[self createGLView];
 
 	/*
 	 * add a temporary imageview with the loading image.
@@ -400,6 +419,9 @@ CEXPORT void device_hide_splash() {
 	UIImageOrientation splashOrientation = UIImageOrientationUp;
 	int frameWidth = (int)self.appDelegate.window.frame.size.width;
 	int frameHeight = (int)self.appDelegate.window.frame.size.height;
+
+	int w = self.appDelegate.screenWidthPixels;
+	int h = self.appDelegate.screenHeightPixels;
 
 	bool needsFrameRotate = w > h;
 	needsFrameRotate ^= frameWidth > frameHeight;

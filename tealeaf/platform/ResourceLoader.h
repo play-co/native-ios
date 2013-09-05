@@ -37,4 +37,5 @@
 - (void) loadImage:(NSString *)url;
 + (ResourceLoader *) get;
 + (void) release;
+
 @end
