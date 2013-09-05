@@ -353,7 +353,7 @@ CEXPORT void device_hide_splash() {
 	int h = self.appDelegate.screenHeightPixels;
 	tealeaf_canvas_resize(w, h);
 
-	NSLog(@"{tealeaf} Creating GL view (%d, %d)", w, h);
+	NSLog(@"{tealeaf} Created GLView (%d, %d)", w, h);
 }
 
 - (void)viewDidLoad {
