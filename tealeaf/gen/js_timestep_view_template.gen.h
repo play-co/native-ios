@@ -91,6 +91,12 @@ JSBool def_timestep_view_set_opacity(JSContext *cx, JSHandleObject obj, JSHandle
 JSBool def_timestep_view_get_scale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_scale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
+JSBool def_timestep_view_get_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
+JSBool def_timestep_view_set_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+
+JSBool def_timestep_view_get_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
+JSBool def_timestep_view_set_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+
 JSBool def_timestep_view_get_absScale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_absScale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
