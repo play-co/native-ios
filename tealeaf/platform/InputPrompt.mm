@@ -72,7 +72,7 @@ static int32_t m_prompt_id = 0;
 
 - (void) submit {
     NSString *detailString = self.inputPromptTextField.text;
-    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardSubmit\",\"id\":%d,\"text\":\"%@\"}", m_prompt_id, detailString];
+    NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputPromptSubmit\",\"id\":%d,\"text\":\"%@\"}", m_prompt_id, detailString];
     core_dispatch_event([evt UTF8String]);
     // NOTE: If JS engine is shutdown at this point core_dispatch_event will just drop the event, which is OK.
     
