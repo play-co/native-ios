@@ -62,6 +62,8 @@ struct SplashDescriptor {
 @property (nonatomic) BOOL gameSupportsPortrait;
 @property (nonatomic) BOOL gameSupportsLandscape;
 
+- (void) selectOrientation;
+
 // Splash screen properties
 @property (nonatomic) int screenWidthPixels;
 @property (nonatomic) int screenHeightPixels;
