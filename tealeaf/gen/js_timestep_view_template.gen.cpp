@@ -341,6 +341,62 @@ CEXPORT JSBool def_timestep_view_set_scale(JSContext *cx, JSHandleObject obj, JS
 
 
 
+CEXPORT JSBool def_timestep_view_get_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		vp.setNumber(thiz->scale_x);
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_set_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		thiz->scale_x = vp.toNumber();
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_get_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		vp.setNumber(thiz->scale_y);
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_set_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		thiz->scale_y = vp.toNumber();
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
 CEXPORT JSBool def_timestep_view_get_absScale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
@@ -706,6 +762,10 @@ static const JSPropertySpec properties[] = {
 		JSOP_WRAPPER(def_timestep_view_get_opacity), JSOP_WRAPPER(def_timestep_view_set_opacity) },
 	{ "scale", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_scale), JSOP_WRAPPER(def_timestep_view_set_scale) },
+	{ "scaleX", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_scaleX), JSOP_WRAPPER(def_timestep_view_set_scaleX) },
+	{ "scaleY", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_scaleY), JSOP_WRAPPER(def_timestep_view_set_scaleY) },
 	{ "absScale", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_absScale), JSOP_WRAPPER(def_timestep_view_set_absScale) },
 	{ "clip", 0, BAR_PROPERTY_FLAGS,
