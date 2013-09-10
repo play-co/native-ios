@@ -1012,6 +1012,17 @@ function validateIOSManifest(manifest) {
 		manifest.ios = {};
 	}
 
+	// In the case that no bundleID is specified,
+	// construct a bundleID the same way Android constructs the packageName:
+	var studio = manifest.studio && manifest.studio.domain;
+	if (!studio) {
+		studio = "wee.cat";
+	}
+	var names = studio.split(/\./g).reverse();
+	studio = names.join('.');
+
+	var defaultBundleID = studio + "." + manifest.shortName;
+
 	var schema = {
 		"entryPoint": {
 			res: "Should be set to the entry point.",
@@ -1021,7 +1032,7 @@ function validateIOSManifest(manifest) {
 		},
 		"bundleID": {
 			res: "Should be set to the Bundle ID (a name) for your app from iTunes Connect. In-app purchases may not work!",
-			def: manifest.shortName,
+			def: defaultBundleID,
 			halt: false
 		},
 		"appleID": {
@@ -1044,7 +1055,7 @@ function validateIOSManifest(manifest) {
 			var schemaData = schemaParent[key];
 			var loadType = typeof loadPath;
 
-			if (loadType !== "string") {
+			if (loadType !== "string" || loadPath === "") {
 				// Load and schema do not agree: Report to user
 				var msg = 'The manifest.json key ' + desc + ':' + key + ' is missing! ' + schemaData.res;
 				if (schemaData.halt) {
@@ -1053,6 +1064,7 @@ function validateIOSManifest(manifest) {
 					if (!schemaData.silent) {
 						logger.warn(msg + " Defaulting to '" + schemaData.def + "'");
 					}
+					// Patch the loaded manifest object
 					loadingParent[key] = schemaData.def;
 				}
 			}

@@ -336,12 +336,18 @@ static NSThread *appLoadListThread = nil;
     
 	//write native.js to file
 	[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"native.js"] withData:jsData];
+
+	// Select orientation from manifest
+	[self.appDelegate selectOrientation];
+
+	// Update screen properties from orientation to select a splash screen
+	[self.appDelegate updateScreenProperties];
 	
 	//get the correct loading.png
 	SplashDescriptor* bestSplash = [self.appDelegate findBestSplashDescriptor];
 	if (bestSplash) {
 		//get loading.png
-		NSData *splashData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@splash/%s", simulateURL, bestSplash->key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]; 
+		NSData *splashData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@splash/%s", simulateURL, bestSplash->key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 		if(splashData) {
 			//write splash to file
 			[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"loading.png"] withData:splashData];
