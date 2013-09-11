@@ -1,10 +1,6 @@
 var path = require('path');
 var ff = require('ff');
-
-// Update this whenever we are targetting a new SDK.  I believe this is correct
-// to set here in the build script because if you target the wrong SDK then it
-// will not build for the right targets.
-var TARGET_SDK = "iphoneos6.0";
+var exec = require('child_process').exec;
 
 var CONFIG_RELEASE = "Release";
 var CONFIG_DEBUG = "Debug";
@@ -67,11 +63,25 @@ exports.signApp = function (builder, projectPath, appName, outputIPAPath, config
 	}).cb(next);
 };
 
-// This command produces an IPA file by calling buildApp and signApp
-exports.buildIPA = function(builder, projectPath, appName, isDebug, provisionPath, developerName, outputIPAPath, next) {
-	var configurationName = isDebug ? CONFIG_DEBUG : CONFIG_RELEASE;
-	var targetSDK = TARGET_SDK;
+// lifted (and edited) from: http://st-on-it.blogspot.com/2011/05/how-to-read-user-input-with-nodejs.html
+var ask = function(question, condition, callback) {
+	var stdin = process.stdin, stdout = process.stdout;
+	stdin.resume();
+	stdout.write(question + ": ");
+	stdin.once('data', function(data) {
+		data = data.toString().trim();
+		if (condition(data)) {
+			callback(data);
+		} else {
+			ask(question, condition, callback);
+		}
+	});
+};
 
+// This function produces an IPA file by calling buildApp and signApp
+var buildIPA = function(targetSDK, builder, projectPath, appName, isDebug, provisionPath, developerName, outputIPAPath, next) {
+	console.log("using sdk:", targetSDK);
+	var configurationName = isDebug ? CONFIG_DEBUG : CONFIG_RELEASE;
 	var f = ff(function() {
 		exports.buildApp(builder, appName, targetSDK, configurationName, projectPath, f());
 	}, function() {
@@ -80,5 +90,40 @@ exports.buildIPA = function(builder, projectPath, appName, isDebug, provisionPat
 		console.error('ERROR:', err);
 		process.exit(2);
 	}).cb(next);
+};
+
+// This command figures out which SDKs are available, selects one, and calls buildIPA
+exports.buildIPA = function(builder, projectPath, appName, isDebug, provisionPath, developerName, outputIPAPath, chooseSDK, next) {
+	exec('xcodebuild -version -sdk', function(error, data, stderror) {
+		var SDKs = [];
+		if (error) {
+			console.log("Error building SDK list:", error, stderror);
+		} else {
+			var sdkstart = data.indexOf('iphoneos');
+			while (sdkstart != -1) {
+				var sdkend = data.indexOf(')', sdkstart);
+				var sdkstr = data.slice(sdkstart, sdkend);
+				SDKs.push(sdkstr);
+				console.log("found sdk:", sdkstr);
+				sdkstart = data.indexOf('iphoneos', sdkend);
+			}
+			SDKs.sort().reverse();
+			if (chooseSDK && SDKs.length > 1) {
+				return ask("choose sdk [default: " + SKDs[0] + "]", function(sdk) {
+					if (sdk != "" && SDKs.indexOf(sdk) == -1) {
+						console.log(sdk, "is not available");
+						console.log("options:", SDKs);
+						return false;
+					}
+					return true;
+				}, function(sdk) {
+					buildIPA(sdk || SDKS[0], builder, projectPath, appName, isDebug,
+						provisionPath, developerName, outputIPAPath, next);
+				});
+			}
+		}
+		buildIPA(SDKs.length ? SDKs[0] : 'iphoneos6.0', builder, projectPath,
+			appName, isDebug, provisionPath, developerName, outputIPAPath, next);
+	});
 };
 

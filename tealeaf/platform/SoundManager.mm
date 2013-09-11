@@ -52,8 +52,9 @@ SoundManager *globalSoundManager = NULL;
 -(NSString*) resolvePath:(NSString*) path {
 	NSString *filePath = nil;
 	NSURL *url = [[ResourceLoader get] resolve:path];
-	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
-	if (!isRemoteLoading) {
+	if (self.appDelegate.isTestApp) {
+		return [[url absoluteString] substringFromIndex:7];
+	} else {
 		if ([url.scheme compare: @"http"] != NSOrderedSame) {
 			filePath = [NSString stringWithFormat:@"resources.bundle/%@", path];
 		} else {
@@ -70,8 +71,6 @@ SoundManager *globalSoundManager = NULL;
 				[soundData writeToFile:filePath atomically:true];
 			}
 		}
-	} else {
-		return [[url absoluteString] substringFromIndex:7];
 	}
 	return filePath;
 }
@@ -273,3 +272,14 @@ SoundManager *globalSoundManager = NULL;
 }
 
 @end
+
+extern "C" {
+
+void sound_manager_halt() {
+	SoundManager *mgr = [SoundManager get];
+
+	[mgr clearEffects];
+	[mgr stopBackgroundMusic];
+}
+
+} // extern C

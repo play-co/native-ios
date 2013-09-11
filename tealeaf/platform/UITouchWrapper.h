@@ -14,6 +14,8 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 #import "jsapi.h"
 
 @interface UITouchWrapper : NSObject {

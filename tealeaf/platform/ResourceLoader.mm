@@ -18,6 +18,8 @@
 #import "ResourceLoader.h"
 #import "Base64.h"
 #import "TeaLeafAppDelegate.h"
+#import "RawImageInfo.h"
+
 #include "text_manager.h"
 #include "texture_manager.h"
 #include "events.h"
@@ -26,6 +28,9 @@
 #include "core/image_loader.h"
 #include "core/config.h"
 #include "core/util/detect.h"
+extern "C" {
+#include "image_cache.h"
+}
 #import <core/platform/gl.h>
 
 
@@ -41,41 +46,6 @@ static int base_path_len = 0;
 
 @interface ResourceLoader ()
 @property (nonatomic, assign) TeaLeafAppDelegate *appDelegate;
-@end
-
-
-@interface RawImageInfo : NSObject
-@property(nonatomic,retain) NSString *url;
-@property(nonatomic,assign) unsigned char *raw_data;
-@property(nonatomic) int w;
-@property(nonatomic) int h;
-@property(nonatomic) int ow;
-@property(nonatomic) int oh;
-@property(nonatomic) int scale;
-@property(nonatomic) int channels;
-- (id) initWithData:(unsigned char*)raw_data andURL:(NSString *)url andW:(int)w andH:(int)h andOW:(int)ow andOH:(int)oh andScale:(int)scale andChannels:(int)channels;
-@end
-
-@implementation RawImageInfo
-- (void) dealloc {
-	self.url = nil;
-
-	[super dealloc];
-}
-
-- (id) initWithData:(unsigned char*)raw_data andURL:(NSString *)url andW:(int)w andH:(int)h andOW:(int)ow andOH:(int)oh andScale:(int)scale andChannels:(int)channels {
-	if ((self = [super init])) {
-		self.url = url;
-		self.raw_data = raw_data;
-		self.w = w;
-		self.h = h;
-		self.ow = ow;
-		self.oh = oh;
-		self.scale = scale;
-		self.channels = channels;
-	}
-	return self;
-}
 @end
 
 
@@ -109,6 +79,7 @@ static int base_path_len = 0;
 
 + (void) release {
 	if (instance != nil) {
+        image_cache_destroy();
 		[instance release];
 		instance = nil;
 	}
@@ -117,6 +88,7 @@ static int base_path_len = 0;
 + (ResourceLoader *) get {
 	if (instance == nil) {
 		instance = [[ResourceLoader alloc] init];
+        image_cache_init([instance.documentsDirectory UTF8String]);
 		imgThread = [[NSThread alloc] initWithTarget:instance selector:@selector(imageThread) object:nil];
 		instance.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
 		[imgThread start];
@@ -139,9 +111,17 @@ static int base_path_len = 0;
 	self = [super init];
 
 	self.appBundle = [[NSBundle mainBundle] pathForResource:@"resources" ofType:@"bundle"];
+
+	NSLog(@"Using resource path %@", self.appBundle);
+	
 	self.appBase = [[NSBundle mainBundle] resourcePath];
 	self.images = [[[NSMutableArray alloc] init] autorelease];
 	self.imageWaiter = [[[NSCondition alloc] init] autorelease];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    self.documentsDirectory = [paths objectAtIndex:0];
+
 
 	return self;
 }
@@ -180,12 +160,10 @@ static int base_path_len = 0;
 		url = [url substringFromIndex:8];
 	}
 	
-	bool isRemoteLoading = [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue];
-
-	if (!isRemoteLoading) {
-		return [self resolveFile:url inBundle:inBundle];
-	} else {
+	if (self.appDelegate.isTestApp) {
 		return [self resolveFileUrl:url];
+	} else {
+		return [self resolveFile:url inBundle:inBundle];
 	}
 }
 
@@ -200,6 +178,44 @@ static int base_path_len = 0;
 - (NSURL *) resolveFileUrl:(NSString *)url {
 	return [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@", [[instance.appDelegate.config objectForKey:@"app_files_dir"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], url ]];
 	//return url to file on disk
+}
+- (NSString*) getFileNameFromURL: (NSString*) url {
+    return [NSString stringWithFormat:@"%@/%@", self.documentsDirectory, [url stringByReplacingOccurrencesOfString:@"/" withString:@"-"]];
+}
+- (void) cacheRemoteImage: (NSData*) data forURL: (NSString*) url {
+    NSString *path = [self getFileNameFromURL: url];
+    [data writeToFile:path atomically:NO];
+}
+
+- (NSData*) getCachedImageFromURL: (NSString*) url {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *path = [self getFileNameFromURL: url];
+    NSData *contents = nil;
+    if ([fileManager fileExistsAtPath:path]) {
+        contents = [fileManager contentsAtPath:path];
+    }
+    return contents;
+}
+
+- (void) makeTexture2DFromData: (NSData*) data url: (NSString*) url {
+    unsigned char *tex_data = NULL;
+    int ch, w, h, ow, oh, scale;
+    unsigned int raw_length = [data length];
+    if (raw_length > 0) {
+        const void *raw_data = [data bytes];
+        
+        if (raw_data) {
+            tex_data = texture_2d_load_texture_raw([url UTF8String], raw_data, raw_length, &ch, &w, &h, &ow, &oh, &scale);
+        }
+    }
+    
+    if(tex_data) {
+        RawImageInfo* info = [[RawImageInfo alloc] initWithData:tex_data andURL:url andW:w andH:h andOW:ow andOH:oh andScale:scale andChannels:ch];
+        [self performSelectorOnMainThread:@selector(finishLoadingRawImage:) withObject:info waitUntilDone:NO];
+    } else {
+        LOG("{resources} WARNING: 404 %s", [url UTF8String]);
+        [self performSelectorOnMainThread:@selector(failedLoadImage:) withObject: url waitUntilDone:NO];
+    }
 }
 
 - (void) imageThread {
@@ -236,26 +252,8 @@ static int base_path_len = 0;
 						NSString* str = [url substringFromIndex: range.location+1];
 						data = decodeBase64(str);
 					} else {
-						data = [NSData dataWithContentsOfURL: [self resolve:url]];
-					}
-
-					unsigned char *tex_data = NULL;
-					int ch, w, h, ow, oh, scale;
-					unsigned int raw_length = [data length];
-					if (raw_length > 0) {
-						const void *raw_data = [data bytes];
-
-						if (raw_data) {
-							tex_data = texture_2d_load_texture_raw([url UTF8String], raw_data, raw_length, &ch, &w, &h, &ow, &oh, &scale);
-						}
-					}
-
-					if(tex_data) {
-						RawImageInfo* info = [[RawImageInfo alloc] initWithData:tex_data andURL:url andW:w andH:h andOW:ow andOH:oh andScale:scale andChannels:ch];
-						[self performSelectorOnMainThread:@selector(finishLoadingRawImage:) withObject:info waitUntilDone:NO];
-					} else {
-						LOG("{resources} WARNING: 404 %s", [url UTF8String]);
-						[self performSelectorOnMainThread:@selector(failedLoadImage:) withObject: url waitUntilDone:NO];
+                        data = [NSData dataWithContentsOfURL: [self resolve:url]];
+                        [self makeTexture2DFromData: data url: url];
 					}
 				}
 			}
@@ -381,7 +379,13 @@ static int base_path_len = 0;
 	texture_manager_on_texture_loaded(texture_manager_get(), url, texture,
 									  info.w, info.h, info.ow, info.oh,
 									  info.channels, info.scale, false, info.raw_data);
+    
+    [self sendImageLoadedEventForURL:[info.url UTF8String] glName:texture width:info.w height:info.h originalWidth:info.ow originalHeight:info.oh];
 
+   	[info release];
+}
+
+-(void) sendImageLoadedEventForURL: (const char *) url glName: (int) glName width: (int) width height: (int) height originalWidth: (int) originalWidth originalHeight: (int) originalHeight {
 	char *event_str;
 	int event_len;
 	
@@ -406,14 +410,12 @@ static int base_path_len = 0;
 	event_len = snprintf(event_str, event_len,
 						  "{\"url\":\"%s\",\"height\":%d,\"originalHeight\":%d,\"originalWidth\":%d" \
 						  ",\"glName\":%d,\"width\":%d,\"name\":\"imageLoaded\",\"priority\":0}",
-						  url, (int)info.h,
-						  (int)info.oh, (int)info.ow,
-						  (int)texture, (int)info.w);
+						  url, (int)height,
+						  (int)originalHeight, (int)originalWidth,
+						  (int)glName, (int)width);
 	event_str[event_len] = '\0';
 	
 	core_dispatch_event(event_str);
-
-	[info release];
 	
 	// If dynamically allocated the string,
 	if (dynamic_str) {

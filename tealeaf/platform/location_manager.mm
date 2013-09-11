@@ -13,6 +13,8 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
+#import <UIKit/UIKit.h>
+
 #include "location_manager.h"
 #include "core/log.h"
 

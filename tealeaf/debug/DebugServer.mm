@@ -634,7 +634,8 @@ static void *CallHook(JSContext *cx, JSStackFrame *fp, JSBool before, JSBool *ok
 
 - (void) postMessage:(NSString *)msg;
 - (void) postConnect;
-- (void) postObject:(NSDictionary *)object;
+// TODO: not implemented? removing to avoid warning:
+// - (void) postObject:(NSDictionary *)object;
 
 - (void) postResponse:(int)requestSeq success:(bool)success;
 - (void) postResponse:(int)requestSeq success:(bool)success body:(id)body refs:(id)refs; // Body and Refs are optional (pass nil to disable)

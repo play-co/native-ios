@@ -232,7 +232,7 @@ int text_manager_init() {
 
     CTFontManagerRegisterFontsForURLs((CFArrayRef)((^{
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSURL *resourceURL = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"resources.bundle"];
+        NSURL *resourceURL = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"resources.bundle/resources/fonts"];
         NSArray *resourceURLs = [fileManager contentsOfDirectoryAtURL:resourceURL includingPropertiesForKeys:nil options:0 error:nil];
 
         return [resourceURLs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSURL *url, NSDictionary *bindings) {

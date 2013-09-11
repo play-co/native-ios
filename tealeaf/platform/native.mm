@@ -13,6 +13,8 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
+#import <UIKit/UIKit.h>
+
 #import "core/platform/native.h"
 #import "js/js_core.h"
 #include "core/texture_manager.h"

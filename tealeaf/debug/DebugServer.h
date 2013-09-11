@@ -94,8 +94,6 @@
 @property(nonatomic) int nextNumber;
 @property(nonatomic, retain) DebugServer *server;
 
-- (id) init;
-
 - (DebugBreakpoint *) addBreakpoint:(DebugScript *)script line:(int)line enabled:(bool)enabled;
 - (DebugBreakpoint *) findBreakpoint:(JSScript *)script line:(int)line;
 - (void) clearBreakpoints;

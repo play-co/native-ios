@@ -15,8 +15,10 @@
 
 #import <UIKit/UIKit.h>
 #import "TeaLeafViewController.h"
+#ifndef DISABLE_TESTAPP
 #import "ServerTableViewController.h"
 #import "AppTableViewController.h"
+#endif
 #import "PluginManager.h"
 #import "js_core.h"
 #import "OpenGLView.h"
@@ -32,6 +34,7 @@ struct SplashDescriptor {
 @interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic) BOOL isTestApp;							// Is in test-app mode?
 @property (nonatomic, retain) NSMutableDictionary *config;         // Configuration config.plist file dictionary
 @property (nonatomic, retain) js_core *js;
 @property (nonatomic, retain) OpenGLView *canvas;
@@ -40,14 +43,17 @@ struct SplashDescriptor {
 @property (nonatomic) BOOL tealeafShowing;
 @property (nonatomic) BOOL signalRestart;
 @property (nonatomic, retain) TeaLeafViewController *tealeafViewController;
+#ifndef DISABLE_TESTAPP
 @property (nonatomic, retain) ServerTableViewController *tableViewController;
 @property (nonatomic, retain) AppTableViewController *appTableViewController;
+#endif
 @property (nonatomic, retain) PluginManager *pluginManager;
 @property (nonatomic, retain) Reachability *reach;
 @property (nonatomic, retain) NSNetServiceBrowser *serviceBrowser;
 @property (nonatomic, retain) NSMutableArray *services;
 @property (nonatomic, strong) UILocalNotification *launchNotification;
 @property (nonatomic, retain) NSDictionary *appManifest;
+@property (nonatomic, retain) NSDictionary *startOptions;
 
 // Test app
 @property (nonatomic, retain) NSDictionary *testAppManifest;
@@ -55,6 +61,8 @@ struct SplashDescriptor {
 // Game orientation
 @property (nonatomic) BOOL gameSupportsPortrait;
 @property (nonatomic) BOOL gameSupportsLandscape;
+
+- (void) selectOrientation;
 
 // Splash screen properties
 @property (nonatomic) int screenWidthPixels;
@@ -82,7 +90,6 @@ struct SplashDescriptor {
 // Called when JavaScript engine is ready from another thread
 - (void) setJSReady:(bool)isReady;
 - (BOOL) getJSReady;
-- (void) onJSReady;
 - (void) restartJS;
 
 // JavaScript event generators
@@ -94,6 +101,7 @@ struct SplashDescriptor {
 - (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *) userInfo;
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken;
 
+#ifndef DISABLE_TESTAPP
 // NSNetServiceBrowser delegate methods for service browsing
 - (void)netServiceDidResolveAddress:(NSNetService *)sender;
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict;
@@ -107,5 +115,9 @@ struct SplashDescriptor {
 - (void)netServiceBrowser:(NSNetServiceBrowser *)browser
          didRemoveService:(NSNetService *)aNetService
                moreComing:(BOOL)moreComing;
+#endif
+
+- (void) sleepJS;
+- (void) wakeJS;
 
 @end

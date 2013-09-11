@@ -6,4 +6,4 @@ libjpeg/build
 *xcuserdata*
 app.bundle/*
 .DS_Store
-
+build

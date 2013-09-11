@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  
  * You should have received a copy of the GNU General Public License
- * along with the Game Closure SDK.	 If not, see <http://www.gnu.org/licenses/>.
+ * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "js_timestep_view_template.gen.h"
@@ -333,6 +333,90 @@ CEXPORT JSBool def_timestep_view_set_scale(JSContext *cx, JSHandleObject obj, JS
 	if (thiz) {
 		
 		thiz->scale = vp.toNumber();
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_get_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		vp.setNumber(thiz->scale_x);
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_set_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		thiz->scale_x = vp.toNumber();
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_get_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		vp.setNumber(thiz->scale_y);
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_set_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		thiz->scale_y = vp.toNumber();
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_get_absScale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		vp.setNumber(thiz->abs_scale);
+		
+	}
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+
+
+CEXPORT JSBool def_timestep_view_set_absScale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		thiz->abs_scale = vp.toNumber();
 		
 	}
 	JS_EndRequest(cx);
@@ -678,6 +762,12 @@ static const JSPropertySpec properties[] = {
 		JSOP_WRAPPER(def_timestep_view_get_opacity), JSOP_WRAPPER(def_timestep_view_set_opacity) },
 	{ "scale", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_scale), JSOP_WRAPPER(def_timestep_view_set_scale) },
+	{ "scaleX", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_scaleX), JSOP_WRAPPER(def_timestep_view_set_scaleX) },
+	{ "scaleY", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_scaleY), JSOP_WRAPPER(def_timestep_view_set_scaleY) },
+	{ "absScale", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_absScale), JSOP_WRAPPER(def_timestep_view_set_absScale) },
 	{ "clip", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_clip), JSOP_WRAPPER(def_timestep_view_set_clip) },
 	{ "backgroundColor", 0, BAR_PROPERTY_FLAGS,

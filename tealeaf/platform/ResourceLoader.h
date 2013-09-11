@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSString *appBase;		// Root resource path (includes splash screens)
 @property (nonatomic, retain) NSCondition *imageWaiter;
 @property (nonatomic, retain) NSMutableArray *images;
+@property (nonatomic, retain) NSString *documentsDirectory;
 
 - (NSString *) initStringWithContentsOfURL:(NSString *)url;
 - (NSURL *) resolve:(NSString *)url;
@@ -30,9 +31,11 @@
 - (NSURL *) resolveFileUrl:(NSString *)url;
 
 - (void) finishLoadingText:(NSString *)url;
+- (void) sendImageLoadedEventForURL: (const char *) url glName: (int) glName width: (int) width height: (int) height originalWidth: (int) originalWidth originalHeight: (int) originalHeight;
 
 - (void) imageThread;
 - (void) loadImage:(NSString *)url;
 + (ResourceLoader *) get;
 + (void) release;
+
 @end

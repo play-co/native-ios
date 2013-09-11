@@ -324,17 +324,30 @@ static NSThread *appLoadListThread = nil;
 	NSString *ip = [self.appDelegate.config objectForKey:@"code_host"];
 	NSString *port = [self.appDelegate.config objectForKey:@"code_port"];
 	NSString *url = [NSString stringWithFormat:@"http://%@:%@", ip, port];
-	NSString *simulateURL = [NSString stringWithFormat:@"%@/simulate/%@/native-ios/", url, appInfo._id];
-	//get native.js.mp3
-	NSData *jsData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@native.js.mp3", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-	//write native.js.mp3 to file
-	[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"native.js.mp3"] withData:jsData];
+	NSString *simulateURL = [NSString stringWithFormat:@"%@/simulate/debug/%@/native-ios/", url, appInfo._id];
+	//get native.js
+    NSString *nativeJSURL = [[NSString stringWithFormat:@"%@native.js", simulateURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+	NSData *jsData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:nativeJSURL]];
+    
+    if (!jsData) {
+        NSLog(@"native.js failed to download from %@", nativeJSURL);
+        exit(1);
+    }
+    
+	//write native.js to file
+	[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"native.js"] withData:jsData];
+
+	// Select orientation from manifest
+	[self.appDelegate selectOrientation];
+
+	// Update screen properties from orientation to select a splash screen
+	[self.appDelegate updateScreenProperties];
 	
 	//get the correct loading.png
 	SplashDescriptor* bestSplash = [self.appDelegate findBestSplashDescriptor];
 	if (bestSplash) {
 		//get loading.png
-		NSData *splashData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@splash/%s", simulateURL, bestSplash->key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]; 
+		NSData *splashData = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[[NSString stringWithFormat:@"%@splash/%s", simulateURL, bestSplash->key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 		if(splashData) {
 			//write splash to file
 			[self writeDataToFile:[NSString stringWithFormat:@"%@/%@", appInfo.appID, @"loading.png"] withData:splashData];
@@ -362,8 +375,8 @@ static NSThread *appLoadListThread = nil;
 		NSString *documentsDirectory = [paths objectAtIndex:0];
 
 		json_object_foreach(res_obj, key, value) {
-			//skip native.js.mp3
-			if (strcmp(key, "native.js.mp3") == 0) {
+			//skip native.js
+			if (strcmp(key, "native.js") == 0) {
 				continue;
 			}
 

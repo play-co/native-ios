@@ -19,18 +19,24 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
-
-@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate> {
+@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate> {
 @private
 int callback;
+UITextField *inputAccTextField;
 }
 
+//input accessory view
+@property (nonatomic, retain) UITextField *inputAccTextField;
 @property (nonatomic, retain) UIImageView *loading_image_view;
 @property (nonatomic, retain) UIAlertView *backAlertView;
+@property (nonatomic, retain) UIImagePickerController *imagePickerController;
+@property (nonatomic, retain) NSString *photoURL;
+@property int photoWidth;
+@property int photoHeight;
+- (TeaLeafViewController*) init;
 
 - (TeaLeafViewController *) init;
 
-- (void) pickContact:(int)cb;
 - (void) sendSMSTo:(NSString *)number withMessage:(NSString *)message andCallback:(int)callback;
 - (void) messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result;
 - (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex;
@@ -39,7 +45,12 @@ int callback;
 
 - (void) assignCallback:(int)cb;
 - (void) runCallback:(char *)arg;
-- (void) destroyDisplayLink;
+
+- (void)showImagePickerForCamera: (NSString *) url;
+- (void)showImagePickerForPhotoPicker: (NSString *) url;
+
+- (void) destroyGLView;
+- (void) createGLView;
 
 @end
 

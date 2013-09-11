@@ -15,11 +15,13 @@
 
 #import <UIKit/UIKit.h>
 
+const char* AppControllerClassName = "TeaLeafAppDelegate";
+
 int main(int argc, char *argv[]) {
 	
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-	int retVal = UIApplicationMain(argc, argv, nil, nil);
+	int retVal = UIApplicationMain(argc, argv, nil, [NSString stringWithUTF8String:AppControllerClassName]);
 
 	[pool release];
 

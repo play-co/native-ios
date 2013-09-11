@@ -14,6 +14,9 @@
  */
 
 #import "TeaLeafViewController.h"
+#import "RawImageInfo.h"
+#import "Base64.h"
+
 #import "jsMacros.h"
 #import "js_core.h"
 #import "core/log.h"
@@ -71,56 +74,22 @@ CEXPORT void device_hide_splash() {
 
 @implementation TeaLeafViewController
 
+@synthesize inputAccTextField;
+
+
 - (TeaLeafViewController*) init {
 	self = [super init];
 	
 	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
-	
-	// Default is to allow any sort of orientation on failure to read the manifest
-	self.appDelegate.gameSupportsLandscape = YES;
-	self.appDelegate.gameSupportsPortrait = YES;
-	
-	// Read manifest file
-	NSError *err = nil;
-	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
-	NSDictionary *dict = nil;
-	int length = 0;
-	if (manifest_file) {
-		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
-		length = [manifest_file length];
-		dict = [decoder objectWithUTF8String:(const unsigned char *)[manifest_file UTF8String] length:(NSUInteger)length error:&err];
-	}
-	
-	// If failed to load,
-	if (!dict) {
-		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", length);
-	} else {
-		self.appDelegate.appManifest = dict;
-		
-		@try {
-			// Look up supported orientations
-			NSArray *orientations = (NSArray *)[dict valueForKey:@"supportedOrientations"];
-			
-			// Now that we're getting some info from the manifest, just turn on the ones the game developer wanted
-			self.appDelegate.gameSupportsLandscape = NO;
-			self.appDelegate.gameSupportsPortrait = NO;
-			
-			for (int ii = 0, count = [orientations count]; ii < count; ++ii) {
-				NSString *str = (NSString *)[orientations objectAtIndex:ii];
-				NSLOG(@"{manifest} Read orientation: %@", str);
-				if ([str caseInsensitiveCompare:@"landscape"] == NSOrderedSame) {
-					self.appDelegate.gameSupportsLandscape = YES;
-				} else if ([str caseInsensitiveCompare:@"portrait"] == NSOrderedSame) {
-					self.appDelegate.gameSupportsPortrait = YES;
-				}
-			}
-		}
-		@catch (NSException *exception) {
-			NSLOG(@"{manifest} Failure to read orientation data: %@", [exception debugDescription]);
-		}
-	}
-	
+
+	[self.appDelegate selectOrientation];
+
 	return self;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
 }
 
 - (void) dealloc {
@@ -128,14 +97,25 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) restartJS {
+	UIViewController *controller = nil;
+
+#ifndef DISABLE_TESTAPP
+	if (!self.appDelegate.isTestApp) {
+#endif
+		controller = self.appDelegate.tealeafViewController;
+#ifndef DISABLE_TESTAPP
+	} else {
+		controller = self.appDelegate.appTableViewController;
+	}
+#endif
+
 	if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
 		[self.view removeFromSuperview];
 
-		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window addSubview:self.appDelegate.appTableViewController.view];
+		[self.appDelegate.window addSubview:controller.view];
 	} else {
-		[((TeaLeafAppDelegate*)[UIApplication sharedApplication].delegate).window setRootViewController:self.appDelegate.appTableViewController ];
+		[self.appDelegate.window setRootViewController:controller];
 	}
-
 	self.appDelegate.tealeafShowing = NO;
 
 	if (js_ready) {
@@ -271,7 +251,41 @@ CEXPORT void device_hide_splash() {
 	core_dispatch_event([evt UTF8String]);
 }
 
+- (void) destroyGLView {
+	OpenGLView *glView = self.appDelegate.canvas;
+
+	[glView destroyDisplayLink];
+
+	[glView removeFromSuperview];
+
+	self.view = nil;
+	self.appDelegate.canvas = nil;
+}
+
+- (void) createGLView {
+	//create our openglview and size it correctly
+	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
+
+	self.view = glView;
+	self.appDelegate.canvas = glView;
+
+	core_init_gl(1);
+
+	int w = self.appDelegate.screenWidthPixels;
+	int h = self.appDelegate.screenHeightPixels;
+	tealeaf_canvas_resize(w, h);
+
+	NSLog(@"{tealeaf} Created GLView (%d, %d)", w, h);
+}
+
 - (void)viewDidLoad {
+    
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        // iOS 7 hide status bar
+        [self prefersStatusBarHidden];
+        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+    }
+    
 	/*
 	 * based on reported width and height, calculate the width and
 	 * height we care about with respect to scale (retina displays)
@@ -279,20 +293,30 @@ CEXPORT void device_hide_splash() {
 	 */
 	
 	[self.appDelegate updateScreenProperties];
+    
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillShowNotification object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillHideNotification object: nil];
 
-	// Lookup source path
-	const char *source_path = [[ResourceLoader get].appBundle UTF8String];
+	NSString *appBundle = [ResourceLoader get].appBundle;
+	const char *source_path = 0;
+
+	if (!appBundle) {
+		NSLog(@"{core} FATAL: Unable to load app bundle!");
+	} else {
+		source_path = [[ResourceLoader get].appBundle UTF8String];
+	}
+
 	if (!source_path || *source_path == '\0') {
 		source_path = [[self.appDelegate.config objectForKey:@"source_dir"] UTF8String];
 	}
-
+	
 	core_init([[self.appDelegate.config objectForKey:@"entry_point"] UTF8String],
 			  [[self.appDelegate.config	objectForKey:@"tcp_host"] UTF8String],
 			  [[self.appDelegate.config	objectForKey:@"code_host"] UTF8String],
 			  [[self.appDelegate.config	objectForKey:@"tcp_port"] intValue],
 			  [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
 			  source_path, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels,
-			  [[self.appDelegate.config objectForKey:@"remote_loading"] boolValue],
+			  self.appDelegate.isTestApp,
 			  [self.appDelegate.screenBestSplash UTF8String],
 			  "");
 	
@@ -302,15 +326,7 @@ CEXPORT void device_hide_splash() {
 
 	texture_manager_set_max_memory(texture_manager_get(), get_platform_memory_limit());
 
-	//create our openglview and size it correctly
-	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
-	self.view = glView;
-	self.appDelegate.canvas = glView;
-	core_init_gl(1);
-
-	int w = self.appDelegate.screenWidthPixels;
-	int h = self.appDelegate.screenHeightPixels;
-	tealeaf_canvas_resize(w, h);
+	[self createGLView];
 
 	/*
 	 * add a temporary imageview with the loading image.
@@ -325,6 +341,9 @@ CEXPORT void device_hide_splash() {
 	UIImageOrientation splashOrientation = UIImageOrientationUp;
 	int frameWidth = (int)self.appDelegate.window.frame.size.width;
 	int frameHeight = (int)self.appDelegate.window.frame.size.height;
+
+	int w = self.appDelegate.screenWidthPixels;
+	int h = self.appDelegate.screenHeightPixels;
 
 	bool needsFrameRotate = w > h;
 	needsFrameRotate ^= frameWidth > frameHeight;
@@ -346,9 +365,14 @@ CEXPORT void device_hide_splash() {
 	self.loading_image_view.frame = CGRectMake(0, 0, frameWidth, frameHeight);
 
 	//add the openglview to our window
+
 	[self.appDelegate.window addSubview:self.view];
 	self.appDelegate.window.rootViewController = self;
 	[self.appDelegate.window.rootViewController.view addSubview:self.loading_image_view];
+    
+    self.inputAccTextField = [[[UITextField alloc] init] autorelease];
+    self.inputAccTextField.hidden = true;
+    [self.appDelegate.window.rootViewController.view addSubview:self.inputAccTextField];
 	m_showing_splash = YES;
 
 	// Initialize text manager
@@ -377,8 +401,9 @@ CEXPORT void device_hide_splash() {
 	});
 	
 	[self.appDelegate.canvas startRendering];
-	
-	if ([[self.appDelegate.config objectForKey:@"remote_loading"] boolValue]) {
+
+#ifndef DISABLE_TESTAPP
+	if (self.appDelegate.isTestApp) {
 		UIRotationGestureRecognizer *rotationRecognizer =
 		[[UIRotationGestureRecognizer alloc]
 		initWithTarget:self
@@ -391,6 +416,31 @@ CEXPORT void device_hide_splash() {
 								   cancelButtonTitle:@"No"
 								   otherButtonTitles:@"Yes", nil];
 	}
+#endif
+}
+
+- (void) onKeyboardChange:(NSNotification *)info {
+    NSDictionary *userInfo = [info userInfo];
+    CGRect rawKeyboardRect = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect properlyRotatedCoords = [self.view.window convertRect:rawKeyboardRect toView:self.view];
+    CGFloat scale = self.view.contentScaleFactor;
+    properlyRotatedCoords.origin.x *= scale;
+    properlyRotatedCoords.origin.y *= scale;
+    properlyRotatedCoords.size.width *= scale;
+    properlyRotatedCoords.size.height *= scale;
+
+    // TODO: might need this if the status bar is visible to compute the y-offset?
+    // CGSize size = self.view.frame.size;
+
+	JSContext* cx = [[js_core lastJS] cx];
+	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
+	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "keyboardScreenResize"));
+	jsval height = INT_TO_JSVAL(properlyRotatedCoords.origin.y);
+	JS_SetProperty(cx, event, "name", &name);
+	JS_SetProperty(cx, event, "height", &height);
+    
+	jsval evt = OBJECT_TO_JSVAL(event);
+	[[js_core lastJS] dispatchEvent:&evt count:1];
 }
 
 - (IBAction)rotationDetected:(UIGestureRecognizer *)sender {
@@ -401,18 +451,6 @@ CEXPORT void device_hide_splash() {
 		if (!self.backAlertView.isVisible) {
 			[self.backAlertView show];
 		}
-	}
-}
-
-static NSString *fixDictString(NSDictionary *dict, NSString *key) {
-	NSString *value = [dict objectForKey:key];
-	
-	if (!value) {
-		NSLOG(@"{settings} ERROR: Missing value for key %@", key);
-		
-		return @"";
-	} else {
-		return value;
 	}
 }
 
@@ -445,6 +483,87 @@ static NSString *fixDictString(NSDictionary *dict, NSString *key) {
 	// TODO replace with JS_* calls
 	sprintf(args, "{\"name\":\"smsStatus\", \"id\":%d, \"result\":%d}", callback, (int)result);
 	[self runCallback: args];
+}
+
+- (void)showImagePickerForCamera: (NSString *) url width: (int)width height: (int)height
+{
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL: url width: width height: height];
+}
+
+
+- (void)showImagePickerForPhotoPicker: (NSString *) url width: (int)width height: (int)height
+{
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL: url width: width height: height];
+}
+
+
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL: (NSString *) url width: (int)width height: (int)height
+{
+       
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    imagePickerController.sourceType = sourceType;
+    imagePickerController.delegate = self;
+    self.photoURL = url;
+	self.photoWidth = width;
+    self.photoHeight = height;
+    
+    self.imagePickerController = imagePickerController;
+    [self presentViewController:self.imagePickerController animated:YES completion:nil];
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    //UIGraphicsBeginImageContext(newSize);
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+- (UIImage *)cropWithImage:(UIImage *)image withRect:(CGRect)rect {
+    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+    UIImage *result = [UIImage imageWithCGImage:imageRef scale:1.f orientation:UIImageOrientationUp];
+    CGImageRelease(imageRef);
+    return result;
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+
+    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    float bmpWidth = image.size.width;
+    float bmpHeight = image.size.height;
+    float scale = 1.f;
+    int clampedSize = 0;
+    if (self.photoWidth / bmpWidth > self.photoHeight / bmpHeight) {
+        scale =self.photoWidth / bmpWidth;
+        clampedSize = self.photoHeight;
+    } else {
+        scale =self.photoHeight / bmpHeight;
+        clampedSize = self.photoWidth;
+    }
+    
+    CGSize size = CGSizeMake(scale * bmpWidth, scale * bmpHeight);
+    image = [self imageWithImage: image scaledToSize: size];
+    image = [self cropWithImage:image withRect:CGRectMake(
+                                                    (image.size.width / 2) - self.photoWidth / 2,
+                                                    (image.size.height / 2.f) - self.photoHeight / 2.f,
+                                                    self.photoWidth,
+                                                    self.photoHeight)];
+    //TODO send an event to JS
+    
+    NSData *data = UIImagePNGRepresentation(image);
+    NSString *b64Image = encodeBase64(data);
+    NSDictionary *event = @{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image};
+    [[PluginManager get] dispatchJSEvent: event];
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 @end

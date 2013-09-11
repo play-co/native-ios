@@ -37,10 +37,13 @@ CEXPORT JSObject *get_global_object();
 #if (__OBJC__) == 1
 
 #import <Foundation/Foundation.h>
-#import "debug/DebugServer.h"
 
 @class PluginManager;
+
+#ifndef DISABLE_DEBUG_SERVER
+#import "debug/DebugServer.h"
 @class DebugServer;
+#endif
 
 @interface js_core : NSObject
 
@@ -48,7 +51,9 @@ CEXPORT JSObject *get_global_object();
 @property (nonatomic, retain) NSDictionary *privateStore;
 @property (nonatomic, retain) PluginManager *pluginManager;
 @property (nonatomic, retain) NSDictionary *config;
+#ifndef DISABLE_DEBUG_SERVER
 @property (nonatomic, assign) DebugServer *debugServer; // Store assigned to force synchronous shutdown
+#endif
 @property (nonatomic) JSRuntime *rt;
 @property (nonatomic) JSContext *cx;
 @property (nonatomic) JSObject *global;
@@ -68,7 +73,8 @@ CEXPORT JSObject *get_global_object();
 
 -(void) addExtension: (id) extension;
 
--(void) dispatchEvent: (jsval*) args count: (int) count;
+-(void) dispatchEvent:(jsval*)args count:(int)count;
+-(void) dispatchEvent:(NSString *)evt;
 
 -(void) performGC;
 -(void) performMaybeGC;

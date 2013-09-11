@@ -49,7 +49,7 @@
 		url = as_retain(urlIn);
 		reduceToMono = reduceToMonoIn;
 
-		OSStatus error;
+		OSStatus error = noErr;
 		UInt32 size;
 		
 		if(nil == url)

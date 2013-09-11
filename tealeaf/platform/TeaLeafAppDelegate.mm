@@ -23,6 +23,7 @@
 #include "texture_manager.h"
 #include "core/config.h"
 #include "core/events.h"
+#include "core/platform/sound_manager.h"
 #import "core/core_js.h"
 #include "platform.h"
 #include "jsonUtil.h"
@@ -60,7 +61,7 @@
 	return js_ready;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *) options {
+- (BOOL)application:(UIApplication *)app didFinishLaunchingWithOptions:(NSDictionary *)options {
 	//SEARCH FOR NETWORKS
 	self.services = [NSMutableArray array];
 	self.serviceBrowser = [[NSNetServiceBrowser alloc] init];
@@ -69,42 +70,57 @@
 	self.tealeafShowing = NO;
 	self.launchNotification = [options objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
 	self.wasPaused = NO;
-	UIApplication *app = [UIApplication sharedApplication];
+	self.startOptions = options;
+
 	[app setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
+
+	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
+
+    [app registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
 	self.signalRestart = NO;
-	
+
 	NSString *path = [[NSBundle mainBundle] resourcePath];
 	NSString *finalPath = [path stringByAppendingPathComponent:@"config.plist"];
 	self.config = [NSMutableDictionary dictionaryWithContentsOfFile:finalPath];
-	 
+
 	for (id key in self.config) {
 		NSLOG(@"{tealeaf} Config[%@] = %@", key, [self.config objectForKey:key]);
 	}
 
-	self.tableViewController = [[[ServerTableViewController alloc] init] autorelease];
-	self.appTableViewController = [[[AppTableViewController alloc] init] autorelease];
-	//TEALEAF_SPECIFIC_END
-
+	// Detect test-app mode
+	self.isTestApp = NO;
+#ifndef DISABLE_TESTAPP
 	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
-	if (!isRemoteLoading) {
-		[self.window addSubview:self.tealeafViewController.view];
-		self.window.rootViewController = self.tealeafViewController;
-	} else {
+	if (isRemoteLoading) {
+		self.isTestApp = YES;
+
+		// Initialize test app controllers
+		self.tableViewController = [[[ServerTableViewController alloc] init] autorelease];
+		self.appTableViewController = [[[AppTableViewController alloc] init] autorelease];
+
+		// Start up in table view
 		[self.window addSubview:self.tableViewController.view];
 		self.window.rootViewController = self.tableViewController;
 	}
+#endif
+	
+	if (!self.isTestApp) {
+		[self.window addSubview:self.tealeafViewController.view];
+		self.window.rootViewController = self.tealeafViewController;
+	}
+
 	[self.window makeKeyAndVisible];
 
 	return YES;
 }
 
 - (void) restartJS {
-	bool isRemoteLoading = [[self.config objectForKey:@"remote_loading"] boolValue];
-	if (!isRemoteLoading) {
+	if (!self.isTestApp) {
 		if (js_ready) {
 			if (!self.signalRestart) {
 				self.signalRestart = YES;
@@ -114,7 +130,7 @@
 					core_reset();
 					
 					[self.tealeafViewController release];
-					
+
 					self.tealeafViewController = [[TeaLeafViewController alloc] init];
 					
 					[self.window addSubview:self.tealeafViewController.view];
@@ -241,6 +257,53 @@
 	[self.canvas stopRendering];
 }
 
+// This function is used to put Tealeaf into a deep sleep.
+// It pauses JS without destroying the JS engine state and
+// frees all memory for native resources.
+- (void) sleepJS {
+	LOG("{tealeaf} Going to sleep...");
+	
+	self.wasPaused = YES;
+	
+	[self.canvas stopRendering];
+	
+	if (js_ready) {
+		[self postPauseEvent:self.wasPaused];
+	}
+
+	// Remove tealeaf window from screen
+	[self.window removeFromSuperview];
+	self.tealeafShowing = NO;
+
+	texture_manager_destroy(texture_manager_get());
+	sound_manager_halt();
+
+	[self.tealeafViewController destroyGLView];
+}
+
+- (void) wakeJS {
+	LOG("{tealeaf} Waking up...");
+
+	[self.tealeafViewController createGLView];
+
+	[self.window makeKeyAndVisible];
+	[self.window addSubview:self.tealeafViewController.view];
+	[self.window setRootViewController:self.tealeafViewController];
+	[self.window bringSubviewToFront:self.tealeafViewController.view];
+
+	self.wasPaused = NO;
+	[self.canvas startRendering];
+	[self postPauseEvent:self.wasPaused];
+	
+	if (js_ready) {
+		[self postPauseEvent:self.wasPaused];
+	}
+
+	if (self.pluginManager) {
+		[self.pluginManager applicationDidBecomeActive:[UIApplication sharedApplication]];
+	}
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
 	self.wasPaused = YES;
 	
@@ -257,7 +320,7 @@
 	self.wasPaused = NO;
 	[self.canvas startRendering];
 	[self postPauseEvent:self.wasPaused];
-	
+
 	if (js_ready) {
 		[self postPauseEvent:self.wasPaused];
 	}
@@ -281,6 +344,8 @@
 
 }
 
+
+#ifndef DISABLE_TESTAPP
 
 #pragma mark Network Search
 // Sent when browsing begins
@@ -321,20 +386,6 @@
 	[aNetService resolveWithTimeout:20.0];
 }
 
-- (NSString *)getStringFromAddressData:(NSData *)dataIn {
-	//Function to parse address from NSData
-	struct sockaddr_in	*socketAddress = nil;
-	NSMutableString			   *ipString = nil;
-	
-	socketAddress = (struct sockaddr_in *)[dataIn bytes];
-	ipString = [NSMutableString stringWithFormat: @"%s",
-				inet_ntoa(socketAddress->sin_addr)];  ///problem here
-	[ipString appendString:@":"];
-	int port = ntohs(socketAddress->sin_port);
-	[ipString appendFormat:@"%d", port];
-	return ipString;
-}
-
 // Sent when a service disappears
 - (void)netServiceBrowser:(NSNetServiceBrowser *)browser
 		 didRemoveService:(NSNetService *)aNetService
@@ -343,7 +394,6 @@
 	[self.services removeObject:aNetService];
 }
 
-
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
 	//delegate of NSNetService resolution process
@@ -351,6 +401,8 @@
 		[self.tableViewController addServerInfoFromAddressData:[sender.addresses objectAtIndex:0]];
 	}
 }
+
+#endif // DISABLE_TESTAPP
 
 - (BOOL)application:(UIApplication *)application
 			openURL:(NSURL *)url
@@ -379,7 +431,7 @@
 
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken
 {
-	[self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
+    [self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
 }
 
 - (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error
@@ -531,16 +583,98 @@ SplashDescriptor SPLASHES[] = {
 }
 
 - (NSString *) findBestSplash {
-
-	SplashDescriptor *splash = [self findBestSplashDescriptor];	
-
-	NSString *splashResource = [NSString stringWithUTF8String:splash->resource];
-
 	if (self.testAppManifest) {
-		splashResource = @"loading.png";
+		// On TestApp this image is preselected and prefetched
+		return @"loading.png";
+	} else {
+		SplashDescriptor *splash = [self findBestSplashDescriptor];
+		
+		NSString *splashResource = [NSString stringWithUTF8String:splash->resource];
+		
+		return splashResource;
 	}
+}
 
-	return splashResource;
+- (void) selectOrientation {
+	NSArray *supportedOrientations = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"];
+	
+	self.gameSupportsLandscape = NO;
+	self.gameSupportsPortrait = NO;
+
+	// If no orientations supported,
+	if (supportedOrientations) {
+		for (int ii = 0; ii < [supportedOrientations count]; ++ii) {
+			NSString *orientation = [supportedOrientations objectAtIndex:ii];
+			
+			if ([orientation isEqualToString:@"UIInterfaceOrientationPortrait"]) {
+				NSLOG(@"{tealeaf} Game supports portrait mode: %@", orientation);
+				self.gameSupportsPortrait = YES;
+			} else if ([orientation isEqualToString:@"UIInterfaceOrientationPortraitUpsideDown"]) {
+				NSLOG(@"{tealeaf} Game supports portrait mode: %@", orientation);
+				self.gameSupportsPortrait = YES;
+			} else if ([orientation isEqualToString:@"UIInterfaceOrientationLandscapeLeft"]) {
+				NSLOG(@"{tealeaf} Game supports landscape mode: %@", orientation);
+				self.gameSupportsLandscape = YES;
+			} else if ([orientation isEqualToString:@"UIInterfaceOrientationLandscapeRight"]) {
+				NSLOG(@"{tealeaf} Game supports landscape mode: %@", orientation);
+				self.gameSupportsLandscape = YES;
+			}
+		}
+	}
+	
+	// Read manifest file
+	NSError *err = nil;
+	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
+	NSDictionary *dict = nil;
+	NSUInteger length = 0;
+	if (manifest_file) {
+		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
+		const char *manifest_utf8 = (const char *) [manifest_file UTF8String];
+		length = strlen(manifest_utf8);
+		dict = [decoder objectWithUTF8String:(const unsigned char *)manifest_utf8 length:length error:&err];
+	}
+	
+	// If failed to load,
+	if (!dict) {
+		NSLOG(@"{manifest} Invalid JSON formatting: %@ (bytes:%d)", err ? err : @"(no error)", length);
+	} else {
+		self.appManifest = dict;
+		
+		NSLOG(@"{manifest} Successfully read manifest file from bundle");
+		
+		// If in test-app mode,
+		if (self.isTestApp) {
+			@try {
+				// Look up supported orientations
+				NSArray *orientations = (NSArray *)[dict valueForKey:@"supportedOrientations"];
+				
+				// Now that we're getting some info from the manifest, just turn on the ones the game developer wanted
+				self.gameSupportsLandscape = NO;
+				self.gameSupportsPortrait = NO;
+				
+				for (int ii = 0, count = [orientations count]; ii < count; ++ii) {
+					NSString *str = (NSString *)[orientations objectAtIndex:ii];
+					NSLOG(@"{manifest} Read orientation: %@", str);
+					if ([str caseInsensitiveCompare:@"landscape"] == NSOrderedSame) {
+						self.gameSupportsLandscape = YES;
+					} else if ([str caseInsensitiveCompare:@"portrait"] == NSOrderedSame) {
+						self.gameSupportsPortrait = YES;
+					}
+				}
+			}
+			@catch (NSException *exception) {
+				NSLOG(@"{manifest} Failure to read orientation data: %@", [exception debugDescription]);
+			}
+		}
+	}
+	
+	// If no orientations supported,
+	if (!self.gameSupportsLandscape &&
+		!self.gameSupportsPortrait) {
+		// Support any orientation
+		self.gameSupportsLandscape = YES;
+		self.gameSupportsPortrait = YES;
+	}
 }
 
 @end

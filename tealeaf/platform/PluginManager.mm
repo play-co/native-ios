@@ -41,7 +41,12 @@ JSAG_MEMBER_BEGIN(sendEvent, 3)
 	if (!json || err) {
 		NSLOG(@"{plugins} WARNING: Event passed to NATIVE.plugins.sendEvent does not contain a valid JSON string.");
 	} else {
-		[m_pluginManager plugin:pluginName name:eventName event:json];
+		id returnValue = [m_pluginManager plugin:pluginName name:eventName event:json];
+        if ([returnValue isKindOfClass: [NSDictionary class]]) {
+            JSAG_RETURN_NSTR([((NSDictionary *) returnValue) JSONString]);
+        } else {
+            JSAG_RETURN_NSTR((NSString *) returnValue);
+        }
 	}
 }
 JSAG_MEMBER_END
@@ -172,39 +177,46 @@ JSAG_OBJECT_END
 	[self postNotification:@"onResume" obj1:nil obj2:nil];
 }
 
-- (void) dispatchJSEvent:(NSDictionary *)evt {
-	if (m_core) {
-		// Run JS synchronously in the main thread
+- (void) dispatchJSEventWithJSONString: (NSString*) str {
+    if (m_core) {
+        JSContext *cx = m_core.cx;
 		dispatch_async(dispatch_get_main_queue(), ^{
-			// Check again in case the JS subsystem was destroyed in the meantime
-			if (m_core) {
-				JSContext *cx = m_core.cx;
-				JS_BeginRequest(cx);
-				
-				NSString *evt_nstr = [evt JSONString];
-				
-				jsval evt_val = NSTR_TO_JSVAL(cx, evt_nstr);
-				
-				[m_core dispatchEvent:&evt_val count:1];
-				
-				JS_EndRequest(cx);
-			}
-		});
-	} else {
-		NSLOG(@"WARNING: Plugin attempted to dispatch a JS event before the JS subsystem was created");
-	}
+            if (m_core) {
+                JS_BeginRequest(cx);
+                jsval evt_val = NSTR_TO_JSVAL(cx, str);
+                [m_core dispatchEvent:&evt_val count:1];
+            }
+        });
+    } else {
+            NSLOG(@"WARNING: Plugin attempted to dispatch a JS event before the JS subsystem was created");
+    }
 }
 
-- (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
+- (void) dispatchJSEvent:(NSDictionary *)evt {
+    NSString *evt_nstr = [evt JSONString];
+    [self dispatchJSEventWithJSONString:evt_nstr];
+}
+
+- (NSDictionary *) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
+    id returnValue = nil;
 	id instance = [self.plugins valueForKey:plugin];
 	if (instance) {
 		SEL selector = NSSelectorFromString([name stringByAppendingString:@":"]);
+		SEL selectorWithReturnValue = NSSelectorFromString([name stringByAppendingString:@"WithReturnValue:"]);
 		if ([instance respondsToSelector:selector]) {
 			[instance performSelector:selector withObject:event];
-		}
+		} else if ([instance respondsToSelector:selectorWithReturnValue]) {
+            returnValue = [instance performSelector:selectorWithReturnValue withObject:event];
+        }
 	} else {
 		NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin: %@", plugin);
 	}
+    
+    if (![returnValue isKindOfClass:[NSDictionary class]] && ![returnValue isKindOfClass:[NSString class]]) {
+        returnValue = nil;
+    }
+    
+    return returnValue;
 }
 
 @end

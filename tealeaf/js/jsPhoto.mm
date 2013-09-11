@@ -19,27 +19,34 @@
 #include "photo.h"
 
 
-JSAG_MEMBER_BEGIN_NOARGS(cameraNextId)
+JSAG_MEMBER_BEGIN(getPhoto, 3)
 {
-	JSAG_RETURN_INT32(camera_get_next_id());
+    JSAG_ARG_CSTR(url)
+    JSAG_ARG_INT32(width)
+    JSAG_ARG_INT32(height)
+    camera_get_photo(url, width, height);
+	JSAG_RETURN_INT32(3);
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_OBJECT_START(camera)
-JSAG_OBJECT_MEMBER_NAMED(getNextId, cameraNextId)
+JSAG_OBJECT_MEMBER(getPhoto)
 JSAG_OBJECT_END
 
 
-JSAG_MEMBER_BEGIN_NOARGS(galleryNextId)
+JSAG_MEMBER_BEGIN(galleryGetPhoto, 3)
 {
-	JSAG_RETURN_INT32(gallery_get_next_id());
+    JSAG_ARG_CSTR(url)
+    JSAG_ARG_INT32(width)
+    JSAG_ARG_INT32(height)
+    gallery_get_photo(url, width, height);
+	JSAG_RETURN_INT32(3);
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_OBJECT_START(gallery)
-JSAG_OBJECT_MEMBER_NAMED(getNextId, galleryNextId)
+JSAG_OBJECT_MEMBER_NAMED(getPhoto, galleryGetPhoto)
 JSAG_OBJECT_END
-
 
 @implementation jsPhoto
 

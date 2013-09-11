@@ -47,8 +47,9 @@
 
 - (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
 - (void) dispatchJSEvent:(NSDictionary *)evt;
+- (void) dispatchJSEventWithJSONString: (NSString*) str;
 
-- (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event;
+- (id) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event;
 
 + (PluginManager *) get;
 @end

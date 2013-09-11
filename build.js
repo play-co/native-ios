@@ -29,7 +29,10 @@ var rsyncLogger;
 
 var installAddons = function(builder, project, opts, addonConfig, next) {
 	var paths = builder.common.paths;
-	var addons = project && project.manifest && project.manifest.addons;
+	var addons = project.getAddonConfig();
+	if (!Array.isArray(addons)) {
+		addons = Object.keys(addons);
+	}
 
 	var f = ff(this, function() {
 
@@ -1009,6 +1012,17 @@ function validateIOSManifest(manifest) {
 		manifest.ios = {};
 	}
 
+	// In the case that no bundleID is specified,
+	// construct a bundleID the same way Android constructs the packageName:
+	var studio = manifest.studio && manifest.studio.domain;
+	if (!studio) {
+		studio = "wee.cat";
+	}
+	var names = studio.split(/\./g).reverse();
+	studio = names.join('.');
+
+	var defaultBundleID = studio + "." + manifest.shortName;
+
 	var schema = {
 		"entryPoint": {
 			res: "Should be set to the entry point.",
@@ -1018,7 +1032,7 @@ function validateIOSManifest(manifest) {
 		},
 		"bundleID": {
 			res: "Should be set to the Bundle ID (a name) for your app from iTunes Connect. In-app purchases may not work!",
-			def: manifest.shortName,
+			def: defaultBundleID,
 			halt: false
 		},
 		"appleID": {
@@ -1041,7 +1055,7 @@ function validateIOSManifest(manifest) {
 			var schemaData = schemaParent[key];
 			var loadType = typeof loadPath;
 
-			if (loadType !== "string") {
+			if (loadType !== "string" || loadPath === "") {
 				// Load and schema do not agree: Report to user
 				var msg = 'The manifest.json key ' + desc + ':' + key + ' is missing! ' + schemaData.res;
 				if (schemaData.halt) {
@@ -1050,6 +1064,7 @@ function validateIOSManifest(manifest) {
 					if (!schemaData.silent) {
 						logger.warn(msg + " Defaulting to '" + schemaData.def + "'");
 					}
+					// Patch the loaded manifest object
 					loadingParent[key] = schemaData.def;
 				}
 			}
@@ -1122,7 +1137,7 @@ function makeIOSProject(builder, opts, next) {
 			game_hash: gameHash || "ios",
 			sdk_hash: sdkHash || "ios",
 			native_hash: nativeHash || "ios",
-			code_path: 'native.js.mp3',
+			code_path: 'native.js',
 			studio_name: (manifest.studio && manifest.studio.name) || "example.studio",
 
 			apple_id: manifest.ios.appleID || "example.appleid",
@@ -1155,7 +1170,7 @@ exports.build = function(builder, project, opts, next) {
 	// If IPA mode,
 	var developer, provision;
 	if (argv.ipa) {
-		developer = argv.name;
+		developer = argv.developer;
 		if (typeof developer !== "string") {
 			developer = manifest.ios && manifest.ios.developer;
 		}
@@ -1220,20 +1235,30 @@ exports.build = function(builder, project, opts, next) {
 	}, function() {
 		installAddons(builder, project, opts, addonConfig, f());
 	}, function() {
-		makeIOSProject(builder, {
-			project: project,
-			destPath: destPath,
-			debug: argv.debug,
-			servicesURL: manifest.servicesURL,
-			title: title,
-			addonConfig: addonConfig
-		}, f());
+		if (!argv['js-only']) {
+			makeIOSProject(builder, {
+				project: project,
+				destPath: destPath,
+				debug: argv.debug,
+				servicesURL: manifest.servicesURL,
+				title: title,
+				addonConfig: addonConfig
+			}, f());
+		}
 	}, function() {
-		require(builder.common.paths.nativeBuild('native')).writeNativeResources(project, opts, f());
+		require(builder.common.paths.nativeBuild('native')).writeNativeResources(builder, project, opts, f());
 	}, function() {
-		copyIcons(builder, manifest.ios.icons, destPath);
+		if (!argv['no-icons']) {
+			copyIcons(builder, manifest.ios.icons, destPath);
+		} else {
+			logger.log("Not copying icons");
+		}
 		copyFonts(builder, manifest.ttf, destPath);
-		copySplash(builder, manifest, destPath, f.wait());
+		if (!argv['no-splash']) {
+			copySplash(builder, manifest, destPath, f.wait());
+		} else {
+			logger.log("Not copying splash");
+		}
 		installAddonsFiles(builder, {
 			destPath: opts.output,
 			addonConfig: addonConfig
@@ -1242,27 +1267,32 @@ exports.build = function(builder, project, opts, next) {
 		// If IPA generation was requested,
 		if (argv.ipa) {
 			// TODO: Debug mode is currently turned off because it does not build
-			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.shortName, false, provision, developer, manifest.shortName+'.ipa', f());
+			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.ios.bundleID, false, provision, developer, manifest.shortName+'.ipa', false, f());
 		}
 	}, function() {
-		if (argv.ipa) {
-			logger.log('Done with compilation.  The output .ipa file has been placed at', manifest.shortName+'.ipa');
+		if (argv['js-only']) {
+			logger.log('Done with compilation.  The output files are at:', destPath);
 		} else {
-			var projPath = path.join(destPath, 'tealeaf/TeaLeafIOS.xcodeproj');
+			if (argv.ipa) {
+				logger.log('Done with compilation.  The output .ipa file has been placed at:', manifest.shortName+'.ipa');
+			} else {
+				var projPath = path.join(destPath, 'tealeaf/TeaLeafIOS.xcodeproj');
 
-			logger.log('Done with compilation.  The XCode project has been placed at', projPath);
+				logger.log('Done with compilation.  The XCode project has been placed at', projPath);
 
-			// Launch XCode if requested
-			if (argv.open) {
-				logger.log('Open: Launching XCode project...');
+				// Launch XCode if requested
+				if (argv.open) {
+					logger.log('Open: Launching XCode project...');
 
-				require('child_process').exec('open "' + projPath + '"');
+					require('child_process').exec('open "' + projPath + '"');
+				}
 			}
 		}
-		process.exit(0);
+
+		f(destPath);
 	}).error(function(err) {
 		logger.error("Error during build process:", err, err.stack);
 		process.exit(2);
-	});
+	}).next(next);
 }
 

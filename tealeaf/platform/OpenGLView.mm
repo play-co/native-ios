@@ -23,9 +23,9 @@
 
 void timestep_animation_tick_animations(double);
 
-CADisplayLink* displayLink;
 @implementation OpenGLView
 
+static CADisplayLink *displayLink;
 
 - (id)init {
 	self = [super init];
@@ -36,6 +36,14 @@ CADisplayLink* displayLink;
 	return self;
 }
 
+- (void)dealloc
+{
+	NSLog(@"Exciting: Deallocating OpenGLView");
+	
+	[self destroyDisplayLink];
+
+	[super dealloc];
+}
 
 + (Class)layerClass {
 	return [CAEAGLLayer class];
@@ -108,7 +116,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		CFTimeInterval timestamp = CFAbsoluteTimeGetCurrent();
 		int dt = (int)(1000 * (timestamp - last_timestamp));
 		core_tick(dt);
-
+		
 		// Measure time to perform a tick
 		// CFTimeInterval after_tick = CFAbsoluteTimeGetCurrent();
 
@@ -154,17 +162,24 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
-- (void) destroyDisplayLink {
+- (void)destroyDisplayLink {
+	[self stopRendering];
+
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+
+	[_context release];
+	_context = nil;
 }
 
 
 - (id)initWithFrame:(CGRect)frame {
+	NSLog(@"{OpenGL} Init with frame");
+
 	self = [super initWithFrame:frame];
 	if (self) {
 		// Adjust for retina displays
 		if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {
-			self.contentScaleFactor = [[UIScreen mainScreen] scale];
+			[self setContentScaleFactor:[UIScreen mainScreen].scale];
 		}
 
 		touchData = [[NSMutableArray alloc] init];
@@ -243,14 +258,6 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	if ([touchData count] == 0) {
 		_id = 0;
 	}
-}
-
-- (void)dealloc
-{
-	[self destroyDisplayLink];
-	[_context release];
-	_context = nil;
-	[super dealloc];
 }
 
 @end
