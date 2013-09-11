@@ -427,6 +427,15 @@ JSAG_MEMBER_BEGIN(strokeText, 10)
 			x -= x_offset + line_width;
 			y -= y_offset + line_width;
 
+			// HACK: Work around iOS font rendering bug.  When text is rendered with a
+			// stroke style, the first character looks fine but the rest of the stroke
+			// outline is offset by 1 pixel.  Shifting the stroke by half a pixel seems
+			// to make it look visually centered.
+			if (str_len > 1) {
+				x -= 0.5f;
+				y += 0.5f;
+			}
+
 			rect_2d src_rect = {0, 0, tex->originalWidth, tex->originalHeight};
 			rect_2d dest_rect = {x, y, tex->originalWidth, tex->originalHeight};
 			
