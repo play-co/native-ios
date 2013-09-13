@@ -235,6 +235,10 @@ int text_manager_init() {
         NSURL *resourceURL = [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:@"resources.bundle/resources/fonts"];
         NSArray *resourceURLs = [fileManager contentsOfDirectoryAtURL:resourceURL includingPropertiesForKeys:nil options:0 error:nil];
 
+		if (!resourceURLs || [resourceURLs count] <= 0) {
+			return [NSArray array];
+		}
+		
         return [resourceURLs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSURL *url, NSDictionary *bindings) {
             CFStringRef pathExtension = (CFStringRef)[url pathExtension];
             NSArray *allIdentifiers = (NSArray *)UTTypeCreateAllIdentifiersForTag(kUTTagClassFilenameExtension, pathExtension, CFSTR("public.font"));
