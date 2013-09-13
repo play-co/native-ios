@@ -19,7 +19,7 @@
 #import <MessageUI/MFMessageComposeViewController.h>
 #import <AddressBookUI/ABPeoplePickerNavigationController.h>
 
-@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate> {
+@interface TeaLeafViewController : UIViewController <MFMessageComposeViewControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate> {
 @private
 int callback;
 UITextField *inputAccTextField;
@@ -31,9 +31,9 @@ UITextField *inputAccTextField;
 @property (nonatomic, retain) UIAlertView *backAlertView;
 @property (nonatomic, retain) UIImagePickerController *imagePickerController;
 @property (nonatomic, retain) NSString *photoURL;
+@property (nonatomic, retain) UIPopoverController *popover; // Used for gallery on iPad
 @property int photoWidth;
 @property int photoHeight;
-- (TeaLeafViewController*) init;
 
 - (TeaLeafViewController *) init;
 
@@ -66,3 +66,4 @@ UITextField *inputAccTextField;
 - (void) dealloc;
 
 @end
+

@@ -84,6 +84,8 @@ CEXPORT void device_hide_splash() {
 
 	[self.appDelegate selectOrientation];
 
+	self.popover = nil;
+
 	return self;
 }
 
@@ -93,6 +95,8 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) dealloc {
+	self.popover = nil;
+
 	[super dealloc];
 }
 
@@ -485,17 +489,13 @@ CEXPORT void device_hide_splash() {
 	[self runCallback: args];
 }
 
-- (void)showImagePickerForCamera: (NSString *) url width: (int)width height: (int)height
-{
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL: url width: width height: height];
+- (void)showImagePickerForCamera: (NSString *) url width: (int)width height: (int)height {
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL:url width:width height:height];
 }
 
-
-- (void)showImagePickerForPhotoPicker: (NSString *) url width: (int)width height: (int)height
-{
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL: url width: width height: height];
+- (void)showImagePickerForPhotoPicker: (NSString *) url width: (int)width height: (int)height {
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL:url width:width height:height];
 }
-
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL: (NSString *) url width: (int)width height: (int)height
 {
@@ -509,7 +509,41 @@ CEXPORT void device_hide_splash() {
     self.photoHeight = height;
     
     self.imagePickerController = imagePickerController;
-    [self presentViewController:self.imagePickerController animated:YES completion:nil];
+
+	// Apple requires that we do this particular source type on iPad with a popover.
+	if ((sourceType == UIImagePickerControllerSourceTypePhotoLibrary) &&
+		[[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+		UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:imagePickerController];
+		popover.delegate = self;
+
+		// Manually set rectangle since the view bounds are not working for this.
+		CGRect rect;
+		rect.origin.x = 0;
+		rect.origin.y = 0;
+		rect.size.width = self.appDelegate.screenWidthPixels - 64;
+		rect.size.height = self.appDelegate.screenHeightPixels - 64;
+
+		// Follow documentation to limit width of popover.
+		if (rect.size.width > 600) {
+			rect.size.width = 600;
+		}
+
+		// Present it once..
+		[popover presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+
+		// Store it for later cleanup
+		self.popover = popover;
+	} else {
+		[self presentModalViewController:imagePickerController animated:YES];
+	}
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+}
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+	// Always dismiss popover if user tries to close it.
+	return YES;
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -530,7 +564,12 @@ CEXPORT void device_hide_splash() {
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoBeginLoaded"}];
 
+	if (self.popover != nil) {
+		[self.popover dismissPopoverAnimated:YES];
+	}
+	
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
     float bmpWidth = image.size.width;
     float bmpHeight = image.size.height;
@@ -555,15 +594,18 @@ CEXPORT void device_hide_splash() {
     
     NSData *data = UIImagePNGRepresentation(image);
     NSString *b64Image = encodeBase64(data);
-    NSDictionary *event = @{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image};
-    [[PluginManager get] dispatchJSEvent: event];
+    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image}];
+
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
-
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
     [self dismissViewControllerAnimated:YES completion:NULL];
+
+	if (self.popover != nil) {
+		[self.popover dismissPopoverAnimated:YES];
+	}
 }
 
 @end
@@ -595,3 +637,4 @@ CEXPORT void device_hide_splash() {
 }
 
 @end
+
