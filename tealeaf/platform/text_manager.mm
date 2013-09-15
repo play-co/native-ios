@@ -236,7 +236,7 @@ int text_manager_init() {
         NSArray *resourceURLs = [fileManager contentsOfDirectoryAtURL:resourceURL includingPropertiesForKeys:nil options:0 error:nil];
 
 		if (!resourceURLs || [resourceURLs count] <= 0) {
-			return [NSArray array];
+			return (NSArray *)[NSArray array];
 		}
 		
         return [resourceURLs filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSURL *url, NSDictionary *bindings) {
