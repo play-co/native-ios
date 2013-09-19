@@ -60,7 +60,7 @@ static int32_t m_prompt_id = 0;
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 	// OK?
-	if (buttonIndex == 1) {
+	if (buttonIndex == 0) {
         [self submit];
 	} else {
 		NSString *evt = [NSString stringWithFormat: @"{\"name\":\"InputKeyboardCancel\",\"id\":%d}", m_prompt_id];
