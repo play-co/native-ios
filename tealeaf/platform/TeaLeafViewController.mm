@@ -535,6 +535,9 @@ CEXPORT void device_hide_splash() {
 		self.popover = popover;
 	} else {
 		[self presentModalViewController:imagePickerController animated:YES];
+
+		// On iOS 7 the status bar decides to come back here
+		[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	}
 }
 
@@ -597,6 +600,9 @@ CEXPORT void device_hide_splash() {
     [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image}];
 
     [self dismissViewControllerAnimated:YES completion:NULL];
+
+	// Make sure the status bar is gone
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -606,6 +612,9 @@ CEXPORT void device_hide_splash() {
 	if (self.popover != nil) {
 		[self.popover dismissPopoverAnimated:YES];
 	}
+
+	// Make sure the status bar is gone
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
 @end
