@@ -334,6 +334,7 @@ static inline int NextPowerOfTwo(int n) {
 	CGContextTranslateCTM(context, 0.0, h);
 	CGContextScaleCTM(context, 1.0, -1.0); //NOTE: NSString draws in UIKit referential i.e. renders upside-down compared to CGBitmapContext referential
 	CGColorRef colorf = CGColorCreate(colorSpace, color);
+	CGContextSetFillColorWithColor(context, colorf);
 	if (textStyle == TEXT_STYLE_STROKE) {
 		CGContextSetTextDrawingMode(context, kCGTextStroke);
 		CGContextSetStrokeColorWithColor(context, colorf);
@@ -341,7 +342,6 @@ static inline int NextPowerOfTwo(int n) {
 		CGContextSetLineJoin(context, kCGLineJoinRound);
 	} else {
 		CGContextSetTextDrawingMode(context, kCGTextFill);
-		CGContextSetFillColorWithColor(context, colorf);
 	}
 	CGContextSetAllowsAntialiasing(context, YES);
 	CGContextSetShouldAntialias(context, YES);
