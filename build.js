@@ -367,7 +367,6 @@ var installAddonsProject = function(builder, opts, next) {
 
 			if (line.indexOf("INFOPLIST_FILE") != -1) {
 				injectOffsets.push(ii + 1);
-				break;
 			}
 		}
 
@@ -385,10 +384,10 @@ var installAddonsProject = function(builder, opts, next) {
 				var injectLine = '\t\t\t\t' + key + ' = "' + value + '";';
 
 				for (var ii = 0; ii < injectOffsets.length; ++ii) {
-					contents.splice(injectOffsets[ii], 0, injectLine);
-
 					// Increment offset since the previous splice moved the injection point
 					injectOffsets[ii] += ii;
+
+					contents.splice(injectOffsets[ii], 0, injectLine);
 				}
 
 				logger.log("Installed user-defined key", key, "=", value);
