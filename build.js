@@ -386,6 +386,9 @@ var installAddonsProject = function(builder, opts, next) {
 
 				for (var ii = 0; ii < injectOffsets.length; ++ii) {
 					contents.splice(injectOffsets[ii], 0, injectLine);
+
+					// Increment offset since the previous splice moved the injection point
+					injectOffsets[ii] += ii;
 				}
 
 				logger.log("Installed user-defined key", key, "=", value);
