@@ -360,18 +360,18 @@ var installAddonsProject = function(builder, opts, next) {
 
 		// Install user-defined keys:
 
-		var injectOffset = 0;
+		var injectOffsets = [];
 
 		for (var ii = 0; ii < contents.length; ++ii) {
 			var line = contents[ii];
 
 			if (line.indexOf("INFOPLIST_FILE") != -1) {
-				injectOffset = ii + 1;
+				injectOffsets.push(ii + 1);
 				break;
 			}
 		}
 
-		if (!injectOffset) {
+		if (injectOffsets.length <= 0) {
 			logger.error("Unable to find INFOPLIST_FILE injection line for user-defined keys for some reason.");
 			process.exit(1);
 		}
@@ -384,7 +384,9 @@ var installAddonsProject = function(builder, opts, next) {
 			} else {
 				var injectLine = '\t\t\t\t' + key + ' = "' + value + '";';
 
-				contents.splice(injectOffset, 0, injectLine);
+				for (var ii = 0; ii < injectOffsets.length; ++ii) {
+					contents.splice(injectOffsets[ii], 0, injectLine);
+				}
 
 				logger.log("Installed user-defined key", key, "=", value);
 			}
