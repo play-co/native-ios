@@ -17,6 +17,10 @@
 
 #import <mach/mach.h>
 #import <mach/mach_host.h>
+#import <sys/types.h>
+#import <sys/sysctl.h>
+
+static NSString *m_platform = 0;
 
 CEXPORT int get_platform_memory_limit()
 {
@@ -51,4 +55,20 @@ CEXPORT int get_platform_memory_limit()
 
 		return limit;
 	}
+}
+
+// Get hw.machine
+CEXPORT NSString *get_platform() {
+	if (!m_platform) {
+		size_t size;
+		sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+		char *machine = (char*)malloc(size + 1);
+		sysctlbyname("hw.machine", machine, &size, NULL, 0);
+		machine[size] = '\0';
+		m_platform = [NSString stringWithUTF8String:machine];
+		free(machine);
+	}
+
+	// Should return a string like "iPhone4,1".  You can websearch for the other values and what they mean.
+    return m_platform;
 }

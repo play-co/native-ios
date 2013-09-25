@@ -35,22 +35,6 @@
 #include "core/config.h"
 #include "core/events.h"
 
-#include <sys/types.h>
-#include <sys/sysctl.h>
-
-
-// Get hw.machine
-static NSString *get_platform() {
-    size_t size;
-    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-    char *machine = (char*)malloc(size + 1);
-    sysctlbyname("hw.machine", machine, &size, NULL, 0);
-    machine[size] = '\0';
-    NSString *platform = [NSString stringWithUTF8String:machine];
-    free(machine);
-    return platform;
-}
-
 
 static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
 
@@ -325,10 +309,15 @@ CEXPORT void device_hide_splash() {
 			  "");
 	
 	// Lower texture memory based on device model
-    NSString *platform = get_platform();
-    NSLog(@"{core} iOS device model '%@'", platform);
+    NSLog(@"{core} iOS device model '%@'", get_platform());
 
-	texture_manager_set_max_memory(texture_manager_get(), get_platform_memory_limit());
+	int mem_limit = get_platform_memory_limit();
+	
+	if (self.appDelegate.ignoreMemoryWarnings) {
+		mem_limit = 30000000; // Impose lower memory limit for this work-around case
+	}
+
+	texture_manager_set_max_memory(texture_manager_get(), mem_limit);
 
 	[self createGLView];
 

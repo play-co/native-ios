@@ -33,6 +33,7 @@
 #import "sys/socket.h"
 #import "netinet/in.h"
 #import "arpa/inet.h"
+#import "iosVersioning.h"
 
 
 @interface TeaLeafAppDelegate ()
@@ -62,6 +63,17 @@
 }
 
 - (BOOL)application:(UIApplication *)app didFinishLaunchingWithOptions:(NSDictionary *)options {
+	self.ignoreMemoryWarnings = NO;
+	
+	// If on iOS 7,
+	if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+		// If on iPhone 4s
+		if ([get_platform() isEqualToString:@"iPhone4,1"]) {
+			NSLog(@"{core} iOS7-iPhone4s work-around is enabled");
+			self.ignoreMemoryWarnings = YES;
+		}
+	}
+
 	//SEARCH FOR NETWORKS
 	self.services = [NSMutableArray array];
 	self.serviceBrowser = [[NSNetServiceBrowser alloc] init];
@@ -420,13 +432,14 @@
 #pragma mark Memory management
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
-	// Dump JS garbage and sound effects immediately
-	[[js_core lastJS] performSelectorOnMainThread:@selector(performGC) withObject:nil waitUntilDone:NO];
-	[[SoundManager get] clearEffects];
-
-	// Allow texture manager to react to a low memory warning as it deems appropriate
-	texture_manager_memory_warning(texture_manager_get());
-
+	if (!self.ignoreMemoryWarnings) {
+		// Dump JS garbage and sound effects immediately
+		[[js_core lastJS] performSelectorOnMainThread:@selector(performGC) withObject:nil waitUntilDone:NO];
+		[[SoundManager get] clearEffects];
+		
+		// Allow texture manager to react to a low memory warning as it deems appropriate
+		texture_manager_memory_warning(texture_manager_get());
+	}
 }
 
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken

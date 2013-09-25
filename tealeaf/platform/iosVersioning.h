@@ -31,5 +31,6 @@
 
 CEXPORT int get_platform_memory_limit();
 
+CEXPORT NSString *get_platform();
 
 #endif

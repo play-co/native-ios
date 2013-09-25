@@ -71,6 +71,7 @@ struct SplashDescriptor {
 @property (nonatomic) CGRect initFrame; // This may be scaled by 2, but these are the coordinates the Canvas cares about
 @property (nonatomic) int screenLongerSide;
 @property (nonatomic) BOOL screenPortraitMode;
+@property (nonatomic) BOOL ignoreMemoryWarnings;
 @property (nonatomic, retain) NSString *screenBestSplash;
 
 // Online state
