@@ -305,7 +305,7 @@ CEXPORT void device_hide_splash() {
 			  [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
 			  source_path, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels,
 			  self.appDelegate.isTestApp,
-			  [self.appDelegate.screenBestSplash UTF8String],
+			  NULL, // Disable OpenGL splash
 			  "");
 	
 	// Lower texture memory based on device model
