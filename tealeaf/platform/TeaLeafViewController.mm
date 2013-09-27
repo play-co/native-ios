@@ -314,7 +314,7 @@ CEXPORT void device_hide_splash() {
 	int mem_limit = get_platform_memory_limit();
 	
 	if (self.appDelegate.ignoreMemoryWarnings) {
-		mem_limit = 30000000; // Impose lower memory limit for this work-around case
+		mem_limit = 28000000; // Impose lower memory limit for this work-around case
 	}
 
 	texture_manager_set_max_memory(texture_manager_get(), mem_limit);
