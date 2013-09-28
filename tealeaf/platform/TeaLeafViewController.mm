@@ -41,8 +41,8 @@ static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
 CEXPORT void device_hide_splash() {
 	// If showing the splash screen,
 	if (m_showing_splash) {
-		// Hide it immediately!
-		[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view removeFromSuperview];
+		// Give the game another 1 second to finish loading textures
+		[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:1.0];
 
 		[UIView setAnimationsEnabled:YES];
 
