@@ -11,10 +11,48 @@
 #import "NativeCalls.h"
 #import "FontUtil.h"
 #import <QuartzCore/QuartzCore.h>
+#import "TeaLeafEvent.h"
+#import "InputUtils.h"
+
+@implementation TeaLeafTextFieldDelegate
+@synthesize maxLength;
+
+//This delegate is called everytime a character is inserted in an UITextfield.
+- (BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    
+    //if we are greater than maxlength allows for this textfield, return and
+    //do not process
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    if (maxLength > 0 && newLength > maxLength) {
+        return NO;
+    }
+    
+    
+    [TeaLeafEvent Send:@"InputKeyboardKeyUp" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                                       [textField.text stringByReplacingCharactersInRange:range withString:string], @"text", nil]];
+	//Returning yes allows the entered chars to be processed
+	return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(TeaLeafTextField *)textField
+{
+    if (textField.returnKeyType == UIReturnKeyNext) {
+        [textField gotoNextTextfield];
+        return NO;
+    } else {
+        [textField hide];
+        return YES;
+    }
+}
+
+@end
 
 @implementation TeaLeafTextField
 @synthesize tapGestureRecognizer;
 @synthesize _placeholderColor;
+@synthesize textFieldDelegate;
+@synthesize cursorPos;
 
 - (id)init
 {
@@ -23,6 +61,8 @@
         // Initialization code
         [self setFrame:CGRectMake(0, 0, 0, 0)];
         tapGestureRecognizer = nil;
+        self.textFieldDelegate = [[[TeaLeafTextFieldDelegate alloc] init] autorelease];
+        self.delegate = self.textFieldDelegate;
         
         [NativeCalls Register:@"editText.focus" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
             float scale = 1.f;
@@ -36,7 +76,7 @@
                                       scale * [[dict objectForKey:@"width"] floatValue],
                                       scale * [[dict objectForKey:@"height"] floatValue])];
             
-
+            [self setText:[dict objectForKey:@"text"]];
             
             //font properties
             NSString * font = [dict objectForKey:@"font"];
@@ -51,19 +91,44 @@
             [self setPlaceholder:[dict objectForKey:@"hint"]];
             [self setPlaceholderColor:[self colorFromHexString:[dict objectForKey:@"hintColor"]]];
             
-        
+            
             //left and right padding
-            UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[dict objectForKey:@"paddingLeft"] floatValue], 0)];
+            UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[dict objectForKey:@"paddingLeft"] floatValue] * scale, 0)];
             self.leftView = paddingView;
             self.leftViewMode = UITextFieldViewModeAlways;
             
-            paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[dict objectForKey:@"paddingRight"] floatValue], 0)];
+            paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[dict objectForKey:@"paddingRight"] floatValue] * scale, 0)];
             self.rightView = paddingView;
             self.rightViewMode = UITextFieldViewModeAlways;
-
+            
+            if (tapGestureRecognizer == nil) {
+                tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                               action:@selector(hide)];
+            }
+            TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
+            [controller.view addGestureRecognizer:tapGestureRecognizer];
+            
+            [InputUtils setKeyboardType:[dict objectForKey:@"inputType"] forTextField:self];
+            [InputUtils setKeyboardReturnType:[dict objectForKey:@"inputReturnType"] forTextField:self];
+            
+            bool hasForward = [[dict objectForKey:@"hasForward"] boolValue];
+            if (self.returnKeyType == UIReturnKeyDefault && hasForward) {
+                self.returnKeyType = UIReturnKeyNext;
+            }
+            
+            
+            textFieldDelegate.maxLength = [[dict objectForKey:@"maxLength"] intValue];
+            cursorPos = [[dict objectForKey:@"cursorPos"] intValue];
             
             [self setHidden:false];
             [self becomeFirstResponder];
+            return nil;
+        }];
+        
+        
+        [NativeCalls Register:@"editText.clearFocus" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
+            [self clearFocus];
+            [self setHidden:true];
             return nil;
         }];
         
@@ -76,13 +141,64 @@
 }
 
 
+
+
+- (void) next {
+    if (self.returnKeyType == UIReturnKeyDefault || UIReturnKeyDone) {
+        [self hide];
+    } else if (self.returnKeyType == UIReturnKeyNext) {
+        [self gotoNextTextfield];
+    }
+}
+
+-(void)gotoPrevTextfield {
+    [TeaLeafEvent Send:@"InputKeyboardFocusNext"
+              withOpts: [NSMutableDictionary dictionaryWithObjectsAndKeys:@false, @"next", nil]];
+}
+
+-(void)gotoNextTextfield {
+    [TeaLeafEvent Send:@"InputKeyboardFocusNext"
+              withOpts: [NSMutableDictionary dictionaryWithObjectsAndKeys:@true, @"next", nil]];
+}
+
 - (void) setPlaceholderColor:(UIColor*) color {
     self._placeholderColor = color;
 }
 
+- (CGRect) placeholderRectForBounds:(CGRect)bounds {
+    NSArray *vComp = [[UIDevice currentDevice].systemVersion componentsSeparatedByString:@"."];
+    if ([[vComp objectAtIndex:0] intValue] >= 7) {
+        CGRect b = [self editingRectForBounds:bounds];
+        b.origin.y += b.size.height / 4;
+        return b;
+    } else {
+        return [super placeholderRectForBounds:bounds];
+    }
+}
+
+/*
+ - (void) drawTextInRect:(CGRect)rect {
+ 
+ self.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
+ int height = getTextHeight(self.font.familyName, self.font.pointSize, self.text);
+ rect.origin.x = rect.origin.x + (self.bounds.size.height - height) / 2;
+ 
+ [[self text] drawInRect:rect withFont:self.font];
+ }*/
+
+int getTextHeight(NSString *font, int size, NSString * text) {
+    
+	if (font != nil) {
+		CGSize fontSize = [text sizeWithFont: [UIFont fontWithName:font size:size]];
+		return fontSize.height;
+	} else {
+		return 0;
+	}
+}
+
 - (void) drawPlaceholderInRect:(CGRect)rect {
     self.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-
+    
     [[self _placeholderColor] setFill];
     [[self placeholder] drawInRect:rect withFont:self.font];
 }
@@ -110,8 +226,13 @@
     return [UIColor colorWithRed:red green:green blue:blue alpha:1.f];
 }
 
-- (void) hide {
+- (void) submit {
+    [TeaLeafEvent Send:@"InputKeyboardSubmit" withOpts:nil];
+    
+}
 
+- (void) hide {
+    [self submit];
 }
 
 
@@ -129,12 +250,12 @@
 
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 @end

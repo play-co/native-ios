@@ -9,8 +9,17 @@
 #import <UIKit/UIKit.h>
 #include "js/js_core.h"
 
+@interface TeaLeafTextFieldDelegate : NSObject<UITextFieldDelegate>
+@property (nonatomic) int maxLength;
+- (void) hide;
+- (void) gotoNextTextfield;
+@end
+
 @interface TeaLeafTextField : UITextField
+@property (nonatomic) int cursorPos;
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, retain) UIColor *_placeholderColor;
-
+@property (nonatomic, retain) TeaLeafTextFieldDelegate *textFieldDelegate;
 @end
+
+
