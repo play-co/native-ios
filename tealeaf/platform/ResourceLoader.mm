@@ -254,6 +254,7 @@ static int base_path_len = 0;
 					} else {
                         data = [NSData dataWithContentsOfURL: [self resolve:url]];
                         [self makeTexture2DFromData: data url: url];
+						[data release];
 					}
 				}
 			}
@@ -330,7 +331,7 @@ static int base_path_len = 0;
 		Texture2D *tex = [[[Texture2D alloc] initWithString:str fontName:family fontSize:size color:colorf maxWidth:maxWidth textStyle:textStyle strokeWidth:strokeWidth] autorelease];
 
 		if (tex) {
-			texture_manager_on_texture_loaded(texture_manager_get(), [url UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight, 4, 1, true, 0);
+			texture_manager_on_texture_loaded(texture_manager_get(), [url UTF8String], tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight, 4, 1, true);
 			if (VERBOSE_LOGS) {
 				NSLOG(@"{resources} Loaded text %@ id:%d (%d,%d)->(%u,%u)", url, tex.name, tex.originalWidth, tex.originalHeight, tex.width, tex.height);
 			}
@@ -341,7 +342,7 @@ static int base_path_len = 0;
 - (void) finishLoadingImage:(ImageInfo *)info {
 	Texture2D* tex = [[Texture2D alloc] initWithImage:info.image andUrl: info.url];
 	int scale = use_halfsized_textures ? 2 : 1;
-	texture_manager_on_texture_loaded(texture_manager_get(), [tex.src UTF8String], tex.name, tex.width * scale, tex.height * scale, tex.originalWidth * scale, tex.originalHeight * scale, 4, scale, false, 0);
+	texture_manager_on_texture_loaded(texture_manager_get(), [tex.src UTF8String], tex.name, tex.width * scale, tex.height * scale, tex.originalWidth * scale, tex.originalHeight * scale, 4, scale, false);
 	NSString* evt = [NSString stringWithFormat: @"{\"name\":\"imageLoaded\",\"url\":\"%@\",\"glName\":%d,\"width\":%d,\"height\":%d,\"originalWidth\":%d,\"originalHeight\":%d}",
 					 tex.src, tex.name, tex.width, tex.height, tex.originalWidth, tex.originalHeight];
 	core_dispatch_event([evt UTF8String]);
@@ -378,10 +379,10 @@ static int base_path_len = 0;
 
 	texture_manager_on_texture_loaded(texture_manager_get(), url, texture,
 									  info.w, info.h, info.ow, info.oh,
-									  info.channels, info.scale, false, info.raw_data);
+									  info.channels, info.scale, false);
     
     [self sendImageLoadedEventForURL:[info.url UTF8String] glName:texture width:info.w height:info.h originalWidth:info.ow originalHeight:info.oh];
-
+	
    	[info release];
 }
 
