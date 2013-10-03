@@ -878,7 +878,7 @@ function copyFonts(builder, ttf, destDir) {
 
 function copyIcons(builder, icons, destPath) {
 	if (icons) {
-		['57', '72', '114', '144'].forEach(function(size) {
+		['57', '72', '76', '114', '120', '144', '152'].forEach(function(size) {
 			var iconPath = icons[size];
 			if (iconPath) {
 				if (fs.existsSync(iconPath)) {

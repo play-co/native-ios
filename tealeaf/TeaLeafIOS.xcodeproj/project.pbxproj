@@ -392,6 +392,9 @@
 		4EB0C68A16BBB4B900838A49 /* ServerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerTableViewController.h; sourceTree = "<group>"; };
 		4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ServerTableViewController.mm; sourceTree = "<group>"; };
 		4EC8F76915D1E264008DAED6 /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = resources.bundle; sourceTree = "<group>"; };
+		4ECA9A5817FCE9F10006B992 /* icon120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon120.png; sourceTree = "<group>"; };
+		4ECA9A5917FCE9FD0006B992 /* icon76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon76.png; sourceTree = "<group>"; };
+		4ECA9A5A17FCEA070006B992 /* icon152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon152.png; sourceTree = "<group>"; };
 		4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		4EE0B9E117BC88A8002A18DA /* libgpg-error.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libgpg-error.a"; sourceTree = "<group>"; };
 		4EE0BAAB17BDFC7B002A18DA /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -656,12 +659,15 @@
 				D5795618159A79DA000DDEA3 /* Default@2x.png */,
 				D5795619159A79DA000DDEA3 /* Default-Landscape~ipad.png */,
 				D579561D159A79DA000DDEA3 /* Default-Portrait~ipad.png */,
-				D579561F159A79DB000DDEA3 /* icon57.png */,
 				D5795631159A7B99000DDEA3 /* Default-Portrait@2x~ipad.png */,
 				4E3BA03C160BDD5A0070C5FF /* Default-568h@2x.png */,
-				D5795620159A79DB000DDEA3 /* icon72.png */,
-				D5795621159A79DB000DDEA3 /* icon114.png */,
+				4ECA9A5A17FCEA070006B992 /* icon152.png */,
 				D5795622159A79DB000DDEA3 /* icon144.png */,
+				4ECA9A5817FCE9F10006B992 /* icon120.png */,
+				D5795621159A79DB000DDEA3 /* icon114.png */,
+				4ECA9A5917FCE9FD0006B992 /* icon76.png */,
+				D5795620159A79DB000DDEA3 /* icon72.png */,
+				D579561F159A79DB000DDEA3 /* icon57.png */,
 				D57955FD159A771E000DDEA3 /* TeaLeafIOS-Info.plist */,
 			);
 			name = CustomTemplate;
