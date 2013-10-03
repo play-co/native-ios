@@ -879,17 +879,25 @@ function copyFonts(builder, ttf, destDir) {
 function copyIcons(builder, icons, destPath) {
 	if (icons) {
 		['57', '72', '76', '114', '120', '144', '152'].forEach(function(size) {
+			var mustUnlink = ['76', '120', '152'].indexOf(size) >= 0;
+
+			var targetPath = path.join(destPath, 'tealeaf', 'icon' + size + '.png');
 			var iconPath = icons[size];
 			if (iconPath) {
 				if (fs.existsSync(iconPath)) {
-					var targetPath = path.join(destPath, 'tealeaf', 'icon' + size + '.png');
 					logger.log("Icons: Copying ", path.resolve(iconPath), " to ", path.resolve(targetPath));
 					builder.common.copyFileSync(iconPath, targetPath);
+					mustUnlink = false;
 				} else {
 					logger.warn('Icon', iconPath, 'does not exist.');
 				}
 			} else {
 				logger.warn('Icon size', size, 'is not specified under manifest.json:ios:icons.');
+			}
+
+			if (mustUnlink) {
+				logger.warn('Removing iOS 7 icon that was not specified.');
+				fs.unlinkSync(targetPath);
 			}
 		});
 	} else {
