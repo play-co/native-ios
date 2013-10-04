@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C417F51F5A00D35AFD /* NativeCalls.h */; };
+		361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */ = {isa = PBXBuildFile; fileRef = 361049C517F51F5A00D35AFD /* NativeCalls.mm */; };
+		361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C617F51F5A00D35AFD /* TeaLeafTextField.h */; };
+		361049CB17F51F5B00D35AFD /* TeaLeafTextField.mm in Sources */ = {isa = PBXBuildFile; fileRef = 361049C717F51F5A00D35AFD /* TeaLeafTextField.mm */; };
+		368222E017F531FA009F1826 /* FontUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 368222DF17F531FA009F1826 /* FontUtil.mm */; };
 		36ACCF03179F2A63002AE65C /* left_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFD179F2A63002AE65C /* left_text_handler_disabled.png */; };
 		36ACCF04179F2A63002AE65C /* left_text_handler_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFE179F2A63002AE65C /* left_text_handler_pressed.png */; };
 		36ACCF05179F2A63002AE65C /* left_text_handler.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFF179F2A63002AE65C /* left_text_handler.png */; };
@@ -16,6 +21,7 @@
 		36ACCF2B179F595D002AE65C /* done_button_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF29179F595D002AE65C /* done_button_pressed.png */; };
 		36ACCF2C179F595D002AE65C /* done_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCF2A179F595D002AE65C /* done_button.png */; };
 		36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36E6F37B16C45FB50016CD1A /* PluginManager.mm */; };
+		36EED9DE17F9F01B0031E490 /* TeaLeafEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 36EED9DD17F9F01B0031E490 /* TeaLeafEvent.m */; };
 		36F99C4117CEC8EE00FCEC4E /* image_writer.c in Sources */ = {isa = PBXBuildFile; fileRef = 36F99C3F17CEC8EE00FCEC4E /* image_writer.c */; };
 		37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37EEF09B173485A30017511A /* ResumeInfo.mm */; };
 		4E35EA8716B9FEEE004FD452 /* timestep_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */; };
@@ -195,6 +201,12 @@
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		360D3DBB16809A6F005766D9 /* iosVersioning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iosVersioning.h; sourceTree = "<group>"; };
+		361049C417F51F5A00D35AFD /* NativeCalls.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeCalls.h; sourceTree = "<group>"; };
+		361049C517F51F5A00D35AFD /* NativeCalls.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NativeCalls.mm; sourceTree = "<group>"; };
+		361049C617F51F5A00D35AFD /* TeaLeafTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TeaLeafTextField.h; sourceTree = "<group>"; };
+		361049C717F51F5A00D35AFD /* TeaLeafTextField.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TeaLeafTextField.mm; sourceTree = "<group>"; };
+		368222DE17F531FA009F1826 /* FontUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontUtil.h; sourceTree = "<group>"; };
+		368222DF17F531FA009F1826 /* FontUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FontUtil.mm; sourceTree = "<group>"; };
 		36ACCEFD179F2A63002AE65C /* left_text_handler_disabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left_text_handler_disabled.png; sourceTree = "<group>"; };
 		36ACCEFE179F2A63002AE65C /* left_text_handler_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left_text_handler_pressed.png; sourceTree = "<group>"; };
 		36ACCEFF179F2A63002AE65C /* left_text_handler.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left_text_handler.png; sourceTree = "<group>"; };
@@ -205,6 +217,8 @@
 		36ACCF2A179F595D002AE65C /* done_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = done_button.png; sourceTree = "<group>"; };
 		36E6F37A16C45FB50016CD1A /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginManager.h; sourceTree = "<group>"; };
 		36E6F37B16C45FB50016CD1A /* PluginManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PluginManager.mm; sourceTree = "<group>"; };
+		36EED9DC17F9F01B0031E490 /* TeaLeafEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeaLeafEvent.h; sourceTree = "<group>"; };
+		36EED9DD17F9F01B0031E490 /* TeaLeafEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeaLeafEvent.m; sourceTree = "<group>"; };
 		36F99C3F17CEC8EE00FCEC4E /* image_writer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = image_writer.c; path = "native-core/image_writer.c"; sourceTree = SOURCE_ROOT; };
 		36F99C4017CEC8EE00FCEC4E /* image_writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = image_writer.h; path = "native-core/image_writer.h"; sourceTree = SOURCE_ROOT; };
 		37EEF09A173485A30017511A /* ResumeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeInfo.h; sourceTree = "<group>"; };
@@ -1158,6 +1172,14 @@
 		D55821D1150E7C7600549BF6 /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				36EED9DC17F9F01B0031E490 /* TeaLeafEvent.h */,
+				36EED9DD17F9F01B0031E490 /* TeaLeafEvent.m */,
+				368222DE17F531FA009F1826 /* FontUtil.h */,
+				368222DF17F531FA009F1826 /* FontUtil.mm */,
+				361049C417F51F5A00D35AFD /* NativeCalls.h */,
+				361049C517F51F5A00D35AFD /* NativeCalls.mm */,
+				361049C617F51F5A00D35AFD /* TeaLeafTextField.h */,
+				361049C717F51F5A00D35AFD /* TeaLeafTextField.mm */,
 				5B73EB6917C2FAA90017077E /* plugins */,
 				5B5EBDA517BAE89400C4DD0A /* InputUtils.h */,
 				5B5EBDA617BAE89400C4DD0A /* InputUtils.mm */,
@@ -1352,6 +1374,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */,
+				361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */,
+				361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */,
+				361049CB17F51F5B00D35AFD /* TeaLeafTextField.mm in Sources */,
 				D551A752178F359A0028DACC /* sha1.c in Sources */,
 				D551A751178F357A0028DACC /* image_cache.c in Sources */,
 				D53E17F1178506BF000BAC10 /* RawImageInfo.m in Sources */,
@@ -1430,6 +1456,7 @@
 				D5BC676C1635D0270059EC0F /* ALSoundSourcePool.m in Sources */,
 				D5BC676D1635D0270059EC0F /* ALSource.m in Sources */,
 				D5BC676E1635D0270059EC0F /* ALWrapper.m in Sources */,
+				36EED9DE17F9F01B0031E490 /* TeaLeafEvent.m in Sources */,
 				D5BC676F1635D0270059EC0F /* OpenALManager.m in Sources */,
 				D5BC67701635D0270059EC0F /* OALAudioSession.m in Sources */,
 				D5BC67711635D0270059EC0F /* OALSuspendHandler.m in Sources */,
@@ -1476,6 +1503,7 @@
 				4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */,
 				4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */,
 				4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */,
+				368222E017F531FA009F1826 /* FontUtil.mm in Sources */,
 				36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */,
 				4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */,
 				37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */,

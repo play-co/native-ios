@@ -22,6 +22,7 @@
 #import "core/log.h"
 #import "TeaLeafAppDelegate.h"
 #import "ResourceLoader.h"
+#import "NativeCalls.h"
 #import "core/core.h"
 #import "core/tealeaf_canvas.h"
 #import "JSONKit.h"
@@ -35,6 +36,8 @@
 #include "core/config.h"
 #include "core/events.h"
 
+#include "TeaLeafTextField.h"
+
 
 static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
 
@@ -43,9 +46,8 @@ CEXPORT void device_hide_splash() {
 	if (m_showing_splash) {
 		// Give the game another 1 second to finish loading textures
 		[((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]).tealeafViewController.loading_image_view performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:1.0];
-
 		[UIView setAnimationsEnabled:YES];
-
+        
 		m_showing_splash = NO;
 	}
 }
@@ -65,11 +67,11 @@ CEXPORT void device_hide_splash() {
 	self = [super init];
 	
 	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
-
+    
 	[self.appDelegate selectOrientation];
-
+    
 	self.popover = nil;
-
+    
 	return self;
 }
 
@@ -80,13 +82,13 @@ CEXPORT void device_hide_splash() {
 
 - (void) dealloc {
 	self.popover = nil;
-
+    
 	[super dealloc];
 }
 
 - (void) restartJS {
 	UIViewController *controller = nil;
-
+    
 #ifndef DISABLE_TESTAPP
 	if (!self.appDelegate.isTestApp) {
 #endif
@@ -96,16 +98,16 @@ CEXPORT void device_hide_splash() {
 		controller = self.appDelegate.appTableViewController;
 	}
 #endif
-
+    
 	if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
 		[self.view removeFromSuperview];
-
+        
 		[self.appDelegate.window addSubview:controller.view];
 	} else {
 		[self.appDelegate.window setRootViewController:controller];
 	}
 	self.appDelegate.tealeafShowing = NO;
-
+    
 	if (js_ready) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			core_reset();
@@ -139,17 +141,17 @@ CEXPORT void device_hide_splash() {
 	if (m_showing_splash) {
 		[UIView setAnimationsEnabled:NO];
 	}
-
+    
 	if (!self.appDelegate.gameSupportsPortrait) {
 		return (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) ||
-			   (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight);
+        (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight);
 	}
 	
 	if (!self.appDelegate.gameSupportsLandscape) {
 		return (toInterfaceOrientation == UIInterfaceOrientationPortrait) ||
-			   (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
+        (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 	}
-
+    
 	return YES;
 }
 
@@ -157,7 +159,7 @@ CEXPORT void device_hide_splash() {
 	if (m_showing_splash) {
 		[UIView setAnimationsEnabled:NO];
 	}
-
+    
 	return YES;
 }
 
@@ -167,11 +169,11 @@ CEXPORT void device_hide_splash() {
 	if (self.appDelegate.gameSupportsPortrait) {
 		mask |= UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
 	}
-
+    
 	if (self.appDelegate.gameSupportsLandscape) {
 		mask |= UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 	}
-
+    
 	return mask;
 }
 
@@ -202,10 +204,10 @@ CEXPORT void device_hide_splash() {
         // subscribe to orientation change events
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRotate:)
-                                            name:@"UIDeviceOrientationDidChangeNotification"
-                                            object:nil];
+                                                     name:@"UIDeviceOrientationDidChangeNotification"
+                                                   object:nil];
 	});
-
+    
 }
 
 - (void) didRotate: (NSNotification *) notification {
@@ -241,11 +243,11 @@ CEXPORT void device_hide_splash() {
 
 - (void) destroyGLView {
 	OpenGLView *glView = self.appDelegate.canvas;
-
+    
 	[glView destroyDisplayLink];
-
+    
 	[glView removeFromSuperview];
-
+    
 	self.view = nil;
 	self.appDelegate.canvas = nil;
 }
@@ -253,16 +255,16 @@ CEXPORT void device_hide_splash() {
 - (void) createGLView {
 	//create our openglview and size it correctly
 	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
-
+    
 	self.view = glView;
 	self.appDelegate.canvas = glView;
-
+    
 	core_init_gl(1);
-
+    
 	int w = self.appDelegate.screenWidthPixels;
 	int h = self.appDelegate.screenHeightPixels;
 	tealeaf_canvas_resize(w, h);
-
+    
 	NSLog(@"{tealeaf} Created GLView (%d, %d)", w, h);
 }
 
@@ -284,16 +286,16 @@ CEXPORT void device_hide_splash() {
     
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillShowNotification object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillHideNotification object: nil];
-
+    
 	NSString *appBundle = [ResourceLoader get].appBundle;
 	const char *source_path = 0;
-
+    
 	if (!appBundle) {
 		NSLog(@"{core} FATAL: Unable to load app bundle!");
 	} else {
 		source_path = [[ResourceLoader get].appBundle UTF8String];
 	}
-
+    
 	if (!source_path || *source_path == '\0') {
 		source_path = [[self.appDelegate.config objectForKey:@"source_dir"] UTF8String];
 	}
@@ -310,34 +312,34 @@ CEXPORT void device_hide_splash() {
 	
 	// Lower texture memory based on device model
     NSLog(@"{core} iOS device model '%@'", get_platform());
-
+    
 	int mem_limit = get_platform_memory_limit();
 	
 	if (self.appDelegate.ignoreMemoryWarnings) {
 		mem_limit = 28000000; // Impose lower memory limit for this work-around case
 	}
-
+    
 	texture_manager_set_max_memory(texture_manager_get(), mem_limit);
-
+    
 	[self createGLView];
-
+    
 	/*
 	 * add a temporary imageview with the loading image.
 	 * This smooths the transition between the launch image
 	 * and our opengl loading image so there's no gap
 	 */
-
+    
 	NSURL *loading_path = [[ResourceLoader get] resolve:self.appDelegate.screenBestSplash];
 	NSData *data = [NSData dataWithContentsOfURL:loading_path];
 	UIImage *loading_image_raw = [UIImage imageWithData: data];
-
+    
 	UIImageOrientation splashOrientation = UIImageOrientationUp;
 	int frameWidth = (int)self.appDelegate.window.frame.size.width;
 	int frameHeight = (int)self.appDelegate.window.frame.size.height;
-
+    
 	int w = self.appDelegate.screenWidthPixels;
 	int h = self.appDelegate.screenHeightPixels;
-
+    
 	bool needsFrameRotate = w > h;
 	needsFrameRotate ^= frameWidth > frameHeight;
 	if (needsFrameRotate) {
@@ -346,19 +348,19 @@ CEXPORT void device_hide_splash() {
 		frameWidth = frameHeight;
 		frameHeight = temp;
 	}
-
+    
 	bool needsOrientRotate = w > h;
 	needsOrientRotate ^= loading_image_raw.size.width > loading_image_raw.size.height;
 	if (needsOrientRotate) {
 		splashOrientation = UIImageOrientationRight;
 	}
-
+    
 	UIImage *loading_image = [UIImage imageWithCGImage:loading_image_raw.CGImage scale:1.f orientation:splashOrientation];
 	self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
 	self.loading_image_view.frame = CGRectMake(0, 0, frameWidth, frameHeight);
-
+    
 	//add the openglview to our window
-
+    
 	[self.appDelegate.window addSubview:self.view];
 	self.appDelegate.window.rootViewController = self;
 	[self.appDelegate.window.rootViewController.view addSubview:self.loading_image_view];
@@ -367,7 +369,7 @@ CEXPORT void device_hide_splash() {
     self.inputAccTextField.hidden = true;
     [self.appDelegate.window.rootViewController.view addSubview:self.inputAccTextField];
 	m_showing_splash = YES;
-
+    
 	// Initialize text manager
 	if (!text_manager_init()) {
 		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
@@ -377,7 +379,7 @@ CEXPORT void device_hide_splash() {
 	if (!setup_js_runtime()) {
 		NSLOG(@"{tealeaf} ERROR: Unable to setup javascript runtime.");
 	}
-   
+    
 	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
 	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
 	
@@ -394,23 +396,28 @@ CEXPORT void device_hide_splash() {
 	});
 	
 	[self.appDelegate.canvas startRendering];
-
+    
 #ifndef DISABLE_TESTAPP
 	if (self.appDelegate.isTestApp) {
 		UIRotationGestureRecognizer *rotationRecognizer =
 		[[UIRotationGestureRecognizer alloc]
-		initWithTarget:self
-		action:@selector(rotationDetected:)];
+         initWithTarget:self
+         action:@selector(rotationDetected:)];
 		[self.view addGestureRecognizer:rotationRecognizer];
 		[rotationRecognizer release];
 		self.backAlertView = [[UIAlertView alloc] initWithTitle:@"Return to Games List?"
-								   message:@"Would you like to return to the games list?"
-								   delegate:self
-								   cancelButtonTitle:@"No"
-								   otherButtonTitles:@"Yes", nil];
+                                                        message:@"Would you like to return to the games list?"
+                                                       delegate:self
+                                              cancelButtonTitle:@"No"
+                                              otherButtonTitles:@"Yes", nil];
 	}
 #endif
+    
+    TeaLeafTextField *textField = [[TeaLeafTextField alloc] init];
+    [[(TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController] view] addSubview:textField];
+    
 }
+
 
 - (void) onKeyboardChange:(NSNotification *)info {
     NSDictionary *userInfo = [info userInfo];
@@ -421,10 +428,10 @@ CEXPORT void device_hide_splash() {
     properlyRotatedCoords.origin.y *= scale;
     properlyRotatedCoords.size.width *= scale;
     properlyRotatedCoords.size.height *= scale;
-
+    
     // TODO: might need this if the status bar is visible to compute the y-offset?
     // CGSize size = self.view.frame.size;
-
+    
 	JSContext* cx = [[js_core lastJS] cx];
 	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
 	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "keyboardScreenResize"));
@@ -439,7 +446,7 @@ CEXPORT void device_hide_splash() {
 - (IBAction)rotationDetected:(UIGestureRecognizer *)sender {
 	CGFloat velocity =
 	[(UIRotationGestureRecognizer *)sender velocity];
-
+    
 	if (fabs(velocity) > 5) {
 		if (!self.backAlertView.isVisible) {
 			[self.backAlertView show];
@@ -488,7 +495,7 @@ CEXPORT void device_hide_splash() {
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL: (NSString *) url width: (int)width height: (int)height
 {
-       
+    
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
     imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
     imagePickerController.sourceType = sourceType;
@@ -498,33 +505,33 @@ CEXPORT void device_hide_splash() {
     self.photoHeight = height;
     
     self.imagePickerController = imagePickerController;
-
+    
 	// Apple requires that we do this particular source type on iPad with a popover.
 	if ((sourceType == UIImagePickerControllerSourceTypePhotoLibrary) &&
 		[[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
 		UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:imagePickerController];
 		popover.delegate = self;
-
+        
 		// Manually set rectangle since the view bounds are not working for this.
 		CGRect rect;
 		rect.origin.x = 0;
 		rect.origin.y = 0;
 		rect.size.width = self.appDelegate.screenWidthPixels - 64;
 		rect.size.height = self.appDelegate.screenHeightPixels - 64;
-
+        
 		// Follow documentation to limit width of popover.
 		if (rect.size.width > 600) {
 			rect.size.width = 600;
 		}
-
+        
 		// Present it once..
 		[popover presentPopoverFromRect:rect inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-
+        
 		// Store it for later cleanup
 		self.popover = popover;
 	} else {
 		[self presentModalViewController:imagePickerController animated:YES];
-
+        
 		// On iOS 7 the status bar decides to come back here
 		[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	}
@@ -557,7 +564,7 @@ CEXPORT void device_hide_splash() {
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoBeginLoaded"}];
-
+    
 	if (self.popover != nil) {
 		[self.popover dismissPopoverAnimated:YES];
 	}
@@ -578,18 +585,18 @@ CEXPORT void device_hide_splash() {
     CGSize size = CGSizeMake(scale * bmpWidth, scale * bmpHeight);
     image = [self imageWithImage: image scaledToSize: size];
     image = [self cropWithImage:image withRect:CGRectMake(
-                                                    (image.size.width / 2) - self.photoWidth / 2,
-                                                    (image.size.height / 2.f) - self.photoHeight / 2.f,
-                                                    self.photoWidth,
-                                                    self.photoHeight)];
+                                                          (image.size.width / 2) - self.photoWidth / 2,
+                                                          (image.size.height / 2.f) - self.photoHeight / 2.f,
+                                                          self.photoWidth,
+                                                          self.photoHeight)];
     //TODO send an event to JS
     
     NSData *data = UIImagePNGRepresentation(image);
     NSString *b64Image = encodeBase64(data);
     [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image}];
-
+    
     [self dismissViewControllerAnimated:YES completion:NULL];
-
+    
 	// Make sure the status bar is gone
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
@@ -597,11 +604,11 @@ CEXPORT void device_hide_splash() {
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
     [self dismissViewControllerAnimated:YES completion:NULL];
-
+    
 	if (self.popover != nil) {
 		[self.popover dismissPopoverAnimated:YES];
 	}
-
+    
 	// Make sure the status bar is gone
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
@@ -617,7 +624,7 @@ CEXPORT void device_hide_splash() {
 	jsval idv = INT_TO_JSVAL(callback);
 	JS_SetProperty(cx, event, "name", &name);
 	JS_SetProperty(cx, event, "id", &idv);
-
+    
 	jsval evt = OBJECT_TO_JSVAL(event);
 	[[js_core lastJS] dispatchEvent:&evt count:1];
 }

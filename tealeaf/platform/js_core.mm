@@ -41,6 +41,7 @@ static NSDate *m_start_date = nil;
 static NSString *m_uuid = nil;
 static JSONDecoder *m_decoder = nil;
 
+
 CEXPORT JSContext *get_js_context() {
 	return lastJS.cx;
 }

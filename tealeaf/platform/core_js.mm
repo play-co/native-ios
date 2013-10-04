@@ -27,6 +27,7 @@
 #include "core/timestep/timestep_view.h"
 #include "core/timer.h"
 #include "core_js.h"
+//#import "TeaLeafEvent.h"
 #import "SoundManager.h"
 
 
@@ -39,7 +40,7 @@ CEXPORT bool setup_js_runtime() {
 CEXPORT bool init_js(const char *uri, const char *version) {
 	if (m_core && !js_ready) {
 		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-
+        
 		NSString *baseURL = [NSString stringWithUTF8String:uri];
 		
 		js_core *js = m_core;
@@ -70,12 +71,13 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsBase addToRuntime:js];
 		[jsTimer addToRuntime:js];
 		[jsSocket addToRuntime:js];
+   //     [TeaLeafEvent InitWithJS: js];
 		
 		[jsBase setLocation:baseURL];
 		
 		js_ready = true;
 	}
-
+    
 	return true;
 }
 
@@ -86,13 +88,13 @@ CEXPORT bool destroy_js() {
 		LOG("{js} Shutting down...");
 		
 		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-
+        
 		[app.canvas stopRendering];
-
+        
 		view_animation_shutdown();
 		timestep_events_shutdown();
 		timestep_view_shutdown();
-
+        
 		[jsConsole onDestroyRuntime];
 		[jsGL onDestroyRuntime];
 		[jsSound onDestroyRuntime];
@@ -117,20 +119,20 @@ CEXPORT bool destroy_js() {
 		[jsSocket onDestroyRuntime];
 		
 		core_timer_clear_all();
-
+        
 		SoundManager *sm = [SoundManager get];
 		if (sm) {
 			[sm stopBackgroundMusic];
 			[sm clearEffects];
 		}
 	}
-
+    
 	if (m_core) {
 		[m_core shutdown];
 		[m_core release];
 		m_core = 0;
 	}
-
+    
 	return true;
 }
 
@@ -162,9 +164,9 @@ CEXPORT void js_object_wrapper_init(PERSISTENT_JS_OBJECT_WRAPPER *obj) {
 
 CEXPORT void js_object_wrapper_root(PERSISTENT_JS_OBJECT_WRAPPER *obj, JS_OBJECT_WRAPPER target) {
 	js_object_wrapper_delete(obj);
-
+    
 	*obj = target;
-
+    
 	JS_AddObjectRoot(get_js_context(), obj);
 }
 
