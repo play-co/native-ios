@@ -28,7 +28,7 @@
         return NO;
     }
     
-    
+    NSLog(@"jared text %@", textField.text);
     [TeaLeafEvent Send:@"InputKeyboardKeyUp" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                        [textField.text stringByReplacingCharactersInRange:range withString:string], @"text", nil]];
 	//Returning yes allows the entered chars to be processed
@@ -41,7 +41,7 @@
         [textField gotoNextTextfield];
         return NO;
     } else {
-        [textField hide];
+        [textField submit];
         return YES;
     }
 }
@@ -62,6 +62,8 @@
         [self setFrame:CGRectMake(0, 0, 0, 0)];
         tapGestureRecognizer = nil;
         self.textFieldDelegate = [[[TeaLeafTextFieldDelegate alloc] init] autorelease];
+        
+        
         self.delegate = self.textFieldDelegate;
         
         [NativeCalls Register:@"editText.focus" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
@@ -102,8 +104,9 @@
             self.rightViewMode = UITextFieldViewModeAlways;
             
             if (tapGestureRecognizer == nil) {
+                NSLog(@"tap gesture recognizer is nil");
                 tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                               action:@selector(hide)];
+                                                                               action:@selector(finishEditing)];
             }
             TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
             [controller.view addGestureRecognizer:tapGestureRecognizer];
@@ -227,12 +230,20 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 }
 
 - (void) submit {
-    [TeaLeafEvent Send:@"InputKeyboardSubmit" withOpts:nil];
+    [self clearFocus];
+    [TeaLeafEvent Send:@"InputKeyboardSubmit" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:@0, @"id", [self text], @"text", @YES, @"close", nil]];
+
     
 }
 
+- (void) finishEditing {
+    [self clearFocus];
+    [TeaLeafEvent Send:@"editText.onFinishEditing" withOpts:nil];
+}
+
 - (void) hide {
-    [self submit];
+    [self clearFocus];
+
 }
 
 
@@ -241,21 +252,14 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 }
 
 - (void) clearFocus {
+    [self setHidden:true];
     TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
     [controller.view removeGestureRecognizer:tapGestureRecognizer];
     tapGestureRecognizer = nil;
     [self endEditing:true];
 }
 
-
-
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect
- {
- // Drawing code
- }
- */
-
 @end
+
+
+
