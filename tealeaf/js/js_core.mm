@@ -232,6 +232,8 @@ JSAG_MEMBER_BEGIN(setLocation, 1)
 {
 	JSAG_ARG_NSTR(location);
 
+	LOG("{js} setLocation %@", location);
+
 	[jsBase setLocation:location];
 }
 JSAG_MEMBER_END
