@@ -547,7 +547,7 @@ CEXPORT void device_hide_splash() {
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
     //UIGraphicsBeginImageContext(newSize);
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 1.f);
     [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -572,25 +572,20 @@ CEXPORT void device_hide_splash() {
     UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
     float bmpWidth = image.size.width;
     float bmpHeight = image.size.height;
-    float scale = 1.f;
-    int clampedSize = 0;
-    if (self.photoWidth / bmpWidth > self.photoHeight / bmpHeight) {
-        scale =self.photoWidth / bmpWidth;
-        clampedSize = self.photoHeight;
-    } else {
-        scale =self.photoHeight / bmpHeight;
-        clampedSize = self.photoWidth;
-    }
-    
-    CGSize size = CGSizeMake(scale * bmpWidth, scale * bmpHeight);
-    image = [self imageWithImage: image scaledToSize: size];
-    image = [self cropWithImage:image withRect:CGRectMake(
-                                                          (image.size.width / 2) - self.photoWidth / 2,
-                                                          (image.size.height / 2.f) - self.photoHeight / 2.f,
+
+	// Stretch as little as possible
+	float wScale = self.photoWidth / bmpWidth;
+	float hScale = self.photoHeight / bmpHeight;
+
+	float minScale = (hScale > wScale) ? hScale : wScale;
+    CGSize size = CGSizeMake(minScale * bmpWidth, minScale * bmpHeight);
+    image = [self imageWithImage:image scaledToSize:size];
+	
+	// Now crop the edges off what remains
+    image = [self cropWithImage:image withRect:CGRectMake((image.size.width - self.photoWidth) / 2.f,
+                                                          (image.size.height - self.photoHeight) / 2.f,
                                                           self.photoWidth,
                                                           self.photoHeight)];
-    //TODO send an event to JS
-    
     NSData *data = UIImagePNGRepresentation(image);
     NSString *b64Image = encodeBase64(data);
     [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image}];
