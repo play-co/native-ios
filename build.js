@@ -881,7 +881,7 @@ function copyIcons(builder, icons, destPath) {
 		['57', '72', '76', '114', '120', '144', '152'].forEach(function(size) {
 			var mustUnlink = ['76', '120', '152'].indexOf(size) >= 0;
 
-			var targetPath = path.join(destPath, 'tealeaf/TeaLeafIOS/Images.xcassets/AppIcon.appiconset', 'icon' + size + '.png');
+			var targetPath = path.join(destPath, 'tealeaf/Images.xcassets/AppIcon.appiconset', 'icon' + size + '.png');
 			var iconPath = icons[size];
 			if (iconPath) {
 				if (fs.existsSync(iconPath)) {
@@ -939,7 +939,7 @@ function copySplash(builder, manifest, destPath, next) {
 					return;
 				}
 
-				var splashOut = path.join(path.resolve(destPath), 'tealeaf/TeaLeafIOS/Images.xcassets/LaunchImage.launchimage', splash.outFile);
+				var splashOut = path.join(path.resolve(destPath), 'tealeaf/Images.xcassets/LaunchImage.launchimage', splash.outFile);
 				logger.log("Creating splash: " + splashOut + " from: "  + splashFile);
 				builder.jvmtools.exec('splasher', [
 					"-i", splashFile,

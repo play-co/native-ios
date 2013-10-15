@@ -70,7 +70,7 @@
 		4EEFA2101755559A00570B4E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		4EEFA211175555AB00570B4E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1695630A1338639B0052334D /* AVFoundation.framework */; };
 		4EEFA212175555CD00570B4E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B469A40121A6B1300E414EA /* QuartzCore.framework */; };
-		4EF16B7C180CEC8E0011E864 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EF16B7B180CEC8E0011E864 /* Images.xcassets */; };
+		4EF16B80180DCA2B0011E864 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EF16B7F180DCA2B0011E864 /* Images.xcassets */; };
 		5B5EBD9C17BAD42C00C4DD0A /* jsInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBD9B17BAD42C00C4DD0A /* jsInput.mm */; };
 		5B5EBDA017BAE50F00C4DD0A /* InputAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBD9F17BAE50F00C4DD0A /* InputAccessory.mm */; };
 		5B5EBDA317BAE62000C4DD0A /* InputPrompt.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBDA217BAE62000C4DD0A /* InputPrompt.mm */; };
@@ -403,7 +403,7 @@
 		4EC8F76915D1E264008DAED6 /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = resources.bundle; sourceTree = "<group>"; };
 		4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		4EE0BAAB17BDFC7B002A18DA /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
-		4EF16B7B180CEC8E0011E864 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeaLeafIOS/Images.xcassets; sourceTree = "<group>"; };
+		4EF16B7F180DCA2B0011E864 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		4EFF545B16165167000C3AFD /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		4EFF545C16165167000C3AFD /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		54212FAD162D0AD4004625D0 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
@@ -578,13 +578,12 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				4EF16B7B180CEC8E0011E864 /* Images.xcassets */,
+				4EF16B7F180DCA2B0011E864 /* Images.xcassets */,
 				4E3563071804907000FF05BC /* curl */,
 				D551A74A178F345E0028DACC /* uthash */,
 				4EB0C68716BBB4B900838A49 /* testapp */,
 				4E35EA7B16B9FEEE004FD452 /* timestep */,
 				4E77EAE41666B8DF00FD6430 /* debug */,
-				D5795633159A7D02000DDEA3 /* TeaLeafIOS.entitlements */,
 				D5CA48DF15895D140017224F /* gen */,
 				D55820B0150E7C7500549BF6 /* core */,
 				D5582154150E7C7500549BF6 /* deps */,
@@ -592,10 +591,11 @@
 				D55821D1150E7C7600549BF6 /* platform */,
 				D55821FF150E7C7600549BF6 /* resources */,
 				D510CFBE139059A20066D881 /* Entitlements.plist */,
+				D5795633159A7D02000DDEA3 /* TeaLeafIOS.entitlements */,
+				D57955FD159A771E000DDEA3 /* TeaLeafIOS-Info.plist */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				D57955FD159A771E000DDEA3 /* TeaLeafIOS-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -1220,7 +1220,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5BC66EA1635D0270059EC0F /* Entitlements.plist in Resources */,
-				4EF16B7C180CEC8E0011E864 /* Images.xcassets in Resources */,
 				D5BC66F81635D0270059EC0F /* config.plist in Resources */,
 				D5BC66F91635D0270059EC0F /* resources.bundle in Resources */,
 				36ACCF03179F2A63002AE65C /* left_text_handler_disabled.png in Resources */,
@@ -1229,6 +1228,7 @@
 				36ACCF06179F2A63002AE65C /* right_text_handler_disabled.png in Resources */,
 				36ACCF07179F2A63002AE65C /* right_text_handler_pressed.png in Resources */,
 				36ACCF08179F2A63002AE65C /* right_text_handler.png in Resources */,
+				4EF16B80180DCA2B0011E864 /* Images.xcassets in Resources */,
 				36ACCF2B179F595D002AE65C /* done_button_pressed.png in Resources */,
 				36ACCF2C179F595D002AE65C /* done_button.png in Resources */,
 			);
