@@ -70,6 +70,7 @@
 		4EEFA2101755559A00570B4E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		4EEFA211175555AB00570B4E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1695630A1338639B0052334D /* AVFoundation.framework */; };
 		4EEFA212175555CD00570B4E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B469A40121A6B1300E414EA /* QuartzCore.framework */; };
+		4EF16B7C180CEC8E0011E864 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EF16B7B180CEC8E0011E864 /* Images.xcassets */; };
 		5B5EBD9C17BAD42C00C4DD0A /* jsInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBD9B17BAD42C00C4DD0A /* jsInput.mm */; };
 		5B5EBDA017BAE50F00C4DD0A /* InputAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBD9F17BAE50F00C4DD0A /* InputAccessory.mm */; };
 		5B5EBDA317BAE62000C4DD0A /* InputPrompt.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBDA217BAE62000C4DD0A /* InputPrompt.mm */; };
@@ -417,6 +418,7 @@
 		4ECA9A5A17FCEA070006B992 /* icon152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon152.png; sourceTree = "<group>"; };
 		4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		4EE0BAAB17BDFC7B002A18DA /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		4EF16B7B180CEC8E0011E864 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeaLeafIOS/Images.xcassets; sourceTree = "<group>"; };
 		4EFF545B16165167000C3AFD /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		4EFF545C16165167000C3AFD /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		54212FAD162D0AD4004625D0 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
@@ -601,6 +603,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				4EF16B7B180CEC8E0011E864 /* Images.xcassets */,
 				4E3563071804907000FF05BC /* curl */,
 				D551A74A178F345E0028DACC /* uthash */,
 				4EB0C68716BBB4B900838A49 /* testapp */,
@@ -1256,6 +1259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5BC66EA1635D0270059EC0F /* Entitlements.plist in Resources */,
+				4EF16B7C180CEC8E0011E864 /* Images.xcassets in Resources */,
 				D5BC66ED1635D0270059EC0F /* Default.png in Resources */,
 				D5BC66EE1635D0270059EC0F /* Default@2x.png in Resources */,
 				D5BC66EF1635D0270059EC0F /* Default-Landscape~ipad.png in Resources */,
@@ -1524,6 +1528,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = TeaLeafIOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1578,6 +1584,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = TeaLeafIOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
