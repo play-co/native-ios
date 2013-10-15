@@ -781,7 +781,7 @@ function updatePListFile(builder, opts, next) {
 			// Note: Default is for Xcode to render it for you
 			logger.log("RenderGloss: Removing pre-rendered icon flag");
 			delete contents.UIPrerenderedIcon;
-			delete contents.CFBundleIcons.CFBundlePrimaryIcon.UIPrerenderedIcon;
+			//delete contents.CFBundleIcons.CFBundlePrimaryIcon.UIPrerenderedIcon;
 		}
 
 		contents.CFBundleDisplayName = opts.title;
