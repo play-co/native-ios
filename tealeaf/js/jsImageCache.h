@@ -13,26 +13,11 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "js/jsBase.h"
-#import "js/jsConsole.h"
-#import "js/jsGL.h"
-#import "js/jsTimer.h"
-#import "js/jsSocket.h"
-#import "js/jsOverlay.h"
-#import "js/jsSound.h"
-#import "js/jsLocalStorage.h"
-#import "js/jsXHR.h"
-#import "js/jsTextInput.h"
-#import "js/jsDialog.h"
-#import "js/jsPhoto.h"
-#import "js/jsLocale.h"
-#import "js/jsNavigator.h"
-#import "js/jsTimestep.h"
-#import "js/jsGC.h"
-#import "js/jsAds.h"
-#import "js/jsMarket.h"
-#import "js/jsBuild.h"
-#import "js/jsInput.h"
-#import "js/jsHaptics.h"
-#import "js/jsImageCache.h"
-#import "platform/PluginManager.h"
+#import "js/js_core.h"
+
+@interface jsImageCache : NSObject
+
++ (void) addToRuntime:(js_core *)js;
++ (void) onDestroyRuntime;
+
+@end

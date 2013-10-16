@@ -28,9 +28,7 @@
 #include "core/image_loader.h"
 #include "core/config.h"
 #include "core/util/detect.h"
-extern "C" {
 #include "image_cache.h"
-}
 #import <core/platform/gl.h>
 
 
@@ -88,7 +86,7 @@ static int base_path_len = 0;
 + (ResourceLoader *) get {
 	if (instance == nil) {
 		instance = [[ResourceLoader alloc] init];
-        image_cache_init([instance.documentsDirectory UTF8String]);
+		image_cache_init([instance.documentsDirectory UTF8String], &image_cache_load_callback);
 		imgThread = [[NSThread alloc] initWithTarget:instance selector:@selector(imageThread) object:nil];
 		instance.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
 		[imgThread start];

@@ -71,6 +71,7 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsBase addToRuntime:js];
 		[jsTimer addToRuntime:js];
 		[jsSocket addToRuntime:js];
+		[jsImageCache addToRuntime:js];
    //     [TeaLeafEvent InitWithJS: js];
 		
 		[jsBase setLocation:baseURL];
