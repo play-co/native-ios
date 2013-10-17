@@ -28,7 +28,7 @@ JSAG_OBJECT_MEMBER(_remove)
 JSAG_OBJECT_END
 
 
-@implementation jsImageCahe
+@implementation jsImageCache
 
 + (void) addToRuntime:(js_core *)js {
 	JSAG_OBJECT_ATTACH(js.cx, js.native, imageCache);

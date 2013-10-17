@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08A82384180F7B5C00197337 /* jsImageCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08A82383180F7B5C00197337 /* jsImageCache.mm */; };
 		361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C417F51F5A00D35AFD /* NativeCalls.h */; };
 		361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */ = {isa = PBXBuildFile; fileRef = 361049C517F51F5A00D35AFD /* NativeCalls.mm */; };
 		361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C617F51F5A00D35AFD /* TeaLeafTextField.h */; };
@@ -176,6 +177,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		08A82382180F7B5C00197337 /* jsImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsImageCache.h; sourceTree = "<group>"; };
+		08A82383180F7B5C00197337 /* jsImageCache.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsImageCache.mm; sourceTree = "<group>"; };
 		133F647D159E4F24006A8DAB /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		1695630A1338639B0052334D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1005,6 +1008,8 @@
 		D55821AA150E7C7600549BF6 /* js */ = {
 			isa = PBXGroup;
 			children = (
+				08A82382180F7B5C00197337 /* jsImageCache.h */,
+				08A82383180F7B5C00197337 /* jsImageCache.mm */,
 				4E8493A41651D06000C96B4A /* js_animate.cpp */,
 				4E8493A51651D06000C96B4A /* js_animate.h */,
 				4E8493A61651D06000C96B4A /* js_core.h */,
@@ -1390,6 +1395,7 @@
 				36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */,
 				4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */,
 				37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */,
+				08A82384180F7B5C00197337 /* jsImageCache.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
