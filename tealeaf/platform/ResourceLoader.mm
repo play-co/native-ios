@@ -456,7 +456,7 @@ static bool read_file(const char *url, unsigned long *sz, unsigned char **data) 
 			void *raw = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
 
 			if (raw == MAP_FAILED) {
-				LOG("{resources} WARNING: mmap failed errno=%d", errno);
+				LOG("{resources} WARNING: mmap failed errno=%d for %s/%s len=%d", errno, base_path, url, (int)len);
 			} else {
 				*data = (unsigned char*)raw;
 				*sz = len;
