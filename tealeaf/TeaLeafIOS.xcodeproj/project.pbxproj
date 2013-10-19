@@ -63,7 +63,6 @@
 		4E9D36B417C6F922006AA71B /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9D36AF17C6F8B0006AA71B /* CoreText.framework */; };
 		4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */; };
 		4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */; };
-		4EBCD6C41804967500EDB05C /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 4EBCD6C11804967500EDB05C /* sha1.c */; };
 		4EBCD6C51804967500EDB05C /* image_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 4EBCD6C31804967500EDB05C /* image_cache.c */; };
 		4EBCD6C81804984200EDB05C /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EBCD6C71804984200EDB05C /* libcurl.a */; };
 		4EEFA20D1755553500570B4E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A23214D313D8AFD600FA4C7D /* MessageUI.framework */; };
@@ -402,8 +401,6 @@
 		4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppTableViewController.mm; sourceTree = "<group>"; };
 		4EB0C68A16BBB4B900838A49 /* ServerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerTableViewController.h; sourceTree = "<group>"; };
 		4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ServerTableViewController.mm; sourceTree = "<group>"; };
-		4EBCD6C11804967500EDB05C /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
-		4EBCD6C21804967500EDB05C /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		4EBCD6C31804967500EDB05C /* image_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = image_cache.c; path = "native-core/image-cache/src/image_cache.c"; sourceTree = SOURCE_ROOT; };
 		4EBCD6C61804968C00EDB05C /* image_cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = image_cache.h; path = "native-core/image-cache/include/image_cache.h"; sourceTree = SOURCE_ROOT; };
 		4EBCD6C71804984200EDB05C /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcurl.a; sourceTree = "<group>"; };
@@ -819,21 +816,10 @@
 			isa = PBXGroup;
 			children = (
 				4EBCD6C61804968C00EDB05C /* image_cache.h */,
-				4EBCD6C01804967500EDB05C /* crypto */,
 				4EBCD6C31804967500EDB05C /* image_cache.c */,
 			);
 			name = imagecache;
 			sourceTree = "<group>";
-		};
-		4EBCD6C01804967500EDB05C /* crypto */ = {
-			isa = PBXGroup;
-			children = (
-				4EBCD6C11804967500EDB05C /* sha1.c */,
-				4EBCD6C21804967500EDB05C /* sha1.h */,
-			);
-			name = crypto;
-			path = "native-core/image-cache/src/crypto";
-			sourceTree = SOURCE_ROOT;
 		};
 		54212FAC162D0AAE004625D0 /* Base64 */ = {
 			isa = PBXGroup;
@@ -1365,7 +1351,6 @@
 				D5BC67721635D0270059EC0F /* IOSVersion.m in Sources */,
 				D5BC67731635D0270059EC0F /* mach_timing.c in Sources */,
 				5B5EBD9C17BAD42C00C4DD0A /* jsInput.mm in Sources */,
-				4EBCD6C41804967500EDB05C /* sha1.c in Sources */,
 				D5BC67741635D0270059EC0F /* NSMutableArray+WeakReferences.m in Sources */,
 				D5BC67751635D0270059EC0F /* NSMutableDictionary+WeakReferences.m in Sources */,
 				D5BC67761635D0270059EC0F /* OALAudioFile.m in Sources */,
