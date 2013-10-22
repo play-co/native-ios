@@ -25,6 +25,7 @@
 		36EED9DE17F9F01B0031E490 /* TeaLeafEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 36EED9DD17F9F01B0031E490 /* TeaLeafEvent.m */; };
 		36F99C4117CEC8EE00FCEC4E /* image_writer.c in Sources */ = {isa = PBXBuildFile; fileRef = 36F99C3F17CEC8EE00FCEC4E /* image_writer.c */; };
 		37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37EEF09B173485A30017511A /* ResumeInfo.mm */; };
+		4E30CA0B18161599002586C0 /* murmur.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E30CA0A18161599002586C0 /* murmur.c */; };
 		4E35EA8716B9FEEE004FD452 /* timestep_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */; };
 		4E35EA8816B9FEEE004FD452 /* timestep_events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7F16B9FEEE004FD452 /* timestep_events.cpp */; };
 		4E35EA8916B9FEEE004FD452 /* timestep_image_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA8116B9FEEE004FD452 /* timestep_image_map.cpp */; };
@@ -211,6 +212,8 @@
 		36F99C4017CEC8EE00FCEC4E /* image_writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = image_writer.h; path = "native-core/image_writer.h"; sourceTree = SOURCE_ROOT; };
 		37EEF09A173485A30017511A /* ResumeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResumeInfo.h; sourceTree = "<group>"; };
 		37EEF09B173485A30017511A /* ResumeInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResumeInfo.mm; sourceTree = "<group>"; };
+		4E30CA0A18161599002586C0 /* murmur.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = murmur.c; path = "native-core/image-cache/src/murmur.c"; sourceTree = SOURCE_ROOT; };
+		4E30CA0C181615A3002586C0 /* murmur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = murmur.h; path = "native-core/image-cache/include/murmur.h"; sourceTree = SOURCE_ROOT; };
 		4E3563081804908800FF05BC /* curl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = curl.h; path = deps/curl/curl.h; sourceTree = "<group>"; };
 		4E3563091804908800FF05BC /* curlbuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = curlbuild.h; path = deps/curl/curlbuild.h; sourceTree = "<group>"; };
 		4E35630A1804908800FF05BC /* curlrules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = curlrules.h; path = deps/curl/curlrules.h; sourceTree = "<group>"; };
@@ -812,13 +815,15 @@
 			path = testapp;
 			sourceTree = "<group>";
 		};
-		4EBCD6BF1804965C00EDB05C /* imagecache */ = {
+		4EBCD6BF1804965C00EDB05C /* image-cache */ = {
 			isa = PBXGroup;
 			children = (
+				4E30CA0C181615A3002586C0 /* murmur.h */,
+				4E30CA0A18161599002586C0 /* murmur.c */,
 				4EBCD6C61804968C00EDB05C /* image_cache.h */,
 				4EBCD6C31804967500EDB05C /* image_cache.c */,
 			);
-			name = imagecache;
+			name = "image-cache";
 			sourceTree = "<group>";
 		};
 		54212FAC162D0AAE004625D0 /* Base64 */ = {
@@ -872,7 +877,7 @@
 				D56C7E17157EAACA00DB8BDA /* image_loader.h */,
 				D56C7DFB157E916900DB8BDA /* rgba.c */,
 				D56C7DFC157E916900DB8BDA /* rgba.h */,
-				4EBCD6BF1804965C00EDB05C /* imagecache */,
+				4EBCD6BF1804965C00EDB05C /* image-cache */,
 				D56C7DFD157E916900DB8BDA /* tealeaf_shaders.c */,
 				D56C7DFE157E916900DB8BDA /* tealeaf_shaders.h */,
 				D55820B2150E7C7500549BF6 /* config.c */,
@@ -1383,6 +1388,7 @@
 				4E77EAE71666B90000FD6430 /* DebugServer.mm in Sources */,
 				4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */,
 				4E793C5A167A7321000DD6FC /* jsAds.mm in Sources */,
+				4E30CA0B18161599002586C0 /* murmur.c in Sources */,
 				4E4919E7167AA57100DFA99B /* jsHaptics.mm in Sources */,
 				4E35EA8716B9FEEE004FD452 /* timestep_animate.cpp in Sources */,
 				4E35EA8816B9FEEE004FD452 /* timestep_events.cpp in Sources */,
