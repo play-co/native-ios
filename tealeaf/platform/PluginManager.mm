@@ -198,24 +198,30 @@ JSAG_OBJECT_END
 }
 
 - (NSDictionary *) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
-    id returnValue = nil;
-	id instance = [self.plugins valueForKey:plugin];
-	if (instance) {
-		SEL selector = NSSelectorFromString([name stringByAppendingString:@":"]);
-		SEL selectorWithReturnValue = NSSelectorFromString([name stringByAppendingString:@"WithReturnValue:"]);
-		if ([instance respondsToSelector:selector]) {
-			[instance performSelector:selector withObject:event];
-		} else if ([instance respondsToSelector:selectorWithReturnValue]) {
-            returnValue = [instance performSelector:selectorWithReturnValue withObject:event];
-        }
-	} else {
-		NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin: %@", plugin);
+	id returnValue = nil;
+
+	@try {
+		id instance = [self.plugins valueForKey:plugin];
+		if (instance) {
+			SEL selector = NSSelectorFromString([name stringByAppendingString:@":"]);
+			SEL selectorWithReturnValue = NSSelectorFromString([name stringByAppendingString:@"WithReturnValue:"]);
+			if ([instance respondsToSelector:selector]) {
+				[instance performSelector:selector withObject:event];
+			} else if ([instance respondsToSelector:selectorWithReturnValue]) {
+				returnValue = [instance performSelector:selectorWithReturnValue withObject:event];
+			}
+		} else {
+			NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin %@ : %@", plugin, name);
+		}
+
+		if (![returnValue isKindOfClass:[NSDictionary class]] && ![returnValue isKindOfClass:[NSString class]]) {
+			returnValue = nil;
+		}
 	}
-    
-    if (![returnValue isKindOfClass:[NSDictionary class]] && ![returnValue isKindOfClass:[NSString class]]) {
-        returnValue = nil;
-    }
-    
+	@catch (NSException *e) {
+		NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin %@ : %@ (Exception: %@)", plugin, name, e);
+	}
+
     return returnValue;
 }
 

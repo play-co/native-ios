@@ -60,11 +60,13 @@ struct ThreadSpec {
 - (void) threadMain {
 	ThreadSpec *spec = self.spec;
 	if (spec) {
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		//NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 		spec->proc(spec->param);
-
-		[pool drain];
+/*
+		if (pool != nil) {
+			[pool drain];
+		}*/
 	}
 
 	self.done = true;

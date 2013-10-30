@@ -34,6 +34,7 @@
 		4E35EABB16BB0D94004FD452 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E35EAB916BB0D94004FD452 /* libjs_static.a */; };
 		4E35EABC16BB0D94004FD452 /* libnspr4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E35EABA16BB0D94004FD452 /* libnspr4.a */; };
 		4E4919E7167AA57100DFA99B /* jsHaptics.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E4919E6167AA57100DFA99B /* jsHaptics.mm */; };
+		4E4DC7871821C87F00D3E6BF /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4DC7861821C87F00D3E6BF /* libturbojpeg.a */; };
 		4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E5F5CD816CAFCE200747A17 /* iosVersioning.m */; };
 		4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E659A461678254D002C8F19 /* jsNavigator.mm */; };
 		4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B37FE16C0F90B006AC8FD /* threads.mm */; };
@@ -176,7 +177,6 @@
 		D5BC67841635D0270059EC0F /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5E8D67A1385C2E200246261 /* OpenAL.framework */; };
 		D5BC67861635D0270059EC0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		D5BC678B1635D0270059EC0F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B2BEA6912AEF41100AE98C5 /* CFNetwork.framework */; };
-		D5BC678C1635D0270059EC0F /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EFF545B16165167000C3AFD /* libjpeg.a */; };
 		D5BC678D1635D0270059EC0F /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EFF545C16165167000C3AFD /* libpng.a */; };
 /* End PBXBuildFile section */
 
@@ -238,6 +238,7 @@
 		4E35EABA16BB0D94004FD452 /* libnspr4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnspr4.a; path = deps/spidermonkey/libnspr4.a; sourceTree = "<group>"; };
 		4E4919E5167AA57100DFA99B /* jsHaptics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsHaptics.h; sourceTree = "<group>"; };
 		4E4919E6167AA57100DFA99B /* jsHaptics.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsHaptics.mm; sourceTree = "<group>"; };
+		4E4DC7861821C87F00D3E6BF /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libturbojpeg.a; sourceTree = "<group>"; };
 		4E5D39B415D062030088D41D /* config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = config.plist; sourceTree = "<group>"; };
 		4E5F5CD816CAFCE200747A17 /* iosVersioning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iosVersioning.m; sourceTree = "<group>"; };
 		4E659A451678254D002C8F19 /* jsNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsNavigator.h; sourceTree = "<group>"; };
@@ -415,7 +416,6 @@
 		4EF16B8A180F1C0C0011E864 /* icon72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon72.png; sourceTree = "<group>"; };
 		4EF16B8B180F1C0C0011E864 /* icon114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon114.png; sourceTree = "<group>"; };
 		4EF16B8C180F1C0C0011E864 /* icon144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon144.png; sourceTree = "<group>"; };
-		4EFF545B16165167000C3AFD /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		4EFF545C16165167000C3AFD /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		54212FAD162D0AD4004625D0 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		54212FAE162D0AD4004625D0 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
@@ -568,8 +568,8 @@
 				D5BC67841635D0270059EC0F /* OpenAL.framework in Frameworks */,
 				D5BC67861635D0270059EC0F /* Foundation.framework in Frameworks */,
 				D5BC678B1635D0270059EC0F /* CFNetwork.framework in Frameworks */,
-				D5BC678C1635D0270059EC0F /* libjpeg.a in Frameworks */,
 				D5BC678D1635D0270059EC0F /* libpng.a in Frameworks */,
+				4E4DC7871821C87F00D3E6BF /* libturbojpeg.a in Frameworks */,
 				4EBCD6C81804984200EDB05C /* libcurl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -618,9 +618,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4E4DC7861821C87F00D3E6BF /* libturbojpeg.a */,
 				4E35EAB916BB0D94004FD452 /* libjs_static.a */,
 				D56C7E1B157EABCA00DB8BDA /* libz.dylib */,
-				4EFF545B16165167000C3AFD /* libjpeg.a */,
 				4EFF545C16165167000C3AFD /* libpng.a */,
 				4E35EABA16BB0D94004FD452 /* libnspr4.a */,
 				4EBCD6C71804984200EDB05C /* libcurl.a */,
@@ -1521,6 +1521,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/deps/spidermonkey",
 					"$(SRCROOT)",
+					"/Users/cat/webe/devkit-priv/addons/native-ios-priv/tealeaf",
 				);
 				LLVM_LTO = NO;
 				ONLY_ACTIVE_ARCH = NO;
@@ -1577,6 +1578,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/deps/spidermonkey",
 					"$(SRCROOT)",
+					"/Users/cat/webe/devkit-priv/addons/native-ios-priv/tealeaf",
 				);
 				LLVM_LTO = YES;
 				ONLY_ACTIVE_ARCH = NO;
