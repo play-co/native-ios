@@ -61,9 +61,7 @@ JSAG_MEMBER_BEGIN(send, 6)
 	}
 
 	if ([url hasPrefix: @"//"]) {
-		NSString *absUrl = [[NSString stringWithFormat: @"http:%@", url] retain];
-		[url release];
-		url = absUrl;
+		url = [NSString stringWithFormat: @"http:%@", url];
 	}
 	
 	if (![url hasPrefix: @"http"]) {

@@ -252,7 +252,6 @@ static int base_path_len = 0;
 					} else {
                         data = [NSData dataWithContentsOfURL: [self resolve:url]];
                         [self makeTexture2DFromData: data url: url];
-						[data release];
 					}
 				}
 			}
@@ -492,9 +491,6 @@ CEXPORT bool resource_loader_load_image_with_c(texture_2d *texture) {
 			data = (unsigned char*)[nsd bytes];
 			
 			texture->pixel_data = texture_2d_load_texture_raw(texture->url, data, sz, &texture->num_channels, &texture->width, &texture->height, &texture->originalWidth, &texture->originalHeight, &texture->scale);
-			
-			[nsd release];
-			[urlstr release];
 			
 			return true;
 		}

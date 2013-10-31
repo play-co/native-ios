@@ -75,8 +75,7 @@
 	UIImageView *myImageView = [[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)] autorelease];
 	[myImageView setImage:backgroundImage];
 	[self addSubview:myImageView];
-	[backgroundImage release];
-
+	
 	UIGraphicsEndImageContext();
 }
 
