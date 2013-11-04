@@ -16,7 +16,7 @@
 #import "js/jsImageCache.h"
 #import "core/image-cache/include/image_cache.h"
 
-JSAG_MEMBER_BEGIN(_remove, 1)
+JSAG_MEMBER_BEGIN(remove, 1)
 {
 	JSAG_ARG_CSTR(url);
 	image_cache_remove(url);
@@ -24,7 +24,7 @@ JSAG_MEMBER_BEGIN(_remove, 1)
 JSAG_MEMBER_END
 
 JSAG_OBJECT_START(imageCache)
-JSAG_OBJECT_MEMBER(_remove)
+JSAG_OBJECT_MEMBER(remove)
 JSAG_OBJECT_END
 
 
