@@ -119,7 +119,6 @@
                 self.returnKeyType = UIReturnKeyNext;
             }
             
-            
             textFieldDelegate.maxLength = [[dict objectForKey:@"maxLength"] intValue];
             cursorPos = [[dict objectForKey:@"cursorPos"] intValue];
             
@@ -127,7 +126,6 @@
             [self becomeFirstResponder];
             return nil;
         }];
-        
         
         [NativeCalls Register:@"editText.clearFocus" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
             [self clearFocus];
@@ -142,9 +140,6 @@
     }
     return self;
 }
-
-
-
 
 - (void) next {
     if (self.returnKeyType == UIReturnKeyDefault || UIReturnKeyDone) {
