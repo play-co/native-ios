@@ -28,7 +28,6 @@
         return NO;
     }
     
-    NSLog(@"jared text %@", textField.text);
     [TeaLeafEvent Send:@"InputKeyboardKeyUp" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                        [textField.text stringByReplacingCharactersInRange:range withString:string], @"text", nil]];
 	//Returning yes allows the entered chars to be processed

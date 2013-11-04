@@ -781,7 +781,6 @@ JSAG_MEMBER_BEGIN(toDataURL, 1)
     JS_ValueToObject(cx, ctx_val, &_ctx);
 	context_2d* ctx = static_cast<context_2d*>(JSAG_GET_PRIVATE(_ctx));
     char * data = context_2d_save_buffer_to_base64(ctx, "PNG");
-	LOG("jared %s", data);
 
 	if (data != NULL) {
 		JSAG_RETURN_CSTR(data)
