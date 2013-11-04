@@ -232,8 +232,6 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 - (void) submit {
     [self clearFocus];
     [TeaLeafEvent Send:@"InputKeyboardSubmit" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:@0, @"id", [self text], @"text", @YES, @"close", nil]];
-
-    
 }
 
 - (void) finishEditing {
@@ -243,12 +241,9 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 
 - (void) hide {
     [self clearFocus];
-
 }
 
-
 - (void) show {
-    
 }
 
 - (void) clearFocus {
@@ -260,6 +255,5 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 }
 
 @end
-
 
 
