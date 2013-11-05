@@ -92,7 +92,6 @@
             [self setPlaceholder:[dict objectForKey:@"hint"]];
             [self setPlaceholderColor:[self colorFromHexString:[dict objectForKey:@"hintColor"]]];
             
-            
             //left and right padding
             UIView *paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[dict objectForKey:@"paddingLeft"] floatValue] * scale, 0)];
             self.leftView = paddingView;
