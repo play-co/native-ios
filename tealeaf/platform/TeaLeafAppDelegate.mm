@@ -553,13 +553,13 @@ enum Splashes {
 };
 
 SplashDescriptor SPLASHES[] = {
-	{"portrait480", "@root://Default.png"},
-	{"portrait960", "@root://Default@2x.png"},
-	{"portrait1024", "@root://Default-Portrait~ipad.png"},
-	{"portrait1136", "@root://Default-568h@2x.png"},
-	{"portrait2048", "@root://Default-Portrait@2x~ipad.png"},
-	{"landscape768", "@root://Default-Landscape~ipad.png"},
-	{"landscape1536", "@root://Default-Landscape@2x~ipad.png"}
+	{"portrait480", "@root://LaunchImage.png"},
+	{"portrait960", "@root://LaunchImage@2x.png"},
+	{"portrait1024", "@root://LaunchImage-Portrait~ipad.png"},
+	{"portrait1136", "@root://LaunchImage-568h@2x.png"},
+	{"portrait2048", "@root://LaunchImage-Portrait@2x~ipad.png"},
+	{"landscape768", "@root://LaunchImage-Landscape~ipad.png"},
+	{"landscape1536", "@root://LaunchImage-Landscape@2x~ipad.png"}
 };
 
 - (SplashDescriptor *) findBestSplashDescriptor {
