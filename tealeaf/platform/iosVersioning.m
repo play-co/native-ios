@@ -27,7 +27,7 @@ CEXPORT int get_platform_memory_limit()
     mach_port_t host_port;
     mach_msg_type_number_t host_size;
     vm_size_t pagesize;
-	
+
     host_port = mach_host_self();
     host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
     host_page_size(host_port, &pagesize);
@@ -46,7 +46,7 @@ CEXPORT int get_platform_memory_limit()
 		natural_t mem_free = vm_stat.free_count * pagesize;
 		natural_t mem_total = mem_used + mem_free;
 
-		NSLog(@"{core} Memory used: %u free: %u total: %u", mem_used, mem_free, mem_total);
+		NSLog(@"{core} Memory used: %d free: %d total: %d", (int)mem_used, (int)mem_free, (int)mem_total);
 
 		// Return 11.11% of total memory (bytes)
 		int limit = mem_total / 9;
