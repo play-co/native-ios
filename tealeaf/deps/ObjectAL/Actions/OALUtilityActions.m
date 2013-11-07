@@ -459,7 +459,7 @@ COCOS2D_SUBCLASS(OALSequentialActions)
 	else
 	{
 		// Only actions with a duration get an update after 0.
-		for(uint i = 0; i < [actionsWithDuration_ count]; i++)
+		for(NSUInteger i = 0; i < [actionsWithDuration_ count]; i++)
 		{
 			OALAction* action = [actionsWithDuration_ objectAtIndex:i];
 			float proportion = proportionComplete / [[pDurations_ objectAtIndex:i] floatValue];

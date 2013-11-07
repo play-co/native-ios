@@ -75,7 +75,7 @@
 @interface OALSequentialActions: OALAction
 {
 	/** The index of the action currently being processed. */
-	uint actionIndex_;
+	NSUInteger actionIndex_;
 	
 	/** The last completeness proportion value acted upon. */
 	float pLastComplete_;

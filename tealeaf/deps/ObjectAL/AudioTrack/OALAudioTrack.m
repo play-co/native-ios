@@ -34,7 +34,6 @@
 #import "OALUtilityActions.h"
 #import "ObjectALMacros.h"
 #import "ARCSafe_MemMgmt.h"
-#import "IOSVersion.h"
 
 #pragma mark Asynchronous Operations
 
@@ -295,15 +294,8 @@
 {
 	OPTIONALLY_SYNCHRONIZED(self)
 	{
-		if([IOSVersion sharedInstance].version >= 4.0)
-		{
-			pan = value;
-			player.pan = pan;
-		}
-		else if(pan != 0.0f)
-		{
-			OAL_LOG_WARNING(@"%@: Pan not supported on iOS %f", self, [IOSVersion sharedInstance].version);
-		}
+        pan = value;
+        player.pan = pan;
 	}
 }
 
@@ -431,11 +423,7 @@
 {
 	OPTIONALLY_SYNCHRONIZED(self)
 	{
-		if([IOSVersion sharedInstance].version >= 4.0)
-		{
-			return player.deviceCurrentTime;
-		}
-		return 0;
+        return player.deviceCurrentTime;
 	}
 }
 
@@ -505,88 +493,88 @@
 	 *
 	 * TODO: Need to find a way to avoid this situation.
 	 */
-	if(value)
+	OPTIONALLY_SYNCHRONIZED(self)
 	{
-		if(preloaded)
-		{
-			currentTime = player.currentTime;
-			if(self.playing)
-			{
-				[player stop];
-			}
-		}
-	}
-	else
-	{
-		if(preloaded)
-		{
-			NSError* error;
-			as_release(player);
-			player = [[AVAudioPlayer alloc] initWithContentsOfURL:currentlyLoadedUrl error:&error];
-			if(nil != error)
-			{
-				OAL_LOG_ERROR(@"%@: Could not reload URL %@: %@",
-							  self, currentlyLoadedUrl, [error localizedDescription]);
-				as_release(player);
-				player = nil;
-				preloaded = NO;
-				playing = NO;
-				paused = NO;
-				return;
-			}
-			
-			player.volume = muted ? 0 : gain;
-			player.numberOfLoops = numberOfLoops;
-			player.meteringEnabled = meteringEnabled;
-			player.delegate = self;
-			if([IOSVersion sharedInstance].version >= 4.0)
-			{
-				player.pan = pan;
-			}
-			
-			player.currentTime = currentTime;
-			
-			if(![player prepareToPlay])
-			{
-				OAL_LOG_ERROR(@"%@: Failed to prepareToPlay on resume: %@", self, currentlyLoadedUrl);
-				as_release(player);
-				player = nil;
-				preloaded = NO;
-				playing = NO;
-				paused = NO;
-				return;
-			}
-			
-			if(playing)
-			{
-				playing = [player play];
-				if(paused)
-				{
-					[player pause];
-				}
-			}
-		}
-	}
+        if(value)
+        {
+            if(preloaded)
+            {
+                currentTime = player.currentTime;
+                if(self.playing)
+                {
+                    [player stop];
+                }
+            }
+        }
+        else
+        {
+            if(preloaded)
+            {
+                NSError* error;
+                as_release(player);
+                player = [[AVAudioPlayer alloc] initWithContentsOfURL:currentlyLoadedUrl error:&error];
+                if(nil != error)
+                {
+                    OAL_LOG_ERROR(@"%@: Could not reload URL %@: %@",
+                                  self, currentlyLoadedUrl, [error localizedDescription]);
+                    as_release(player);
+                    player = nil;
+                    preloaded = NO;
+                    playing = NO;
+                    paused = NO;
+                    return;
+                }
 
-	
-	/*
-	if(value)
-	{
-		if(self.playing && !self.paused)
-		{
-			currentTime = player.currentTime;
-			[player pause];
-		}
-	}
-	else
-	{
-		if(self.playing && !self.paused)
-		{
-			player.currentTime = currentTime;
-			[player play];
-		}
-	}
-	 */
+                player.volume = muted ? 0 : gain;
+                player.numberOfLoops = numberOfLoops;
+                player.meteringEnabled = meteringEnabled;
+                player.delegate = self;
+                player.pan = pan;
+
+                player.currentTime = currentTime;
+
+                if(![player prepareToPlay])
+                {
+                    OAL_LOG_ERROR(@"%@: Failed to prepareToPlay on resume: %@", self, currentlyLoadedUrl);
+                    as_release(player);
+                    player = nil;
+                    preloaded = NO;
+                    playing = NO;
+                    paused = NO;
+                    return;
+                }
+                
+                if(playing)
+                {
+                    playing = [player play];
+                    if(paused)
+                    {
+                        [player pause];
+                    }
+                }
+            }
+        }
+        
+        
+        /*
+        if(value)
+        {
+            if(self.playing && !self.paused)
+            {
+                currentTime = player.currentTime;
+                [player pause];
+            }
+        }
+        else
+        {
+            if(self.playing && !self.paused)
+            {
+                player.currentTime = currentTime;
+                [player play];
+            }
+        }
+         */
+    }
 }
 
 
@@ -607,7 +595,7 @@
 	
 	OPTIONALLY_SYNCHRONIZED(self)
 	{
-		// No longer re-using AVAudioPlayer because of bugs when using multiple players.
+		// Bug: No longer re-using AVAudioPlayer because of bugs when using multiple players.
 		// Playing two tracks, then stopping one and starting it again will cause prepareToPlay to fail.
 		
 		bool wasPlaying = playing;
@@ -638,11 +626,8 @@
 		player.numberOfLoops = numberOfLoops;
 		player.meteringEnabled = meteringEnabled;
 		player.delegate = self;
-		if([IOSVersion sharedInstance].version >= 4.0)
-		{
-			player.pan = pan;
-		}
-		
+        player.pan = pan;
+
 		as_release(currentlyLoadedUrl);
 		currentlyLoadedUrl = as_retain(url);
 		
@@ -771,27 +756,18 @@
 {
 	OPTIONALLY_SYNCHRONIZED(self)
 	{
-		if([IOSVersion sharedInstance].version >= 4.0)
-		{
-			[self stopActions];
-            [player stop];
-			player.currentTime = currentTime;
-			player.volume = muted ? 0 : gain;
-			player.numberOfLoops = numberOfLoops;
-			paused = NO;
-			playing = [player playAtTime:time];
-			if(playing)
-			{
-				[[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:[NSNotification notificationWithName:OALAudioTrackStartedPlayingNotification object:self] waitUntilDone:NO];
-			}
-			return playing;
-		}
-		else
-		{
-			OAL_LOG_WARNING(@"%@: playAtTime not supported on iOS %f", self, [IOSVersion sharedInstance].version);
-		}
-
-		return NO;
+        [self stopActions];
+        [player stop];
+        player.currentTime = currentTime;
+        player.volume = muted ? 0 : gain;
+        player.numberOfLoops = numberOfLoops;
+        paused = NO;
+        playing = [player playAtTime:time];
+        if(playing)
+        {
+            [[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:[NSNotification notificationWithName:OALAudioTrackStartedPlayingNotification object:self] waitUntilDone:NO];
+        }
+        return playing;
 	}
 }
 
@@ -868,34 +844,28 @@
 		target:(id) target
 	  selector:(SEL) selector
 {
-	if([IOSVersion sharedInstance].version >= 4.0)
-	{
-		// Must always be synchronized
-		@synchronized(self)
-		{
-			[self stopPan];
-			panAction = [OALSequentialActions actions:
-                         [OALPropertyAction panActionWithDuration:duration endValue:value],
-                         [OALCallAction actionWithCallTarget:target selector:selector withObject:self],
-                         nil];
-            panAction = as_retain(panAction);
-			[panAction runWithTarget:self];
-		}
-	}
+    // Must always be synchronized
+    @synchronized(self)
+    {
+        [self stopPan];
+        panAction = [OALSequentialActions actions:
+                     [OALPropertyAction panActionWithDuration:duration endValue:value],
+                     [OALCallAction actionWithCallTarget:target selector:selector withObject:self],
+                     nil];
+        panAction = as_retain(panAction);
+        [panAction runWithTarget:self];
+    }
 }
 
 - (void) stopPan
 {
-	if([IOSVersion sharedInstance].version >= 4.0)
-	{
-		// Must always be synchronized
-		@synchronized(self)
-		{
-			[panAction stopAction];
-			as_release(panAction);
-			panAction = nil;
-		}
-	}
+    // Must always be synchronized
+    @synchronized(self)
+    {
+        [panAction stopAction];
+        as_release(panAction);
+        panAction = nil;
+    }
 }
 
 - (void) clear
@@ -973,7 +943,15 @@
 	}
 }
 
-#if defined(__MAC_10_7) || defined(__IPHONE_4_0)
+- (void)audioPlayerEndInterruption:(AVAudioPlayer *)playerIn withOptions:(NSUInteger)flags
+{
+	if([delegate respondsToSelector:@selector(audioPlayerEndInterruption:withOptions:)])
+	{
+		[delegate audioPlayerEndInterruption:playerIn withOptions:flags];
+	}
+}
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (void)audioPlayerEndInterruption:(AVAudioPlayer *)playerIn withFlags:(NSUInteger)flags
 {
 	if([delegate respondsToSelector:@selector(audioPlayerEndInterruption:withFlags:)])
@@ -981,7 +959,6 @@
 		[delegate audioPlayerEndInterruption:playerIn withFlags:flags];
 	}
 }
-#endif
 
 - (void) audioPlayerEndInterruption:(AVAudioPlayer*) playerIn
 {
@@ -990,7 +967,8 @@
 		[delegate audioPlayerEndInterruption:playerIn];
 	}
 }
-#endif //TARGET_OS_IPHONE
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
+#endif // TARGET_OS_IPHONE
 
 - (void) audioPlayerDecodeErrorDidOccur:(AVAudioPlayer*) playerIn error:(NSError*) error
 {

@@ -46,14 +46,14 @@
 #import "ALDevice.h"
 #import "ALListener.h"
 #import "ALSource.h"
-#import "ALWrapper.h"
+//#import "ALWrapper.h"
 #import "ALChannelSource.h"
 #import "ALSoundSourcePool.h"
 #import "OpenALManager.h"
 #import "OALAudioFile.h"
 
 // Other
-#import "OALNotifications.h"
+//#import "OALNotifications.h"
 #import "OALAudioSession.h"
 #import "OALSimpleAudio.h"
 
@@ -63,9 +63,9 @@
  
  <strong>iOS Audio development, minus the headache.</strong> <br><br>
  
- Version 2.1 <br> <br>
+ Version 2.2 <br> <br>
  
- Copyright 2009-2011 Karl Stenerud <br><br>
+ Copyright 2009-2013 Karl Stenerud <br><br>
  
  Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License v2.0</a>
  
@@ -199,7 +199,7 @@
  methods. You can install the ObjectAL documentation into XCode's Developer Documentation
  system by doing the following: 
  -# Install <a href="http://www.doxygen.org">Doxygen</a>. You can either use the OSX installer or
-    MacPorts.
+    <a href="http://mxcl.github.io/homebrew/">Homebrew</a>.
  -# Build the "Documentation" target in this project.
  -# Open the developer documentation and type "ObjectAL" into the search box.
  
@@ -590,6 +590,8 @@
  Try them out and go through the code to see how it's done. I've done my best to keep the code
  readable. Really!
  
+ You can try out the demos by building and running the OALDemo target for iOS or OSX.
+ 
  The current demos are:
  - <strong>SingleSourceDemo</strong>: Demonstrates using a location based source and a listener.
  - <strong>TwoSourceDemo</strong>: Demonstrates using two location based sources and a listener.
@@ -598,10 +600,12 @@
  - <strong>ChannelsDemo</strong>: Demonstrates using audio channels.
  - <strong>FadeDemo</strong>: Demonstrates realtime fading with OALAudioTrack and ALSource.
  - <strong>AudioTrackDemo</strong>: Demonstrates using multiple OALAudioTrack objects.
+ - <strong>PlanetKillerDemo</strong>: Demonstrates using OALSimpleAudio in a game setting.
+ - <strong>IntroAndMainTrackDemo</strong>: Demonstrates a short intro track followed by a main loop track.
+ - <strong>SourceNotificationsDemo</strong>: Demonstrates using OpenAL playback notifications.
  - <strong>HardwareDemo</strong>: Demonstrates hardware monitoring features.
  - <strong>AudioSessionDemo</strong>: Allows you to play with various audio session settings.
- - <strong>PlanetKillerDemo</strong>: Demonstrates using OALSimpleAudio in a game setting.
- 
+
  
  
  <br> <br>

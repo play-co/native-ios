@@ -142,7 +142,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(OALSimpleAudio);
 - (void) dealloc
 {
 	OAL_LOG_DEBUG(@"%@: Dealloc", self);
-#if NS_BLOCKS_AVAILABLE && OBJECTAL_CFG_USE_BLOCKS
+#if NS_BLOCKS_AVAILABLE && OBJECTAL_CFG_USE_BLOCKS && !__has_feature(objc_arc)
 	dispatch_release(oal_dispatch_queue);
 #endif
 
@@ -416,7 +416,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(OALSimpleAudio);
 {
 	OPTIONALLY_SYNCHRONIZED(self)
 	{
-		OAL_LOG_DEBUG(@"Play bg, loop %d");
+		OAL_LOG_DEBUG(@"Play bg, loop %d", loop);
 		backgroundTrack.numberOfLoops = loop ? -1 : 0;
 		return [backgroundTrack play];
 	}
@@ -538,9 +538,9 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(OALSimpleAudio);
 
 - (void) preloadEffects:(NSArray*) filePaths
            reduceToMono:(bool) reduceToMono
-		  progressBlock:(void (^)(uint progress, uint successCount, uint total)) progressBlock
+		  progressBlock:(void (^)(NSUInteger progress, NSUInteger successCount, NSUInteger total)) progressBlock
 {
-	uint total					= [filePaths count];
+	NSUInteger total = [filePaths count];
 	if(total < 1)
 	{
 		OAL_LOG_ERROR(@"Preload effects: No files to process");
@@ -548,9 +548,9 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(OALSimpleAudio);
 		return;
 	}
 
-	__block uint successCount	= 0;
+	__block NSUInteger successCount = 0;
 
-	pendingLoadCount			+= total;
+	pendingLoadCount += total;
 	dispatch_async(oal_dispatch_queue,
                    ^{
                        [filePaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
@@ -566,7 +566,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(OALSimpleAudio);
                             {
                                 successCount++;
                             }
-                            uint cnt = idx+1;
+                            NSUInteger cnt = idx+1;
                             dispatch_async(dispatch_get_main_queue(),
                                            ^{
                                                if(cnt == total)

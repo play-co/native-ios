@@ -404,7 +404,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(OALSimpleAudio);
  */
 - (void) preloadEffects:(NSArray*) filePaths
 				   reduceToMono:(bool) reduceToMono
-		  progressBlock:(void (^)(uint progress, uint successCount, uint total)) progressBlock;
+		  progressBlock:(void (^)(NSUInteger progress, NSUInteger successCount, NSUInteger total)) progressBlock;
 
 #endif
 
@@ -488,7 +488,5 @@ SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(OALSimpleAudio);
 /** Reset everything in this object to its default state.
  */
 - (void) resetToDefault;
-
-- (NSString*) cacheKeyForEffectPath:(NSString*) filePath;
 
 @end
