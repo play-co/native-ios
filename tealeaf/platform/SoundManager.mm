@@ -41,6 +41,10 @@ SoundManager *globalSoundManager = NULL;
 	if (!globalSoundManager) {
 		globalSoundManager = self;
 	}
+
+	// This appears to be broken in practice so keep it off
+	[OALSimpleAudio sharedInstance].useHardwareIfAvailable = NO;
+
 	[OALSimpleAudio sharedInstance].allowIpod = YES;
 	[OALSimpleAudio sharedInstance].honorSilentSwitch = YES;
 	[OALSimpleAudio sharedInstance].preloadCacheEnabled = YES;
