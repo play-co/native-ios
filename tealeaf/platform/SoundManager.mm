@@ -41,7 +41,7 @@ SoundManager *globalSoundManager = NULL;
 	if (!globalSoundManager) {
 		globalSoundManager = self;
 	}
-	[OALSimpleAudio sharedInstance].allowIpod = NO;
+	[OALSimpleAudio sharedInstance].allowIpod = YES;
 	[OALSimpleAudio sharedInstance].honorSilentSwitch = YES;
 	[OALSimpleAudio sharedInstance].preloadCacheEnabled = YES;
 	[OALSimpleAudio sharedInstance].channel.interruptible = YES;
