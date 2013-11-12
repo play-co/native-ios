@@ -61,11 +61,25 @@
         [self setFrame:CGRectMake(0, 0, 0, 0)];
         tapGestureRecognizer = nil;
         self.textFieldDelegate = [[[TeaLeafTextFieldDelegate alloc] init] autorelease];
-        
-        
+
+		self.autoClose = true;
         self.delegate = self.textFieldDelegate;
-        
+
+        [NativeCalls Register:@"editText.setText" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
+			NSLOG(@"{textfield} got JS editText.setText");
+            [self setText:[dict objectForKey:@"text"]];
+			return nil;
+		}];
+
+        [NativeCalls Register:@"softKeyboard.setAutoClose" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
+			NSLOG(@"{textfield} got JS softKeyboard.setAutoClose");
+            self.autoClose = [[dict objectForKey:@"autoClose"] boolValue];
+			return nil;
+		}];
+		
         [NativeCalls Register:@"editText.focus" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
+			NSLOG(@"{textfield} got JS editText.focus");
+
             float scale = 1.f;
             if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]
                 && [[UIScreen mainScreen] scale] == 2.0) {
@@ -126,6 +140,7 @@
         }];
         
         [NativeCalls Register:@"editText.clearFocus" withCallback:^NSMutableDictionary *(NSMutableDictionary *dict) {
+			NSLOG(@"{textfield} got JS clearFocus");
             [self clearFocus];
             [self setHidden:true];
             return nil;
@@ -135,11 +150,13 @@
         self.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self._placeholderColor = [UIColor blackColor];
         [self setHidden:true];
+		NSLOG(@"{textfield} set defaults");
     }
     return self;
 }
 
 - (void) next {
+	NSLOG(@"{textfield} next");
     if (self.returnKeyType == UIReturnKeyDefault || UIReturnKeyDone) {
         [self hide];
     } else if (self.returnKeyType == UIReturnKeyNext) {
@@ -223,16 +240,25 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 }
 
 - (void) submit {
-    [self clearFocus];
-    [TeaLeafEvent Send:@"InputKeyboardSubmit" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:@0, @"id", [self text], @"text", @YES, @"close", nil]];
+	NSLOG(@"{textfield} submit");
+	if (self.autoClose) {
+		[self clearFocus];
+		[TeaLeafEvent Send:@"InputKeyboardSubmit" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:@0, @"id", [self text], @"text", @YES, @"close", nil]];
+	} else {
+		[TeaLeafEvent Send:@"InputKeyboardSubmit" withOpts:[NSMutableDictionary dictionaryWithObjectsAndKeys:@0, @"id", [self text], @"text", @NO, @"close", nil]];
+	}
 }
 
 - (void) finishEditing {
-    [self clearFocus];
-    [TeaLeafEvent Send:@"editText.onFinishEditing" withOpts:nil];
+	NSLOG(@"{textfield} finishEditing");
+	if (self.autoClose) {
+		[self clearFocus];
+		[TeaLeafEvent Send:@"editText.onFinishEditing" withOpts:nil];
+	}
 }
 
 - (void) hide {
+	NSLOG(@"{textfield} hide");
     [self clearFocus];
 }
 
@@ -240,6 +266,7 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 }
 
 - (void) clearFocus {
+	NSLOG(@"{textfield} clearFocus");
     [self setHidden:true];
     TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
     [controller.view removeGestureRecognizer:tapGestureRecognizer];
@@ -248,5 +275,4 @@ int getTextHeight(NSString *font, int size, NSString * text) {
 }
 
 @end
-
 

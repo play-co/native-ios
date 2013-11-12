@@ -17,9 +17,9 @@
 
 @interface TeaLeafTextField : UITextField
 @property (nonatomic) int cursorPos;
+@property (nonatomic) bool autoClose;
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, retain) UIColor *_placeholderColor;
 @property (nonatomic, retain) TeaLeafTextFieldDelegate *textFieldDelegate;
 @end
-
 
