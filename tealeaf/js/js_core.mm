@@ -479,31 +479,40 @@ JSAG_OBJECT_END
 	return rval;
 }
 
--(void) dispatchEvent:(jsval *)arg count:(int)count {
-	JS_BeginRequest(self.cx);
+-(void) dispatchEvent:(jsval *)arg {
+    [self dispatchEvent:arg withRequestId:0];
+}
 
-	jsval events, dispatch, dummy;
+-(void) dispatchEvent:(jsval *)arg withRequestId:(int)id {
+    JS_BeginRequest(self.cx);
+    
+	jsval events, dispatch, rval;
+    jsval args[] = { *arg, INT_TO_JSVAL(id) };
 	if (js_ready) {
 		JS_GetProperty(self.cx, self.native, "events", &events);
 		if (!JSVAL_IS_VOID(events)) {
 			JS_GetProperty(self.cx, JSVAL_TO_OBJECT(events), "dispatchEvent", &dispatch);
 			if (!JSVAL_IS_VOID(dispatch)) {
-				JS_CallFunctionName(self.cx, JSVAL_TO_OBJECT(events), "dispatchEvent", count, arg, &dummy);
-
+				JS_CallFunctionName(self.cx, JSVAL_TO_OBJECT(events), "dispatchEvent", 2, args, &rval);
+                
 				JS_EndRequest(self.cx);
 				return;
 			}
 		}
 	}
-
+    
 	JS_EndRequest(self.cx);
-
+    
 	LOG("{js} ERROR: Firing event failed");
 }
 
--(void) dispatchEvent:(NSString *)evt {
+-(void) dispatchEventFromString:(NSString *)evt withRequestId:(int)id{
 	jsval str = NSTR_TO_JSVAL(self.cx, evt);
-	[self dispatchEvent: &str count: 1];
+	[self dispatchEvent:&str withRequestId:id];
+}
+
+-(void) dispatchEventFromString:(NSString *)evt {
+    [self dispatchEventFromString:evt withRequestId:0];
 }
 
 -(void) performGC {

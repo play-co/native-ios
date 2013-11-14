@@ -84,7 +84,7 @@ JSAG_MEMBER_BEGIN(send, 6)
 		JS_SetProperty(cx, xhr_obj, "name", &jsname);
 		xhr_val = OBJECT_TO_JSVAL(xhr_obj);
 
-		[m_core dispatchEvent:&xhr_val count:1];
+		[m_core dispatchEvent:&xhr_val];
 	} else {
 		LOG("{xhr} Send state:%i async:%i id:%i", state, async, idi);
 
@@ -158,7 +158,7 @@ JSAG_OBJECT_END
 	JS_SetProperty(cx, xhr_obj, "headerValues", &header_values_val);
 	xhr_val = OBJECT_TO_JSVAL(xhr_obj);
 
-	[m_core dispatchEvent:&xhr_val count:1];
+	[m_core dispatchEvent:&xhr_val];
 
 	JS_EndRequest(cx);
 	
