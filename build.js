@@ -903,7 +903,9 @@ function copyIcons(builder, icons, destPath) {
 
 			if (mustUnlink) {
 				logger.warn('Removing iOS 7 icon that was not specified.');
-				fs.unlinkSync(targetPath);
+				try {
+					fs.unlinkSync(targetPath);
+				} catch (e) {}
 			}
 		});
 	} else {

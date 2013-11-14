@@ -146,7 +146,7 @@ CEXPORT void eval_str(const char *str) {
 
 CEXPORT void js_dispatch_event(const char *evt) {
 	if (m_core) {
-		[m_core performSelectorOnMainThread: @selector(dispatchEvent:) withObject:[NSString stringWithUTF8String:evt] waitUntilDone:NO];
+		[m_core performSelectorOnMainThread: @selector(dispatchEventFromString:) withObject:[NSString stringWithUTF8String:evt] waitUntilDone:NO];
 	}
 }
 

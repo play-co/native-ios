@@ -46,10 +46,13 @@
 @property (nonatomic, retain) NSMutableDictionary *plugins;
 
 - (void) postNotification:(NSString *)selector obj1:(id)obj1 obj2:(id)obj2;
+- (void) dispatchEvent:(NSString *)name forPlugin:(id)plugin withData:(NSDictionary *)data;
 - (void) dispatchJSEvent:(NSDictionary *)evt;
-- (void) dispatchJSEventWithJSONString: (NSString*) str;
+- (void) dispatchJSEventWithJSONString: (NSString*) str andRequestId:(NSNumber *)requestId;
+- (void) dispatchJSResponse:(NSDictionary *)response withError:(id)error andRequestId:(NSNumber *)requestId;
 
 - (id) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event;
+- (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event id:(NSNumber *)requestId;
 
 + (PluginManager *) get;
 @end
