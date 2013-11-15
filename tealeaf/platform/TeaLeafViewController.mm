@@ -440,7 +440,7 @@ CEXPORT void device_hide_splash() {
 	JS_SetProperty(cx, event, "height", &height);
     
 	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt count:1];
+	[[js_core lastJS] dispatchEvent:&evt];
 }
 
 - (IBAction)rotationDetected:(UIGestureRecognizer *)sender {
@@ -461,7 +461,7 @@ CEXPORT void device_hide_splash() {
 - (void)runCallback:(char *)arg {
 	js_core* instance = [js_core lastJS];
 	jsval args[] = { STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)) };
-	[instance dispatchEvent: args count: 1];
+	[instance dispatchEvent:args];
 }
 
 - (void)sendSMSTo:(NSString *)number withMessage:(NSString *)msg andCallback:(int)cb {
@@ -621,7 +621,7 @@ CEXPORT void device_hide_splash() {
 	JS_SetProperty(cx, event, "id", &idv);
     
 	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt count:1];
+	[[js_core lastJS] dispatchEvent:&evt];
 }
 
 - (void) registerCallbacks:(int *)cbs length:(int)len {
