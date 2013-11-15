@@ -52,8 +52,29 @@ JSAG_MEMBER_BEGIN(sendEvent, 3)
 JSAG_MEMBER_END
 
 
+JSAG_MEMBER_BEGIN(_sendRequest, 3)
+{
+	JSAG_ARG_NSTR(pluginName);
+	JSAG_ARG_NSTR(eventName);
+	JSAG_ARG_CSTR(str);
+    JSAG_ARG_INT32(id);
+	
+	NSError *err = nil;
+	NSDictionary *json = [m_decoder objectWithUTF8String:(const unsigned char *)str length:(NSUInteger)str_len error:&err];
+	
+	if (!json || err) {
+		NSLOG(@"{plugins} WARNING: Event passed to NATIVE.plugins.sendRequest does not contain a valid JSON string.");
+	} else {
+		[m_pluginManager plugin:pluginName name:eventName event:json id:[NSNumber numberWithInt:id]];
+	}
+    
+    JSAG_RETURN_VOID;
+}
+JSAG_MEMBER_END
+
 JSAG_OBJECT_START(plugins)
 JSAG_OBJECT_MEMBER(sendEvent)
+JSAG_OBJECT_MEMBER(_sendRequest)
 JSAG_OBJECT_END
 
 
@@ -177,14 +198,14 @@ JSAG_OBJECT_END
 	[self postNotification:@"onResume" obj1:nil obj2:nil];
 }
 
-- (void) dispatchJSEventWithJSONString: (NSString*) str {
+- (void) dispatchJSEventWithJSONString: (NSString*) str andRequestId:(NSNumber *)requestId {
     if (m_core) {
         JSContext *cx = m_core.cx;
 		dispatch_async(dispatch_get_main_queue(), ^{
             if (m_core) {
                 JS_BeginRequest(cx);
                 jsval evt_val = NSTR_TO_JSVAL(cx, str);
-                [m_core dispatchEvent:&evt_val count:1];
+                [m_core dispatchEvent:&evt_val withRequestId:[requestId intValue]];
             }
         });
     } else {
@@ -192,9 +213,53 @@ JSAG_OBJECT_END
     }
 }
 
+- (void) dispatchEvent:(NSString *)name forPlugin:(id)plugin withData:(NSDictionary *)data {
+    [self dispatchJSEvent: [NSDictionary dictionaryWithObjectsAndKeys:
+                            @"pluginEvent",@"name",
+                            NSStringFromClass([plugin class]),@"pluginName",
+                            name,@"eventName",
+                            data,@"data",
+                            nil]];
+}
+
 - (void) dispatchJSEvent:(NSDictionary *)evt {
     NSString *evt_nstr = [evt JSONString];
-    [self dispatchJSEventWithJSONString:evt_nstr];
+    [self dispatchJSEventWithJSONString:evt_nstr andRequestId:0];
+}
+
+- (void) dispatchJSEvent:(NSDictionary *)evt withRequestId:(NSNumber *)requestId {
+    NSString *evt_nstr = [evt JSONString];
+    [self dispatchJSEventWithJSONString:evt_nstr andRequestId:requestId];
+}
+
+- (void) dispatchJSResponse:(NSDictionary *)response withError:(id)error andRequestId:(NSNumber *)requestId {
+    if ([error isKindOfClass:[NSError class]]) {
+        error = ((NSError *)error).localizedDescription;
+    }
+    
+    [self dispatchJSEvent:[NSDictionary dictionaryWithObjectsAndKeys:
+                           @"plugins",@"name",
+                           error ? error : [NSNumber numberWithBool:false],@"error",
+                           (response != nil ? response : [NSNull null]),@"response",
+                           nil]
+            withRequestId: requestId];
+}
+
+- (void) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event id:(NSNumber *)requestId {
+    @try {
+		id instance = [self.plugins valueForKey:plugin];
+		if (instance) {
+			SEL selector = NSSelectorFromString([name stringByAppendingString:@":withRequestId:"]);
+			if ([instance respondsToSelector:selector]) {
+				[instance performSelector:selector withObject:event withObject:requestId];
+			} else {
+                NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin %@ : %@", plugin, name);
+            }
+		}
+	}
+	@catch (NSException *e) {
+		NSLOG(@"{plugins} WARNING: Event could not be delivered for plugin %@ : %@ (Exception: %@)", plugin, name, e);
+	}
 }
 
 - (NSDictionary *) plugin:(NSString *)plugin name:(NSString *)name event:(NSDictionary *)event {
