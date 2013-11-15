@@ -774,7 +774,9 @@ function updatePListFile(builder, opts, next) {
 				["UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown"]);
 		}
 
+		// Update the version numbers
 		contents.CFBundleShortVersionString = manifest.ios.version;
+		contents.CFBundleVersion = manifest.ios.version;
 
 		// If RenderGloss enabled,
 		if (manifest.ios.icons && manifest.ios.icons.renderGloss) {
