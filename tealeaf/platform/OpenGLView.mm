@@ -18,8 +18,8 @@
 #include "core/tealeaf_context.h"
 #import "TextInputManager.h"
 #import "TeaLeafAppDelegate.h"
-#import "UITouchWrapper.h"
 #import "platform/log.h"
+#import "timestep_events.h"
 
 void timestep_animation_tick_animations(double);
 
@@ -32,7 +32,7 @@ static CADisplayLink *displayLink;
 	if (self) {
 		cond = [NSCondition new];
 	}
-
+	
 	return self;
 }
 
@@ -41,7 +41,7 @@ static CADisplayLink *displayLink;
 	NSLog(@"Exciting: Deallocating OpenGLView");
 	
 	[self destroyDisplayLink];
-
+	
 	[super dealloc];
 }
 
@@ -54,7 +54,7 @@ static CADisplayLink *displayLink;
 	_eaglLayer.opaque = YES;
 }
 
-- (void)setupContext {	 
+- (void)setupContext {
 	EAGLRenderingAPI api = kEAGLRenderingAPIOpenGLES2;
 	_context = [[EAGLContext alloc] initWithAPI:api];
 	if (!_context) {
@@ -71,11 +71,11 @@ static CADisplayLink *displayLink;
 - (void)setupRenderBuffer {
 	GLTRACE(glGenRenderbuffers(1, &_colorRenderBuffer));
 	GLTRACE(glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer));
-	[_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:_eaglLayer];		
+	[_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:_eaglLayer];
 }
 
 
-- (void)setupFrameBuffer {	  
+- (void)setupFrameBuffer {
 	GLuint framebuffer;
 	GLTRACE(glGenFramebuffers(1, &framebuffer));
 	GLTRACE(glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
@@ -98,7 +98,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (void)stopRendering {
 	m_ogl_en = NO;
-
+	
 	[cond lock];
 	while (m_ogl_in) {
 		[cond wait];
@@ -108,10 +108,10 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (void)render:(CADisplayLink*)displayLink {
 	m_ogl_in = YES;
-
+	
 	// Compiler memory barrier
 	__asm__ volatile("" ::: "memory");
-
+	
 	if (m_ogl_en) {
 		CFTimeInterval timestamp = CFAbsoluteTimeGetCurrent();
 		int dt = (int)(1000 * (timestamp - last_timestamp));
@@ -119,10 +119,10 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		
 		// Measure time to perform a tick
 		// CFTimeInterval after_tick = CFAbsoluteTimeGetCurrent();
-
+		
 		last_timestamp = timestamp;
 		[_context presentRenderbuffer:GL_RENDERBUFFER];
-
+		
 		/*
 		 // Limit to 30 FPS
 		 int tick_dt = (int)(1000 * (after_tick - timestamp));
@@ -143,9 +143,9 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 		 }
 		 }*/
 	}
-
+	
 	m_ogl_in = NO;
-
+	
 	if (!m_ogl_en) {
 		[cond lock];
 		[cond signal];
@@ -164,9 +164,9 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (void)destroyDisplayLink {
 	[self stopRendering];
-
+	
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-
+	
 	[_context release];
 	_context = nil;
 }
@@ -174,22 +174,21 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (id)initWithFrame:(CGRect)frame {
 	NSLog(@"{OpenGL} Init with frame");
-
+	
 	self = [super initWithFrame:frame];
 	if (self) {
 		// Adjust for retina displays
 		if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {
 			[self setContentScaleFactor:[UIScreen mainScreen].scale];
 		}
-
+		
 		touchData = [[NSMutableArray alloc] init];
-		[self setupLayer];		  
-		[self setupContext];  
+		[self setupLayer];
+		[self setupContext];
 		[self setupRenderBuffer];
 		[self setupFrameBuffer];
-
+		
 		[self setupDisplayLink];
-		_id = 0;
 	}
 	return self;
 }
@@ -203,60 +202,153 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	return 0;
 }
 
+
+//// Touch subsystem
+
+//#define TOUCH_VERBOSE
+
+#if defined(TOUCH_VERBOSE)
+#define TOUCHLOG(fmt, ...) LOG("{touch} " fmt, ##__VA_ARGS__)
+#else
+#define TOUCHLOG(fmt, ...)
+#endif
+
+#include <stdint.h>
+
+typedef struct {
+	const UITouch *t;
+	int uid;
+	CGFloat x, y;
+} Touch;
+
+#define TOUCH_DOWN 1
+#define TOUCH_MOVE 2
+#define TOUCH_UP 3
+
+static int m_next_uid = 0;
+static const int TOUCH_SIZE = 32; // pow2
+static Touch m_touches[TOUCH_SIZE] = { {0} };
+static const int MAX_TOUCHES = 16;
+static int m_touches_size = 0;
+
+static uint32_t wangHash(uint32_t a) {
+	a = (a ^ 61) ^ (a >> 16);
+	a = a + (a << 3);
+	a = a ^ (a >> 4);
+	a = a * 0x27d4eb2d;
+	a = a ^ (a >> 15);
+	return a;
+}
+
+static void on_touch_start(int event_type, UITouch *t, CGFloat x, CGFloat y) {
+	uint32_t low = *(uint32_t*)&t;
+	uint32_t hash = wangHash(low);
+	int key = hash & (TOUCH_SIZE - 1);
+	Touch *slot = &m_touches[key];
+	
+	// If worth scanning for insertion point,
+	if (m_touches_size < MAX_TOUCHES) {
+		// While the table entries are filled and not the given one,
+		while (slot->t && slot->t != t) {
+			TOUCHLOG("TS:%d StartingType:%d key:%d", m_touches_size, event_type, key);
+
+			key = (key + 1) & (TOUCH_SIZE - 1);
+			slot = &m_touches[key];
+		}
+	}
+	
+	// If inserting now,
+	if (slot->t != t) {
+		// If displacing a slot,
+		if (slot->t) {
+			TOUCHLOG("TS:%d StartingType:%d key:%d DISPLACING EVENT IN SLOT", m_touches_size, event_type, key);
+			
+			// Touch up at old location (should never happen)
+			timestep_events_push(slot->uid, TOUCH_UP, slot->x, slot->y);
+		} else {
+			++m_touches_size;
+		}
+		
+		TOUCHLOG("TS:%d StartingType:%d key:%d INSERTING", m_touches_size, event_type, key);
+		
+		slot->t = t;
+		slot->uid = ++m_next_uid;
+	} else {
+		TOUCHLOG("TS:%d StartingType:%d key:%d UPDATING", m_touches_size, event_type, key);
+	}
+	
+	// Modify
+	slot->x = x;
+	slot->y = y;
+	timestep_events_push(slot->uid, event_type, x, y);
+}
+
+static void on_touch_up(UITouch *t, CGFloat x, CGFloat y) {
+	uint32_t low = *(uint32_t*)&t;
+	uint32_t hash = wangHash(low);
+	int key = hash & (TOUCH_SIZE - 1);
+	Touch *slot = &m_touches[key];
+	int limit = TOUCH_SIZE;
+	
+	TOUCHLOG("TS:%d TouchUp key:%d", m_touches_size, key);
+	
+	// While the table entries are filled and not the given one,
+	while (slot->t && --limit >= 0) {
+		if (slot->t == t) {
+			TOUCHLOG("TS:%d TouchUp key:%d REMOVING", m_touches_size, key);
+			timestep_events_push(slot->uid, TOUCH_UP, x, y);
+			--m_touches_size;
+			slot->t = 0;
+			return;
+		}
+		
+		key = (key + 1) & (TOUCH_SIZE - 1);
+		slot = &m_touches[key];
+	}
+	
+	TOUCHLOG("TS:%d TouchUp key:%d ONESHOTWEIRD", m_touches_size, key);
+	timestep_events_push(++m_next_uid, TOUCH_UP, x, y);
+}
+
+
 // Handles the start of a touch
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	[[TextInputManager get] dismissAll];
+	
+	CGFloat scale = [[UIScreen mainScreen] scale];
 	for (UITouch *t in touches) {
-		UITouchWrapper *wrapper = [[UITouchWrapper alloc] initWithUITouch: t andView: self andId: _id++];
-		[touchData addObject: wrapper];
-		[wrapper release];
+		CGPoint loc = [t locationInView:self];
+		on_touch_start(TOUCH_DOWN, t, loc.x * scale, loc.y * scale);
 	}
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	CGFloat scale = [[UIScreen mainScreen] scale];
 	for (UITouch *t in touches) {
-		for (UITouchWrapper *w in touchData) {
-			if ([w isForUITouch:t]) {
-				[w updateWithUITouch: t forView: self];
-				break;
-			}
-		}
+		CGPoint loc = [t locationInView:self];
+		on_touch_start(TOUCH_MOVE, t, loc.x * scale, loc.y * scale);
 	}
 }
 
 // Handles the end of a touch event.
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	CGFloat scale = [[UIScreen mainScreen] scale];
 	for (UITouch *t in touches) {
-		for (UITouchWrapper *w in touchData) {
-			if ([w isForUITouch:t]) {
-				[w removeWithUITouch: t forView: self];
-				[touchData removeObject:w];
-				break;
-			}
-		}
-	}
-	if ([touchData count] == 0) {
-		_id = 0;
+		CGPoint loc = [t locationInView:self];
+		on_touch_up(t, loc.x * scale, loc.y * scale);
 	}
 }
 
 // Touches cancelled by system event: e.g. phone call
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	CGFloat scale = [[UIScreen mainScreen] scale];
 	for (UITouch *t in touches) {
-		for (UITouchWrapper *w in touchData) {
-			if ([w isForUITouch:t]) {
-				[w removeWithUITouch: t forView: self];
-				[touchData removeObject:w];
-				break;
-			}
-		}
-	}
-	if ([touchData count] == 0) {
-		_id = 0;
+		CGPoint loc = [t locationInView:self];
+		on_touch_up(t, loc.x * scale, loc.y * scale);
 	}
 }
 

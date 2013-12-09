@@ -117,7 +117,6 @@
 		D5BC67321635D0270059EC0F /* TextInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821F6150E7C7600549BF6 /* TextInput.mm */; };
 		D5BC67331635D0270059EC0F /* TextInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821F8150E7C7600549BF6 /* TextInputManager.mm */; };
 		D5BC67341635D0270059EC0F /* Texture2D.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821FA150E7C7600549BF6 /* Texture2D.mm */; };
-		D5BC67351635D0270059EC0F /* UITouchWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821FC150E7C7600549BF6 /* UITouchWrapper.mm */; };
 		D5BC67361635D0270059EC0F /* xhr.mm in Sources */ = {isa = PBXBuildFile; fileRef = D55821FE150E7C7600549BF6 /* xhr.mm */; };
 		D5BC67381635D0270059EC0F /* rgba.c in Sources */ = {isa = PBXBuildFile; fileRef = D56C7DFB157E916900DB8BDA /* rgba.c */; };
 		D5BC67391635D0270059EC0F /* tealeaf_shaders.c in Sources */ = {isa = PBXBuildFile; fileRef = D56C7DFD157E916900DB8BDA /* tealeaf_shaders.c */; };
@@ -517,8 +516,6 @@
 		D55821F8150E7C7600549BF6 /* TextInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TextInputManager.mm; sourceTree = "<group>"; };
 		D55821F9150E7C7600549BF6 /* Texture2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture2D.h; sourceTree = "<group>"; };
 		D55821FA150E7C7600549BF6 /* Texture2D.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Texture2D.mm; sourceTree = "<group>"; };
-		D55821FB150E7C7600549BF6 /* UITouchWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITouchWrapper.h; sourceTree = "<group>"; };
-		D55821FC150E7C7600549BF6 /* UITouchWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UITouchWrapper.mm; sourceTree = "<group>"; };
 		D55821FD150E7C7600549BF6 /* xhr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xhr.h; sourceTree = "<group>"; };
 		D55821FE150E7C7600549BF6 /* xhr.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xhr.mm; sourceTree = "<group>"; };
 		D56C7DFB157E916900DB8BDA /* rgba.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rgba.c; sourceTree = "<group>"; };
@@ -1128,8 +1125,6 @@
 				D55821F8150E7C7600549BF6 /* TextInputManager.mm */,
 				D55821F9150E7C7600549BF6 /* Texture2D.h */,
 				D55821FA150E7C7600549BF6 /* Texture2D.mm */,
-				D55821FB150E7C7600549BF6 /* UITouchWrapper.h */,
-				D55821FC150E7C7600549BF6 /* UITouchWrapper.mm */,
 				D55821FD150E7C7600549BF6 /* xhr.h */,
 				D55821FE150E7C7600549BF6 /* xhr.mm */,
 				8BC3D5E01639FFD1007942C3 /* OALSourceInfo.h */,
@@ -1303,7 +1298,6 @@
 				D5BC67321635D0270059EC0F /* TextInput.mm in Sources */,
 				D5BC67331635D0270059EC0F /* TextInputManager.mm in Sources */,
 				D5BC67341635D0270059EC0F /* Texture2D.mm in Sources */,
-				D5BC67351635D0270059EC0F /* UITouchWrapper.mm in Sources */,
 				D5BC67361635D0270059EC0F /* xhr.mm in Sources */,
 				D5BC67381635D0270059EC0F /* rgba.c in Sources */,
 				D5BC67391635D0270059EC0F /* tealeaf_shaders.c in Sources */,
