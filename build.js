@@ -940,13 +940,19 @@ function copySplash(builder, manifest, destPath, next) {
 				
 				var splash = splashes[i];
 				if (manifest.splash[splash.key]) {
-					var splashFile = path.resolve(manifest.splash[splash.key]);
-				} else if(universalSplash) {
-					var splashFile = path.resolve(universalSplash);
+					splashFile = path.resolve(manifest.splash[splash.key]);
 				} else {
-					logger.warn("No universal splash given and no splash provided for " + splash.key);
-					makeSplash(i-1);
-					return;
+					splashFile = path.resolve("resources/splash/" + splash.key + ".png");
+
+					if (!fs.existsSync(splashFile)) {
+						if(universalSplash) {
+							splashFile = path.resolve(universalSplash);
+						} else {
+							logger.warn("No universal splash given and no splash provided for " + splash.key);
+							makeSplash(i-1);
+							return;
+						}
+					}
 				}
 
 				var splashOut = path.join(path.resolve(destPath), 'tealeaf/Images.xcassets/LaunchImage.launchimage', splash.outFile);
@@ -971,7 +977,7 @@ function copySplash(builder, manifest, destPath, next) {
 			next();	
 		});
 	} else {
-		logger.warn("No splash section provided in the provided manifest");
+		logger.warn('No "splash" section provided in the manifest.json');
 		next();
 	}
 }
