@@ -70,7 +70,6 @@ void saveToUserDefaults(NSString* key, id value) {
 
 	if (standardUserDefaults) {
 		[standardUserDefaults setObject:value forKey:key];
-		[standardUserDefaults synchronize];
 	}
 }
 
