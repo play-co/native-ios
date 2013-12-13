@@ -97,3 +97,11 @@ void clearUserDefaults() {
 		[standardUserDefaults setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
 	}
 }
+
+void syncUserDefaults() {
+	NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+	if (standardUserDefaults) {
+		[standardUserDefaults synchronize];
+	}
+}
+

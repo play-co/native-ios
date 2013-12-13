@@ -34,6 +34,7 @@
 #import "netinet/in.h"
 #import "arpa/inet.h"
 #import "iosVersioning.h"
+#import "LocalStorage.h"
 
 
 @interface TeaLeafAppDelegate ()
@@ -347,6 +348,8 @@
 
 //What else should we do here? TODO
 - (void)applicationWillTerminate:(UIApplication *)application {
+	LOG("{focus} Application will terminate");
+	
 	if (self.js) {
 		[self.js dealloc];
 	}
@@ -354,6 +357,7 @@
 		[self.pluginManager applicationWillTerminate:application];
 	}
 
+	syncUserDefaults();
 }
 
 
@@ -691,3 +695,4 @@ SplashDescriptor SPLASHES[] = {
 }
 
 @end
+

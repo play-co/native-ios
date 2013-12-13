@@ -23,3 +23,5 @@ void saveToUserDefaults(NSString* key, id value);
 id retrieveFromUserDefaults(NSString *key);
 void removeFromUserDefaults(NSString *key);
 void clearUserDefaults();
+void syncUserDefaults();
+
