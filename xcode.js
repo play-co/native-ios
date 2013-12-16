@@ -20,7 +20,7 @@ exports.buildApp = function (builder, appName, targetSDK, configurationName, pro
 
 		console.log("Invoking xcodebuild with parameters:", JSON.stringify(args, undefined, 4));
 
-		builder.common.child('xcodebuild', args, {
+		builder.common.spawn('xcodebuild', args, {
 			cwd: path.resolve(projectPath)
 		}, f.slotPlain());
 	}, function(code) {
