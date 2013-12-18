@@ -32,7 +32,7 @@ exports.buildApp = function (builder, appName, targetSDK, configurationName, pro
 	}).cb(next);
 };
 
-exports.signApp = function (builder, projectPath, appName, outputIPAPath, configurationName, developerName, provisionPath, next) {
+exports.signApp = function (builder, projectPath, appName, outputIPAPath, configurationName, signingIdentity, provisionPath, next) {
 	var f = ff(function() {
 
 		var args = [
@@ -44,7 +44,7 @@ exports.signApp = function (builder, projectPath, appName, outputIPAPath, config
 			'-o',
 			path.resolve(outputIPAPath),
 			'--sign',
-			'iPhone Developer: ' + developerName,
+			signingIdentity,
 			'--embed',
 			path.resolve(provisionPath)
 		];
@@ -79,13 +79,13 @@ var ask = function(question, condition, callback) {
 };
 
 // This function produces an IPA file by calling buildApp and signApp
-var buildIPA = function(targetSDK, builder, projectPath, appName, isDebug, provisionPath, developerName, outputIPAPath, next) {
+var buildIPA = function(targetSDK, builder, projectPath, appName, isDebug, provisionPath, signingIdentity, outputIPAPath, next) {
 	console.log("using sdk:", targetSDK);
 	var configurationName = isDebug ? CONFIG_DEBUG : CONFIG_RELEASE;
 	var f = ff(function() {
 		exports.buildApp(builder, appName, targetSDK, configurationName, projectPath, f());
 	}, function() {
-		exports.signApp(builder, projectPath, appName, outputIPAPath, configurationName, developerName, provisionPath, f());
+		exports.signApp(builder, projectPath, appName, outputIPAPath, configurationName, signingIdentity, provisionPath, f());
 	}).error(function(err) {
 		console.error('ERROR:', err);
 		process.exit(2);
@@ -93,7 +93,7 @@ var buildIPA = function(targetSDK, builder, projectPath, appName, isDebug, provi
 };
 
 // This command figures out which SDKs are available, selects one, and calls buildIPA
-exports.buildIPA = function(builder, projectPath, appName, isDebug, provisionPath, developerName, outputIPAPath, chooseSDK, next) {
+exports.buildIPA = function(builder, projectPath, appName, isDebug, provisionPath, signingIdentity, outputIPAPath, chooseSDK, next) {
 	exec('xcodebuild -version -sdk', function(error, data, stderror) {
 		var SDKs = [];
 		if (error) {
@@ -118,12 +118,12 @@ exports.buildIPA = function(builder, projectPath, appName, isDebug, provisionPat
 					return true;
 				}, function(sdk) {
 					buildIPA(sdk || SDKS[0], builder, projectPath, appName, isDebug,
-						provisionPath, developerName, outputIPAPath, next);
+						provisionPath, signingIdentity, outputIPAPath, next);
 				});
 			}
 		}
 		buildIPA(SDKs.length ? SDKs[0] : 'iphoneos6.0', builder, projectPath,
-			appName, isDebug, provisionPath, developerName, outputIPAPath, next);
+			appName, isDebug, provisionPath, signingIdentity, outputIPAPath, next);
 	});
 };
 
