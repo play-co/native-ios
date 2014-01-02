@@ -1194,15 +1194,19 @@ exports.build = function(builder, project, opts, next) {
 	// If IPA mode,
 	var developer, provision;
 	if (argv.ipa) {
-		developer = argv.developer;
+		if (argv.developer) {
+			developer = "iPhone Developer: " + argv.developer;
+		} else if (argv.distribution) {
+			developer = "iPhone Distribution: " + argv.distribution;
+		}
 		if (typeof developer !== "string") {
 			developer = manifest.ios && manifest.ios.developer;
 		}
 		if (typeof developer !== "string") {
-			logger.error("IPA mode selected but developer name was not provided.  You can add it to your manifest.json under the ios:developer key, or with the --developer command-line option.");
+			logger.error("IPA mode selected but developer/distribution name was not provided.  You can add it to your manifest.json under the ios:developer key, or with the --developer (or --distribution) command-line option.");
 			process.exit(2);
 		}
-		logger.log("Using developer name:", developer);
+		logger.log("Using signing identity name:", developer);
 
 		provision = argv.provision;
 		if (typeof provision !== "string") {
