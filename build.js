@@ -200,7 +200,14 @@ var installAddonsProject = function(builder, opts, next) {
 				fileType = 'file.xib'
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
-				demoKey = "path = resources.bundle";
+				demoKey = "path = icon144.png";
+				fileEncoding = "fileEncoding = 4; ";
+			} else if (path.extname(framework) === ".storyboard") {
+				logger.log("Installing xib:", framework);
+				fileType = 'file.storyboard'
+				sourceTree = '"<group>"';
+				framework = path.relative(path.join(destDir, "tealeaf"), framework);
+				demoKey = "path = icon144.png";
 				fileEncoding = "fileEncoding = 4; ";
 			} else if (path.extname(framework) === ".bundle") {
 				logger.log("Installing resource bundle:", framework);
