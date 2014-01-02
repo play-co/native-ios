@@ -200,11 +200,17 @@ var installAddonsProject = function(builder, opts, next) {
 				fileType = 'file.xib'
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
-				demoKey = "path = MainWindow.xib";
+				demoKey = "path = resources.bundle";
 				fileEncoding = "fileEncoding = 4; ";
 			} else if (path.extname(framework) === ".bundle") {
 				logger.log("Installing resource bundle:", framework);
 				fileType = '"wrapper.plug-in"'
+				sourceTree = '"<group>"';
+				framework = path.relative(path.join(destDir, "tealeaf/resources"), framework);
+				demoKey = "path = resources.bundle";
+			} else if (path.extname(framework) === ".png") {
+				logger.log("Installing resource PNG:", framework);
+				fileType = 'image.png'
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf/resources"), framework);
 				demoKey = "path = resources.bundle";
