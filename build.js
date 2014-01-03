@@ -433,6 +433,9 @@ var installAddonsProject = function(builder, opts, next) {
 		// codes will store a map between filenames and uuids that we should inject later
 		var codes = {};
 
+		// codeToARCMap will store a map between filenames and boolean: true -> needs ARC
+		var codeToARCMap = {};
+
 		// build the groups object from addonConfig
 		for (var key in addonConfig) {
 			var config = addonConfig[key];
@@ -446,6 +449,25 @@ var installAddonsProject = function(builder, opts, next) {
 
 					var file = path.relative(path.join(destDir, "tealeaf/platform"), code);
 					files.push(file);
+				}
+
+				if (files.length) {
+					groups[key] = files;
+				}
+			}
+
+			if (config.arccode) {
+				var files = [];
+				for (var ii = 0; ii < config.arccode.length; ++ii) {
+					var code = config.arccode[ii];
+
+					code = paths.addons(key, 'ios', code);
+
+					var file = path.relative(path.join(destDir, "tealeaf/platform"), code);
+					files.push(file);
+
+					// Flag as needing ARC
+					codeToARCMap[file] = true;
 				}
 
 				if (files.length) {
@@ -532,7 +554,13 @@ var installAddonsProject = function(builder, opts, next) {
 		});
 
 		for (var code in codes) {
-			logger.log("Installing code:", code);
+			var needARC = codeToARCMap[code];
+
+			if (needARC) {
+				logger.log("Installing code:", code, "(WITH ARC)");
+			} else {
+				logger.log("Installing code:", code);
+			}
 
 			var ext = path.extname(code);
 			var fileType;
@@ -595,7 +623,13 @@ var installAddonsProject = function(builder, opts, next) {
 					if (line.indexOf("fileRef = " + uuid1_pm) > 0) {
 						uuid2_pm = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-						contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Sources */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; };");
+						var insertString = "\t\t" + uuid2 + " /* " + filename + " in Sources */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */;";
+						if (needARC) {
+							insertString += ' settings = {COMPILER_FLAGS = "-fobjc-arc"; };';
+						}
+						insertString += " };";
+
+						contents.splice(++ii, 0, insertString);
 
 						logger.log(" - Found PBXBuildFile template on line", ii, "with uuid", uuid2_pm);
 
