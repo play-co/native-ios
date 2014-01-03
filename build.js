@@ -187,6 +187,8 @@ var installAddonsProject = function(builder, opts, next) {
 			var fileType, sourceTree, demoKey;
 			var filename = path.basename(framework);
 			var fileEncoding = "";
+			var noWeak = false;
+			var noName = false;
 
 			// If extension is framework,
 			if (path.extname(framework) === ".a") {
@@ -202,13 +204,15 @@ var installAddonsProject = function(builder, opts, next) {
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
 				demoKey = "path = icon144.png";
 				fileEncoding = "fileEncoding = 4; ";
+				noWeak = true;
 			} else if (path.extname(framework) === ".storyboard") {
 				logger.log("Installing xib:", framework);
 				fileType = 'file.storyboard'
 				sourceTree = '"<group>"';
-				framework = path.relative(path.join(destDir, "tealeaf"), framework);
-				demoKey = "path = icon144.png";
+				framework = path.relative(path.join(destDir, "tealeaf/platform"), framework);
+				demoKey = "path = PluginManager.mm";
 				fileEncoding = "fileEncoding = 4; ";
+				noWeak = true;
 			} else if (path.extname(framework) === ".bundle") {
 				logger.log("Installing resource bundle:", framework);
 				fileType = '"wrapper.plug-in"'
@@ -219,8 +223,10 @@ var installAddonsProject = function(builder, opts, next) {
 				logger.log("Installing resource PNG:", framework);
 				fileType = 'image.png'
 				sourceTree = '"<group>"';
-				framework = path.relative(path.join(destDir, "tealeaf/resources"), framework);
-				demoKey = "path = resources.bundle";
+				framework = path.relative(path.join(destDir, "tealeaf/platform"), framework);
+				demoKey = "path = PluginManager.mm";
+				noWeak = true;
+				noName = true;
 			} else if (path.extname(framework) === ".framework") {
 				logger.log("Installing framework:", framework);
 				fileType = "wrapper.framework";
@@ -261,7 +267,14 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf(demoKey) > 0) {
 					uuid1_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; " + fileEncoding + "lastKnownFileType = " + fileType + "; name = " + filename + "; path = " + framework + "; sourceTree = " + sourceTree + "; };");
+					var insertString = "\t\t" + uuid1 + " /* " + filename + " */ = {isa = PBXFileReference; " + fileEncoding + "lastKnownFileType = " + fileType + ";";
+					if (!noName) {
+						insertString += " name = " + filename + ";"
+					}
+					insertString += ' path = "' + framework + '";';
+					insertString += " sourceTree = " + sourceTree + "; };";
+
+					contents.splice(++ii, 0, insertString);
 
 					logger.log(" - Found PBXFileReference template on line", ii, "with uuid", uuid1_storekit);
 
@@ -291,7 +304,14 @@ var installAddonsProject = function(builder, opts, next) {
 				if (line.indexOf("fileRef = " + uuid1_storekit) > 0) {
 					uuid2_storekit = line.match(/(?=[ \t]*)([A-F,0-9]+?)(?=[ \t].)/g)[0];
 
-					contents.splice(++ii, 0, "\t\t" + uuid2 + " /* " + filename + " in Frameworks */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */; settings = {ATTRIBUTES = (Weak, ); }; };");
+					var insertString = "\t\t" + uuid2 + " /* " + filename + " in Frameworks */ = {isa = PBXBuildFile; fileRef = " + uuid1 + " /* " + filename + " */;";
+					if (!noWeak) {
+						insertString += " settings = {ATTRIBUTES = (Weak, ); };";
+					}
+
+					insertString += " };";
+
+					contents.splice(++ii, 0, insertString);
 
 					logger.log(" - Found PBXBuildFile template on line", ii, "with uuid", uuid2_storekit);
 
