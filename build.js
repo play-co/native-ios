@@ -440,8 +440,9 @@ var installAddonsProject = function(builder, opts, next) {
 		for (var key in addonConfig) {
 			var config = addonConfig[key];
 
+			var files = [];
+
 			if (config.code) {
-				var files = [];
 				for (var ii = 0; ii < config.code.length; ++ii) {
 					var code = config.code[ii];
 
@@ -450,14 +451,9 @@ var installAddonsProject = function(builder, opts, next) {
 					var file = path.relative(path.join(destDir, "tealeaf/platform"), code);
 					files.push(file);
 				}
-
-				if (files.length) {
-					groups[key] = files;
-				}
 			}
 
 			if (config.arccode) {
-				var files = [];
 				for (var ii = 0; ii < config.arccode.length; ++ii) {
 					var code = config.arccode[ii];
 
@@ -469,10 +465,10 @@ var installAddonsProject = function(builder, opts, next) {
 					// Flag as needing ARC
 					codeToARCMap[file] = true;
 				}
+			}
 
-				if (files.length) {
-					groups[key] = files;
-				}
+			if (files.length) {
+				groups[key] = files;
 			}
 		}
 
