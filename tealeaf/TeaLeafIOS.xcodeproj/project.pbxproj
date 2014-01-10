@@ -140,6 +140,7 @@
 		4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E5F5CD816CAFCE200747A17 /* iosVersioning.m */; };
 		4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E659A461678254D002C8F19 /* jsNavigator.mm */; };
 		4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B37FE16C0F90B006AC8FD /* threads.mm */; };
+		4E6B49C31880B71B00429B4A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E6B49C21880B71B00429B4A /* libiconv.dylib */; };
 		4E77EAE71666B90000FD6430 /* DebugServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E77EAE61666B90000FD6430 /* DebugServer.mm */; };
 		4E793C5A167A7321000DD6FC /* jsAds.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E793C59167A7321000DD6FC /* jsAds.mm */; };
 		4E8493DF1651D06000C96B4A /* js_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493A41651D06000C96B4A /* js_animate.cpp */; };
@@ -560,6 +561,7 @@
 		4E667D2315E5C5010089D48D /* jsonUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsonUtil.mm; sourceTree = "<group>"; };
 		4E6B37FE16C0F90B006AC8FD /* threads.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = threads.mm; sourceTree = "<group>"; };
 		4E6B380016C0F91B006AC8FD /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
+		4E6B49C21880B71B00429B4A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		4E6E960A162DF13D0095FC9F /* LICENSE.ObjectAL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.ObjectAL.txt; sourceTree = "<group>"; };
 		4E6E960B162DF13D0095FC9F /* OALSimpleAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OALSimpleAudio.h; sourceTree = "<group>"; };
 		4E6E960C162DF13D0095FC9F /* OALSimpleAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OALSimpleAudio.m; sourceTree = "<group>"; };
@@ -861,6 +863,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E6B49C31880B71B00429B4A /* libiconv.dylib in Frameworks */,
 				5BAE3E111797939900E8058E /* CoreTelephony.framework in Frameworks */,
 				D551A73C178E50AF0028DACC /* Security.framework in Frameworks */,
 				4E9D36B417C6F922006AA71B /* CoreText.framework in Frameworks */,
@@ -929,6 +932,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4E6B49C21880B71B00429B4A /* libiconv.dylib */,
 				4E4DC7861821C87F00D3E6BF /* libturbojpeg.a */,
 				4E35EAB916BB0D94004FD452 /* libjs_static.a */,
 				D56C7E1B157EABCA00DB8BDA /* libz.dylib */,
