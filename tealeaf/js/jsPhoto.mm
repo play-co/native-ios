@@ -19,6 +19,7 @@
 #include "photo.h"
 #import "Base64.h"
 #import "adapter/QRCodeProcessor.h"
+#import "core/image_loader.h"
 
 JSAG_MEMBER_BEGIN(getPhoto, 3)
 {
@@ -33,22 +34,28 @@ JSAG_MEMBER_END
 JSAG_MEMBER_BEGIN(processQR, 3)
 {
     JSAG_ARG_NSTR(b64image)
-    JSAG_ARG_INT32(width)
-    JSAG_ARG_INT32(height)
 
 	LOG("{qr} Decoding base64 data");
 
 	// Decode base64 data
 	NSData *data = decodeBase64(b64image);
-	int length = 0;
-	const void *bytes = 0;
+	unsigned char *image = 0;
+	int width, height, channels;
 
 	// If data was decoded,
 	if (data) {
-		length = [data length];
-		bytes = [data bytes];
-
+		int length = [data length];
+		const void *bytes = [data bytes];
+		
 		LOG("{qr} Successfully decoded base64 data with %d bytes", length);
+
+		image = load_image_from_memory((unsigned char *)bytes, length, &width, &height, &channels);
+
+		if (image) {
+			LOG("{qr} Successfully decoded image data with width=%d, height=%d, channels=%d", width, height, channels);
+		} else {
+			LOG("{qr} WARNING: Unable to load image from memory");
+		}
 	} else {
 		LOG("{qr} WARNING: Could not decode base64 data!");
 	}
@@ -57,25 +64,22 @@ JSAG_MEMBER_BEGIN(processQR, 3)
 	char textbuffer[512] = {0};
 	const char *text = textbuffer;
 
-	if (bytes && length > 0) {
-		// If length indicates it is already monochrome,
-		if (length == width * height) {
+	if (image && width > 0 && height > 0 && channels > 0) {
+		if (channels == 1) {
 			LOG("{qr} QR processing provided monochrome luminance image");
 			
-			qr_process((const unsigned char *)bytes, width, height, textbuffer);
-		} else if (length == 3 * width * height) {
-			unsigned char *lum = new unsigned char[width * height];
-			
+			qr_process((const unsigned char *)image, width, height, textbuffer);
+		} else if (channels == 3) {
 			LOG("{qr} Processing RGB/BGR input data to luminance raster");
 			
 			// Convert to luminance
-			const unsigned char *input = (const unsigned char *)bytes;
-			unsigned char *output = lum;
+			const unsigned char *input = (const unsigned char *)image;
+			unsigned char *output = image;
 			for (int y = 0; y < height; ++y) {
 				for (int x = 0; x < width; ++x) {
 					// Green is 2x as intense as other colors, assume RGB or BGR
 					int mag = (unsigned int)input[0] + ((unsigned int)input[1] << 1) + (unsigned int)input[2];
-					mag /= (256 * 4);
+					mag /= 4;
 					//if (mag < 0) mag = 0;
 					if (mag > 255) mag = 255;
 					*output++ = (unsigned char)mag;
@@ -85,22 +89,18 @@ JSAG_MEMBER_BEGIN(processQR, 3)
 			
 			LOG("{qr} QR processing luminance image");
 			
-			qr_process((const unsigned char *)bytes, width, height, textbuffer);
-			
-			delete []lum;
-		} else if (length == 4 * width * height) {
-			unsigned char *lum = new unsigned char[width * height];
-			
+			qr_process((const unsigned char *)image, width, height, textbuffer);
+		} else if (channels == 4) {
 			LOG("{qr} Processing RGBA-type input data to luminance raster");
 			
 			// Convert to luminance
-			const unsigned char *input = (const unsigned char *)bytes;
-			unsigned char *output = lum;
+			const unsigned char *input = (const unsigned char *)image;
+			unsigned char *output = image;
 			for (int y = 0; y < height; ++y) {
 				for (int x = 0; x < width; ++x) {
-					// Not sure if alpha comes first or last so do not attempt green tweak here
-					int mag = (unsigned int)input[0] + (unsigned int)input[1] + (unsigned int)input[2] + (unsigned int)input[3];
-					mag /= (256 * 4);
+					// Green is 2x as intense as other colors, assume RGBA or BGRA and ignore alpha (experimentally true)
+					int mag = (unsigned int)input[0] + ((unsigned int)input[1] << 1) + (unsigned int)input[2];
+					mag /= 4;
 					//if (mag < 0) mag = 0;
 					if (mag > 255) mag = 255;
 					*output++ = (unsigned char)mag;
@@ -110,9 +110,7 @@ JSAG_MEMBER_BEGIN(processQR, 3)
 			
 			LOG("{qr} QR processing luminance image");
 			
-			qr_process((const unsigned char *)bytes, width, height, textbuffer);
-			
-			delete []lum;
+			qr_process((const unsigned char *)image, width, height, textbuffer);
 		}
 	} else {
 		text = "Invalid input image";
@@ -120,6 +118,8 @@ JSAG_MEMBER_BEGIN(processQR, 3)
 
 	LOG("{qr} Result is: '%s'", text);
 
+	free(image);
+	
 	// Return decoded text
 	JSAG_RETURN_CSTR(text);
 }
@@ -157,3 +157,4 @@ JSAG_OBJECT_END
 }
 
 @end
+
