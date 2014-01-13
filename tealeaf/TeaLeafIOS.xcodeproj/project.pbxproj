@@ -141,6 +141,15 @@
 		4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E659A461678254D002C8F19 /* jsNavigator.mm */; };
 		4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B37FE16C0F90B006AC8FD /* threads.mm */; };
 		4E6B49C31880B71B00429B4A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E6B49C21880B71B00429B4A /* libiconv.dylib */; };
+		4E6B49D91884AA0700429B4A /* bitstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49C51884AA0700429B4A /* bitstream.c */; };
+		4E6B49DA1884AA0700429B4A /* mask.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49C71884AA0700429B4A /* mask.c */; };
+		4E6B49DB1884AA0700429B4A /* mmask.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49C91884AA0700429B4A /* mmask.c */; };
+		4E6B49DC1884AA0700429B4A /* mqrspec.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49CB1884AA0700429B4A /* mqrspec.c */; };
+		4E6B49DE1884AA0700429B4A /* qrencode.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49CF1884AA0700429B4A /* qrencode.c */; };
+		4E6B49DF1884AA0700429B4A /* qrinput.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49D11884AA0700429B4A /* qrinput.c */; };
+		4E6B49E01884AA0700429B4A /* qrspec.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49D31884AA0700429B4A /* qrspec.c */; };
+		4E6B49E11884AA0700429B4A /* rsecc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49D51884AA0700429B4A /* rsecc.c */; };
+		4E6B49E21884AA0700429B4A /* split.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49D71884AA0700429B4A /* split.c */; };
 		4E77EAE71666B90000FD6430 /* DebugServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E77EAE61666B90000FD6430 /* DebugServer.mm */; };
 		4E793C5A167A7321000DD6FC /* jsAds.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E793C59167A7321000DD6FC /* jsAds.mm */; };
 		4E8493DF1651D06000C96B4A /* js_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493A41651D06000C96B4A /* js_animate.cpp */; };
@@ -562,6 +571,25 @@
 		4E6B37FE16C0F90B006AC8FD /* threads.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = threads.mm; sourceTree = "<group>"; };
 		4E6B380016C0F91B006AC8FD /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
 		4E6B49C21880B71B00429B4A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		4E6B49C51884AA0700429B4A /* bitstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitstream.c; path = "native-core/qr/libqrencode/bitstream.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49C61884AA0700429B4A /* bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitstream.h; path = "native-core/qr/libqrencode/bitstream.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49C71884AA0700429B4A /* mask.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mask.c; path = "native-core/qr/libqrencode/mask.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49C81884AA0700429B4A /* mask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mask.h; path = "native-core/qr/libqrencode/mask.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49C91884AA0700429B4A /* mmask.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mmask.c; path = "native-core/qr/libqrencode/mmask.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49CA1884AA0700429B4A /* mmask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mmask.h; path = "native-core/qr/libqrencode/mmask.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49CB1884AA0700429B4A /* mqrspec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mqrspec.c; path = "native-core/qr/libqrencode/mqrspec.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49CC1884AA0700429B4A /* mqrspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mqrspec.h; path = "native-core/qr/libqrencode/mqrspec.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49CE1884AA0700429B4A /* qrencode_inner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qrencode_inner.h; path = "native-core/qr/libqrencode/qrencode_inner.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49CF1884AA0700429B4A /* qrencode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qrencode.c; path = "native-core/qr/libqrencode/qrencode.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49D01884AA0700429B4A /* qrencode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qrencode.h; path = "native-core/qr/libqrencode/qrencode.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49D11884AA0700429B4A /* qrinput.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qrinput.c; path = "native-core/qr/libqrencode/qrinput.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49D21884AA0700429B4A /* qrinput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qrinput.h; path = "native-core/qr/libqrencode/qrinput.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49D31884AA0700429B4A /* qrspec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qrspec.c; path = "native-core/qr/libqrencode/qrspec.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49D41884AA0700429B4A /* qrspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qrspec.h; path = "native-core/qr/libqrencode/qrspec.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49D51884AA0700429B4A /* rsecc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rsecc.c; path = "native-core/qr/libqrencode/rsecc.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49D61884AA0700429B4A /* rsecc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rsecc.h; path = "native-core/qr/libqrencode/rsecc.h"; sourceTree = SOURCE_ROOT; };
+		4E6B49D71884AA0700429B4A /* split.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = split.c; path = "native-core/qr/libqrencode/split.c"; sourceTree = SOURCE_ROOT; };
+		4E6B49D81884AA0700429B4A /* split.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = split.h; path = "native-core/qr/libqrencode/split.h"; sourceTree = SOURCE_ROOT; };
 		4E6E960A162DF13D0095FC9F /* LICENSE.ObjectAL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.ObjectAL.txt; sourceTree = "<group>"; };
 		4E6E960B162DF13D0095FC9F /* OALSimpleAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OALSimpleAudio.h; sourceTree = "<group>"; };
 		4E6E960C162DF13D0095FC9F /* OALSimpleAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OALSimpleAudio.m; sourceTree = "<group>"; };
@@ -964,6 +992,7 @@
 		4E0352161880AE6000B1FD70 /* qr */ = {
 			isa = PBXGroup;
 			children = (
+				4E6B49C41884A9EE00429B4A /* libqrencode */,
 				4E0352171880AE6F00B1FD70 /* adapter */,
 				4E03521C1880AE6F00B1FD70 /* bigint */,
 				4E0352291880AE6F00B1FD70 /* zxing */,
@@ -1400,6 +1429,32 @@
 			);
 			name = timestep;
 			path = core/timestep;
+			sourceTree = "<group>";
+		};
+		4E6B49C41884A9EE00429B4A /* libqrencode */ = {
+			isa = PBXGroup;
+			children = (
+				4E6B49C51884AA0700429B4A /* bitstream.c */,
+				4E6B49C61884AA0700429B4A /* bitstream.h */,
+				4E6B49C71884AA0700429B4A /* mask.c */,
+				4E6B49C81884AA0700429B4A /* mask.h */,
+				4E6B49C91884AA0700429B4A /* mmask.c */,
+				4E6B49CA1884AA0700429B4A /* mmask.h */,
+				4E6B49CB1884AA0700429B4A /* mqrspec.c */,
+				4E6B49CC1884AA0700429B4A /* mqrspec.h */,
+				4E6B49CE1884AA0700429B4A /* qrencode_inner.h */,
+				4E6B49CF1884AA0700429B4A /* qrencode.c */,
+				4E6B49D01884AA0700429B4A /* qrencode.h */,
+				4E6B49D11884AA0700429B4A /* qrinput.c */,
+				4E6B49D21884AA0700429B4A /* qrinput.h */,
+				4E6B49D31884AA0700429B4A /* qrspec.c */,
+				4E6B49D41884AA0700429B4A /* qrspec.h */,
+				4E6B49D51884AA0700429B4A /* rsecc.c */,
+				4E6B49D61884AA0700429B4A /* rsecc.h */,
+				4E6B49D71884AA0700429B4A /* split.c */,
+				4E6B49D81884AA0700429B4A /* split.h */,
+			);
+			name = libqrencode;
 			sourceTree = "<group>";
 		};
 		4E6E961E162DF53D0095FC9F /* Actions */ = {
@@ -2034,6 +2089,7 @@
 				4E0353461880AE6F00B1FD70 /* MultiFormatUPCEANReader.cpp in Sources */,
 				D5BC672D1635D0270059EC0F /* ResourceLoader.mm in Sources */,
 				4E0353301880AE6F00B1FD70 /* DetectorException.cpp in Sources */,
+				4E6B49DA1884AA0700429B4A /* mask.c in Sources */,
 				4E0353601880AE6F00B1FD70 /* FinderPatternInfo.cpp in Sources */,
 				4E0353641880AE6F00B1FD70 /* Version.cpp in Sources */,
 				4E0353141880AE6F00B1FD70 /* BitArrayIO.cpp in Sources */,
@@ -2041,6 +2097,7 @@
 				D5BC672E1635D0270059EC0F /* SoundManager.mm in Sources */,
 				D5BC672F1635D0270059EC0F /* TeaLeafAppDelegate.mm in Sources */,
 				4E0353521880AE6F00B1FD70 /* Detector.cpp in Sources */,
+				4E6B49DF1884AA0700429B4A /* qrinput.c in Sources */,
 				4E0353291880AE6F00B1FD70 /* DataMatrixReader.cpp in Sources */,
 				4E0353131880AE6F00B1FD70 /* BitArray.cpp in Sources */,
 				D5BC67301635D0270059EC0F /* TeaLeafViewController.mm in Sources */,
@@ -2084,6 +2141,7 @@
 				D5BC67501635D0270059EC0F /* strbuffer.c in Sources */,
 				4E0353411880AE6F00B1FD70 /* Code93Reader.cpp in Sources */,
 				D5BC67511635D0270059EC0F /* strconv.c in Sources */,
+				4E6B49D91884AA0700429B4A /* bitstream.c in Sources */,
 				D5BC67521635D0270059EC0F /* utf.c in Sources */,
 				D5BC67531635D0270059EC0F /* value.c in Sources */,
 				36F99C4117CEC8EE00FCEC4E /* image_writer.c in Sources */,
@@ -2100,6 +2158,7 @@
 				4E03532C1880AE6F00B1FD70 /* DecodedBitStreamParser.cpp in Sources */,
 				D5BC67601635D0270059EC0F /* OALActionManager.m in Sources */,
 				D5BC67611635D0270059EC0F /* OALAudioActions.m in Sources */,
+				4E6B49DB1884AA0700429B4A /* mmask.c in Sources */,
 				4E0353191880AE6F00B1FD70 /* MonochromeRectangleDetector.cpp in Sources */,
 				D5BC67621635D0270059EC0F /* OALUtilityActions.m in Sources */,
 				D5BC67631635D0270059EC0F /* OALAudioTrack.m in Sources */,
@@ -2149,6 +2208,7 @@
 				4E0353421880AE6F00B1FD70 /* EAN13Reader.cpp in Sources */,
 				4E0353121880AE6F00B1FD70 /* ChecksumException.cpp in Sources */,
 				4E03532A1880AE6F00B1FD70 /* BitMatrixParser.cpp in Sources */,
+				4E6B49DC1884AA0700429B4A /* mqrspec.c in Sources */,
 				4E8493E01651D06000C96B4A /* js_core.mm in Sources */,
 				4E8493E11651D06000C96B4A /* js_timestep_image_map.cpp in Sources */,
 				4E8493E21651D06000C96B4A /* js_timestep_view.cpp in Sources */,
@@ -2160,8 +2220,10 @@
 				4E0353651880AE6F00B1FD70 /* Reader.cpp in Sources */,
 				4E8493EA1651D06000C96B4A /* jsDialog.mm in Sources */,
 				4E8493EB1651D06000C96B4A /* jsGC.mm in Sources */,
+				4E6B49DE1884AA0700429B4A /* qrencode.c in Sources */,
 				4E03535F1880AE6F00B1FD70 /* FinderPatternFinder.cpp in Sources */,
 				4E8493EC1651D06000C96B4A /* jsGL.mm in Sources */,
+				4E6B49E11884AA0700429B4A /* rsecc.c in Sources */,
 				4E03534F1880AE6F00B1FD70 /* ErrorCorrection.cpp in Sources */,
 				4E8493EE1651D06000C96B4A /* jsLocale.mm in Sources */,
 				4E03533A1880AE6F00B1FD70 /* MultiDetector.cpp in Sources */,
@@ -2189,6 +2251,7 @@
 				4E0353661880AE6F00B1FD70 /* Result.cpp in Sources */,
 				4EBCD6C51804967500EDB05C /* image_cache.c in Sources */,
 				4E03533E1880AE6F00B1FD70 /* CodaBarReader.cpp in Sources */,
+				4E6B49E21884AA0700429B4A /* split.c in Sources */,
 				4E03532D1880AE6F00B1FD70 /* Decoder.cpp in Sources */,
 				4E8493FA1651D06000C96B4A /* jsXHR.mm in Sources */,
 				4E77EAE71666B90000FD6430 /* DebugServer.mm in Sources */,
@@ -2199,6 +2262,7 @@
 				4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */,
 				4E03535A1880AE6F00B1FD70 /* Mode.cpp in Sources */,
 				4E03534D1880AE6F00B1FD70 /* DecodedBitStreamParser.cpp in Sources */,
+				4E6B49E01884AA0700429B4A /* qrspec.c in Sources */,
 				4E03533D1880AE6F00B1FD70 /* MultiFormatReader.cpp in Sources */,
 				4E793C5A167A7321000DD6FC /* jsAds.mm in Sources */,
 				4E03532F1880AE6F00B1FD70 /* Detector.cpp in Sources */,
