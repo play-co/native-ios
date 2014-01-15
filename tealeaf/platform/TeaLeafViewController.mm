@@ -485,12 +485,12 @@ CEXPORT void device_hide_splash() {
 	[self runCallback: args];
 }
 
-- (void)showImagePickerForCamera: (NSString *) url width: (int)width height: (int)height {
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL:url width:width height:height];
+- (void)showImagePickerForCamera:(NSString *)url width:(int)width height:(int)height crop:(int)crop {
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera andURL:url width:width height:height crop:(int)crop];
 }
 
-- (void)showImagePickerForPhotoPicker: (NSString *) url width: (int)width height: (int)height {
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL:url width:width height:height];
+- (void)showImagePickerForPhotoPicker:(NSString *)url width:(int)width height:(int)height crop:(int)crop {
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL:url width:width height:height crop:(int)crop];
 }
 
 - (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL:(NSString *)url width:(int)width height:(int)height crop:(int)crop
@@ -592,7 +592,7 @@ CEXPORT void device_hide_splash() {
 
     NSData *data = UIImagePNGRepresentation(image);
     NSString *b64Image = encodeBase64(data);
-    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image, @"cropped": self.photoCrop}];
+    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image }];
     
     [self dismissViewControllerAnimated:YES completion:NULL];
     

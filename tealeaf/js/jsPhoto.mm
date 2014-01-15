@@ -31,6 +31,8 @@ JSAG_MEMBER_BEGIN(getPhoto, 4)
 	// Invert logic
 	int crop = noCrop == 0 ? 1 : 0;
 
+	LOG("{photo} Camera get photo for URL=%s crop=%d", url, crop);
+
     camera_get_photo(url, width, height, crop);
 	JSAG_RETURN_INT32(3);
 }
@@ -38,10 +40,10 @@ JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN(processQR, 1)
 {
-    JSAG_ARG_CSTR(b64image)
+    JSAG_ARG_NSTR(b64image)
 
 	char text[512];
-	qr_process_base64_image(b64image, text);
+	qr_process_base64_image([b64image UTF8String], text);
 
 	JSAG_RETURN_CSTR(text);
 }

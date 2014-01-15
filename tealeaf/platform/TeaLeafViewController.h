@@ -47,9 +47,6 @@ UITextField *inputAccTextField;
 - (void) assignCallback:(int)cb;
 - (void) runCallback:(char *)arg;
 
-- (void)showImagePickerForCamera: (NSString *) url;
-- (void)showImagePickerForPhotoPicker: (NSString *) url;
-
 - (void) destroyGLView;
 - (void) createGLView;
 
