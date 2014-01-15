@@ -493,9 +493,8 @@ CEXPORT void device_hide_splash() {
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary andURL:url width:width height:height];
 }
 
-- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL: (NSString *) url width: (int)width height: (int)height
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL:(NSString *)url width:(int)width height:(int)height crop:(int)crop
 {
-    
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
     imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
     imagePickerController.sourceType = sourceType;
@@ -503,6 +502,7 @@ CEXPORT void device_hide_splash() {
     self.photoURL = url;
 	self.photoWidth = width;
     self.photoHeight = height;
+	self.photoCrop = crop;
     
     self.imagePickerController = imagePickerController;
     
@@ -573,22 +573,26 @@ CEXPORT void device_hide_splash() {
     float bmpWidth = image.size.width;
     float bmpHeight = image.size.height;
 
-	// Stretch as little as possible
-	float wScale = self.photoWidth / bmpWidth;
-	float hScale = self.photoHeight / bmpHeight;
+	// If cropping,
+	if (self.photoCrop != 0) {
+		// Stretch as little as possible
+		float wScale = self.photoWidth / bmpWidth;
+		float hScale = self.photoHeight / bmpHeight;
 
-	float minScale = (hScale > wScale) ? hScale : wScale;
-    CGSize size = CGSizeMake(minScale * bmpWidth, minScale * bmpHeight);
-    image = [self imageWithImage:image scaledToSize:size];
-	
-	// Now crop the edges off what remains
-    image = [self cropWithImage:image withRect:CGRectMake((image.size.width - self.photoWidth) / 2.f,
-                                                          (image.size.height - self.photoHeight) / 2.f,
-                                                          self.photoWidth,
-                                                          self.photoHeight)];
+		float minScale = (hScale > wScale) ? hScale : wScale;
+		CGSize size = CGSizeMake(minScale * bmpWidth, minScale * bmpHeight);
+		image = [self imageWithImage:image scaledToSize:size];
+
+		// Now crop the edges off what remains
+	    image = [self cropWithImage:image withRect:CGRectMake((image.size.width - self.photoWidth) / 2.f,
+    	                                                      (image.size.height - self.photoHeight) / 2.f,
+        	                                                  self.photoWidth,
+            	                                              self.photoHeight)];
+	}
+
     NSData *data = UIImagePNGRepresentation(image);
     NSString *b64Image = encodeBase64(data);
-    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image}];
+    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image, @"cropped": self.photoCrop}];
     
     [self dismissViewControllerAnimated:YES completion:NULL];
     

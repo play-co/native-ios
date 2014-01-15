@@ -21,12 +21,17 @@
 #import "adapter/QRCodeProcessor.h"
 #import "core/image_loader.h"
 
-JSAG_MEMBER_BEGIN(getPhoto, 3)
+JSAG_MEMBER_BEGIN(getPhoto, 4)
 {
     JSAG_ARG_CSTR(url)
     JSAG_ARG_INT32(width)
     JSAG_ARG_INT32(height)
-    camera_get_photo(url, width, height);
+    JSAG_ARG_INT32(noCrop)
+
+	// Invert logic
+	int crop = noCrop == 0 ? 1 : 0;
+
+    camera_get_photo(url, width, height, crop);
 	JSAG_RETURN_INT32(3);
 }
 JSAG_MEMBER_END

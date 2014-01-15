@@ -34,6 +34,7 @@ UITextField *inputAccTextField;
 @property (nonatomic, retain) UIPopoverController *popover; // Used for gallery on iPad
 @property int photoWidth;
 @property int photoHeight;
+@property int photoCrop;
 
 - (TeaLeafViewController *) init;
 
