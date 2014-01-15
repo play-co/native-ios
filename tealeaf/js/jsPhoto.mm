@@ -64,12 +64,17 @@ JSAG_OBJECT_MEMBER(encodeQR)
 JSAG_OBJECT_END
 
 
-JSAG_MEMBER_BEGIN(galleryGetPhoto, 3)
+JSAG_MEMBER_BEGIN(galleryGetPhoto, 4)
 {
     JSAG_ARG_CSTR(url)
     JSAG_ARG_INT32(width)
     JSAG_ARG_INT32(height)
-    gallery_get_photo(url, width, height);
+    JSAG_ARG_INT32(crop)
+
+	LOG("{photo} Gallery get photo for URL=%s crop=%d", url, crop);
+
+    gallery_get_photo(url, width, height, crop);
+
 	JSAG_RETURN_INT32(3);
 }
 JSAG_MEMBER_END
