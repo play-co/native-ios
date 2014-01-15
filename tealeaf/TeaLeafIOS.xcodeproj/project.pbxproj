@@ -38,7 +38,6 @@
 		4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E5F5CD816CAFCE200747A17 /* iosVersioning.m */; };
 		4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E659A461678254D002C8F19 /* jsNavigator.mm */; };
 		4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B37FE16C0F90B006AC8FD /* threads.mm */; };
-		4E6B49C31880B71B00429B4A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E6B49C21880B71B00429B4A /* libiconv.dylib */; };
 		4E6B4A03188736C700429B4A /* qrprocess.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49E6188736C700429B4A /* qrprocess.c */; };
 		4E6B4A05188736C700429B4A /* bitstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49E9188736C700429B4A /* bitstream.c */; };
 		4E6B4A06188736C700429B4A /* mask.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49EB188736C700429B4A /* mask.c */; };
@@ -590,7 +589,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4E6B49C31880B71B00429B4A /* libiconv.dylib in Frameworks */,
 				5BAE3E111797939900E8058E /* CoreTelephony.framework in Frameworks */,
 				D551A73C178E50AF0028DACC /* Security.framework in Frameworks */,
 				4E9D36B417C6F922006AA71B /* CoreText.framework in Frameworks */,
