@@ -26,10 +26,7 @@ JSAG_MEMBER_BEGIN(getPhoto, 4)
     JSAG_ARG_CSTR(url)
     JSAG_ARG_INT32(width)
     JSAG_ARG_INT32(height)
-    JSAG_ARG_INT32(noCrop)
-
-	// Invert logic
-	int crop = noCrop == 0 ? 1 : 0;
+    JSAG_ARG_INT32(crop)
 
 	LOG("{photo} Camera get photo for URL=%s crop=%d", url, crop);
 
