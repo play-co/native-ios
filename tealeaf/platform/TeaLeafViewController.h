@@ -34,6 +34,7 @@ UITextField *inputAccTextField;
 @property (nonatomic, retain) UIPopoverController *popover; // Used for gallery on iPad
 @property int photoWidth;
 @property int photoHeight;
+@property int photoCrop;
 
 - (TeaLeafViewController *) init;
 
@@ -46,8 +47,9 @@ UITextField *inputAccTextField;
 - (void) assignCallback:(int)cb;
 - (void) runCallback:(char *)arg;
 
-- (void)showImagePickerForCamera: (NSString *) url;
-- (void)showImagePickerForPhotoPicker: (NSString *) url;
+- (void)showImagePickerForCamera:(NSString *)url width:(int)width height:(int)height crop:(int)crop;
+- (void)showImagePickerForPhotoPicker:(NSString *)url width:(int)width height:(int)height crop:(int)crop;
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)sourceType andURL:(NSString *)url width:(int)width height:(int)height crop:(int)crop;
 
 - (void) destroyGLView;
 - (void) createGLView;

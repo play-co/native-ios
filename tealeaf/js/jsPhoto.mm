@@ -17,29 +17,64 @@
 #import "js_core.h"
 #import "jsMacros.h"
 #include "photo.h"
+#import "Base64.h"
+#import "adapter/QRCodeProcessor.h"
+#import "core/image_loader.h"
 
-
-JSAG_MEMBER_BEGIN(getPhoto, 3)
+JSAG_MEMBER_BEGIN(getPhoto, 4)
 {
     JSAG_ARG_CSTR(url)
     JSAG_ARG_INT32(width)
     JSAG_ARG_INT32(height)
-    camera_get_photo(url, width, height);
+    JSAG_ARG_INT32(crop)
+
+	LOG("{photo} Camera get photo for URL=%s crop=%d", url, crop);
+
+    camera_get_photo(url, width, height, crop);
 	JSAG_RETURN_INT32(3);
+}
+JSAG_MEMBER_END
+
+JSAG_MEMBER_BEGIN(processQR, 1)
+{
+    JSAG_ARG_NSTR(b64image)
+
+	char text[512];
+	qr_process_base64_image([b64image UTF8String], text);
+
+	JSAG_RETURN_CSTR(text);
+}
+JSAG_MEMBER_END
+
+JSAG_MEMBER_BEGIN(encodeQR, 1)
+{
+    JSAG_ARG_CSTR(text)
+
+	int width, height;
+	char *b64image = qr_generate_base64_image(text, &width, &height);
+
+	JSAG_RETURN_CSTR(b64image);
 }
 JSAG_MEMBER_END
 
 JSAG_OBJECT_START(camera)
 JSAG_OBJECT_MEMBER(getPhoto)
+JSAG_OBJECT_MEMBER(processQR)
+JSAG_OBJECT_MEMBER(encodeQR)
 JSAG_OBJECT_END
 
 
-JSAG_MEMBER_BEGIN(galleryGetPhoto, 3)
+JSAG_MEMBER_BEGIN(galleryGetPhoto, 4)
 {
     JSAG_ARG_CSTR(url)
     JSAG_ARG_INT32(width)
     JSAG_ARG_INT32(height)
-    gallery_get_photo(url, width, height);
+    JSAG_ARG_INT32(crop)
+
+	LOG("{photo} Gallery get photo for URL=%s crop=%d", url, crop);
+
+    gallery_get_photo(url, width, height, crop);
+
 	JSAG_RETURN_INT32(3);
 }
 JSAG_MEMBER_END
@@ -60,3 +95,4 @@ JSAG_OBJECT_END
 }
 
 @end
+

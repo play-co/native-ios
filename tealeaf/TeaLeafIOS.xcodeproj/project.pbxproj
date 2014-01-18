@@ -25,7 +25,7 @@
 		36EED9DE17F9F01B0031E490 /* TeaLeafEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 36EED9DD17F9F01B0031E490 /* TeaLeafEvent.m */; };
 		36F99C4117CEC8EE00FCEC4E /* image_writer.c in Sources */ = {isa = PBXBuildFile; fileRef = 36F99C3F17CEC8EE00FCEC4E /* image_writer.c */; };
 		37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37EEF09B173485A30017511A /* ResumeInfo.mm */; };
-		4E30CA0B18161599002586C0 /* murmur.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E30CA0A18161599002586C0 /* murmur.c */; };
+		4E30CA0B18161599002586C0 /* murmur.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E30CA0A18161599002586C0 /* murmur.c */; settings = {COMPILER_FLAGS = "-fexceptions"; }; };
 		4E35EA8716B9FEEE004FD452 /* timestep_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */; };
 		4E35EA8816B9FEEE004FD452 /* timestep_events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA7F16B9FEEE004FD452 /* timestep_events.cpp */; };
 		4E35EA8916B9FEEE004FD452 /* timestep_image_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA8116B9FEEE004FD452 /* timestep_image_map.cpp */; };
@@ -38,6 +38,20 @@
 		4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E5F5CD816CAFCE200747A17 /* iosVersioning.m */; };
 		4E659A471678254D002C8F19 /* jsNavigator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E659A461678254D002C8F19 /* jsNavigator.mm */; };
 		4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B37FE16C0F90B006AC8FD /* threads.mm */; };
+		4E6B4A03188736C700429B4A /* qrprocess.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49E6188736C700429B4A /* qrprocess.c */; };
+		4E6B4A05188736C700429B4A /* bitstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49E9188736C700429B4A /* bitstream.c */; };
+		4E6B4A06188736C700429B4A /* mask.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49EB188736C700429B4A /* mask.c */; };
+		4E6B4A07188736C700429B4A /* mmask.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49ED188736C700429B4A /* mmask.c */; };
+		4E6B4A08188736C700429B4A /* mqrspec.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49EF188736C700429B4A /* mqrspec.c */; };
+		4E6B4A09188736C700429B4A /* qrencode.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49F1188736C700429B4A /* qrencode.c */; };
+		4E6B4A0A188736C700429B4A /* qrinput.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49F4188736C700429B4A /* qrinput.c */; };
+		4E6B4A0B188736C700429B4A /* qrspec.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49F6188736C700429B4A /* qrspec.c */; };
+		4E6B4A0C188736C700429B4A /* rsecc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49F8188736C700429B4A /* rsecc.c */; };
+		4E6B4A0D188736C700429B4A /* split.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49FA188736C700429B4A /* split.c */; };
+		4E6B4A0E188736C700429B4A /* decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49FD188736C700429B4A /* decode.c */; };
+		4E6B4A0F188736C700429B4A /* identify.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49FE188736C700429B4A /* identify.c */; };
+		4E6B4A10188736C700429B4A /* quirc.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B49FF188736C700429B4A /* quirc.c */; };
+		4E6B4A11188736C700429B4A /* version_db.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E6B4A02188736C700429B4A /* version_db.c */; };
 		4E77EAE71666B90000FD6430 /* DebugServer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E77EAE61666B90000FD6430 /* DebugServer.mm */; };
 		4E793C5A167A7321000DD6FC /* jsAds.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E793C59167A7321000DD6FC /* jsAds.mm */; };
 		4E8493DF1651D06000C96B4A /* js_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E8493A41651D06000C96B4A /* js_animate.cpp */; };
@@ -65,7 +79,7 @@
 		4E9D36B417C6F922006AA71B /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9D36AF17C6F8B0006AA71B /* CoreText.framework */; };
 		4EB0C68C16BBB4B900838A49 /* AppTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68916BBB4B900838A49 /* AppTableViewController.mm */; };
 		4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4EB0C68B16BBB4B900838A49 /* ServerTableViewController.mm */; };
-		4EBCD6C51804967500EDB05C /* image_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 4EBCD6C31804967500EDB05C /* image_cache.c */; };
+		4EBCD6C51804967500EDB05C /* image_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 4EBCD6C31804967500EDB05C /* image_cache.c */; settings = {COMPILER_FLAGS = "-fexceptions"; }; };
 		4EBCD6C81804984200EDB05C /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EBCD6C71804984200EDB05C /* libcurl.a */; };
 		4EEFA20D1755553500570B4E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A23214D313D8AFD600FA4C7D /* MessageUI.framework */; };
 		4EEFA20F1755557A00570B4E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -246,6 +260,34 @@
 		4E667D2315E5C5010089D48D /* jsonUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = jsonUtil.mm; sourceTree = "<group>"; };
 		4E6B37FE16C0F90B006AC8FD /* threads.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = threads.mm; sourceTree = "<group>"; };
 		4E6B380016C0F91B006AC8FD /* threads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
+		4E6B49C21880B71B00429B4A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		4E6B49E5188736C700429B4A /* QRCodeProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeProcessor.h; sourceTree = "<group>"; };
+		4E6B49E6188736C700429B4A /* qrprocess.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = qrprocess.c; sourceTree = "<group>"; };
+		4E6B49E9188736C700429B4A /* bitstream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitstream.c; sourceTree = "<group>"; };
+		4E6B49EA188736C700429B4A /* bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitstream.h; sourceTree = "<group>"; };
+		4E6B49EB188736C700429B4A /* mask.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mask.c; sourceTree = "<group>"; };
+		4E6B49EC188736C700429B4A /* mask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mask.h; sourceTree = "<group>"; };
+		4E6B49ED188736C700429B4A /* mmask.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mmask.c; sourceTree = "<group>"; };
+		4E6B49EE188736C700429B4A /* mmask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mmask.h; sourceTree = "<group>"; };
+		4E6B49EF188736C700429B4A /* mqrspec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mqrspec.c; sourceTree = "<group>"; };
+		4E6B49F0188736C700429B4A /* mqrspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mqrspec.h; sourceTree = "<group>"; };
+		4E6B49F1188736C700429B4A /* qrencode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = qrencode.c; sourceTree = "<group>"; };
+		4E6B49F2188736C700429B4A /* qrencode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrencode.h; sourceTree = "<group>"; };
+		4E6B49F3188736C700429B4A /* qrencode_inner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrencode_inner.h; sourceTree = "<group>"; };
+		4E6B49F4188736C700429B4A /* qrinput.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = qrinput.c; sourceTree = "<group>"; };
+		4E6B49F5188736C700429B4A /* qrinput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrinput.h; sourceTree = "<group>"; };
+		4E6B49F6188736C700429B4A /* qrspec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = qrspec.c; sourceTree = "<group>"; };
+		4E6B49F7188736C700429B4A /* qrspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrspec.h; sourceTree = "<group>"; };
+		4E6B49F8188736C700429B4A /* rsecc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsecc.c; sourceTree = "<group>"; };
+		4E6B49F9188736C700429B4A /* rsecc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rsecc.h; sourceTree = "<group>"; };
+		4E6B49FA188736C700429B4A /* split.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = split.c; sourceTree = "<group>"; };
+		4E6B49FB188736C700429B4A /* split.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = split.h; sourceTree = "<group>"; };
+		4E6B49FD188736C700429B4A /* decode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decode.c; sourceTree = "<group>"; };
+		4E6B49FE188736C700429B4A /* identify.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = identify.c; sourceTree = "<group>"; };
+		4E6B49FF188736C700429B4A /* quirc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = quirc.c; sourceTree = "<group>"; };
+		4E6B4A00188736C700429B4A /* quirc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quirc.h; sourceTree = "<group>"; };
+		4E6B4A01188736C700429B4A /* quirc_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quirc_internal.h; sourceTree = "<group>"; };
+		4E6B4A02188736C700429B4A /* version_db.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = version_db.c; sourceTree = "<group>"; };
 		4E6E960A162DF13D0095FC9F /* LICENSE.ObjectAL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.ObjectAL.txt; sourceTree = "<group>"; };
 		4E6E960B162DF13D0095FC9F /* OALSimpleAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OALSimpleAudio.h; sourceTree = "<group>"; };
 		4E6E960C162DF13D0095FC9F /* OALSimpleAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OALSimpleAudio.m; sourceTree = "<group>"; };
@@ -615,6 +657,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4E6B49C21880B71B00429B4A /* libiconv.dylib */,
 				4E4DC7861821C87F00D3E6BF /* libturbojpeg.a */,
 				4E35EAB916BB0D94004FD452 /* libjs_static.a */,
 				D56C7E1B157EABCA00DB8BDA /* libz.dylib */,
@@ -641,6 +684,16 @@
 				4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4E0352161880AE6000B1FD70 /* qr */ = {
+			isa = PBXGroup;
+			children = (
+				4E6B49E4188736C700429B4A /* adapter */,
+				4E6B49E8188736C700429B4A /* libqrencode */,
+				4E6B49FC188736C700429B4A /* quirc */,
+			);
+			name = qr;
 			sourceTree = "<group>";
 		};
 		4E3563071804907000FF05BC /* curl */ = {
@@ -676,6 +729,57 @@
 			);
 			name = timestep;
 			path = core/timestep;
+			sourceTree = "<group>";
+		};
+		4E6B49E4188736C700429B4A /* adapter */ = {
+			isa = PBXGroup;
+			children = (
+				4E6B49E5188736C700429B4A /* QRCodeProcessor.h */,
+				4E6B49E6188736C700429B4A /* qrprocess.c */,
+			);
+			name = adapter;
+			path = "../native-core/qr/adapter";
+			sourceTree = "<group>";
+		};
+		4E6B49E8188736C700429B4A /* libqrencode */ = {
+			isa = PBXGroup;
+			children = (
+				4E6B49E9188736C700429B4A /* bitstream.c */,
+				4E6B49EA188736C700429B4A /* bitstream.h */,
+				4E6B49EB188736C700429B4A /* mask.c */,
+				4E6B49EC188736C700429B4A /* mask.h */,
+				4E6B49ED188736C700429B4A /* mmask.c */,
+				4E6B49EE188736C700429B4A /* mmask.h */,
+				4E6B49EF188736C700429B4A /* mqrspec.c */,
+				4E6B49F0188736C700429B4A /* mqrspec.h */,
+				4E6B49F1188736C700429B4A /* qrencode.c */,
+				4E6B49F2188736C700429B4A /* qrencode.h */,
+				4E6B49F3188736C700429B4A /* qrencode_inner.h */,
+				4E6B49F4188736C700429B4A /* qrinput.c */,
+				4E6B49F5188736C700429B4A /* qrinput.h */,
+				4E6B49F6188736C700429B4A /* qrspec.c */,
+				4E6B49F7188736C700429B4A /* qrspec.h */,
+				4E6B49F8188736C700429B4A /* rsecc.c */,
+				4E6B49F9188736C700429B4A /* rsecc.h */,
+				4E6B49FA188736C700429B4A /* split.c */,
+				4E6B49FB188736C700429B4A /* split.h */,
+			);
+			name = libqrencode;
+			path = "../native-core/qr/libqrencode";
+			sourceTree = "<group>";
+		};
+		4E6B49FC188736C700429B4A /* quirc */ = {
+			isa = PBXGroup;
+			children = (
+				4E6B49FD188736C700429B4A /* decode.c */,
+				4E6B49FE188736C700429B4A /* identify.c */,
+				4E6B49FF188736C700429B4A /* quirc.c */,
+				4E6B4A00188736C700429B4A /* quirc.h */,
+				4E6B4A01188736C700429B4A /* quirc_internal.h */,
+				4E6B4A02188736C700429B4A /* version_db.c */,
+			);
+			name = quirc;
+			path = "../native-core/qr/quirc";
 			sourceTree = "<group>";
 		};
 		4E6E961E162DF53D0095FC9F /* Actions */ = {
@@ -864,6 +968,7 @@
 		D55820B0150E7C7500549BF6 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				4E0352161880AE6000B1FD70 /* qr */,
 				36F99C3F17CEC8EE00FCEC4E /* image_writer.c */,
 				36F99C4017CEC8EE00FCEC4E /* image_writer.h */,
 				5BB2AD9B17C82C1E003CA689 /* graphics_utils.c */,
@@ -1264,6 +1369,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E6B4A0C188736C700429B4A /* rsecc.c in Sources */,
 				361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */,
 				361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */,
 				361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */,
@@ -1276,6 +1382,7 @@
 				D5BC67051635D0270059EC0F /* draw_textures.c in Sources */,
 				D5BC67061635D0270059EC0F /* events.c in Sources */,
 				D5BC67071635D0270059EC0F /* geometry.c in Sources */,
+				4E6B4A0E188736C700429B4A /* decode.c in Sources */,
 				D5BC67081635D0270059EC0F /* object_pool.c in Sources */,
 				D5BC67091635D0270059EC0F /* tealeaf_canvas.c in Sources */,
 				D5BC670A1635D0270059EC0F /* tealeaf_context.c in Sources */,
@@ -1293,9 +1400,12 @@
 				D5BC672D1635D0270059EC0F /* ResourceLoader.mm in Sources */,
 				D5BC672E1635D0270059EC0F /* SoundManager.mm in Sources */,
 				D5BC672F1635D0270059EC0F /* TeaLeafAppDelegate.mm in Sources */,
+				4E6B4A0D188736C700429B4A /* split.c in Sources */,
 				D5BC67301635D0270059EC0F /* TeaLeafViewController.mm in Sources */,
+				4E6B4A11188736C700429B4A /* version_db.c in Sources */,
 				D5BC67311635D0270059EC0F /* text_manager.mm in Sources */,
 				D5BC67321635D0270059EC0F /* TextInput.mm in Sources */,
+				4E6B4A03188736C700429B4A /* qrprocess.c in Sources */,
 				D5BC67331635D0270059EC0F /* TextInputManager.mm in Sources */,
 				D5BC67341635D0270059EC0F /* Texture2D.mm in Sources */,
 				D5BC67361635D0270059EC0F /* xhr.mm in Sources */,
@@ -1306,6 +1416,7 @@
 				D5BC673C1635D0270059EC0F /* timer.c in Sources */,
 				D5BC673D1635D0270059EC0F /* js_timestep_image_map_template.gen.cpp in Sources */,
 				5B5EBDA317BAE62000C4DD0A /* InputPrompt.mm in Sources */,
+				4E6B4A10188736C700429B4A /* quirc.c in Sources */,
 				D5BC673E1635D0270059EC0F /* js_timestep_view_template.gen.cpp in Sources */,
 				D5BC67401635D0270059EC0F /* js_animate_template.gen.cpp in Sources */,
 				D5BC67481635D0270059EC0F /* native.mm in Sources */,
@@ -1320,15 +1431,20 @@
 				D5BC67501635D0270059EC0F /* strbuffer.c in Sources */,
 				D5BC67511635D0270059EC0F /* strconv.c in Sources */,
 				D5BC67521635D0270059EC0F /* utf.c in Sources */,
+				4E6B4A0A188736C700429B4A /* qrinput.c in Sources */,
 				D5BC67531635D0270059EC0F /* value.c in Sources */,
 				36F99C4117CEC8EE00FCEC4E /* image_writer.c in Sources */,
+				4E6B4A06188736C700429B4A /* mask.c in Sources */,
 				D5BC67551635D0270059EC0F /* get_locale.mm in Sources */,
 				D5BC67561635D0270059EC0F /* jsonUtil.mm in Sources */,
+				4E6B4A05188736C700429B4A /* bitstream.c in Sources */,
 				D5BC675C1635D0270059EC0F /* JSONKit.m in Sources */,
 				D5BC675E1635D0270059EC0F /* OALSimpleAudio.m in Sources */,
+				4E6B4A08188736C700429B4A /* mqrspec.c in Sources */,
 				D5BC675F1635D0270059EC0F /* OALAction.m in Sources */,
 				D5BC67601635D0270059EC0F /* OALActionManager.m in Sources */,
 				D5BC67611635D0270059EC0F /* OALAudioActions.m in Sources */,
+				4E6B4A0F188736C700429B4A /* identify.c in Sources */,
 				D5BC67621635D0270059EC0F /* OALUtilityActions.m in Sources */,
 				D5BC67631635D0270059EC0F /* OALAudioTrack.m in Sources */,
 				D5BC67641635D0270059EC0F /* OALAudioTrackNotifications.m in Sources */,
@@ -1364,6 +1480,7 @@
 				4E8493E61651D06000C96B4A /* jsBase.mm in Sources */,
 				4E8493E71651D06000C96B4A /* jsBuild.mm in Sources */,
 				4E8493E81651D06000C96B4A /* jsConsole.mm in Sources */,
+				4E6B4A09188736C700429B4A /* qrencode.c in Sources */,
 				4E8493EA1651D06000C96B4A /* jsDialog.mm in Sources */,
 				4E8493EB1651D06000C96B4A /* jsGC.mm in Sources */,
 				4E8493EC1651D06000C96B4A /* jsGL.mm in Sources */,
@@ -1376,6 +1493,7 @@
 				4E8493F61651D06000C96B4A /* jsSound.mm in Sources */,
 				4E8493F71651D06000C96B4A /* jsTextInput.mm in Sources */,
 				4E8493F81651D06000C96B4A /* jsTimer.mm in Sources */,
+				4E6B4A0B188736C700429B4A /* qrspec.c in Sources */,
 				4E8493F91651D06000C96B4A /* jsTimestep.mm in Sources */,
 				4EBCD6C51804967500EDB05C /* image_cache.c in Sources */,
 				4E8493FA1651D06000C96B4A /* jsXHR.mm in Sources */,
@@ -1393,6 +1511,7 @@
 				4EB0C68D16BBB4B900838A49 /* ServerTableViewController.mm in Sources */,
 				4E6B37FF16C0F90B006AC8FD /* threads.mm in Sources */,
 				368222E017F531FA009F1826 /* FontUtil.mm in Sources */,
+				4E6B4A07188736C700429B4A /* mmask.c in Sources */,
 				36E6F37C16C45FB50016CD1A /* PluginManager.mm in Sources */,
 				4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */,
 				37EEF09C173485A30017511A /* ResumeInfo.mm in Sources */,
@@ -1508,6 +1627,7 @@
 					.,
 					./deps/spidermonkey,
 					"./native-core/deps/**",
+					"./native-core/qr",
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -1565,6 +1685,7 @@
 					.,
 					./deps/spidermonkey,
 					"./native-core/deps/**",
+					"./native-core/qr",
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;

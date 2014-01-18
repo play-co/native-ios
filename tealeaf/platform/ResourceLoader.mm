@@ -489,6 +489,7 @@ CEXPORT bool resource_loader_load_image_with_c(texture_2d *texture) {
 			NSString *urlstr = [NSString stringWithUTF8String:(after + 1)];
 			NSData *nsd = decodeBase64(urlstr);
 			data = (unsigned char*)[nsd bytes];
+			sz = [nsd length];
 			
 			texture->pixel_data = texture_2d_load_texture_raw(texture->url, data, sz, &texture->num_channels, &texture->width, &texture->height, &texture->originalWidth, &texture->originalHeight, &texture->scale);
 			
