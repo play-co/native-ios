@@ -1261,7 +1261,10 @@ exports.build = function(builder, project, opts, next) {
 			developer = "iPhone Developer: " + argv.developer;
 		} else if (argv.distribution) {
 			developer = "iPhone Distribution: " + argv.distribution;
+		} else if (argv.macdeveloper) {
+			developer = "3rd Party Mac Developer Application: " + argv.macdeveloper;
 		}
+
 		if (typeof developer !== "string") {
 			developer = manifest.ios && manifest.ios.developer;
 		}
