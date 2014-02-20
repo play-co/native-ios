@@ -1226,6 +1226,7 @@ function makeIOSProject(builder, opts, next) {
 			native_hash: nativeHash || "ios",
 			code_path: 'native.js',
 			studio_name: (manifest.studio && manifest.studio.name) || "example.studio",
+			debug_build: debug,
 
 			apple_id: manifest.ios.appleID || "example.appleid",
 			bundle_id: manifest.ios.bundleID || "example.bundle",
