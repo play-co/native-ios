@@ -34,8 +34,9 @@ struct SplashDescriptor {
 @interface TeaLeafAppDelegate : NSObject <UIApplicationDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic) BOOL isTestApp;							// Is in test-app mode?
-@property (nonatomic, retain) NSMutableDictionary *config;         // Configuration config.plist file dictionary
+@property (nonatomic) BOOL debugModeBuild;					// Set to true if --debug flag was used during building
+@property (nonatomic) BOOL isTestApp;						// Is in test-app mode?
+@property (nonatomic, retain) NSMutableDictionary *config;	// Configuration config.plist file dictionary
 @property (nonatomic, retain) js_core *js;
 @property (nonatomic, retain) OpenGLView *canvas;
 @property (nonatomic) BOOL isOnline;                        // Indicates that upon the previous notice, that the internet was reachable
@@ -122,3 +123,4 @@ struct SplashDescriptor {
 - (void) wakeJS;
 
 @end
+

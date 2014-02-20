@@ -105,6 +105,9 @@
 		NSLOG(@"{tealeaf} Config[%@] = %@", key, [self.config objectForKey:key]);
 	}
 
+	bool isDebugBuild = [[self.config objectForKey:@"debug_mode"] boolValue];
+	self.debugModeBuild = isDebugBuild ? TRUE : FALSE;
+	
 	// Detect test-app mode
 	self.isTestApp = NO;
 #ifndef DISABLE_TESTAPP
