@@ -183,6 +183,8 @@ var installAddonsProject = function(builder, opts, next) {
 
 		var frameworkId = 1;
 
+		var ldFiles = [];
+
 		for (var framework in frameworks) {
 			var fileType, sourceTree, demoKey;
 			var filename = path.basename(framework);
@@ -197,6 +199,11 @@ var installAddonsProject = function(builder, opts, next) {
 				sourceTree = '"<group>"';
 				framework = path.relative(path.join(destDir, "tealeaf"), framework);
 				demoKey = "System/Library/Frameworks/UIKit.framework";
+				if (filename.indexOf("lib") == 0) {
+					var ldFile = path.basename(filename.substr(3), ".a");
+					logger.log("Will be adding", ldFile, "to LDFLAGS");
+					ldFiles.push(ldFile);
+				}
 			} else if (path.extname(framework) === ".xib") {
 				logger.log("Installing xib:", framework);
 				fileType = 'file.xib'
@@ -237,13 +244,13 @@ var installAddonsProject = function(builder, opts, next) {
 				logger.log("Installing dynamic library:", framework);
 				fileType = "compiled.mach-o.dylib";
 				sourceTree = 'SDKROOT';
-				framework = "usr/lib/" + path.basename(framework);
+				framework = "usr/lib/" + filename;
 				demoKey = "System/Library/Frameworks/UIKit.framework";
 			} else if (path.extname(framework) === "") {
 				logger.log("Installing system framework:", framework);
 				fileType = "wrapper.framework";
 				sourceTree = 'SDKROOT';
-				framework = "System/Library/Frameworks/" + path.basename(framework) + ".framework";
+				framework = "System/Library/Frameworks/" + filename + ".framework";
 				demoKey = "System/Library/Frameworks/UIKit.framework";
 			}
 
@@ -384,6 +391,59 @@ var installAddonsProject = function(builder, opts, next) {
 							}
 						}
 						contents.splice(++ii-1, 0, "\t\t\t\t\t" + '"' + key + '"')
+						logger.log(" - Installing", key, "search path on line", ii);
+					}
+					break;
+				}
+			}
+		}
+
+		if (ldFiles.length > 0) {
+			var searchKey = "OTHER_LDFLAGS";
+
+			// Set up framework search paths
+			for (var ii = 0; ii < contents.length; ++ii) {
+				var line = contents[ii];
+
+				if (line.indexOf(searchKey) == -1) {
+					continue;
+				}
+				logger.log("Found", searchKey, "property on line", ii);
+				var iiFw = ii;
+
+				var semiIdx = line.indexOf(";");
+				if (semiIdx > 0) {
+					// Convert single value field to multi-value field
+					var startIdx = line.indexOf("= ");
+					if (startIdx == -1) {
+						logger.log(" - Invalid", searchKey, "found.");
+					} else {
+						contents.splice(ii, 1, line.substring(0, startIdx + 2) + "(");
+						contents.splice(ii+1, 0, "\t\t\t\t)"+line.substring(semiIdx));
+						var existingPath = line.substring(startIdx + 2, semiIdx);
+						if (existingPath != '""') {
+							contents.splice(ii+1, 0, "\t\t\t\t\t"+existingPath);
+						}
+					}
+				}
+
+				// Look for the end to append new paths
+				for (++ii; ii < contents.length; ++ii) {
+					line = contents[ii];
+					if (line.indexOf(";") == -1) {
+						continue;
+					}
+
+					for (var jj = 0; jj < ldFiles.length; ++jj) {
+						// Only add the leading comma if there is a value before this line
+						if (ii-1 != iiFw) {
+							// If previous line does not already have a comma,
+							var prevLine = contents[ii-1];
+							if (prevLine.indexOf(",", prevLine.length - 1) === -1) {
+								contents[ii-1] = prevLine + ",";
+							}
+						}
+						contents.splice(++ii-1, 0, "\t\t\t\t\t" + '"-l' + ldFiles[jj] + '"')
 						logger.log(" - Installing", key, "search path on line", ii);
 					}
 					break;
