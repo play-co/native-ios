@@ -399,6 +399,9 @@ var installAddonsProject = function(builder, opts, next) {
 		}
 
 		if (ldFiles.length > 0) {
+			// Flip order of LDFLAGS
+			ldFiles.reverse();
+
 			var searchKey = "OTHER_LDFLAGS";
 
 			// Set up framework search paths
