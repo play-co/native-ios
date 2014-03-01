@@ -411,7 +411,7 @@ JSAG_OBJECT_END
 #ifndef DISABLE_DEBUG_SERVER
 	// If remote loading is enabled,
 	TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-	if (app.isTestApp) {
+	if (app.isTestApp || app.debugModeBuild) {
 		self.debugServer = [[[DebugServer alloc] init:self] autorelease];
 	}
 #endif
