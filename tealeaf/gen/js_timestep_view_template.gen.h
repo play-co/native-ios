@@ -52,6 +52,9 @@ JSBool def_timestep_view_set_width(JSContext *cx, JSHandleObject obj, JSHandleId
 JSBool def_timestep_view_get_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
+JSBool def_timestep_view_get_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
+JSBool def_timestep_view_set_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+
 JSBool def_timestep_view_get_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 

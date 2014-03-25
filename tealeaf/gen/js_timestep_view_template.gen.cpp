@@ -736,6 +736,8 @@ static const JSPropertySpec properties[] = {
 		JSOP_WRAPPER(def_timestep_view_get_width), JSOP_WRAPPER(def_timestep_view_set_width) },
 	{ "height", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_height), JSOP_WRAPPER(def_timestep_view_set_height) },
+	{ "compositeOperation", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_compositeOperation), JSOP_WRAPPER(def_timestep_view_set_compositeOperation) },
 	{ "x", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_x), JSOP_WRAPPER(def_timestep_view_set_x) },
 	{ "y", 0, BAR_PROPERTY_FLAGS,
