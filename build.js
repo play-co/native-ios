@@ -471,8 +471,19 @@ var installAddonsProject = function(builder, opts, next) {
 			process.exit(1);
 		}
 
+        var extractNestedValue = function(obj, key) {
+            var i=0;
+            var parts = key.split('.');
+            var val = obj;
+            while(i!=parts.length) {
+                val = val[parts[i++]];
+            }
+
+            return val;
+        };
+
 		for (var key in userDefined) {
-			var value = manifest.ios && manifest.ios[key];
+			var value = manifest.ios && manifest.ios[key] || manifest.addons && extractNestedValue(manifest.addons, key);
 			if (!value) {
 				logger.error("Installing user-defined key", key, "failed: Could not find value in game manifest under ios section.");
 				process.exit(1);
