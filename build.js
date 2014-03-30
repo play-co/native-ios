@@ -150,6 +150,7 @@ var installAddonsProject = function(builder, opts, next) {
 
 	var f = ff(this, function () {
 		var frameworks = {}, frameworkPaths = {};
+		var linkerFlags = {};
 
 		for (var key in addonConfig) {
 			var config = addonConfig[key];
@@ -177,6 +178,14 @@ var installAddonsProject = function(builder, opts, next) {
 					var ud = config.userDefined[ii];
 
 					userDefined[ud] = 1;
+				}
+			}
+
+			if (config.linkerFlags) {
+				for (var ii = 0; ii < config.linkerFlags.length; ++ii) {
+					var lf = config.linkerFlags[ii];
+
+					linkerFlags[lf] = 1;
 				}
 			}
 		}
@@ -336,19 +345,26 @@ var installAddonsProject = function(builder, opts, next) {
 			}
 		}
 
-		var searchKeys = ["FRAMEWORK_SEARCH_PATHS", "LIBRARY_SEARCH_PATHS"];
+		// Inject Build Settings
 
-		for (var searchKeyIndex = 0; searchKeyIndex < searchKeys.length; ++searchKeyIndex) {
-			var searchKey = searchKeys[searchKeyIndex];
+		var injectBuildSettings = {
+			FRAMEWORK_SEARCH_PATHS: frameworkPaths,
+			LIBRARY_SEARCH_PATHS: frameworkPaths
+		};
+		if (Object.keys(linkerFlags).length > 0) {
+			injectBuildSettings.OTHER_LDFLAGS = linkerFlags;
+		}
 
-			// Set up framework search paths
+		for (var settingsKey in injectBuildSettings) {
+
+			// Search Build Setting in project file contents
 			for (var ii = 0; ii < contents.length; ++ii) {
 				var line = contents[ii];
 
-				if (line.indexOf(searchKey) == -1) {
+				if (line.indexOf(settingsKey) == -1) {
 					continue;
 				}
-				logger.log("Found", searchKey, "property on line", ii);
+				logger.log("Found Build Setting", settingsKey, "on line", ii);
 				var iiFw = ii;
 
 				var semiIdx = line.indexOf(";");
@@ -356,25 +372,25 @@ var installAddonsProject = function(builder, opts, next) {
 					// Convert single value field to multi-value field
 					var startIdx = line.indexOf("= ");
 					if (startIdx == -1) {
-						logger.log(" - Invalid", searchKey, "found.");
+						logger.log(" - Invalid Build Setting", settingsKey, "found.");
 					} else {
 						contents.splice(ii, 1, line.substring(0, startIdx + 2) + "(");
 						contents.splice(ii+1, 0, "\t\t\t\t)"+line.substring(semiIdx));
-						var existingPath = line.substring(startIdx + 2, semiIdx);
-						if (existingPath != '""') {
-							contents.splice(ii+1, 0, "\t\t\t\t\t"+existingPath);
+						var existingSetting = line.substring(startIdx + 2, semiIdx);
+						if (existingSetting != '""') {
+							contents.splice(ii+1, 0, "\t\t\t\t\t"+existingSetting);
 						}
 					}
 				}
 
-				// Look for the end to append new paths
+				// Look for the end to append new keys
 				for (++ii; ii < contents.length; ++ii) {
 					line = contents[ii];
 					if (line.indexOf(";") == -1) {
 						continue;
 					}
 
-					for (var key in frameworkPaths) {
+					for (var key in injectBuildSettings[settingsKey]) {
 						// Only add the leading comma if there is a value before this line
 						if (ii-1 != iiFw) {
 							// If previous line does not already have a comma,
@@ -384,7 +400,7 @@ var installAddonsProject = function(builder, opts, next) {
 							}
 						}
 						contents.splice(++ii-1, 0, "\t\t\t\t\t" + '"' + key + '"')
-						logger.log(" - Installing", key, "search path on line", ii);
+						logger.log(" - Injected", key, "in Build Setting", settingsKey, "on line", ii);
 					}
 					break;
 				}
