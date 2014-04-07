@@ -1695,7 +1695,7 @@
 					"$(SRCROOT)",
 					"/Users/cat/webe/devkit-priv/addons/native-ios-priv/tealeaf",
 				);
-				LLVM_LTO = YES;
+				LLVM_LTO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
