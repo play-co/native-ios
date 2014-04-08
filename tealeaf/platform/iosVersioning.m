@@ -72,3 +72,8 @@ CEXPORT NSString *get_platform() {
 	// Should return a string like "iPhone4,1".  You can websearch for the other values and what they mean.
     return m_platform;
 }
+
+CEXPORT bool device_is_simulator() {
+    NSString *model = [[UIDevice currentDevice] model];
+    return [model isEqualToString:@"iPhone Simulator"];
+}

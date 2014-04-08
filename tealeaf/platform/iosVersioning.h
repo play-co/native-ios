@@ -33,4 +33,6 @@ CEXPORT int get_platform_memory_limit();
 
 CEXPORT NSString *get_platform();
 
+CEXPORT bool device_is_simulator();
+
 #endif

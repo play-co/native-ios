@@ -292,11 +292,20 @@ JSAG_MEMBER_BEGIN(_call, 2)
 }
 JSAG_MEMBER_END
 
+JSAG_MEMBER_BEGIN_NOARGS(isSimulator)
+{
+    bool is_simulator = device_is_simulator();
+    JSAG_RETURN_BOOL(is_simulator);
+}
+JSAG_MEMBER_END_NOARGS
+
 JSAG_OBJECT_START(NATIVE)
 JSAG_OBJECT_MEMBER(doneLoading)
 JSAG_OBJECT_MEMBER(stayAwake)
 JSAG_OBJECT_MEMBER(_call)
+JSAG_OBJECT_MEMBER(isSimulator)
 JSAG_OBJECT_END
+
 
 @implementation js_core
 
