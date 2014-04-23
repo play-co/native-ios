@@ -133,6 +133,92 @@ CEXPORT JSBool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp)
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj.get()); \
 	vp.set((!view || view->field == UNDEFINED_DIMENSION) ? JSVAL_VOID : DOUBLE_TO_JSVAL(view->field));
 
+static const char *NAME_ARRAY[11] = {
+	"source-atop",
+	"source-in",
+	"source-out",
+	"source-over",
+	"destination-atop",
+	"destination-in",
+	"destination-out",
+	"destination-over",
+	"lighter",
+	"xor",
+	"copy"
+};
+
+CEXPORT JSBool def_timestep_view_get_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+
+	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
+	if (view) {
+		const char *name = 0;
+		int op = view->composite_operation;
+
+		if (op >= 1337 && op <= 1347) {
+			name = NAME_ARRAY[op - 1337];
+		}
+
+		if (!name) {
+			vp.setUndefined();
+		} else {
+			vp.setString(JS_NewStringCopyN(cx, name, strlen(name)));
+		}
+	}
+
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
+
+CEXPORT JSBool def_timestep_view_set_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	JS_BeginRequest(cx);
+
+	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
+	if (view) {
+		int op = 0;
+
+		if (vp.isString()) {
+			JSString *jstr = vp.toString();
+			JSTR_TO_CSTR(cx, jstr, code);
+
+			if (code[0] == 'l') {
+				op = 1345;
+			} else if (code[0] == 'x') {
+				op = 1346;
+			} else if (code[0] == 'c') {
+				op = 1347;
+			} else if (code[0] == 's') {
+				if (0 == strcmp(code, "source-atop")) {
+					op = 1337;
+				} else if (0 == strcmp(code, "source-in")) {
+					op = 1338;
+				} else if (0 == strcmp(code, "source-out")) {
+					op = 1339;
+				} else if (0 == strcmp(code, "source-over")) {
+					op = 1340;
+				}
+			} else if (code[0] == 'd') {
+				if (0 == strcmp(code, "destination-atop")) {
+					op = 1341;
+				} else if (0 == strcmp(code, "destination-in")) {
+					op = 1342;
+				} else if (0 == strcmp(code, "destination-out")) {
+					op = 1343;
+				} else if (0 == strcmp(code, "destination-over")) {
+					op = 1344;
+				}
+			}
+			if (0 == op) {
+				LOG("{view} WARNING: View given invalid composite operation %s", code);
+			}
+		}
+
+		view->composite_operation = op;
+	}
+
+	JS_EndRequest(cx);
+	return JS_TRUE;
+}
 
 CEXPORT JSBool def_timestep_view_set_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
 	JS_BeginRequest(cx);
