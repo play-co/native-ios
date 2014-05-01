@@ -99,7 +99,7 @@ static NSDictionary *m_literal_fonts;
 		familyName = @"helvetica";
 		familyDict = [m_fonts objectForKey:familyName];
 		if (familyDict == nil) {
-			NSLog(@"{text} ERROR: Unable to get fallback font family");
+			NSLOG(@"{text} ERROR: Unable to get fallback font family");
 			return nil;
 		}
 	}

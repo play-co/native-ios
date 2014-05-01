@@ -14,6 +14,7 @@
  */
 
 #import "iosVersioning.h"
+#import "platform/log.h"
 
 #import <mach/mach.h>
 #import <mach/mach_host.h>
@@ -35,7 +36,7 @@ CEXPORT int get_platform_memory_limit()
     vm_statistics_data_t vm_stat;
 
     if (host_statistics(host_port, HOST_VM_INFO, (host_info_t)&vm_stat, &host_size) != KERN_SUCCESS) {
-        NSLog(@"{core} Failed to fetch vm statistics");
+        NSLOG(@"{core} Failed to fetch vm statistics");
 
 		return 50000000; // Default: 50 MB
 	} else {
@@ -46,12 +47,12 @@ CEXPORT int get_platform_memory_limit()
 		natural_t mem_free = vm_stat.free_count * pagesize;
 		natural_t mem_total = mem_used + mem_free;
 
-		NSLog(@"{core} Memory used: %d free: %d total: %d", (int)mem_used, (int)mem_free, (int)mem_total);
+		NSLOG(@"{core} Memory used: %d free: %d total: %d", (int)mem_used, (int)mem_free, (int)mem_total);
 
 		// Return 11.11% of total memory (bytes)
 		int limit = mem_total / 9;
 
-		NSLog(@"{core} Texture memory limit set as low as %d", limit);
+		NSLOG(@"{core} Texture memory limit set as low as %d", limit);
 
 		return limit;
 	}

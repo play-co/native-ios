@@ -51,6 +51,7 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
+#import "platform/log.h"
 
 #import <CoreFoundation/CoreFoundation.h>
 
@@ -62,7 +63,7 @@ static void PrintReachabilityFlags(SCNetworkReachabilityFlags	 flags, const char
 {
 #if kShouldPrintReachabilityFlags
 	
-	NSLog(@"{reachability} Flag Status: %c%c %c%c%c%c%c%c%c %s\n",
+	NSLOG(@"{reachability} Flag Status: %c%c %c%c%c%c%c%c%c %s\n",
 			(flags & kSCNetworkReachabilityFlagsIsWWAN)				  ? 'W' : '-',
 			(flags & kSCNetworkReachabilityFlagsReachable)			  ? 'R' : '-',
 			

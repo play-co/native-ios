@@ -265,7 +265,7 @@ CEXPORT void device_hide_splash() {
 	int h = self.appDelegate.screenHeightPixels;
 	tealeaf_canvas_resize(w, h);
     
-	NSLog(@"{tealeaf} Created GLView (%d, %d)", w, h);
+	NSLOG(@"{tealeaf} Created GLView (%d, %d)", w, h);
 }
 
 - (void)viewDidLoad {
@@ -291,7 +291,7 @@ CEXPORT void device_hide_splash() {
 	const char *source_path = 0;
     
 	if (!appBundle) {
-		NSLog(@"{core} FATAL: Unable to load app bundle!");
+		NSLOG(@"{core} FATAL: Unable to load app bundle!");
 	} else {
 		source_path = [[ResourceLoader get].appBundle UTF8String];
 	}
@@ -311,7 +311,7 @@ CEXPORT void device_hide_splash() {
 			  "");
 	
 	// Lower texture memory based on device model
-    NSLog(@"{core} iOS device model '%@'", get_platform());
+    NSLOG(@"{core} iOS device model '%@'", get_platform());
     
 	int mem_limit = get_platform_memory_limit();
 	

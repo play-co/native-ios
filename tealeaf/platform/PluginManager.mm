@@ -138,7 +138,7 @@ JSAG_OBJECT_END
 					
 					[self.plugins setObject:pluginInstance forKey:key];
 					
-					NSLog(@"{plugins} Instantiated %s", className);
+					NSLOG(@"{plugins} Instantiated %s", className);
 				}
 			}
 		}

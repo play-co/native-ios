@@ -38,7 +38,7 @@ static CADisplayLink *displayLink;
 
 - (void)dealloc
 {
-	NSLog(@"Exciting: Deallocating OpenGLView");
+	NSLOG(@"Exciting: Deallocating OpenGLView");
 	
 	[self destroyDisplayLink];
 	
@@ -173,7 +173,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 
 - (id)initWithFrame:(CGRect)frame {
-	NSLog(@"{OpenGL} Init with frame");
+	NSLOG(@"{OpenGL} Init with frame");
 	
 	self = [super initWithFrame:frame];
 	if (self) {

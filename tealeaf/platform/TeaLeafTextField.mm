@@ -116,7 +116,7 @@
             self.rightViewMode = UITextFieldViewModeAlways;
             
             if (tapGestureRecognizer == nil) {
-                NSLog(@"tap gesture recognizer is nil");
+                NSLOG(@"tap gesture recognizer is nil");
                 tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                action:@selector(finishEditing)];
             }
