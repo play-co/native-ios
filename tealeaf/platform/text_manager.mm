@@ -138,7 +138,7 @@ int text_manager_init() {
             }
             CFStringRef utType = (CFStringRef)[allIdentifiers lastObject];
 			if ((!CFStringHasPrefix(utType, CFSTR("dyn.")) && UTTypeConformsTo(utType, CFSTR("public.font")))) {
-				NSLog(@"{text} Installing font: %@", url);
+				NSLOG(@"{text} Installing font: %@", url);
 				return YES;
 			} else {
 				return NO;

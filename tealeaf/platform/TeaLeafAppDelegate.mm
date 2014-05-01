@@ -70,7 +70,7 @@
 	if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
 		// If on iPhone 4s
 		if ([get_platform() isEqualToString:@"iPhone4,1"]) {
-			NSLog(@"{core} iOS7-iPhone4s work-around is enabled");
+			NSLOG(@"{core} iOS7-iPhone4s work-around is enabled");
 			self.ignoreMemoryWarnings = YES;
 		}
 	}
@@ -481,7 +481,7 @@
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 
 	if (orientation == UIDeviceOrientationUnknown) {
-		NSLog(@"{core} WARNING: Device orientation unknown");
+		NSLOG(@"{core} WARNING: Device orientation unknown");
 
 		orientation = self.tealeafViewController.interfaceOrientation;
 	}
@@ -546,7 +546,7 @@
 	self.screenLongerSide = longerScreenSide;
 	self.screenBestSplash = [self findBestSplash];
 
-	NSLog(@"{core} Device screen (%d, %d), portrait=%d, using splash '%@'", w, h, (int)self.screenPortraitMode, self.screenBestSplash);
+	NSLOG(@"{core} Device screen (%d, %d), portrait=%d, using splash '%@'", w, h, (int)self.screenPortraitMode, self.screenBestSplash);
 }
 
 enum Splashes {

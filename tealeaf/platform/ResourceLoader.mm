@@ -110,7 +110,7 @@ static int base_path_len = 0;
 
 	self.appBundle = [[NSBundle mainBundle] pathForResource:@"resources" ofType:@"bundle"];
 
-	NSLog(@"Using resource path %@", self.appBundle);
+	NSLOG(@"Using resource path %@", self.appBundle);
 	
 	self.appBase = [[NSBundle mainBundle] resourcePath];
 	self.images = [[[NSMutableArray alloc] init] autorelease];

@@ -7,6 +7,7 @@
 //
 
 #import "NativeCalls.h"
+#import "platform/log.h"
 
 @implementation NativeCalls
 
@@ -24,7 +25,7 @@ void _init() {
     if ([calls objectForKey:name] == nil) {
         [calls setObject:[callback copy] forKey:name];
     } else {
-        NSLog(@"NativeCalls: Key already exists %@", name);
+        NSLOG(@"NativeCalls: Key already exists %@", name);
     }
 }
 
