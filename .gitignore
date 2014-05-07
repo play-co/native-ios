@@ -7,3 +7,4 @@ libjpeg/build
 app.bundle/*
 .DS_Store
 build
+node_modules
