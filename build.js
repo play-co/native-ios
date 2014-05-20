@@ -3,12 +3,12 @@
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
  * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
- 
+
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License v. 2.0 for more details.
- 
+
  * You should have received a copy of the Mozilla Public License v. 2.0
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
@@ -572,7 +572,7 @@ var installAddonsProject = function(builder, opts, next) {
 		// line number where we insert the group ref in the parent group
 		// (add one since we want to insert *after* the reference to PluginManager.mm)
 		var insertGroupRefsAt = ii + 1;
-		
+
 		// search in reverse to get to the start of the plugins group
 		while (--ii) {
 			if (/(?=[ \t]*)([A-F,0-9]+?)\s+.*?=\s+\{/g.test(contents[ii])) {
@@ -1055,7 +1055,7 @@ function copyIcons(builder, icons, destPath) {
 function copySplash(builder, manifest, destPath, next) {
 	if (manifest.splash) {
 		var universalSplash = manifest.splash["universal"];
-		
+
 		var splashes = [
 			{ key: "portrait480", outFile: "Default.png", outSize: "320x480" },
 			{ key: "portrait960", outFile: "Default@2x.png", outSize: "640x960"},
@@ -1074,7 +1074,7 @@ function copySplash(builder, manifest, destPath, next) {
 					fNext();
 					return;
 				}
-				
+
 				var splash = splashes[i];
 				if (manifest.splash[splash.key]) {
 					splashFile = path.resolve(manifest.splash[splash.key]);
@@ -1111,7 +1111,7 @@ function copySplash(builder, manifest, destPath, next) {
 			}
 			makeSplash(splashes.length - 1);
 		}, function() {
-			next();	
+			next();
 		});
 	} else {
 		logger.warn('No "splash" section provided in the manifest.json');
@@ -1147,12 +1147,12 @@ function copyDir(srcPath, destPath, name, cb) {
 
 function copyIOSProjectDir(srcPath, destPath, cb) {
 	logger.log('copying', srcPath, 'to', destPath);
-	
+
 	var parent = path.dirname(destPath);
 	if (!fs.existsSync(parent)) {
 		fs.mkdirSync(parent);
 	}
-	
+
 	if (!fs.existsSync(destPath)) {
 		fs.mkdirSync(destPath);
 	}
