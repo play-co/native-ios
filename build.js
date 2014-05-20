@@ -1439,14 +1439,21 @@ exports.build = function(builder, project, opts, next) {
 			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.ios.bundleID, false, provision, developer, manifest.shortName+'.ipa', false, f());
 		}
 	}, function() {
+		var projPath = path.join(destPath, 'tealeaf/TeaLeafIOS.xcodeproj');
+
 		if (argv['js-only']) {
 			logger.log('Done with compilation.  The output files are at:', destPath);
+
+			// Launch XCode if requested
+			if (argv.open) {
+				logger.log('Open: Launching XCode project...');
+
+				require('child_process').exec('open "' + projPath + '"');
+			}
 		} else {
 			if (argv.ipa) {
 				logger.log('Done with compilation.  The output .ipa file has been placed at:', manifest.shortName+'.ipa');
 			} else {
-				var projPath = path.join(destPath, 'tealeaf/TeaLeafIOS.xcodeproj');
-
 				logger.log('Done with compilation.  The XCode project has been placed at', projPath);
 
 				// Launch XCode if requested
