@@ -29,6 +29,7 @@ var rsyncLogger;
 
 var installAddons = function(builder, project, opts, addonConfig, next) {
 	var paths = builder.common.paths;
+	var addonManager = require(paths.root('src','AddonManager'));
 	var addons = project.getAddonConfig();
 	if (!Array.isArray(addons)) {
 		addons = Object.keys(addons);
@@ -70,8 +71,10 @@ var installAddons = function(builder, project, opts, addonConfig, next) {
 								var config = JSON.parse(data);
 								addonConfigMap[addon] = data;
 								if (config.addonDependencies && config.addonDependencies.length > 0) {
-									for (var a in config.addonDependencies) {
-										var dep = config.addonDependencies[a];
+									var deps = addonManager.getAddonDependencies(addon, project, [addonConfig]);
+
+									for (var a in deps) {
+										var dep = deps[a];
 										if (!checkedAddonMap[dep]) {
 											checkedAddonMap[dep] = true;
 											addonQueue.push(dep);
