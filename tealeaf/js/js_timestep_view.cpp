@@ -5,12 +5,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- 
+
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- 
+
  * You should have received a copy of the GNU General Public License
  * along with the Game Closure SDK.	 If not, see <http://www.gnu.org/licenses/>.
  */
@@ -95,7 +95,7 @@ CEXPORT JSBool def_timestep_view_class_constructor(JSContext *cx, unsigned argc,
 
 CEXPORT JSBool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	jsval *argv = JS_ARGV(cx, vp);
 
 	if (argc < 2 || !JSVAL_IS_OBJECT(argv[0]) || !JSVAL_IS_OBJECT(argv[1])) {
@@ -110,28 +110,11 @@ CEXPORT JSBool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp)
 
 		js_object_wrapper_root(&view->map_ref, map_obj);
 		view->view_data = map;
-		
+
 		JS_EndRequest(cx);
 		return JS_TRUE;
 	}
 }
-
-
-#define DIM_SET(cx, obj, vp, field) \
-	timestep_view *view = (timestep_view *)JS_GetPrivate(obj); \
-	if (view) { \
-		double field = view->field; \
-		view->field = vp.isNumber() ? vp.toNumber() : UNDEFINED_DIMENSION; \
-		if (field != view->field) { \
-			if (view->js_view) { \
-				def_timestep_view_needs_reflow(view->js_view, false); \
-			} \
-		} \
-	}
-
-#define DIM_GET(cx, obj, vp, field) \
-	timestep_view *view = (timestep_view *)JS_GetPrivate(obj.get()); \
-	vp.set((!view || view->field == UNDEFINED_DIMENSION) ? JSVAL_VOID : DOUBLE_TO_JSVAL(view->field));
 
 static const char *NAME_ARRAY[11] = {
 	"source-atop",
@@ -220,81 +203,9 @@ CEXPORT JSBool def_timestep_view_set_compositeOperation(JSContext *cx, JSHandleO
 	return JS_TRUE;
 }
 
-CEXPORT JSBool def_timestep_view_set_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-
-	DIM_SET(cx, obj, vp, width);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-CEXPORT JSBool def_timestep_view_get_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-
-	DIM_GET(cx, obj, vp, width);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-CEXPORT JSBool def_timestep_view_set_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-	
-	DIM_SET(cx, obj, vp, height);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-CEXPORT JSBool def_timestep_view_get_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-
-	DIM_GET(cx, obj, vp, height);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-CEXPORT JSBool def_timestep_view_set_widthPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-
-	DIM_SET(cx, obj, vp, width_percent);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-CEXPORT JSBool def_timestep_view_get_widthPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-	
-	DIM_GET(cx, obj, vp, width_percent);
-	
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-CEXPORT JSBool def_timestep_view_set_heightPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-
-	DIM_SET(cx, obj, vp, height_percent);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-CEXPORT JSBool def_timestep_view_get_heightPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-
-	DIM_GET(cx, obj, vp, height_percent);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
 CEXPORT JSBool def_timestep_view_set_opacity(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
 	JS_BeginRequest(cx);
-	
+
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
 
 	view->opacity = vp.isNumber() ? vp.toNumber() : 1.0;
@@ -305,7 +216,7 @@ CEXPORT JSBool def_timestep_view_set_opacity(JSContext *cx, JSHandleObject obj, 
 
 CEXPORT JSBool def_timestep_view_set_zIndex(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
 	JS_BeginRequest(cx);
-	
+
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
 
 	if (vp.isNumber()) {
@@ -347,7 +258,7 @@ CEXPORT void def_timestep_view_render(void *view, void *ctx, void *opts) {
 		jsval rval;
 		jsval args[] = {OBJECT_TO_JSVAL(js_ctx), OBJECT_TO_JSVAL(js_opts)};
 		JS_CallFunctionName(cx, js_view, name, 2, args, &rval);
-		
+
 	}
 }
 
@@ -373,7 +284,7 @@ CEXPORT void def_timestep_view_tick(void *data, double dt) {
 	JSContext *cx = get_js_context();
 
 	JS_BeginRequest(cx);
-	
+
 	JSBool success = JS_GetProperty(cx, js_view, name, &fn);
 	JSObject *fn_obj = JSVAL_TO_OBJECT(fn);
 	if (success && fn_obj && JS_ObjectIsFunction(cx, fn_obj)) {
@@ -386,35 +297,9 @@ CEXPORT void def_timestep_view_tick(void *data, double dt) {
 	JS_EndRequest(cx);
 }
 
-CEXPORT void def_timestep_view_needs_reflow(void *data, bool force) {
-	JSObject *js_view = (JSObject*)data;
-
-	// If js_view is valid,
-	if (js_view) {
-		jsval fn;
-		static const char *name = "needsReflow";
-
-		JSContext *cx = get_js_context();
-		
-		JS_BeginRequest(cx);
-
-		JSBool success = JS_GetProperty(cx, js_view, name, &fn);
-		JSObject *fn_obj = JSVAL_TO_OBJECT(fn);
-
-		if (success && fn_obj && JS_ObjectIsFunction(cx, fn_obj)) {
-			jsval force_val = BOOLEAN_TO_JSVAL(force);
-			jsval rval;
-			jsval args[] = {force_val};
-			JS_CallFunctionName(cx, js_view, name, 1, args, &rval);
-		}
-
-		JS_EndRequest(cx);
-	}
-}
-
 CEXPORT JSBool def_timestep_view_addSubview(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	jsval *vals = JS_ARGV(cx, vp);
 	JSObject *thiz = JSVAL_TO_OBJECT(JS_THIS(cx, vp));
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
@@ -435,7 +320,7 @@ CEXPORT JSBool def_timestep_view_addSubview(JSContext *cx, unsigned argc, jsval 
 
 CEXPORT JSBool def_timestep_view_removeSubview(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	jsval *vals = JS_ARGV(cx, vp);
 	JSObject *thiz = JSVAL_TO_OBJECT(JS_THIS(cx, vp));
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
@@ -459,7 +344,7 @@ CEXPORT JSBool def_timestep_view_removeSubview(JSContext *cx, unsigned argc, jsv
 
 CEXPORT JSBool def_timestep_view_getSuperview(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	JSObject *thiz = JSVAL_TO_OBJECT(JS_THIS(cx, vp));
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
 	timestep_view *superview = timestep_view_get_superview(view);
@@ -474,7 +359,7 @@ CEXPORT JSBool def_timestep_view_getSuperview(JSContext *cx, unsigned argc, jsva
 			rval = JSVAL_NULL;
 		}
 	}
-	
+
 	JS_SET_RVAL(cx, vp, rval);
 
 	JS_EndRequest(cx);
@@ -485,7 +370,7 @@ CEXPORT JSBool def_timestep_view_getSuperview(JSContext *cx, unsigned argc, jsva
 // to start the render
 CEXPORT JSBool def_timestep_view_wrapRender(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	jsval *vals = JS_ARGV(cx, vp);
 	jsval thiz_val = JS_THIS(cx, vp);
 	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
@@ -512,7 +397,7 @@ CEXPORT JSBool def_timestep_view_wrapRender(JSContext *cx, unsigned argc, jsval 
 
 CEXPORT JSBool def_timestep_view_wrapTick(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	jsval *vals = JS_ARGV(cx, vp);
 	jsval thiz_val = JS_THIS(cx, vp);
 	double dt;
@@ -528,14 +413,14 @@ CEXPORT JSBool def_timestep_view_wrapTick(JSContext *cx, unsigned argc, jsval *v
 
 CEXPORT JSBool def_timestep_view_getSubviews(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	jsval thiz_val = JS_THIS(cx, vp);
 	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
 	timestep_view *v = (timestep_view *)JS_GetPrivate(thiz);
 	JSObject *subviews = JS_NewArrayObject(cx, v->subview_count, 0);
 	for (int i = 0; i < v->subview_count; i++) {
 		timestep_view *subview = v->subviews[i];
-		
+
 		jsval value = OBJECT_TO_JSVAL((JSObject*)subview->js_view);
 		JS_SetElement(cx, subviews, i, &value);
 	}
@@ -548,7 +433,7 @@ CEXPORT JSBool def_timestep_view_getSubviews(JSContext *cx, unsigned argc, jsval
 
 CEXPORT JSBool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
-	
+
 	jsval *vals = JS_ARGV(cx, vp);
 	jsval thiz_val = JS_THIS(cx, vp);
 	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
@@ -598,3 +483,21 @@ CEXPORT JSBool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsv
 	JS_EndRequest(cx);
 	return JS_TRUE;
 }
+
+CEXPORT JSBool def_timestep_view_get__width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	return def_timestep_view_get_width(cx, obj, id, vp);
+}
+
+CEXPORT JSBool def_timestep_view_set__width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	return def_timestep_view_set_width(cx, obj, id, strict, vp);
+}
+
+CEXPORT JSBool def_timestep_view_get__height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+	return def_timestep_view_get_height(cx, obj, id, vp);
+}
+
+CEXPORT JSBool def_timestep_view_set__height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+	return def_timestep_view_set_height(cx, obj, id, strict, vp);
+}
+
+

@@ -46,12 +46,6 @@ JSBool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsval *vp);
 
 // Properties: Some will be defined by manually-generated code:
 
-JSBool def_timestep_view_get_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_view_set_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
-
-JSBool def_timestep_view_get_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_view_set_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
-
 JSBool def_timestep_view_get_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
@@ -66,12 +60,6 @@ JSBool def_timestep_view_set_offsetX(JSContext *cx, JSHandleObject obj, JSHandle
 
 JSBool def_timestep_view_get_offsetY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_offsetY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
-
-JSBool def_timestep_view_get_widthPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_view_set_widthPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
-
-JSBool def_timestep_view_get_heightPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_view_set_heightPercent(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
 JSBool def_timestep_view_get_r(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_r(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
@@ -118,9 +106,6 @@ JSBool def_timestep_view_set_hasJSRender(JSContext *cx, JSHandleObject obj, JSHa
 JSBool def_timestep_view_get_hasJSTick(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_hasJSTick(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
-JSBool def_timestep_view_get___firstRender(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_view_set___firstRender(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
-
 JSBool def_timestep_view_get_zIndex(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_zIndex(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
@@ -129,6 +114,18 @@ JSBool def_timestep_view_set_filterColor(JSContext *cx, JSHandleObject obj, JSHa
 
 JSBool def_timestep_view_get_filterType(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
 JSBool def_timestep_view_set_filterType(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+
+JSBool def_timestep_view_get_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
+JSBool def_timestep_view_set_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+
+JSBool def_timestep_view_get__width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
+JSBool def_timestep_view_set__width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+
+JSBool def_timestep_view_get_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
+JSBool def_timestep_view_set_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+
+JSBool def_timestep_view_get__height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
+JSBool def_timestep_view_set__height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
 
 
 
