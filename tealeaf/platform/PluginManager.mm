@@ -222,6 +222,15 @@ JSAG_OBJECT_END
                             nil]];
 }
 
+- (void) dispatchEvent:(NSString *)name forPluginName:(NSString *)pluginName withData:(NSDictionary *)data {
+    [self dispatchJSEvent: [NSDictionary dictionaryWithObjectsAndKeys:
+                            @"pluginEvent",@"name",
+                            pluginName,@"pluginName",
+                            name,@"eventName",
+                            data,@"data",
+                            nil]];
+}
+
 - (void) dispatchJSEvent:(NSDictionary *)evt {
     NSString *evt_nstr = [evt JSONString];
     [self dispatchJSEventWithJSONString:evt_nstr andRequestId:0];
