@@ -13,13 +13,14 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-var path = require("path");
-var ff = require("ff");
-var clc = require("cli-color");
+var path = require('path');
+var ff = require('ff');
+var clc = require('cli-color');
 var wrench = require('wrench');
 var async = require('async');
 var fs = require('fs');
 var plist = require('plist');
+var exec = require('child_process').exec;
 
 var logger;
 var rsyncLogger;
@@ -889,10 +890,7 @@ function removeKeysForObjects(parentObject, objects, keys) {
 // Updates the given TeaLeafIOS-Info.plist file
 function updatePListFile(builder, opts, next) {
 	var manifest = opts.manifest;
-	var bundleID = manifest.ios.bundleID;
-	if (!bundleID) {
-		throw new Error("Manifest file does not specify a bundleID under the ios section");
-	}
+	var bundleID = opts.bundleID;
 
 	var f = ff(this, function() {
 		fs.readFile(opts.plistFilePath, 'utf8', f());
@@ -1123,7 +1121,6 @@ function copySplash(builder, manifest, destPath, next) {
 }
 
 function copyDir(srcPath, destPath, name, cb) {
-	var exec = require('child_process').exec;
 
 	// rsync requires trailing slashes
 	var srcDir = path.join(srcPath, name) + path.sep;
@@ -1271,7 +1268,7 @@ function makeIOSProject(builder, opts, next) {
 		updateIOSProjectFile(builder, {
 			projectFile: projectFile,
 			ttf: manifest.ttf,
-			bundleID: manifest.ios.bundleID,
+			bundleID: opts.bundleID,
 			addonConfig: opts.addonConfig,
 			destDir: opts.destPath,
 			manifest: manifest
@@ -1281,6 +1278,7 @@ function makeIOSProject(builder, opts, next) {
 		updatePListFile(builder, {
 			plistFilePath: plistFile,
 			addonConfig: opts.addonConfig,
+			bundleID: opts.bundleID,
 			manifest: manifest,
 			title: opts.title
 		}, f.wait());
@@ -1306,7 +1304,7 @@ function makeIOSProject(builder, opts, next) {
 			debug_build: debug,
 
 			apple_id: manifest.ios.appleID || "example.appleid",
-			bundle_id: manifest.ios.bundleID || "example.bundle",
+			bundle_id: opts.bundleID,
 			version: manifest.ios.version || "1.0"
 		}).toString(), f.wait());
 	}).error(function(code) {
@@ -1315,12 +1313,25 @@ function makeIOSProject(builder, opts, next) {
 	}).cb(next);
 }
 
-exports.build = function(builder, project, opts, next) {
+exports.build = function(builder, project, opts, cb) {
 	logger = new builder.common.Formatter("native-ios");
 	rsyncLogger = new builder.common.Formatter("rsync");
 
 	var manifest = project.manifest;
 	var argv = opts.argv;
+
+	if (!opts.bundleID && argv.bundleID) {
+		opts.bundleID = argv.bundleID;
+	}
+
+	if (!opts.bundleID && manifest.ios.bundleID) {
+		opts.bundleID = manifest.ios.bundleID;
+	}
+
+	if (!opts.bundleID) {
+		logger.warn("Manifest file does not specify a bundleID under the ios section. Please add one or specify the bundleID on the command line with --bundleID");
+		opts.bundleID = 'example.bundle';
+	}
 
 	// Parse manifest and essential strings
 	if (manifest.appID == null || manifest.shortName == null) {
@@ -1369,7 +1380,7 @@ exports.build = function(builder, project, opts, next) {
 
 	// Parse paths.
 	var destPath = path.join(__dirname, 'build', manifest.shortName);
-	opts.output = path.join(destPath, 'tealeaf/resources', 'resources.bundle');
+	opts.resourceBundle = path.join(destPath, 'tealeaf/resources', 'resources.bundle');
 
 	// If cleaning out old directory first,
 	if (argv.clean) {
@@ -1407,8 +1418,9 @@ exports.build = function(builder, project, opts, next) {
 	}, function() {
 		installAddons(builder, project, opts, addonConfig, f());
 	}, function() {
-		if (!argv['js-only']) {
+		if (!argv['js-only'] && !argv['repack']) {
 			makeIOSProject(builder, {
+				bundleID: opts.bundleID,
 				project: project,
 				destPath: destPath,
 				debug: argv.debug,
@@ -1432,39 +1444,44 @@ exports.build = function(builder, project, opts, next) {
 			logger.log("Not copying splash");
 		}
 		installAddonsFiles(builder, {
-			destPath: opts.output,
+			destPath: opts.resourceBundle,
 			addonConfig: addonConfig
 		}, f.wait());
 	}, function() {
 		// If IPA generation was requested,
 		if (argv.ipa) {
+			var ipaFile = path.join(opts.output, manifest.shortName + '.ipa');
+			f(ipaFile);
+
 			// TODO: Debug mode is currently turned off because it does not build
-			require(path.join(__dirname, 'xcode.js')).buildIPA(builder, path.join(destPath, '/tealeaf'), manifest.ios.bundleID, false, provision, developer, manifest.shortName+'.ipa', false, f());
+			require(path.join(__dirname, 'xcode.js'))
+				.buildIPA(builder, path.join(destPath, '/tealeaf'), opts.bundleID, false, provision, developer, ipaFile, false, f.wait());
 		}
-	}, function() {
+	}, function(ipaFile) {
 		var projPath = path.join(destPath, 'tealeaf/TeaLeafIOS.xcodeproj');
+		logger.log("built", clc.yellowBright(opts.bundleID));
 
-		if (argv['js-only']) {
-			logger.log('Done with compilation.  The output files are at:', destPath);
-
-			// Launch XCode if requested
-			if (argv.open) {
-				logger.log('Open: Launching XCode project...');
-
-				require('child_process').exec('open "' + projPath + '"');
-			}
+		if (argv.ipa) {
+			logger.log("saved to " + clc.blueBright(ipaFile));
 		} else {
-			if (argv.ipa) {
-				logger.log('Done with compilation.  The output .ipa file has been placed at:', manifest.shortName+'.ipa');
+			logger.log("xcode project file is at", clc.blueBright(destPath));
+			logger.log("build output at", clc.blueBright(destPath));
+		}
+
+		if (argv.open) {
+			// open the xcode project
+			logger.log('opening xcode project...');
+			exec('open "' + projPath + '"');
+		}
+
+		if (argv.reveal) {
+			// show the ipaFile or the project in Finder
+			if (ipaFile) {
+				logger.log('revealing ipa file...');
+				exec('open --reveal "' + ipaFile + '"');
 			} else {
-				logger.log('Done with compilation.  The XCode project has been placed at', projPath);
-
-				// Launch XCode if requested
-				if (argv.open) {
-					logger.log('Open: Launching XCode project...');
-
-					require('child_process').exec('open "' + projPath + '"');
-				}
+				logger.log('revealing xcode project...');
+				exec('open --reveal "' + projPath + '"');
 			}
 		}
 
@@ -1472,6 +1489,5 @@ exports.build = function(builder, project, opts, next) {
 	}).error(function(err) {
 		logger.error("Error during build process:", err, err.stack);
 		process.exit(2);
-	}).next(next);
+	}).cb(cb);
 }
-
