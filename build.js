@@ -479,7 +479,7 @@ var installAddonsProject = function(builder, opts, next) {
             var i=0;
             var parts = key.split('.');
             var val = obj;
-            while(i!=parts.length) {
+            while(val && i != parts.length) {
                 val = val[parts[i++]];
             }
 
@@ -1454,7 +1454,7 @@ exports.build = function(builder, project, opts, cb) {
 			f(ipaFile);
 
 			// TODO: Debug mode is currently turned off because it does not build
-			require(path.join(__dirname, 'xcode.js'))
+			require(path.join(__dirname, 'xcode'))
 				.buildIPA(builder, path.join(destPath, '/tealeaf'), opts.bundleID, false, provision, developer, ipaFile, false, f.wait());
 		}
 	}, function(ipaFile) {
