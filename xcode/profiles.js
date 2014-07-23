@@ -14,13 +14,15 @@ var PROFILES_PATH = path.join(HOME_PATH, 'Library', 'MobileDevice', 'Provisionin
 exports.installProvisioningProfile = function (mobileProvisionPath, cb) {
 
 	var f = ff(function () {
+		console.error('Looking for', mobileProvisionPath);
+
 		// 1. get the UUID
-		if (/[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9a-f]{12}/.test(mobileProvisionPath.toUpperCase())) {
+		if (/[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/.test(mobileProvisionPath.toUpperCase())) {
 			// looks like a UUID already!
 			f(mobileProvisionPath.toUpperCase());
 		} else {
 			if (!fs.existsSync(mobileProvisionPath)) {
-				console.error('Specified provisioning profile not found');
+				console.error('Provisioning profile not found', mobileProvisionPath);
 				return f.succeed();
 			}
 
@@ -28,9 +30,9 @@ exports.installProvisioningProfile = function (mobileProvisionPath, cb) {
 				console.error("Couldn't locate provisioning profiles folder (looked in", PROFILES_PATH + ")");
 				return f.succeed();
 			}
-		}
 
-		exports.getUUID(mobileProvisionPath, f());
+			exports.getUUID(mobileProvisionPath, f());
+		}
 	}, function (uuid) {
 		// 2. check if the UUID is installed
 		var destPath = path.join(PROFILES_PATH, uuid + '.mobileProvision');

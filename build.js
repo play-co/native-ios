@@ -1320,10 +1320,6 @@ exports.build = function(builder, project, opts, cb) {
 	var manifest = project.manifest;
 	var argv = opts.argv;
 
-	if (!opts.bundleID && argv.bundleID) {
-		opts.bundleID = argv.bundleID;
-	}
-
 	if (!opts.bundleID && manifest.ios.bundleID) {
 		opts.bundleID = manifest.ios.bundleID;
 	}
@@ -1382,19 +1378,16 @@ exports.build = function(builder, project, opts, cb) {
 	var destPath = path.join(__dirname, 'build', manifest.shortName);
 	opts.resourceBundle = path.join(destPath, 'tealeaf/resources', 'resources.bundle');
 
+	// preserve original buildPath
+	opts.buildPath = opts.output;
+
+	// redirect normal build output into resources.bundle
+	opts.output = opts.resourceBundle;
+
 	// If cleaning out old directory first,
 	if (argv.clean) {
 		logger.log("Clean: Deleting previous build files");
 		wrench.rmdirSyncRecursive(destPath, function() {/* ignore errors */});
-	}
-
-	// Print out --open state
-	if (argv.open) {
-		if (argv.ipa) {
-			logger.log("Open: Open ignored because --ipa was specified");
-		} else {
-			logger.log("Open: Will open XCode project when build completes");
-		}
 	}
 
 	// Print out --debug state
