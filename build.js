@@ -1443,7 +1443,7 @@ exports.build = function(builder, project, opts, cb) {
 	}, function() {
 		// If IPA generation was requested,
 		if (argv.ipa) {
-			var ipaFile = path.join(opts.output, manifest.shortName + '.ipa');
+			var ipaFile = path.join(opts.buildPath, manifest.shortName + '.ipa');
 			f(ipaFile);
 
 			// TODO: Debug mode is currently turned off because it does not build
