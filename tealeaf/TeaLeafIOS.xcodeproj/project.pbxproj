@@ -649,6 +649,7 @@
 				D57955FD159A771E000DDEA3 /* TeaLeafIOS-Info.plist */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				87742605198C494D0070CAD3 /* Plugins */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = CustomTemplate;
@@ -954,6 +955,13 @@
 				36E6F37B16C45FB50016CD1A /* PluginManager.mm */,
 			);
 			name = plugins;
+			sourceTree = "<group>";
+		};
+		87742605198C494D0070CAD3 /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Plugins;
 			sourceTree = "<group>";
 		};
 		D551A74A178F345E0028DACC /* uthash */ = {
