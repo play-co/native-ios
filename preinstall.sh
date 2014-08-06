@@ -19,7 +19,3 @@ git submodule update --init --recursive
 if $PRIV_SUBMODS; then
 	git checkout .gitmodules
 fi
-
-npm install
-git submodule update --init --recursive
-

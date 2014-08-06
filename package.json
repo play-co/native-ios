@@ -13,7 +13,7 @@
     "xcode": "^0.6.7"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preinstall": "./preinstall.sh"
   },
   "private": true,
   "repository": {
