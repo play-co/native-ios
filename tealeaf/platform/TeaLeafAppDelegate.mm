@@ -284,9 +284,7 @@
 
 	[self.canvas stopRendering];
 
-	if (js_ready) {
-		[self postPauseEvent:self.wasPaused];
-	}
+	[self postPauseEvent:self.wasPaused];
 
 	// Remove tealeaf window from screen
 	[self.window removeFromSuperview];
@@ -311,9 +309,7 @@
 	self.wasPaused = NO;
 	[self.canvas startRendering];
 
-	if (js_ready) {
-		[self postPauseEvent:self.wasPaused];
-	}
+	[self postPauseEvent:self.wasPaused];
 
 	if (self.pluginManager) {
 		[self.pluginManager applicationDidBecomeActive:[UIApplication sharedApplication]];
@@ -325,9 +321,7 @@
 
 	[self.canvas stopRendering];
 
-	if (js_ready) {
-		[self postPauseEvent:self.wasPaused];
-	}
+	[self postPauseEvent:self.wasPaused];
 
 	LOG("{focus} Lost focus");
 }
@@ -336,9 +330,7 @@
 	self.wasPaused = NO;
 	[self.canvas startRendering];
 
-	if (js_ready) {
-		[self postPauseEvent:self.wasPaused];
-	}
+	[self postPauseEvent:self.wasPaused];
 
 	LOG("{focus} Gained focus");
 }
