@@ -280,10 +280,10 @@
 - (void) sleepJS {
 	LOG("{tealeaf} Going to sleep...");
 
+	self.wasPaused = YES;
 
 	[self.canvas stopRendering];
 
-	self.wasPaused = YES;
 	if (js_ready) {
 		[self postPauseEvent:self.wasPaused];
 	}
@@ -310,7 +310,10 @@
 
 	self.wasPaused = NO;
 	[self.canvas startRendering];
-	[self postPauseEvent:self.wasPaused];
+
+	if (js_ready) {
+		[self postPauseEvent:self.wasPaused];
+	}
 
 	if (self.pluginManager) {
 		[self.pluginManager applicationDidBecomeActive:[UIApplication sharedApplication]];
