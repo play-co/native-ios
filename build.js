@@ -152,7 +152,7 @@ function updateInfoPlist(app, config, plist) {
 
 function updateConfigPlist(app, config, plist) {
 
-  var gameVersion = require(path.join(app.paths.root, 'package.json')).version;
+  var gameVersion = require(path.join(app.paths.root, 'manifest.json')).version;
 
   plist.add(app.manifest, {
       remote_loading: 'false',
