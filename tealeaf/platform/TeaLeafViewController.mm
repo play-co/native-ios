@@ -391,7 +391,6 @@ CEXPORT void device_hide_splash() {
 			NSLOG(@"{tealeaf} ERROR: Unable to initialize javascript.");
 		} else {
 			[self onJSReady];
-			[self.appDelegate postPauseEvent:self.appDelegate.wasPaused];
 		}
 	});
 	
