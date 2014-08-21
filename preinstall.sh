@@ -9,6 +9,8 @@ if $PRIV_SUBMODS; then
 	cp .gitmodules.priv .gitmodules
 fi
 
+node scripts/submodules.js
+
 if ! git submodule sync; then
 	error "Unable to sync git submodules"
 	exit 1
