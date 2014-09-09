@@ -111,8 +111,9 @@ function updateInfoPlist(app, config, plist) {
   }
 
   // Update the version numbers
-  raw.CFBundleShortVersionString = manifest.ios.version;
-  raw.CFBundleVersion = manifest.ios.version;
+  var version = manifest.ios.version || manifest.version || '0.0.0';
+  raw.CFBundleShortVersionString = version;
+  raw.CFBundleVersion = version;
 
   // If RenderGloss enabled,
   if (manifest.ios.icons && manifest.ios.icons.renderGloss) {
@@ -122,7 +123,7 @@ function updateInfoPlist(app, config, plist) {
     //delete raw.CFBundleIcons.CFBundlePrimaryIcon.UIPrerenderedIcon;
   }
 
-  raw.CFBundleDisplayName = app.manifest.title;
+  raw.CFBundleDisplayName = app.manifest.title || "";
   raw.CFBundleIdentifier = config.bundleID;
   raw.CFBundleName = config.bundleID;
 
