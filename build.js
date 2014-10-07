@@ -111,12 +111,14 @@ function updateInfoPlist(app, config, plist) {
   }
 
   // Update the version numbers
-  var version = manifest.ios.version || manifest.version || '0.0.0';
+  var version = (manifest.ios && manifest.ios.version) ||
+      manifest.version ||
+      '0.0.0';
   raw.CFBundleShortVersionString = version;
   raw.CFBundleVersion = version;
 
   // If RenderGloss enabled,
-  if (manifest.ios.icons && manifest.ios.icons.renderGloss) {
+  if (manifest.ios && manifest.ios.icons && manifest.ios.icons.renderGloss) {
     // Note: Default is for Xcode to render it for you
     logger.log("RenderGloss: Removing pre-rendered icon flag");
     delete raw.UIPrerenderedIcon;
