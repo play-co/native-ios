@@ -20,7 +20,7 @@
 void dialog_show_dialog(const char* title, const char* text, const char* image, char** buttons, int buttonLen, int* cbs, int cbLen) {
 	// TODO subclass UIActionSheet
 	TeaLeafViewController* controller = (TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController];
-	UIAlertViewEx* dialog = [[[UIAlertViewEx alloc] initWithTitle: [NSString stringWithUTF8String:title] message: [NSString stringWithUTF8String: text] delegate:controller cancelButtonTitle: nil otherButtonTitles:nil] autorelease];
+	UIAlertViewEx* dialog = [[[UIAlertViewEx alloc] initWithTitle: [NSString stringWithUTF8String:title] message: [NSString stringWithUTF8String: text] delegate:controller cancelButtonTitle: nil otherButtonTitles:nil]];
 	[dialog registerCallbacks: cbs length: cbLen];
 	for(int i = 0; i < buttonLen; i++) {
 		[dialog addButtonWithTitle: [NSString stringWithUTF8String: buttons[i]]];
