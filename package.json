@@ -13,7 +13,7 @@
     "xcode": "^0.6.7"
   },
   "scripts": {
-    "preinstall": "./preinstall.sh"
+    "preinstall": "sh ./preinstall.sh"
   },
   "private": true,
   "repository": {
