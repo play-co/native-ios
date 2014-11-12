@@ -14,33 +14,12 @@
  */
 
 #import "TeaLeafViewController.h"
-#import "RawImageInfo.h"
-#import "Base64.h"
-
-#import "jsMacros.h"
-#import "js_core.h"
-#import "core/log.h"
 #import "TeaLeafAppDelegate.h"
-#import "ResourceLoader.h"
-#import "NativeCalls.h"
-#import "core/core.h"
-#import "core/tealeaf_canvas.h"
-#import "JSONKit.h"
-#import "jansson.h"
-#import "jsonUtil.h"
-#import "allExtensions.h"
-#include "platform.h"
-#import "iosVersioning.h"
-#include "core/core_js.h"
-#include "core/texture_manager.h"
-#include "core/config.h"
-#include "core/events.h"
-
-#include "TeaLeafTextField.h"
-
-
+#define CEXPORT extern "C"
+#define NSLOG NSLog
 static volatile BOOL m_showing_splash = NO; // Maybe showing splash screen?
 
+/*
 CEXPORT void device_hide_splash() {
 	// If showing the splash screen,
 	if (m_showing_splash) {
@@ -51,7 +30,7 @@ CEXPORT void device_hide_splash() {
 		m_showing_splash = NO;
 	}
 }
-
+*/
 
 @interface TeaLeafViewController ()
 @property (nonatomic, assign) TeaLeafAppDelegate *appDelegate;
@@ -99,20 +78,20 @@ CEXPORT void device_hide_splash() {
 	}
 #endif
     
-	if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
-		[self.view removeFromSuperview];
-        
-		[self.appDelegate.window addSubview:controller.view];
-	} else {
+//	if (SYSTEM_VERSION_LESS_THAN(@"6.0")) {
+//		[self.view removeFromSuperview];
+//        
+//		[self.appDelegate.window addSubview:controller.view];
+//	} else {
 		[self.appDelegate.window setRootViewController:controller];
-	}
+//	}
 	self.appDelegate.tealeafShowing = NO;
     
-	if (js_ready) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			core_reset();
-		});
-	}
+//	if (js_ready) {
+//		dispatch_async(dispatch_get_main_queue(), ^{
+//			core_reset();
+//		});
+//	}
 }
 
 - (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -187,14 +166,14 @@ CEXPORT void device_hide_splash() {
 - (void)onJSReady {
 	//This needs to be run on the main thread - it does some opengl stuff
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[self.appDelegate.pluginManager initializeWithManifest:self.appDelegate.appManifest appDelegate:self.appDelegate];
+		//[self.appDelegate.pluginManager initializeWithManifest:self.appDelegate.appManifest appDelegate:self.appDelegate];
 		
 		self.appDelegate.launchNotification = nil;
 		
 		// Initialize reachability notifications
 		[self.appDelegate initializeOnlineState];
 		
-		core_run();
+		//core_run();
 		
 		[self.appDelegate postPauseEvent:self.appDelegate.wasPaused];
 		
@@ -238,32 +217,32 @@ CEXPORT void device_hide_splash() {
             break;
     }
 	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"rotate\",\"orientation\":\"%s\"}", orientationName];
-	core_dispatch_event([evt UTF8String]);
+	//core_dispatch_event([evt UTF8String]);
 }
 
 - (void) destroyGLView {
-	OpenGLView *glView = self.appDelegate.canvas;
+	//OpenGLView *glView = self.appDelegate.canvas;
     
-	[glView destroyDisplayLink];
+	//[glView destroyDisplayLink];
     
-	[glView removeFromSuperview];
+	//[glView removeFromSuperview];
     
 	self.view = nil;
-	self.appDelegate.canvas = nil;
+	//self.appDelegate.canvas = nil;
 }
 
 - (void) createGLView {
 	//create our openglview and size it correctly
-	OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
+	//OpenGLView *glView = [[OpenGLView alloc] initWithFrame:self.appDelegate.initFrame];
     
-	self.view = glView;
-	self.appDelegate.canvas = glView;
+	//self.view = glView;
+	//self.appDelegate.canvas = glView;
     
-	core_init_gl(1);
+	//core_init_gl(1);
     
 	int w = self.appDelegate.screenWidthPixels;
 	int h = self.appDelegate.screenHeightPixels;
-	tealeaf_canvas_resize(w, h);
+	//tealeaf_canvas_resize(w, h);
     
 	NSLOG(@"{tealeaf} Created GLView (%d, %d)", w, h);
 }
@@ -287,40 +266,40 @@ CEXPORT void device_hide_splash() {
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillShowNotification object: nil];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(onKeyboardChange:) name: UIKeyboardWillHideNotification object: nil];
     
-	NSString *appBundle = [ResourceLoader get].appBundle;
+	//NSString *appBundle = [ResourceLoader get].appBundle;
 	const char *source_path = 0;
     
-	if (!appBundle) {
-		NSLOG(@"{core} FATAL: Unable to load app bundle!");
-	} else {
-		source_path = [[ResourceLoader get].appBundle UTF8String];
-	}
-    
+//	if (!appBundle) {
+//		NSLOG(@"{core} FATAL: Unable to load app bundle!");
+//	} else {
+//		//source_path = [[ResourceLoader get].appBundle UTF8String];
+//	}
+	
 	if (!source_path || *source_path == '\0') {
 		source_path = [[self.appDelegate.config objectForKey:@"source_dir"] UTF8String];
 	}
 	
-	core_init([[self.appDelegate.config objectForKey:@"entry_point"] UTF8String],
-			  [[self.appDelegate.config	objectForKey:@"tcp_host"] UTF8String],
-			  [[self.appDelegate.config	objectForKey:@"code_host"] UTF8String],
-			  [[self.appDelegate.config	objectForKey:@"tcp_port"] intValue],
-			  [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
-			  source_path, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels,
-			  self.appDelegate.isTestApp,
-			  NULL, // Disable OpenGL splash
-			  "");
+//	core_init([[self.appDelegate.config objectForKey:@"entry_point"] UTF8String],
+//			  [[self.appDelegate.config	objectForKey:@"tcp_host"] UTF8String],
+//			  [[self.appDelegate.config	objectForKey:@"code_host"] UTF8String],
+//			  [[self.appDelegate.config	objectForKey:@"tcp_port"] intValue],
+//			  [[self.appDelegate.config	objectForKey:@"code_port"] intValue],
+//			  source_path, self.appDelegate.screenWidthPixels, self.appDelegate.screenHeightPixels,
+//			  self.appDelegate.isTestApp,
+//			  NULL, // Disable OpenGL splash
+//			  "");
 	
 	// Lower texture memory based on device model
-    NSLOG(@"{core} iOS device model '%@'", get_platform());
-    
-	int mem_limit = get_platform_memory_limit();
+//    NSLOG(@"{core} iOS device model '%@'", get_platform());
+//    
+//	int mem_limit = get_platform_memory_limit();
+//	
+//	if (self.appDelegate.ignoreMemoryWarnings) {
+//		mem_limit = 28000000; // Impose lower memory limit for this work-around case
+//	}
+//    
+//	texture_manager_set_max_memory(texture_manager_get(), mem_limit);
 	
-	if (self.appDelegate.ignoreMemoryWarnings) {
-		mem_limit = 28000000; // Impose lower memory limit for this work-around case
-	}
-    
-	texture_manager_set_max_memory(texture_manager_get(), mem_limit);
-    
 	[self createGLView];
     
 	/*
@@ -329,9 +308,9 @@ CEXPORT void device_hide_splash() {
 	 * and our opengl loading image so there's no gap
 	 */
     
-	NSURL *loading_path = [[ResourceLoader get] resolve:self.appDelegate.screenBestSplash];
-	NSData *data = [NSData dataWithContentsOfURL:loading_path];
-	UIImage *loading_image_raw = [UIImage imageWithData: data];
+	//NSURL *loading_path = [[ResourceLoader get] resolve:self.appDelegate.screenBestSplash];
+	//NSData *data = [NSData dataWithContentsOfURL:loading_path];
+	//UIImage *loading_image_raw = [UIImage imageWithData: data];
     
 	UIImageOrientation splashOrientation = UIImageOrientationUp;
 	int frameWidth = (int)self.appDelegate.window.frame.size.width;
@@ -350,13 +329,13 @@ CEXPORT void device_hide_splash() {
 	}
     
 	bool needsOrientRotate = w > h;
-	needsOrientRotate ^= loading_image_raw.size.width > loading_image_raw.size.height;
+	//needsOrientRotate ^= loading_image_raw.size.width > loading_image_raw.size.height;
 	if (needsOrientRotate) {
 		splashOrientation = UIImageOrientationRight;
 	}
     
-	UIImage *loading_image = [UIImage imageWithCGImage:loading_image_raw.CGImage scale:1.f orientation:splashOrientation];
-	self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
+	//UIImage *loading_image = [UIImage imageWithCGImage:loading_image_raw.CGImage scale:1.f orientation:splashOrientation];
+	//self.loading_image_view = [[UIImageView alloc] initWithImage:loading_image];
 	self.loading_image_view.frame = CGRectMake(0, 0, frameWidth, frameHeight);
     
 	//add the openglview to our window
@@ -371,31 +350,31 @@ CEXPORT void device_hide_splash() {
 	m_showing_splash = YES;
     
 	// Initialize text manager
-	if (!text_manager_init()) {
-		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
-	}
+//	if (!text_manager_init()) {
+//		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
+//	}
+//	
+//	// Setup the JS runtime in the main thread
+//	if (!setup_js_runtime()) {
+//		NSLOG(@"{tealeaf} ERROR: Unable to setup javascript runtime.");
+//	}
+//    
+//	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
+//	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
+//	
+//	// Run JS initialization in another thread
+//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, (unsigned long)NULL), ^(void) {
+//		NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];
+//		
+//		if (!core_init_js([baseURL UTF8String], [(NSString*)[self.appDelegate.config objectForKey:@"native_hash"] UTF8String])) {
+//			NSLOG(@"{tealeaf} ERROR: Unable to initialize javascript.");
+//		} else {
+//			[self onJSReady];
+//		}
+//	});
+//	
+//	[self.appDelegate.canvas startRendering];
 	
-	// Setup the JS runtime in the main thread
-	if (!setup_js_runtime()) {
-		NSLOG(@"{tealeaf} ERROR: Unable to setup javascript runtime.");
-	}
-    
-	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
-	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
-	
-	// Run JS initialization in another thread
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, (unsigned long)NULL), ^(void) {
-		NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];
-		
-		if (!core_init_js([baseURL UTF8String], [(NSString*)[self.appDelegate.config objectForKey:@"native_hash"] UTF8String])) {
-			NSLOG(@"{tealeaf} ERROR: Unable to initialize javascript.");
-		} else {
-			[self onJSReady];
-		}
-	});
-	
-	[self.appDelegate.canvas startRendering];
-    
 #ifndef DISABLE_TESTAPP
 	if (self.appDelegate.isTestApp) {
 		UIRotationGestureRecognizer *rotationRecognizer =
@@ -412,9 +391,9 @@ CEXPORT void device_hide_splash() {
 	}
 #endif
     
-    TeaLeafTextField *textField = [[TeaLeafTextField alloc] init];
-    [[(TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController] view] addSubview:textField];
-    
+//    TeaLeafTextField *textField = [[TeaLeafTextField alloc] init];
+//    [[(TeaLeafViewController*)[[[UIApplication sharedApplication] keyWindow] rootViewController] view] addSubview:textField];
+	
 }
 
 
@@ -431,15 +410,15 @@ CEXPORT void device_hide_splash() {
     // TODO: might need this if the status bar is visible to compute the y-offset?
     // CGSize size = self.view.frame.size;
     
-	JSContext* cx = [[js_core lastJS] cx];
-	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "keyboardScreenResize"));
-	jsval height = INT_TO_JSVAL(properlyRotatedCoords.origin.y);
-	JS_SetProperty(cx, event, "name", &name);
-	JS_SetProperty(cx, event, "height", &height);
-    
-	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt];
+//	JSContext* cx = [[js_core lastJS] cx];
+//	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
+//	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "keyboardScreenResize"));
+//	jsval height = INT_TO_JSVAL(properlyRotatedCoords.origin.y);
+//	JS_SetProperty(cx, event, "name", &name);
+//	JS_SetProperty(cx, event, "height", &height);
+//    
+//	jsval evt = OBJECT_TO_JSVAL(event);
+//	[[js_core lastJS] dispatchEvent:&evt];
 }
 
 - (IBAction)rotationDetected:(UIGestureRecognizer *)sender {
@@ -458,9 +437,9 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void)runCallback:(char *)arg {
-	js_core* instance = [js_core lastJS];
-	jsval args[] = { STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)) };
-	[instance dispatchEvent:args];
+//	js_core* instance = [js_core lastJS];
+//	jsval args[] = { STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)) };
+//	[instance dispatchEvent:args];
 }
 
 - (void)sendSMSTo:(NSString *)number withMessage:(NSString *)msg andCallback:(int)cb {
@@ -562,41 +541,41 @@ CEXPORT void device_hide_splash() {
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoBeginLoaded"}];
-    
-	if (self.popover != nil) {
-		[self.popover dismissPopoverAnimated:YES];
-	}
-	
-    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    float bmpWidth = image.size.width;
-    float bmpHeight = image.size.height;
-
-	// If cropping,
-	if (self.photoCrop != 0) {
-		// Stretch as little as possible
-		float wScale = self.photoWidth / bmpWidth;
-		float hScale = self.photoHeight / bmpHeight;
-
-		float minScale = (hScale > wScale) ? hScale : wScale;
-		CGSize size = CGSizeMake(minScale * bmpWidth, minScale * bmpHeight);
-		image = [self imageWithImage:image scaledToSize:size];
-
-		// Now crop the edges off what remains
-	    image = [self cropWithImage:image withRect:CGRectMake((image.size.width - self.photoWidth) / 2.f,
-    	                                                      (image.size.height - self.photoHeight) / 2.f,
-        	                                                  self.photoWidth,
-            	                                              self.photoHeight)];
-	}
-
-    NSData *data = UIImagePNGRepresentation(image);
-    NSString *b64Image = encodeBase64(data);
-    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image }];
-    
-    [self dismissViewControllerAnimated:YES completion:NULL];
-    
-	// Make sure the status bar is gone
-	[[UIApplication sharedApplication] setStatusBarHidden:YES];
+//    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoBeginLoaded"}];
+//    
+//	if (self.popover != nil) {
+//		[self.popover dismissPopoverAnimated:YES];
+//	}
+//	
+//    UIImage *image = [info valueForKey:UIImagePickerControllerOriginalImage];
+//    float bmpWidth = image.size.width;
+//    float bmpHeight = image.size.height;
+//
+//	// If cropping,
+//	if (self.photoCrop != 0) {
+//		// Stretch as little as possible
+//		float wScale = self.photoWidth / bmpWidth;
+//		float hScale = self.photoHeight / bmpHeight;
+//
+//		float minScale = (hScale > wScale) ? hScale : wScale;
+//		CGSize size = CGSizeMake(minScale * bmpWidth, minScale * bmpHeight);
+//		image = [self imageWithImage:image scaledToSize:size];
+//
+//		// Now crop the edges off what remains
+//	    image = [self cropWithImage:image withRect:CGRectMake((image.size.width - self.photoWidth) / 2.f,
+//    	                                                      (image.size.height - self.photoHeight) / 2.f,
+//        	                                                  self.photoWidth,
+//            	                                              self.photoHeight)];
+//	}
+//
+//    NSData *data = UIImagePNGRepresentation(image);
+//    NSString *b64Image = encodeBase64(data);
+//    [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image }];
+//    
+//    [self dismissViewControllerAnimated:YES completion:NULL];
+//    
+//	// Make sure the status bar is gone
+//	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
@@ -616,15 +595,15 @@ CEXPORT void device_hide_splash() {
 @implementation UIAlertViewEx
 
 - (void) dispatch:(int)callback {
-	JSContext* cx = [[js_core lastJS] cx];
-	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "dialogButtonClicked"));
-	jsval idv = INT_TO_JSVAL(callback);
-	JS_SetProperty(cx, event, "name", &name);
-	JS_SetProperty(cx, event, "id", &idv);
-    
-	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt];
+//	JSContext* cx = [[js_core lastJS] cx];
+//	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
+//	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "dialogButtonClicked"));
+//	jsval idv = INT_TO_JSVAL(callback);
+//	JS_SetProperty(cx, event, "name", &name);
+//	JS_SetProperty(cx, event, "id", &idv);
+//    
+//	jsval evt = OBJECT_TO_JSVAL(event);
+//	[[js_core lastJS] dispatchEvent:&evt];
 }
 
 - (void) registerCallbacks:(int *)cbs length:(int)len {
@@ -634,7 +613,7 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) dealloc {
-	[ResourceLoader release];
+//	[ResourceLoader release];
 	free(self->callbacks);
 	[super dealloc];
 }

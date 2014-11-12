@@ -3,6 +3,7 @@ libpng/build
 libjpeg/build
 *.xcodeproj/*.pbxuser
 *.xcodeproj/*.mode*
+tealeaf/resources.bundle
 *xcuserdata*
 app.bundle/*
 .DS_Store

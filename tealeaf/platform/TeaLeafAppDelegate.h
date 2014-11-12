@@ -15,15 +15,12 @@
 
 #import <UIKit/UIKit.h>
 #import "TeaLeafViewController.h"
+#import "GameViewController.h"
+#define DISABLE_TESTAPP
 #ifndef DISABLE_TESTAPP
 #import "ServerTableViewController.h"
 #import "AppTableViewController.h"
 #endif
-#import "PluginManager.h"
-#import "js_core.h"
-#import "OpenGLView.h"
-#import "Reachability.h"
-
 // Splash Screen Descriptor
 struct SplashDescriptor {
 	const char *key;		// Manifest.json key name under "splash" section
@@ -37,19 +34,16 @@ struct SplashDescriptor {
 @property (nonatomic) BOOL debugModeBuild;					// Set to true if --debug flag was used during building
 @property (nonatomic) BOOL isTestApp;						// Is in test-app mode?
 @property (nonatomic, retain) NSMutableDictionary *config;	// Configuration config.plist file dictionary
-@property (nonatomic, retain) js_core *js;
-@property (nonatomic, retain) OpenGLView *canvas;
 @property (nonatomic) BOOL isOnline;                        // Indicates that upon the previous notice, that the internet was reachable
 @property (nonatomic) BOOL wasPaused;                       // Indicates that upon the previous notice, that the app was paused
 @property (nonatomic) BOOL tealeafShowing;
 @property (nonatomic) BOOL signalRestart;
 @property (nonatomic, retain) TeaLeafViewController *tealeafViewController;
+@property (nonatomic, retain) GameViewController *gameViewController;
 #ifndef DISABLE_TESTAPP
 @property (nonatomic, retain) ServerTableViewController *tableViewController;
 @property (nonatomic, retain) AppTableViewController *appTableViewController;
 #endif
-@property (nonatomic, retain) PluginManager *pluginManager;
-@property (nonatomic, retain) Reachability *reach;
 @property (nonatomic, retain) NSNetServiceBrowser *serviceBrowser;
 @property (nonatomic, retain) NSMutableArray *services;
 @property (nonatomic, strong) UILocalNotification *launchNotification;
@@ -78,8 +72,8 @@ struct SplashDescriptor {
 // Online state
 - (void) initializeOnlineState;
 - (void) hookOnlineState;
-- (BOOL) getNetworkStatus: (Reachability*) reach;
-- (void) updateNetworkStatus: (Reachability*) reach;
+//- (BOOL) getNetworkStatus: (Reachability*) reach;
+//- (void) updateNetworkStatus: (Reachability*) reach;
 
 // Update the screen properties
 - (void) updateScreenProperties;

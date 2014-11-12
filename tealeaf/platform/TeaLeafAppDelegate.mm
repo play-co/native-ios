@@ -14,28 +14,8 @@
  */
 
 #import "TeaLeafAppDelegate.h"
-#import "ResourceLoader.h"
-#import "SoundManager.h"
-#import "OpenGLView.h"
-#import <CommonCrypto/CommonDigest.h>
-#include "tealeaf_canvas.h"
-#include "core.h"
-#include "texture_manager.h"
-#include "core/config.h"
-#include "core/events.h"
-#include "core/platform/sound_manager.h"
-#import "core/core_js.h"
-#include "platform.h"
-#include "jsonUtil.h"
-#import "JSONKit.h"
-#include "events.h"
-#import "platform/log.h"
-#import "sys/socket.h"
-#import "netinet/in.h"
-#import "arpa/inet.h"
-#import "iosVersioning.h"
-#import "LocalStorage.h"
-
+#define LOG printf
+#define NSLOG NSLog
 
 @interface TeaLeafAppDelegate ()
 @end
@@ -46,9 +26,6 @@
 	self.window = nil;
 	self.config = nil;
 	self.tealeafViewController = nil;
-	self.js = nil;
-	self.canvas = nil;
-	self.pluginManager = nil;
 	self.screenBestSplash = nil;
 	self.testAppManifest = nil;
 
@@ -56,24 +33,24 @@
 }
 
 - (void) setJSReady:(bool) isReady {
-	js_ready = isReady;
+//	js_ready = isReady;
 }
 
 - (BOOL) getJSReady {
-	return js_ready;
+//	return js_ready;
 }
 
 - (BOOL)application:(UIApplication *)app didFinishLaunchingWithOptions:(NSDictionary *)options {
 	self.ignoreMemoryWarnings = NO;
 
-	// If on iOS 7,
-	if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-		// If on iPhone 4s
-		if ([get_platform() isEqualToString:@"iPhone4,1"]) {
-			NSLOG(@"{core} iOS7-iPhone4s work-around is enabled");
-			self.ignoreMemoryWarnings = YES;
-		}
-	}
+//	// If on iOS 7,
+//	if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+//		// If on iPhone 4s
+//		if ([get_platform() isEqualToString:@"iPhone4,1"]) {
+//			NSLOG(@"{core} iOS7-iPhone4s work-around is enabled");
+//			self.ignoreMemoryWarnings = YES;
+//		}
+//	}
 
 	//SEARCH FOR NETWORKS
 	self.services = [NSMutableArray array];
@@ -95,6 +72,7 @@
 
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
+	self.gameViewController = [[GameViewController alloc] init];
 	self.signalRestart = NO;
 
 	NSString *path = [[NSBundle mainBundle] resourcePath];
@@ -126,8 +104,8 @@
 #endif
 
 	if (!self.isTestApp) {
-		[self.window addSubview:self.tealeafViewController.view];
-		self.window.rootViewController = self.tealeafViewController;
+		[self.window addSubview:self.gameViewController.view];
+		self.window.rootViewController = self.gameViewController;
 	}
 
 	[self.window makeKeyAndVisible];
@@ -136,126 +114,126 @@
 }
 
 - (void) restartJS {
-	if (!self.isTestApp) {
-		if (js_ready) {
-			if (!self.signalRestart) {
-				self.signalRestart = YES;
-
-				dispatch_async(dispatch_get_main_queue(), ^{
-					self.signalRestart = NO;
-					core_reset();
-
-					[self.tealeafViewController release];
-
-					self.tealeafViewController = [[TeaLeafViewController alloc] init];
-
-					[self.window addSubview:self.tealeafViewController.view];
-					self.window.rootViewController = self.tealeafViewController;
-				});
-			}
-		}
-	} else {
-		// NOTE: This works but in the TestApp case I would rather allow it to hang
-		// so that remote debugging can be performed posthumously.
-		//[self.tealeafViewController restartJS];
-	}
+//	if (!self.isTestApp) {
+//		if (js_ready) {
+//			if (!self.signalRestart) {
+//				self.signalRestart = YES;
+//
+//				dispatch_async(dispatch_get_main_queue(), ^{
+//					self.signalRestart = NO;
+//					core_reset();
+//
+//					[self.tealeafViewController release];
+//
+//					self.tealeafViewController = [[TeaLeafViewController alloc] init];
+//
+//					[self.window addSubview:self.tealeafViewController.view];
+//					self.window.rootViewController = self.tealeafViewController;
+//				});
+//			}
+//		}
+//	} else {
+//		// NOTE: This works but in the TestApp case I would rather allow it to hang
+//		// so that remote debugging can be performed posthumously.
+//		//[self.tealeafViewController restartJS];
+//	}
 }
 
 
 
 //// Online State
 
-- (void) initializeOnlineState {
-	self.reach = [Reachability reachabilityForInternetConnection];
-
-	// Set initial state
-	self.isOnline = [self getNetworkStatus:self.reach];
-
-	if (self.isOnline) {
-		LOG("{reachability} Online (initially)");
-	} else {
-		LOG("{reachability} Offline (initially)");
-	}
-}
-
-- (void) hookOnlineState {
-	// Listen to network-reachable events
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-
-	[self.reach startNotifier];
-
-	// Post current state event always at least once on startup
-	[self postNetworkStatusEvent:self.isOnline];
-}
-
-- (BOOL) getNetworkStatus:(Reachability *)reach {
-	NetworkStatus internetStatus = [reach currentReachabilityStatus];
-
-	// Convert internetStatus into a Boolean indicating if it is online
-	BOOL nowReachable = NO;
-	switch (internetStatus) {
-		case ReachableViaWiFi:
-		case ReachableViaWWAN:
-			nowReachable = YES;
-			break;
-		default:
-		case NotReachable:
-			nowReachable = NO;
-			break;
-	}
-
-	return nowReachable;
-}
-
-- (void) updateNetworkStatus:(Reachability *)reach {
-	// Convert internetStatus into a Boolean indicating if it is online
-	BOOL nowReachable = [self getNetworkStatus:reach];
-
-	// If state really changed,
-	if (self.isOnline != nowReachable) {
-		// Update wasReachable
-		self.isOnline = nowReachable;
-
-		[self postNetworkStatusEvent: nowReachable];
-
-		if (nowReachable) {
-			LOG("{reachability} Online");
-		} else {
-			LOG("{reachability} Offline");
-		}
-	}
-}
-
-- (void) postNetworkStatusEvent:(BOOL) tobeOnline {
-	// Post notification to javascript
-	NSString *type = tobeOnline ? @"online" : @"offline";
-	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"networkStatus\",\"type\":\"%@\"}", type];
-	core_dispatch_event([evt UTF8String]);
-}
-
-- (void) reachabilityChanged:(NSNotification*) notice {
-	[self updateNetworkStatus: [notice object]];
-}
+//- (void) initializeOnlineState {
+//	self.reach = [Reachability reachabilityForInternetConnection];
+//
+//	// Set initial state
+//	self.isOnline = [self getNetworkStatus:self.reach];
+//
+//	if (self.isOnline) {
+//		LOG("{reachability} Online (initially)");
+//	} else {
+//		LOG("{reachability} Offline (initially)");
+//	}
+//}
+//
+//- (void) hookOnlineState {
+//	// Listen to network-reachable events
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+//
+//	[self.reach startNotifier];
+//
+//	// Post current state event always at least once on startup
+//	[self postNetworkStatusEvent:self.isOnline];
+//}
+//
+//- (BOOL) getNetworkStatus:(Reachability *)reach {
+//	NetworkStatus internetStatus = [reach currentReachabilityStatus];
+//
+//	// Convert internetStatus into a Boolean indicating if it is online
+//	BOOL nowReachable = NO;
+//	switch (internetStatus) {
+//		case ReachableViaWiFi:
+//		case ReachableViaWWAN:
+//			nowReachable = YES;
+//			break;
+//		default:
+//		case NotReachable:
+//			nowReachable = NO;
+//			break;
+//	}
+//
+//	return nowReachable;
+//}
+//
+//- (void) updateNetworkStatus:(Reachability *)reach {
+//	// Convert internetStatus into a Boolean indicating if it is online
+//	BOOL nowReachable = [self getNetworkStatus:reach];
+//
+//	// If state really changed,
+//	if (self.isOnline != nowReachable) {
+//		// Update wasReachable
+//		self.isOnline = nowReachable;
+//
+//		[self postNetworkStatusEvent: nowReachable];
+//
+//		if (nowReachable) {
+//			LOG("{reachability} Online");
+//		} else {
+//			LOG("{reachability} Offline");
+//		}
+//	}
+//}
+//
+//- (void) postNetworkStatusEvent:(BOOL) tobeOnline {
+//	// Post notification to javascript
+//	NSString *type = tobeOnline ? @"online" : @"offline";
+//	NSString *evt = [NSString stringWithFormat: @"{\"name\":\"networkStatus\",\"type\":\"%@\"}", type];
+//	core_dispatch_event([evt UTF8String]);
+//}
+//
+//- (void) reachabilityChanged:(NSNotification*) notice {
+//	[self updateNetworkStatus: [notice object]];
+//}
 
 - (void) postPauseEvent:(BOOL) isPaused {
-  if (js_ready) {
-    NSString* evt = isPaused ? @"{\"name\":\"pause\"}" : @"{\"name\":\"resume\"}";
-    core_dispatch_event([evt UTF8String]);
-    LOG("postPauseEvent");
-
-    if (self.pluginManager) {
-      if (isPaused) {
-        [self.pluginManager onPause];
-      } else {
-        [self.pluginManager onResume];
-      }
-    }
-  }
+//  if (js_ready) {
+//    NSString* evt = isPaused ? @"{\"name\":\"pause\"}" : @"{\"name\":\"resume\"}";
+//    core_dispatch_event([evt UTF8String]);
+//    LOG("postPauseEvent");
+//
+//    if (self.pluginManager) {
+//      if (isPaused) {
+//        [self.pluginManager onPause];
+//      } else {
+//        [self.pluginManager onResume];
+//      }
+//    }
+//  }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-	[self.canvas startRendering];
+	//[self.canvas startRendering];
 }
 
 - (void) applicationDidEnterBackground:(UIApplication *)application
@@ -273,55 +251,55 @@
 		[application endBackgroundTask:bgTask];
 	});
 
-	[self.canvas stopRendering];
+	//[self.canvas stopRendering];
 }
 
 // This function is used to put Tealeaf into a deep sleep.
 // It pauses JS without destroying the JS engine state and
 // frees all memory for native resources.
 - (void) sleepJS {
-	LOG("{tealeaf} Going to sleep...");
-
-	self.wasPaused = YES;
-
-	[self.canvas stopRendering];
-
-	[self postPauseEvent:self.wasPaused];
-
-	// Remove tealeaf window from screen
-	[self.window removeFromSuperview];
-	self.tealeafShowing = NO;
-
-	texture_manager_destroy(texture_manager_get());
-	sound_manager_halt();
+//	LOG("{tealeaf} Going to sleep...");
+//
+//	self.wasPaused = YES;
+//
+//	[self.canvas stopRendering];
+//
+//	[self postPauseEvent:self.wasPaused];
+//
+//	// Remove tealeaf window from screen
+//	[self.window removeFromSuperview];
+//	self.tealeafShowing = NO;
+//
+//	texture_manager_destroy(texture_manager_get());
+//	sound_manager_halt();
 
 	[self.tealeafViewController destroyGLView];
 }
 
 - (void) wakeJS {
-	LOG("{tealeaf} Waking up...");
-
-	[self.tealeafViewController createGLView];
-
-	[self.window makeKeyAndVisible];
-	[self.window addSubview:self.tealeafViewController.view];
-	[self.window setRootViewController:self.tealeafViewController];
-	[self.window bringSubviewToFront:self.tealeafViewController.view];
-
-	self.wasPaused = NO;
-	[self.canvas startRendering];
-
-	[self postPauseEvent:self.wasPaused];
-
-	if (self.pluginManager) {
-		[self.pluginManager applicationDidBecomeActive:[UIApplication sharedApplication]];
-	}
+//	LOG("{tealeaf} Waking up...");
+//
+//	[self.tealeafViewController createGLView];
+//
+//	[self.window makeKeyAndVisible];
+//	[self.window addSubview:self.tealeafViewController.view];
+//	[self.window setRootViewController:self.tealeafViewController];
+//	[self.window bringSubviewToFront:self.tealeafViewController.view];
+//
+//	self.wasPaused = NO;
+//	[self.canvas startRendering];
+//
+//	[self postPauseEvent:self.wasPaused];
+//
+//	if (self.pluginManager) {
+//		[self.pluginManager applicationDidBecomeActive:[UIApplication sharedApplication]];
+//	}
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 	self.wasPaused = YES;
 
-	[self.canvas stopRendering];
+	//[self.canvas stopRendering];
 
 	[self postPauseEvent:self.wasPaused];
 
@@ -330,7 +308,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	self.wasPaused = NO;
-	[self.canvas startRendering];
+	//[self.canvas startRendering];
 
 	[self postPauseEvent:self.wasPaused];
 
@@ -341,15 +319,15 @@
 //What else should we do here? TODO
 - (void)applicationWillTerminate:(UIApplication *)application {
 	LOG("{focus} Application will terminate");
-
-	if (self.js) {
-		[self.js dealloc];
-	}
-	if (self.pluginManager) {
-		[self.pluginManager applicationWillTerminate:application];
-	}
-
-	syncUserDefaults();
+//
+//	if (self.js) {
+//		[self.js dealloc];
+//	}
+//	if (self.pluginManager) {
+//		[self.pluginManager applicationWillTerminate:application];
+//	}
+//
+//	syncUserDefaults();
 }
 
 
@@ -417,9 +395,9 @@
   sourceApplication:(NSString *)sourceApplication
 		 annotation:(id)annotation
 {
-	if (self.pluginManager) {
-		[self.pluginManager handleOpenURL:url  sourceApplication:sourceApplication];
-	}
+//	if (self.pluginManager) {
+//		[self.pluginManager handleOpenURL:url  sourceApplication:sourceApplication];
+//	}
 
 	return YES;
 }
@@ -430,34 +408,34 @@
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
 	if (!self.ignoreMemoryWarnings) {
 		// Dump JS garbage and sound effects immediately
-		[[js_core lastJS] performSelectorOnMainThread:@selector(performGC) withObject:nil waitUntilDone:NO];
-		[[SoundManager get] clearEffects];
-
-		// Allow texture manager to react to a low memory warning as it deems appropriate
-		texture_manager_memory_warning(texture_manager_get());
+//		[[js_core lastJS] performSelectorOnMainThread:@selector(performGC) withObject:nil waitUntilDone:NO];
+//		[[SoundManager get] clearEffects];
+//
+//		// Allow texture manager to react to a low memory warning as it deems appropriate
+//		texture_manager_memory_warning(texture_manager_get());
 	}
 }
 
 - (void) application: (UIApplication *) app didRegisterForRemoteNotificationsWithDeviceToken: (NSData *) deviceToken
 {
-    [self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
+//    [self.pluginManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken application:app];
 }
 
 - (void) application: (UIApplication *) app didFailToRegisterForRemoteNotificationsWithError: (NSError *) error
 {
 	NSLOG(@"{notifications} Push notification registration failed: %@", error);
 
-	[self.pluginManager didFailToRegisterForRemoteNotificationsWithError:error application:app];
+//	[self.pluginManager didFailToRegisterForRemoteNotificationsWithError:error application:app];
 }
 
 - (void) application: (UIApplication *) app didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-	[self.pluginManager didReceiveRemoteNotification:userInfo application:app];
+//	[self.pluginManager didReceiveRemoteNotification:userInfo application:app];
 }
 
 - (void)application:(UIApplication *)app didReceiveLocalNotification:(UILocalNotification *)notification
 {
-	[self.pluginManager didReceiveLocalNotification:notification application:app];
+//	[self.pluginManager didReceiveLocalNotification:notification application:app];
 }
 
 
@@ -633,15 +611,15 @@ SplashDescriptor SPLASHES[] = {
 
 	// Read manifest file
 	NSError *err = nil;
-	NSString *manifest_file = [[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
+	NSString *manifest_file = nil;//[[ResourceLoader get] initStringWithContentsOfURL:@"manifest.json"];
 	NSDictionary *dict = nil;
 	NSUInteger length = 0;
-	if (manifest_file) {
-		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
-		const char *manifest_utf8 = (const char *) [manifest_file UTF8String];
-		length = strlen(manifest_utf8);
-		dict = [decoder objectWithUTF8String:(const unsigned char *)manifest_utf8 length:length error:&err];
-	}
+//	if (manifest_file) {
+//		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
+//		const char *manifest_utf8 = (const char *) [manifest_file UTF8String];
+//		length = strlen(manifest_utf8);
+//		dict = [decoder objectWithUTF8String:(const unsigned char *)manifest_utf8 length:length error:&err];
+//	}
 
 	// If failed to load,
 	if (!dict) {
