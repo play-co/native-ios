@@ -20,6 +20,8 @@
 		<string>https://github.com/gameclosure/native-ios-priv</string>
 		<key>DAD85A5B558C16660F318FBCC7ADC45F45643938</key>
 		<string>https://github.com/weebygames/bubblepang</string>
+		<key>E8807095C02FF7A4D4F1D237B904A6AB2CFC14B5</key>
+		<string>https://github.com/rogueSkib/spacebot.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>tealeaf/TeaLeafIOS.xcodeproj</string>
@@ -35,6 +37,8 @@
 		<string>../../..</string>
 		<key>DAD85A5B558C16660F318FBCC7ADC45F45643938</key>
 		<string>../../../..</string>
+		<key>E8807095C02FF7A4D4F1D237B904A6AB2CFC14B5</key>
+		<string>../../../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/gameclosure/native-ios-priv</string>
@@ -48,6 +52,14 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>436F5FAB16756B3A3D5A080F8EC782F52CCE3D32</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>DAD85A5B558C16660F318FBCC7ADC45F45643938</string>
 			<key>IDESourceControlWCCName</key>
 			<string></string>
@@ -56,9 +68,9 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>436F5FAB16756B3A3D5A080F8EC782F52CCE3D32</string>
+			<string>E8807095C02FF7A4D4F1D237B904A6AB2CFC14B5</string>
 			<key>IDESourceControlWCCName</key>
-			<string></string>
+			<string>..</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>

@@ -64,7 +64,7 @@
 		08E67B581A0D8B2F00685EAE /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
 		08E67B591A0D8B3400685EAE /* GameViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameViewController.mm; sourceTree = "<group>"; };
 		08E67B5B1A0D8C0100685EAE /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
-		08E67B5D1A0D991700685EAE /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = resources.bundle; sourceTree = SOURCE_ROOT; };
+		08E67B5D1A0D991700685EAE /* resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = resources.bundle; path = resources/resources.bundle; sourceTree = SOURCE_ROOT; };
 		08E67B601A0D9B4300685EAE /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		08E67B621A0D9B4300685EAE /* libjansson.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjansson.a; sourceTree = "<group>"; };
 		08E67B631A0D9B4300685EAE /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
@@ -195,7 +195,6 @@
 			isa = PBXGroup;
 			children = (
 				08E67B5F1A0D9B4300685EAE /* prebuild-libs */,
-				08E67B5D1A0D991700685EAE /* resources.bundle */,
 				4EF16B7F180DCA2B0011E864 /* Images.xcassets */,
 				D55821D1150E7C7600549BF6 /* platform */,
 				D55821FF150E7C7600549BF6 /* resources */,
@@ -269,6 +268,7 @@
 		D55821FF150E7C7600549BF6 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				08E67B5D1A0D991700685EAE /* resources.bundle */,
 				36ACCF29179F595D002AE65C /* done_button_pressed.png */,
 				36ACCF2A179F595D002AE65C /* done_button.png */,
 				36ACCEFD179F2A63002AE65C /* left_text_handler_disabled.png */,

@@ -231,7 +231,7 @@ function buildXcodeProject(api, app, config, cb) {
       ]
     }, f());
 
-    xcodeProject.addResourceFiles('resources.bundle', f());
+    xcodeProject.addResourceFiles('resources/resources.bundle', f());
   }, function () {
     xcodeProject.write(f());
     infoPlist.write(f());
