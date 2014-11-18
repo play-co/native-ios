@@ -13,6 +13,7 @@
 @interface GameViewController () {
 
 }
+
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKBaseEffect *effect;
 
@@ -40,6 +41,7 @@
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    
     
     [self setupGL];
 }
@@ -115,6 +117,7 @@ static long oldTime = 0;
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
 	if (!initialized) {
+        [self setPreferredFramesPerSecond: (NSInteger)@60];
 		const char *apkPath = "resources.bundle";
 		bool remote_loading = true;
 		
