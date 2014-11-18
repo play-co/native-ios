@@ -434,11 +434,11 @@ CEXPORT JSBool def_timestep_view_getSubviews(JSContext *cx, unsigned argc, jsval
 CEXPORT JSBool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
 
-	jsval *vals = JS_ARGV(cx, vp);
+	jsval *js_pt = JS_ARGV(cx, vp);
 	jsval thiz_val = JS_THIS(cx, vp);
 	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
 	timestep_view *v = (timestep_view *)JS_GetPrivate(thiz);
-	JSObject *pt = JSVAL_TO_OBJECT(*vals);
+	JSObject *pt = JSVAL_TO_OBJECT(*js_pt);
 	jsval x_val, y_val;
 	JS_GetProperty(cx, pt, "x", &x_val);
 	JS_GetProperty(cx, pt, "y", &y_val);
@@ -472,13 +472,10 @@ CEXPORT JSBool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsv
 	jsval new_x = DOUBLE_TO_JSVAL(x);
 	jsval new_y = DOUBLE_TO_JSVAL(y);
 
-	JSObject *localizedPt = JS_NewObject(cx, NULL, NULL, NULL);
+	JS_SetProperty(cx, pt, "x", &new_x);
+	JS_SetProperty(cx, pt, "y", &new_y);
 
-	JS_SetProperty(cx, localizedPt, "x", &new_x);
-	JS_SetProperty(cx, localizedPt, "y", &new_y);
-
-	jsval ret = OBJECT_TO_JSVAL(localizedPt);
-	JS_SET_RVAL(cx, vp, ret);
+	JS_SET_RVAL(cx, vp, *js_pt);
 
 	JS_EndRequest(cx);
 	return JS_TRUE;
