@@ -90,9 +90,15 @@
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
 
-    [app registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-
+    if ([app respondsToSelector:@selector(isRegisteredForRemoteNotifications)]) {
+           // iOS 8 Notifications
+           [app registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+           [app registerForRemoteNotifications];
+    }else{
+          // iOS < 8 Notifications
+          [app registerForRemoteNotificationTypes:
+                     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+    }
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
 	self.signalRestart = NO;
