@@ -2,7 +2,7 @@
   "author": "The Game Closure DevKit Team",
   "name": "native-ios",
   "description": "Native-iOS DevKit addon for building for the iOS platform",
-  "version": "1.0.22",
+  "version": "2.0.0",
   "dependencies": {
     "cli-color": "~0.3.2",
     "ff": "0.2.0",
@@ -10,7 +10,7 @@
     "plist": "^0.4.3",
     "rsync": "^0.3.0",
     "wrench": "~1.3.9",
-    "xcode": "^0.6.7"
+    "xcode": "https://github.com/gameclosure/node-xcode/tarball/fab08c5f056da36d6b027979e53778c3d2366e96"
   },
   "scripts": {
     "preinstall": "sh ./preinstall.sh"
