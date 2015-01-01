@@ -191,9 +191,6 @@ CEXPORT JSBool def_timestep_view_set_compositeOperation(JSContext *cx, JSHandleO
 					op = 1344;
 				}
 			}
-			if (0 == op) {
-				LOG("{view} WARNING: View given invalid composite operation %s", code);
-			}
 		}
 
 		view->composite_operation = op;
