@@ -1,15 +1,18 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim: set ts=8 sts=2 et sw=2 tw=80: */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /* Helpers for defining and using refcounted objects. */
 
-#ifndef mozilla_RefPtr_h_
-#define mozilla_RefPtr_h_
+#ifndef mozilla_RefPtr_h
+#define mozilla_RefPtr_h
 
 #include "mozilla/Assertions.h"
+#include "mozilla/Atomics.h"
 #include "mozilla/Attributes.h"
+#include "mozilla/TypeTraits.h"
 
 namespace mozilla {
 
@@ -36,32 +39,47 @@ template<typename T> OutParamRef<T> byRef(RefPtr<T>&);
  * live RefCounted<T> are controlled by RefPtr<T> and
  * RefPtr<super/subclass of T>.  Upon a transition from refcounted==1
  * to 0, the RefCounted<T> "dies" and is destroyed.  The "destroyed"
- * state is represented in DEBUG builds by refcount==-0xdead.  This
+ * state is represented in DEBUG builds by refcount==0xffffdead.  This
  * state distinguishes use-before-ref (refcount==0) from
- * use-after-destroy (refcount==-0xdead).
+ * use-after-destroy (refcount==0xffffdead).
  */
-template<typename T>
+namespace detail {
+#ifdef DEBUG
+static const int DEAD = 0xffffdead;
+#endif
+
+// This is used WeakPtr.h as well as this file.
+enum RefCountAtomicity
+{
+  AtomicRefCount,
+  NonAtomicRefCount
+};
+
+template<typename T, RefCountAtomicity Atomicity>
 class RefCounted
 {
     friend class RefPtr<T>;
 
-  public:
+  protected:
     RefCounted() : refCnt(0) { }
-    ~RefCounted() { MOZ_ASSERT(refCnt == -0xdead); }
+    ~RefCounted() {
+      MOZ_ASSERT(refCnt == detail::DEAD);
+    }
 
+  public:
     // Compatibility with nsRefPtr.
-    void AddRef() {
+    void AddRef() const {
       MOZ_ASSERT(refCnt >= 0);
       ++refCnt;
     }
 
-    void Release() {
+    void Release() const {
       MOZ_ASSERT(refCnt > 0);
       if (0 == --refCnt) {
 #ifdef DEBUG
-        refCnt = -0xdead;
+        refCnt = detail::DEAD;
 #endif
-        delete static_cast<T*>(this);
+        delete static_cast<const T*>(this);
       }
     }
 
@@ -75,7 +93,33 @@ class RefCounted
     }
 
   private:
-    int refCnt;
+    mutable typename Conditional<Atomicity == AtomicRefCount, Atomic<int>, int>::Type refCnt;
+};
+
+}
+
+template<typename T>
+class RefCounted : public detail::RefCounted<T, detail::NonAtomicRefCount>
+{
+  public:
+    ~RefCounted() {
+      static_assert(IsBaseOf<RefCounted, T>::value,
+                    "T must derive from RefCounted<T>");
+    }
+};
+
+/**
+ * AtomicRefCounted<T> is like RefCounted<T>, with an atomically updated
+ * reference counter.
+ */
+template<typename T>
+class AtomicRefCounted : public detail::RefCounted<T, detail::AtomicRefCount>
+{
+  public:
+    ~AtomicRefCounted() {
+      static_assert(IsBaseOf<AtomicRefCounted, T>::value,
+                    "T must derive from AtomicRefCounted<T>");
+    }
 };
 
 /**
@@ -247,9 +291,6 @@ byRef(RefPtr<T>& ptr)
 
 } // namespace mozilla
 
-#endif // mozilla_RefPtr_h_
-
-
 #if 0
 
 // Command line that builds these tests
@@ -404,3 +445,5 @@ main(int argc, char** argv)
 }
 
 #endif
+
+#endif /* mozilla_RefPtr_h */
