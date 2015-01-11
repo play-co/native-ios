@@ -26,7 +26,7 @@
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_x(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -35,12 +35,12 @@ CEXPORT JSBool def_timestep_image_map_get_x(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_x(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -49,12 +49,12 @@ CEXPORT JSBool def_timestep_image_map_set_x(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_y(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_y(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -63,12 +63,12 @@ CEXPORT JSBool def_timestep_image_map_get_y(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_y(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_y(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -77,12 +77,12 @@ CEXPORT JSBool def_timestep_image_map_set_y(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_width(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -91,12 +91,12 @@ CEXPORT JSBool def_timestep_image_map_get_width(JSContext *cx, JSHandleObject ob
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_width(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -105,12 +105,12 @@ CEXPORT JSBool def_timestep_image_map_set_width(JSContext *cx, JSHandleObject ob
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_height(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -119,12 +119,12 @@ CEXPORT JSBool def_timestep_image_map_get_height(JSContext *cx, JSHandleObject o
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_height(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -133,12 +133,12 @@ CEXPORT JSBool def_timestep_image_map_set_height(JSContext *cx, JSHandleObject o
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_marginTop(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_marginTop(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -147,12 +147,12 @@ CEXPORT JSBool def_timestep_image_map_get_marginTop(JSContext *cx, JSHandleObjec
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_marginTop(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_marginTop(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -161,12 +161,12 @@ CEXPORT JSBool def_timestep_image_map_set_marginTop(JSContext *cx, JSHandleObjec
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_marginRight(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_marginRight(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -175,12 +175,12 @@ CEXPORT JSBool def_timestep_image_map_get_marginRight(JSContext *cx, JSHandleObj
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_marginRight(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_marginRight(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -189,12 +189,12 @@ CEXPORT JSBool def_timestep_image_map_set_marginRight(JSContext *cx, JSHandleObj
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_marginBottom(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_marginBottom(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -203,12 +203,12 @@ CEXPORT JSBool def_timestep_image_map_get_marginBottom(JSContext *cx, JSHandleOb
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_marginBottom(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_marginBottom(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -217,12 +217,12 @@ CEXPORT JSBool def_timestep_image_map_set_marginBottom(JSContext *cx, JSHandleOb
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_marginLeft(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_marginLeft(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -231,12 +231,12 @@ CEXPORT JSBool def_timestep_image_map_get_marginLeft(JSContext *cx, JSHandleObje
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_marginLeft(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_marginLeft(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -245,12 +245,12 @@ CEXPORT JSBool def_timestep_image_map_set_marginLeft(JSContext *cx, JSHandleObje
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_get_url(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_get_url(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -260,12 +260,12 @@ CEXPORT JSBool def_timestep_image_map_get_url(JSContext *cx, JSHandleObject obj,
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_image_map_set_url(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_image_map_set_url(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_image_map *thiz = (timestep_image_map*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -285,7 +285,7 @@ CEXPORT JSBool def_timestep_image_map_set_url(JSContext *cx, JSHandleObject obj,
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
@@ -330,7 +330,7 @@ static const JSPropertySpec properties[] = {
 static const JSClass timestep_image_map_class = {
 	"ImageMap",
 	JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
+	JS_PropertyStub, JS_DeletePropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
 	JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, def_timestep_image_map_class_finalize,
 	JSCLASS_NO_OPTIONAL_MEMBERS
 };

@@ -64,7 +64,7 @@ static const JSPropertySpec properties[] = {
 static const JSClass animate_class = {
 	"Animator",
 	JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
+	JS_PropertyStub, JS_DeletePropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
 	JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, def_animate_class_finalize,
 	JSCLASS_NO_OPTIONAL_MEMBERS
 };

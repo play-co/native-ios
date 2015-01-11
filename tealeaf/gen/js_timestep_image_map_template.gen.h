@@ -30,7 +30,7 @@ JSObject *timestep_image_map_create_ctor_object(JSContext *cx, jsval *vp);
 void timestep_image_map_add_to_object(JSObject *obj);
 
 // Ctors: To be defined by manually-generated code:
-JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned argc, jsval *vp);
+bool def_timestep_image_map_class_constructor(JSContext *cx, unsigned argc, jsval *vp);
 void def_timestep_image_map_class_finalize(JSFreeOp *fop, JSObject *obj);
 
 // Methods: To be defined by manually-generated code:
@@ -39,32 +39,32 @@ void def_timestep_image_map_class_finalize(JSFreeOp *fop, JSObject *obj);
 
 // Properties: Some will be defined by manually-generated code:
 
-JSBool def_timestep_image_map_get_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_x(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_x(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_y(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_y(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_y(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_y(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_width(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_width(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_height(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_height(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_marginTop(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_marginTop(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_marginTop(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_marginTop(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_marginRight(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_marginRight(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_marginRight(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_marginRight(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_marginBottom(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_marginBottom(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_marginBottom(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_marginBottom(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_marginLeft(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_marginLeft(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_marginLeft(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_marginLeft(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
-JSBool def_timestep_image_map_get_url(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp);
-JSBool def_timestep_image_map_set_url(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp);
+bool def_timestep_image_map_get_url(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp);
+bool def_timestep_image_map_set_url(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp);
 
 
 

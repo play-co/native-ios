@@ -30,19 +30,19 @@ JSObject *animate_create_ctor_object(JSContext *cx, jsval *vp);
 void animate_add_to_object(JSObject *obj);
 
 // Ctors: To be defined by manually-generated code:
-JSBool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *vp);
 void def_animate_class_finalize(JSFreeOp *fop, JSObject *obj);
 
 // Methods: To be defined by manually-generated code:
-JSBool def_animate_now(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_then(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_commit(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_clear(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_wait(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_pause(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_resume(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_isPaused(JSContext *cx, unsigned argc, jsval *vp);
-JSBool def_animate_hasFrames(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_now(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_then(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_commit(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_clear(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_wait(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_pause(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_resume(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_isPaused(JSContext *cx, unsigned argc, jsval *vp);
+bool def_animate_hasFrames(JSContext *cx, unsigned argc, jsval *vp);
 
 
 
