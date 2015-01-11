@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		08A82384180F7B5C00197337 /* jsImageCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08A82383180F7B5C00197337 /* jsImageCache.mm */; };
-		361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C417F51F5A00D35AFD /* NativeCalls.h */; };
 		361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */ = {isa = PBXBuildFile; fileRef = 361049C517F51F5A00D35AFD /* NativeCalls.mm */; };
-		361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C617F51F5A00D35AFD /* TeaLeafTextField.h */; };
 		361049CB17F51F5B00D35AFD /* TeaLeafTextField.mm in Sources */ = {isa = PBXBuildFile; fileRef = 361049C717F51F5A00D35AFD /* TeaLeafTextField.mm */; };
 		368222E017F531FA009F1826 /* FontUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 368222DF17F531FA009F1826 /* FontUtil.mm */; };
 		36ACCF03179F2A63002AE65C /* left_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFD179F2A63002AE65C /* left_text_handler_disabled.png */; };
@@ -1376,9 +1374,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E6B4A0C188736C700429B4A /* rsecc.c in Sources */,
-				361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */,
 				361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */,
-				361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */,
 				361049CB17F51F5B00D35AFD /* TeaLeafTextField.mm in Sources */,
 				D53E17F1178506BF000BAC10 /* RawImageInfo.m in Sources */,
 				D5BC67011635D0270059EC0F /* main.m in Sources */,
@@ -1649,7 +1645,7 @@
 					"$(SRCROOT)",
 				);
 				LLVM_LTO = NO;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
 					"-lsqlite3.0",
@@ -1664,7 +1660,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 i386 x86_84 arm64";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = debug;
@@ -1726,7 +1722,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 i386 x86_84 arm64";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;
