@@ -313,7 +313,7 @@ CEXPORT void device_hide_splash() {
 	// Lower texture memory based on device model
     NSLOG(@"{core} iOS device model '%@'", get_platform());
     
-	int mem_limit = get_platform_memory_limit();
+	long mem_limit = get_platform_memory_limit();
 	
 	if (self.appDelegate.ignoreMemoryWarnings) {
 		mem_limit = 28000000; // Impose lower memory limit for this work-around case
@@ -384,15 +384,14 @@ CEXPORT void device_hide_splash() {
 	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
 	
 	// Run JS initialization in another thread
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, (unsigned long)NULL), ^(void) {
-		NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];
-		
-		if (!core_init_js([baseURL UTF8String], [(NSString*)[self.appDelegate.config objectForKey:@"native_hash"] UTF8String])) {
-			NSLOG(@"{tealeaf} ERROR: Unable to initialize javascript.");
-		} else {
-			[self onJSReady];
-		}
-	});
+  NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];
+  
+  
+  if (!core_init_js([baseURL UTF8String], [(NSString*)[self.appDelegate.config objectForKey:@"native_hash"] UTF8String])) {
+    NSLOG(@"{tealeaf} ERROR: Unable to initialize javascript.");
+  } else {
+    [self onJSReady];
+  }
 	
 	[self.appDelegate.canvas startRendering];
     

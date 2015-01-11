@@ -49,13 +49,15 @@ static void window_on_error(JSContext *cx, const char *msg, const char *url, int
 
 CEXPORT void js_tick(long dt) {
 	if (m_callback) {
-		jsval ret, args[] = {
-			INT_TO_JSVAL(dt)
-		};
+    JSAutoRequest ar(m_core.cx);
 
-		JS_BeginRequest(m_core.cx);
-		JS_CallFunctionValue(m_core.cx, m_core.global, OBJECT_TO_JSVAL(m_callback), 1, args, &ret);
-		JS_EndRequest(m_core.cx);
+		jsval args[] = {
+      JS::NumberValue(dt)
+		};
+    
+    JS::RootedValue ret(m_core.cx);
+
+		JS_CallFunctionValue(m_core.cx, m_core.global, OBJECT_TO_JSVAL(m_callback), 1, args, ret.address());
 	}
 
 	view_animation_tick_animations(dt);

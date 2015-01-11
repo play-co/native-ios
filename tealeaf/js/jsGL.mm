@@ -911,7 +911,8 @@ JSAG_MEMBER_BEGIN(Context2D, 3)
 
 	LOG("{gl} Created context '%d'", destTex);
 
-	JSAG_OBJECT *thiz = JSAG_CLASS_INSTANCE(Context2D);
+	JSObject *_thiz = JSAG_CLASS_INSTANCE(Context2D);
+  JS::RootedObject thiz(cx, _thiz);
 
 	context_2d *ctx = context_2d_new(tealeaf_canvas_get(), url, destTex);
 

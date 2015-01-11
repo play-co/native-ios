@@ -166,7 +166,8 @@ JSAG_MEMBER_BEGIN(Socket, 2)
 	JSAG_ARG_INT32(port);
 	JSAG_ARG_INT32_OPTIONAL(timeout, 5);
 
-	JSAG_OBJECT *thiz = JSAG_CLASS_INSTANCE(Socket);
+//  JSAG_OBJECT *thiz(cx, JSAG_CLASS_INSTANCE(Socket));
+  JS::RootedObject thiz(cx, JS_NewObjectForConstructor(cx, &Socket_class, vp));
 	
 	NSLOG(@"{socket} Created for %@:%d", host, port);
 

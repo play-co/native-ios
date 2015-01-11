@@ -110,8 +110,8 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 
 // Engine-agnosticizer
 
-#define JSAG_OBJECT JSObject
-#define JSAG_VALUE jsval
+#define JSAG_OBJECT JS::RootedObject
+#define JSAG_VALUE JS::Value
 
 #define JSAG_BOOL bool
 #define JSAG_FALSE false
@@ -234,7 +234,7 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 	} --argsLeft; ++argv;
 
 #define JSAG_ARG_FUNCTION(name) \
-	JSObject *name; \
+	JS::RootedObject name(cx); \
 	{ jsval name ## _val = *argv; \
 		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		name = JSVAL_TO_OBJECT(name ## _val);\
