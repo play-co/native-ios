@@ -14,6 +14,7 @@
  */
 
 #import "js_core.h"
+#include "js/OldDebugAPI.h"
 
 
 @class js_core;
@@ -161,12 +162,12 @@ enum DebugStep {
 - (bool) onStep:(JSContext *)cx script:(JSScript *)script line:(int)line;
 - (bool) onDebug:(JSContext *)cx script:(JSScript *)script line:(int)line;
 - (bool) onThrow:(JSContext *)cx script:(JSScript *)script line:(int)line;
-- (bool) onCall:(JSContext *)cx frame:(JSStackFrame *)fp before:(bool)before;
+- (bool) onCall:(JSContext *)cx frame:(JSAbstractFramePtr) fp before:(bool)before;
 
 - (void) runQueuedEval:(JSContext *)cx;
 - (void) queueEval:(NSString *)expression global:(bool)global disable:(bool)disable conn:(id)conn seqno:(int)seqno;
 
-- (void) broadcast:(const char*)message count:(int)bytes;
+- (void) broadcast:(const char*)message count:(long)bytes;
 - (void) broadcastMessage:(NSString *)msg;
 - (void) broadcastEvent:(NSString *)name body:(id)body;
 

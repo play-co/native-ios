@@ -31,16 +31,17 @@ JSAG_MEMBER_BEGIN(_showDialog, 5)
 	char **buttons = (char**)malloc(buttonCount * sizeof(char*));
 	int *callbacks = (int*)malloc(cbCount * sizeof(int));
 	
+  JS::RootedValue rootedValue(cx);
+  JS::MutableHandleValue el = &rootedValue;
 	for (int i = 0; i < cbCount; ++i) {
-		jsval el;
-		JS_GetElement(cx, cbs, i, &el);
-		callbacks[i] = JSVAL_TO_INT(el);
+		JS_GetElement(cx, cbs, i, el);
+    JS::ToInt32(cx, el, &callbacks[i]);
 	}
 	
 	for (int i = 0; i < buttonCount; ++i) {
-		jsval el;
-		JS_GetElement(cx, btns, i, &el);
-		buttons[i] = JS_EncodeString(cx, JSVAL_TO_STRING(el));
+		JS_GetElement(cx, btns, i, el);
+    JSString * str = JS::ToString(cx, el);
+		buttons[i] = JS_EncodeString(cx, str);
 	}
 	
 	dialog_show_dialog(title, text, image, buttons, buttonCount, callbacks, cbCount);

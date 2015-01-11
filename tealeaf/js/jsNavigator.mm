@@ -20,14 +20,14 @@
 #include "core/config.h"
 
 
-static JSBool JSPOP_Online(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+static bool JSPOP_Online(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
 
 	JS_BeginRequest(cx);
 	vp.setBoolean(app.isOnline == YES);
 	JS_EndRequest(cx);
 
-	return JS_TRUE;
+	return true;
 }
 
 

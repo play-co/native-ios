@@ -30,7 +30,7 @@ static void window_on_error(JSContext *cx, const char *msg, const char *url, int
 		
 	JSObject *global = get_global_object();
 		
-	jsval onerror;
+  JS::RootedValue onerror(cx);
 	JS_GetProperty(cx, global, "onerror", &onerror);
 		
 	if (!JSVAL_IS_VOID(onerror)) {
@@ -47,7 +47,7 @@ static void window_on_error(JSContext *cx, const char *msg, const char *url, int
 	JS_EndRequest(cx);
 }
 
-CEXPORT void js_tick(int dt) {
+CEXPORT void js_tick(long dt) {
 	if (m_callback) {
 		jsval ret, args[] = {
 			INT_TO_JSVAL(dt)

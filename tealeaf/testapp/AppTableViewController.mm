@@ -93,7 +93,7 @@ static NSThread *appLoadListThread = nil;
 	[backButton setFrame:backButtonRect];
 	[backButton setTitle:@"Back" forState:UIControlStateNormal];
 	backButton.titleLabel.textColor = [UIColor blackColor];
-	backButton.titleLabel.textAlignment = UITextAlignmentCenter;
+	backButton.titleLabel.textAlignment = (NSTextAlignment)UITextAlignmentCenter;
 	[backButton addTarget:self action:@selector(backButtonFunc) forControlEvents:UIControlEventTouchUpInside];
 
 		

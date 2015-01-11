@@ -69,7 +69,10 @@ JSAG_MEMBER_BEGIN(clearRect, 4)
 	JSAG_ARG_DOUBLE(h);
 
 	rect_2d rect = {
-		x, y, w, h
+		static_cast<float>(x),
+    static_cast<float>(y),
+    static_cast<float>(w),
+    static_cast<float>(h)
 	};
 
 	context_2d_clearRect(GET_CONTEXT_2D(), &rect);
@@ -88,7 +91,10 @@ JSAG_MEMBER_BEGIN(fillRect, 5)
 	rgba_parse(&color, scolor);
 
 	rect_2d rect = {
-		x, y, w, h
+    static_cast<float>(x),
+    static_cast<float>(y),
+    static_cast<float>(w),
+    static_cast<float>(h)
 	};
 
 	context_2d_fillRect(GET_CONTEXT_2D(), &rect, &color);
@@ -111,16 +117,36 @@ JSAG_MEMBER_BEGIN(strokeRect, 6)
 	
 	context_2d *ctx = GET_CONTEXT_2D();
 	
-	rect_2d left_rect = {x - line_width2, y - line_width2, line_width1, height + line_width1};
+	rect_2d left_rect = {
+    static_cast<float>(x - line_width2),
+    static_cast<float>(y - line_width2),
+    static_cast<float>(line_width1),
+    static_cast<float>(height + line_width1)
+  };
 	context_2d_fillRect(ctx, &left_rect, &color);
 	
-	rect_2d right_rect = {x + width - line_width2, y - line_width2, line_width1, height + line_width1};
+	rect_2d right_rect = {
+    static_cast<float>(x + width - line_width2),
+    static_cast<float>(y - line_width2),
+    static_cast<float>(line_width1),
+    static_cast<float>(height + line_width1)
+  };
 	context_2d_fillRect(ctx, &right_rect, &color);
 	
-	rect_2d top_rect = {x + line_width2, y - line_width2, width - line_width1, line_width1};
+	rect_2d top_rect = {
+    static_cast<float>(x + line_width2),
+    static_cast<float>(y - line_width2),
+    static_cast<float>(width - line_width1),
+    static_cast<float>(line_width1)
+  };
 	context_2d_fillRect(ctx, &top_rect, &color);
 	
-	rect_2d bottom_rect = {x + line_width2, y + height - line_width2, width - line_width1, line_width1};
+	rect_2d bottom_rect = {
+    static_cast<float>(x + line_width2),
+    static_cast<float>(y + height - line_width2),
+    static_cast<float>(width - line_width1),
+    static_cast<float>(line_width1)
+  };
 	context_2d_fillRect(ctx, &bottom_rect, &color);
 }
 JSAG_MEMBER_END
@@ -159,14 +185,14 @@ JSAG_MEMBER_BEGIN(setGlobalCompositeOperation, 1)
 	JSAG_ARG_INT32(composite_op);
 
 	context_2d_setGlobalCompositeOperation(GET_CONTEXT_2D(), (int)composite_op);
-	return JS_TRUE;
+	return true;
 }
 JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN_NOARGS(getGlobalCompositeOperation)
 {
 	JSAG_RETURN_INT32(context_2d_getGlobalCompositeOperation(GET_CONTEXT_2D()));
-	return JS_TRUE;
+	return true;
 }
 JSAG_MEMBER_END_NOARGS
 
@@ -185,13 +211,13 @@ JSAG_MEMBER_BEGIN(loadImage, 1)
 	} else {
 		JSObject *result = JS_NewObject(cx, NULL, NULL, NULL);
 		
-		jsval width = INT_TO_JSVAL(tex->originalWidth);
-		jsval height = INT_TO_JSVAL(tex->originalHeight);
-		jsval name = INT_TO_JSVAL(tex->name);
+    JS::RootedValue width(cx, JS::NumberValue(tex->originalWidth));
+    JS::RootedValue height(cx, JS::NumberValue(tex->originalHeight));
+    JS::RootedValue name(cx, JS::NumberValue(tex->name));
 		
-		JS_SetProperty(cx, result, "width", &width);
-		JS_SetProperty(cx, result, "height", &height);
-		JS_SetProperty(cx, result, "name", &name);
+		JS_SetProperty(cx, result, "width", width);
+		JS_SetProperty(cx, result, "height", height);
+		JS_SetProperty(cx, result, "name", name);
 
 		JSAG_RETURN_OBJECT(result);
 	}
@@ -201,43 +227,46 @@ JSAG_MEMBER_END
 static double measureText(JSContext *cx, JSObject *font_info, const char *text) {
 	double width = 0;
 
-	jsval _custom_font, _dimensions;
+  JS::RootedValue _custom_font(cx), _dimensions(cx);
 	JSObject  *custom_font, *dimensions;
 
 	JS_GetProperty(cx, font_info, "customFont", &_custom_font);
-	bool success = JS_ValueToObject(cx, _custom_font, &custom_font);
-	if (!success || !custom_font) {
-		return 0;
-	}
+  if(!_custom_font.isObject()) {
+    return 0;
+  }
+  
+  custom_font = _custom_font.toObjectOrNull();
 
 	JS_GetProperty(cx, custom_font, "dimensions", &_dimensions);
-	success = JS_ValueToObject(cx, _dimensions, &dimensions);
-	if (!success || !dimensions) {
-		return 0;
-	}
+  if(!_dimensions.isObject()) {
+    return 0;
+  }
+  
+  dimensions = _dimensions.toObjectOrNull();
 
-	jsval _horizontal;
+  JS::RootedValue _horizontal(cx);
 	JSObject *horizontal;
 
 	JS_GetProperty(cx, custom_font, "horizontal", &_horizontal);
-	JS_ValueToObject(cx, _horizontal, &horizontal);
+  if (!_horizontal.isObject()) { return 0; }
+  horizontal = _horizontal.toObjectOrNull();
 
-	jsval _scale, _space_width, _tracking, _outline;
+  JS::RootedValue _scale(cx), _space_width(cx), _tracking(cx), _outline(cx);
 	double scale, space_width, tracking, outline;
 
 	JS_GetProperty(cx, font_info, "scale", &_scale);
-	JS_ValueToNumber(cx, _scale, &scale);
+  JS::ToNumber(cx, _scale, &scale);
 
 	JS_GetProperty(cx, horizontal, "width", &_space_width);
-	JS_ValueToNumber(cx, _space_width, &space_width);
+	JS::ToNumber(cx, _space_width, &space_width);
 	space_width *= scale;
 
 	JS_GetProperty(cx, horizontal, "tracking", &_tracking);
-	JS_ValueToNumber(cx, _tracking, &tracking);
+	JS::ToNumber(cx, _tracking, &tracking);
 	tracking *= scale;
 
 	JS_GetProperty(cx, horizontal, "outline", &_outline);
-	JS_ValueToNumber(cx, _outline, &outline);
+	JS::ToNumber(cx, _outline, &outline);
 	outline *= scale;
 
 	char c = 0;
@@ -245,21 +274,21 @@ static double measureText(JSContext *cx, JSObject *font_info, const char *text) 
 		if (c == ' ') {
 			width += space_width;
 		} else {
-			jsval _dimension;
+      JS::RootedValue _dimension(cx);
 			JSObject *dimension;
 			JS_GetElement(cx, dimensions, (int)c, &_dimension);
-			success = JS_ValueToObject(cx, _dimension, &dimension);
-			if (success && dimension) {
-				jsval _ow;
-				double dow;
-				JS_GetProperty(cx, dimension, "ow", &_ow);
-				JS_ValueToNumber(cx, _ow, &dow);
-				int ow = (int)dow;
+      if (!_dimension.isObject()) {
+        return -1;
+      }
+      dimension = _dimension.toObjectOrNull();
+      JS::RootedValue _ow(cx);
+      double dow;
+      JS_GetProperty(cx, dimension, "ow", &_ow);
+      JS::ToNumber(cx, _ow, &dow);
+      int ow = (int)dow;
+      // TODO why do we extract a double and cast to int?
 
-				width += (ow - 2) * scale;
-			} else {
-				return -1;
-			}
+      width += (ow - 2) * scale;
 		}
 		width += tracking - outline;
 	}
@@ -282,8 +311,8 @@ JSAG_MEMBER_BEGIN(measureText, 3)
 	int width = text_manager_measure_text(font, size, str);
 	
 	JSObject *metrics = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval w = INT_TO_JSVAL(width);
-	JS_SetProperty(cx, metrics, "width", &w);
+  JS::RootedValue w(cx, JS::NumberValue(width));
+	JS_SetProperty(cx, metrics, "width", w);
 
 	JSAG_RETURN_OBJECT(metrics);
 }
@@ -362,8 +391,19 @@ JSAG_MEMBER_BEGIN(fillText, 9)
 			x -= x_offset;
 			y -= y_offset;
 
-			rect_2d src_rect = {0, 0, tex->originalWidth, tex->originalHeight};
-			rect_2d dest_rect = {x, y, tex->originalWidth, tex->originalHeight};
+			rect_2d src_rect = {
+        static_cast<float>(0),
+        static_cast<float>(0),
+        static_cast<float>(tex->originalWidth),
+        static_cast<float>(tex->originalHeight)
+      };
+      
+			rect_2d dest_rect = {
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(tex->originalWidth),
+        static_cast<float>(tex->originalHeight)
+      };
 
 			context_2d_fillText(GET_CONTEXT_2D(), tex, &src_rect, &dest_rect, color.a);
 		}
@@ -436,9 +476,20 @@ JSAG_MEMBER_BEGIN(strokeText, 10)
 				y += 0.5f;
 			}
 
-			rect_2d src_rect = {0, 0, tex->originalWidth, tex->originalHeight};
-			rect_2d dest_rect = {x, y, tex->originalWidth, tex->originalHeight};
-			
+      rect_2d src_rect = {
+        static_cast<float>(0),
+        static_cast<float>(0),
+        static_cast<float>(tex->originalWidth),
+        static_cast<float>(tex->originalHeight)
+      };
+      
+      rect_2d dest_rect = {
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(tex->originalWidth),
+        static_cast<float>(tex->originalHeight)
+      };
+      
 			context_2d_fillText(GET_CONTEXT_2D(), tex, &src_rect, &dest_rect, color.a);
 		}
 	}
@@ -458,8 +509,19 @@ JSAG_MEMBER_BEGIN(drawImage, 10)
 	JSAG_ARG_DOUBLE(dw);
 	JSAG_ARG_DOUBLE(dh);
 
-	rect_2d src_rect = {sx, sy, sw, sh};
-	rect_2d dest_rect = {dx, dy, dw, dh};
+	rect_2d src_rect = {
+    static_cast<float>(sx),
+    static_cast<float>(sy),
+    static_cast<float>(sw),
+    static_cast<float>(sh)
+  };
+  
+	rect_2d dest_rect = {
+    static_cast<float>(dx),
+    static_cast<float>(dy),
+    static_cast<float>(dw),
+    static_cast<float>(dh)
+  };
 
 	context_2d_drawImage(GET_CONTEXT_2D(), stex, url, &src_rect, &dest_rect);
 }
@@ -470,11 +532,11 @@ JSAG_MEMBER_BEGIN(addFilter, 2)
 	JSAG_ARG_CSTR(name);
 	JSAG_ARG_OBJECT(filter);
 
-	jsval filter_type_val;
+  JS::RootedValue filter_type_val(cx);
 	JS_GetProperty(cx, filter, "type", &filter_type_val);
 	if (likely(JSVAL_IS_STRING(filter_type_val))) {
 		char filter_ch[2] = {0};
-		JS_EncodeStringToBuffer(JSVAL_TO_STRING(filter_type_val), filter_ch, 1);
+    JS_EncodeStringToBuffer(cx, JS::ToString(cx, filter_type_val), filter_ch, 1);
 		
 		//if (0 == strcmp(filter_name, "LinearAdd") == 0) {
 		if (filter_ch[0] == 'L') {
@@ -486,23 +548,28 @@ JSAG_MEMBER_BEGIN(addFilter, 2)
 			LOG("{gl} USER ERROR: addFilter called without a filter operation");
 		}
 		
-		jsval _r, _g, _b, _a;
+    JS::RootedValue _r(cx), _g(cx), _b(cx), _a(cx);
 		JS_GetProperty(cx, filter, "r", &_r);
 		JS_GetProperty(cx, filter, "g", &_g);
 		JS_GetProperty(cx, filter, "b", &_b);
 		JS_GetProperty(cx, filter, "a", &_a);
 		
 		double r, g, b, a;
-		JS_ValueToNumber(cx, _r, &r);
-		JS_ValueToNumber(cx, _g, &g);
-		JS_ValueToNumber(cx, _b, &b);
-		JS_ValueToNumber(cx, _a, &a);
+    JS::ToNumber(cx, _r, &r);
+		JS::ToNumber(cx, _g, &g);
+		JS::ToNumber(cx, _b, &b);
+		JS::ToNumber(cx, _a, &a);
 		
 		r /= 255.;
 		g /= 255.;
 		b /= 255.;
 		
-		rgba color = {r, g, b, a};
+		rgba color = {
+      static_cast<float>(r),
+      static_cast<float>(g),
+      static_cast<float>(b),
+      static_cast<float>(a)
+    };
 		context_2d_add_filter(GET_CONTEXT_2D(), &color);
 	}
 }
@@ -516,38 +583,38 @@ JSAG_MEMBER_BEGIN_NOARGS(clearFilters)
 JSAG_MEMBER_END_NOARGS
 
 static double textBaselineValue(JSContext *cx, JSObject *ctx, JSObject *custom_font, double scale) {
-	jsval jtext_baseline;
+  JS::RootedValue jtext_baseline(cx);
 	JS_GetProperty(cx, ctx, "textBaseline", &jtext_baseline);
 	if (JSVAL_IS_STRING(jtext_baseline)) {
 		char baseline_ch[2] = {0};
-		JS_EncodeStringToBuffer(JSVAL_TO_STRING(jtext_baseline), baseline_ch, 1);
+    JS_EncodeStringToBuffer(cx, JS::ToString(cx, jtext_baseline), baseline_ch, 1);
 
-		jsval _b, _vertical;
+    JS::RootedValue _b(cx), _vertical(cx);
 		double b;
 		JSObject *vertical;
 
 		//if (0 == strcmp(baseline, "alphabetic")) {
 		if (baseline_ch[0] == 'a') {
 			JS_GetProperty(cx, custom_font, "vertical", &_vertical);
-			JS_ValueToObject(cx, _vertical, &vertical);
+      vertical = _vertical.toObjectOrNull();
 			JS_GetProperty(cx, vertical, "baseline", &_b);
-			JS_ValueToNumber(cx, _b, &b);
+      JS::ToNumber(cx, _b, &b);
 
 			return -b * scale;
 		//} else if (0 == strcmp(baseline, "middle")) {
 		} else if (baseline_ch[0] == 'm') {
 			JS_GetProperty(cx, custom_font, "vertical", &_vertical);
-			JS_ValueToObject(cx, _vertical, &vertical);
+      vertical = _vertical.toObjectOrNull();
 			JS_GetProperty(cx, vertical, "bottom", &_b);
-			JS_ValueToNumber(cx, _b, &b);
+      JS::ToNumber(cx, _b, &b);
 
 			return -b / 2 * scale;
 		//} else if (0 == strcmp(baseline, "bottom")) {
 		} else if (baseline_ch[0] == 'b') {
 			JS_GetProperty(cx, custom_font, "vertical", &_vertical);
-			JS_ValueToObject(cx, _vertical, &vertical);
+      vertical = _vertical.toObjectOrNull();
 			JS_GetProperty(cx, vertical, "bottom", &_b);
-			JS_ValueToNumber(cx, _b, &b);
+      JS::ToNumber(cx, _b, &b);
 
 			return -b * scale;
 		}
@@ -557,12 +624,12 @@ static double textBaselineValue(JSContext *cx, JSObject *ctx, JSObject *custom_f
 }
 
 double textAlignValue(JSContext *cx, JSObject *ctx, JSObject *font_info, const char *text) {
-	jsval jalign;
+  JS::RootedValue jalign(cx);
 	JS_GetProperty(cx, ctx, "textAlign", &jalign);
 
 	if (JSVAL_IS_STRING(jalign)) {
 		char align_ch[2] = {0};
-		JS_EncodeStringToBuffer(JSVAL_TO_STRING(jalign), align_ch, 1);
+    JS_EncodeStringToBuffer(cx, JS::ToString(cx, jalign), align_ch, 1);
 
 		//if (!strcmp(align, "center")) {
 		if (align_ch[0] == 'c') {
@@ -590,25 +657,25 @@ JSAG_MEMBER_BEGIN(fillTextBitmap, 7)
 	context_2d *context = GET_CONTEXT_2D();
 	
 	//get customfont and images from font_info
-	jsval v;
+  JS::RootedValue v(cx);
 	JSObject *custom_font, *images1, *dimensions, *horizontal, *images2;
 	double scale, space_width, tracking, outline;
 	JS_GetProperty(cx, font_info, "customFont", &v);
-	JS_ValueToObject(cx, v, &custom_font);
+  custom_font = v.toObjectOrNull();
 	JS_GetProperty(cx, custom_font, "images", &v);
-	JS_ValueToObject(cx, v, &images1);
+  images1 = v.toObjectOrNull();
 	JS_GetElement(cx, images1, image_type, &v);
-	JS_ValueToObject(cx, v, &images2);
+  images2 = v.toObjectOrNull();
 	JS_GetProperty(cx, custom_font, "dimensions", &v);
-	JS_ValueToObject(cx, v, &dimensions);
+  dimensions = v.toObjectOrNull();
 
 	char ch;
 	bool use_bitmap_fonts = true;
 	for (int i = 0; (ch = text[i]) != 0; i++) {
 		if (ch != ' ') {
-			jsval jdimension;
+      JS::RootedValue jdimension(cx);
 			JS_GetElement(cx, dimensions, (unsigned char)ch, &jdimension);
-			if (!JSVAL_IS_OBJECT(jdimension)) {
+			if (!!JSVAL_IS_PRIMITIVE(jdimension)) {
 				use_bitmap_fonts = false;
 				break;
 			}
@@ -617,17 +684,17 @@ JSAG_MEMBER_BEGIN(fillTextBitmap, 7)
 
 	if (use_bitmap_fonts) {
 		JS_GetProperty(cx, custom_font, "horizontal", &v);
-		JS_ValueToObject(cx, v, &horizontal);
+    horizontal = v.toObjectOrNull();
 		JS_GetProperty(cx, font_info, "scale", &v);
-		JS_ValueToNumber(cx, v, &scale);
+    JS::ToNumber(cx, v, &scale);
 		JS_GetProperty(cx, horizontal, "width", &v);
-		JS_ValueToNumber(cx, v, &space_width);
+    JS::ToNumber(cx, v, &space_width);
 		space_width *= scale;
 		JS_GetProperty(cx, horizontal, "tracking", &v);
-		JS_ValueToNumber(cx, v, &tracking);
+    JS::ToNumber(cx, v, &tracking);
 		tracking *= scale;
 		JS_GetProperty(cx, horizontal, "outline", &v);
-		JS_ValueToNumber(cx, v, &outline);
+    JS::ToNumber(cx, v, &outline);
 		outline *= scale;
 
 		float dy = textBaselineValue(cx, js_ctx, custom_font, scale);
@@ -641,42 +708,53 @@ JSAG_MEMBER_BEGIN(fillTextBitmap, 7)
 
 		while ((ch = *text++)) {
 			if (ch != ' ') {
-				jsval jdimension;
+        JS::RootedValue jdimension(cx);
 				JS_GetElement(cx, dimensions, (unsigned char)ch, &jdimension);
 
-				if (likely(JSVAL_IS_OBJECT(jdimension))) {
+				if (likely(!JSVAL_IS_PRIMITIVE(jdimension))) {
 					JSObject *dimension = JSVAL_TO_OBJECT(jdimension);
 
 					int32_t image_index, sx, sy, sw, sh;
 					double ow, oh;
 
 					JS_GetProperty(cx, dimension, "i", &v);
-					JS_ValueToInt32(cx, v, &image_index);
+          JS::ToInt32(cx, v, &image_index);
 					JS_GetProperty(cx, dimension, "x", &v);
-					JS_ValueToInt32(cx, v, &sx);
+					JS::ToInt32(cx, v, &sx);
 					JS_GetProperty(cx, dimension, "y", &v);
-					JS_ValueToInt32(cx, v, &sy);
+					JS::ToInt32(cx, v, &sy);
 					JS_GetProperty(cx, dimension, "w", &v);
-					JS_ValueToInt32(cx, v, &sw);
+					JS::ToInt32(cx, v, &sw);
 					JS_GetProperty(cx, dimension, "h", &v);
-					JS_ValueToInt32(cx, v, &sh);
+					JS::ToInt32(cx, v, &sh);
 					JS_GetProperty(cx, dimension, "ow", &v);
-					JS_ValueToNumber(cx, v, &ow);
+          JS::ToNumber(cx, v, &ow);
 					JS_GetProperty(cx, dimension, "oh", &v);
-					JS_ValueToNumber(cx, v, &oh);
+          JS::ToNumber(cx, v, &oh);
 
-					rect_2d src_rect = {sx, sy, sw, sh};
-					rect_2d dest_rect = {x, y + (oh - 1) * scale, sw * scale, (sh - 2) * scale};
+					rect_2d src_rect = {
+            static_cast<float>(sx),
+            static_cast<float>(sy),
+            static_cast<float>(sw),
+            static_cast<float>(sh)
+          };
+          
+					rect_2d dest_rect = {
+            static_cast<float>(x),
+            static_cast<float>(y + (oh - 1) * scale),
+            static_cast<float>(sw * scale),
+            static_cast<float>((sh - 2) * scale)
+          };
 
 					if (current_image_index != image_index) {
 						current_image_index = image_index;
 
-						jsval jimage;
+            JS::RootedValue jimage(cx);
 						JS_GetElement(cx, images2, image_index, &jimage);
-						if (likely(JSVAL_IS_OBJECT(jimage))) {
-							JSObject *image = JSVAL_TO_OBJECT(jimage);
+						if (likely(!JSVAL_IS_PRIMITIVE(jimage))) {
+							JSObject *image = jimage.toObjectOrNull();
 
-							jsval src_tex;
+              JS::RootedValue src_tex(cx);
 							JS_GetProperty(cx, image, "_src", &src_tex);
 							if (likely(JSVAL_IS_STRING(src_tex))) {
 								JSVAL_TO_CSTR(cx, src_tex, curl);
@@ -710,12 +788,13 @@ JSAG_MEMBER_BEGIN(newTexture, 2)
 	JSAG_ARG_DOUBLE(height);
 
 	texture_2d *tex = texture_manager_new_texture(texture_manager_get(), width, height);
-
-	jsval glname = INT_TO_JSVAL(tex->name), texurl = CSTR_TO_JSVAL(cx, tex->url);
+  
+  JS::RootedValue glname(cx, JS::NumberValue(tex->name));
+  JS::RootedValue texurl(cx, CSTR_TO_JSVAL(cx, tex->url));
 
 	JSObject *result = JS_NewObject(cx, NULL, NULL, NULL);
-	JS_SetProperty(cx, result, "__gl_name", &glname);
-	JS_SetProperty(cx, result, "_src", &texurl);
+	JS_SetProperty(cx, result, "__gl_name", glname);
+	JS_SetProperty(cx, result, "_src", texurl);
 
 	JSAG_RETURN_OBJECT(result);
 }
@@ -735,7 +814,10 @@ JSAG_MEMBER_BEGIN(enableScissor, 4)
 	JSAG_ARG_DOUBLE(height);
 
 	rect_2d bounds = {
-		x, y, width, height
+		static_cast<float>(x),
+    static_cast<float>(y),
+    static_cast<float>(width),
+    static_cast<float>(height)
 	};
 
 	LOG("{gl} Clipping enabled");
@@ -775,18 +857,18 @@ JSAG_MEMBER_END
 JSAG_MEMBER_BEGIN(toDataURL, 1)
 {
 	JSAG_ARG_OBJECT(js_ctx);
-    jsval ctx_val;
-	JSObject *_ctx;
-	JS_GetProperty(cx, js_ctx, "_ctx", &ctx_val);
-    JS_ValueToObject(cx, ctx_val, &_ctx);
-	context_2d* ctx = static_cast<context_2d*>(JSAG_GET_PRIVATE(_ctx));
-    char * data = context_2d_save_buffer_to_base64(ctx, "PNG");
+  JS::RootedValue ctx_val(cx);
+  JSObject *_ctx;
+  JS_GetProperty(cx, js_ctx, "_ctx", &ctx_val);
+  _ctx = ctx_val.toObjectOrNull();
+  context_2d* ctx = static_cast<context_2d*>(JSAG_GET_PRIVATE(_ctx));
+  char * data = context_2d_save_buffer_to_base64(ctx, "PNG");
 
 	if (data != NULL) {
 		JSAG_RETURN_CSTR(data)
-		free(data);
+    free(data);
 	} else {
-        JSAG_RETURN_CSTR("")
+    JSAG_RETURN_CSTR("")
 	}
 ;
 
@@ -823,7 +905,7 @@ JSAG_CLASS_IMPL(Context2D);
 
 JSAG_MEMBER_BEGIN(Context2D, 3)
 {
-	JSAG_ARG_JSVAL(canvas);
+	JSAG_ARG_JSROOTVAL(cx, canvas);
 	JSAG_ARG_CSTR(url);
 	JSAG_ARG_INT32(destTex);
 
@@ -833,7 +915,7 @@ JSAG_MEMBER_BEGIN(Context2D, 3)
 
 	context_2d *ctx = context_2d_new(tealeaf_canvas_get(), url, destTex);
 
-	JSAG_ADD_PROPERTY(thiz, canvas, &canvas);
+  JS_SetProperty(cx, thiz, "canvas", canvas);
 
 	JSAG_SET_PRIVATE(thiz, ctx);
 
@@ -891,16 +973,16 @@ JSAG_OBJECT_END
 		NSArray *fontsForFamily = [UIFont fontNamesForFamilyName:family];
 
 		for (NSString *font in fontsForFamily) {
-			jsval f = NSTR_TO_JSVAL(cx, font);
+      JS::RootedValue f(cx, NSTR_TO_JSVAL(cx, font));
 			JS_SetElement(cx, fontArray, i++, &f);
 		}
 
-		jsval fonts = OBJECT_TO_JSVAL(fontArray);
-		JS_SetProperty(cx, fontFamilies, [family UTF8String], &fonts);
+    JS::RootedValue fonts(cx, JS::ObjectValue(*fontArray));
+		JS_SetProperty(cx, fontFamilies, [family UTF8String], fonts);
 	}
 
-	jsval fontsval = OBJECT_TO_JSVAL(fontFamilies);
-	JS_SetProperty(cx, gl, "fonts", &fontsval);
+  JS::RootedValue fontsval(cx, JS::ObjectValue(*fontFamilies));
+	JS_SetProperty(cx, gl, "fonts", fontsval);
 }
 
 + (void) onDestroyRuntime {

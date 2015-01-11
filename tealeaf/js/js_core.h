@@ -57,6 +57,7 @@ CEXPORT JSObject *get_global_object();
 @property (nonatomic) JSRuntime *rt;
 @property (nonatomic) JSContext *cx;
 @property (nonatomic) JSObject *global;
+@property (nonatomic) JSCompartment *globalCompartment;
 @property (nonatomic) JSObject *native;
 
 // Call this first from the main thread to initialize the runtime thread info

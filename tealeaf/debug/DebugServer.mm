@@ -17,7 +17,7 @@
 
 #import "JSONKit.h"
 
-#include "deps/spidermonkey/jsdbgapi.h"
+#include "js/OldDebugAPI.h"
 #include "js/js_core.h"
 
 #include <string.h>
@@ -380,13 +380,13 @@ static JSTrapStatus ThrowHook(JSContext *cx, JSScript *script, jsbytecode *pc, j
 }
 
 // For profiling: Captures function in-out
-static void *CallHook(JSContext *cx, JSStackFrame *fp, JSBool before, JSBool *ok, void *closure) {
+static void *CallHook(JSContext *cx, JSAbstractFramePtr fp, bool isConstructing, bool before, bool *ok, void *closure) {
 	DebugServer *server = (DebugServer *)closure;
 
 	server.running = false;
 
 	// Allow server to skip suspension
-	if ([server onCall:cx frame:fp before:(before == JS_TRUE)]) {
+	if ([server onCall:cx frame:fp before:(before == true)]) {
 		// Wait here until the server says we should be running again
 		while (!server.running) {
 			usleep(100);
@@ -396,7 +396,7 @@ static void *CallHook(JSContext *cx, JSStackFrame *fp, JSBool before, JSBool *ok
 	server.running = true;
 
 	if (ok) {
-		*ok = JS_TRUE;
+		*ok = true;
 	}
 
 	return server;
@@ -600,7 +600,7 @@ static void *CallHook(JSContext *cx, JSStackFrame *fp, JSBool before, JSBool *ok
 @property(nonatomic) CFWriteStreamRef writeStream;
 
 @property(nonatomic) char *buffer_data;
-@property(nonatomic) int buffer_len;
+@property(nonatomic) long buffer_len;
 @property(nonatomic) int buffer_offset;
 
 @property(nonatomic) char *deframe_data;
@@ -614,7 +614,7 @@ static void *CallHook(JSContext *cx, JSStackFrame *fp, JSBool before, JSBool *ok
 
 
 - (id) initWithSocket:(CFSocketNativeHandle)socketId andServer:(DebugServer *)server;
-- (void) write:(const void *)buffer count:(int)bytes;
+- (void) write:(const void *)buffer count:(long)bytes;
 
 // Events called from callbacks executing in run loop
 - (void) onConnect;
@@ -629,7 +629,7 @@ static void *CallHook(JSContext *cx, JSStackFrame *fp, JSBool before, JSBool *ok
 - (bool) onMessageObject:(NSDictionary*)object;
 
 - (bool) dequeueWrite; // Returns true if write buffer is empty
-- (void) appendWrite:(const void *)data count:(int)bytes;
+- (void) appendWrite:(const void *)data count:(long)bytes;
 - (int) processRead:(char *)data count:(int)bytes; // Returns number of bytes consumed
 
 - (void) postMessage:(NSString *)msg;
@@ -1244,7 +1244,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 	return true;
 }
 
-- (void) appendWrite:(const void *)data count:(int)bytes {
+- (void) appendWrite:(const void *)data count:(long)bytes {
 	if (!self.buffer_data) {
 		// Just copy buffer
 		self.buffer_data = (char*)malloc(bytes);
@@ -1256,8 +1256,8 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 			memcpy(self.buffer_data, data, bytes);
 		}
 	} else {
-		int remaining = self.buffer_len - self.buffer_offset;
-		int new_size = remaining + bytes;
+		long remaining = self.buffer_len - self.buffer_offset;
+		long new_size = remaining + bytes;
 
 		char *new_buffer = (char*)malloc(new_size);
 		if (!new_buffer || new_size < 0) {
@@ -1275,7 +1275,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 	}
 }
 
-- (void) write:(const void *)buffer count:(int)bytes {
+- (void) write:(const void *)buffer count:(long)bytes {
 	[self.lock lock];
 
 	// If write buffer is clean,
@@ -1283,7 +1283,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 		// If we can write immediately,
 		if (CFWriteStreamCanAcceptBytes(self.writeStream) && bytes > 0) {
 			// Try it
-			int written = CFWriteStreamWrite(self.writeStream, (const UInt8 *)buffer, bytes);
+			CFIndex written = CFWriteStreamWrite(self.writeStream, (const UInt8 *)buffer, bytes);
 		
 			if (written < 0) {
 				[self onWriteDead];
@@ -1308,7 +1308,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 }
 
 - (void) postMessage:(NSString *)msg {
-	NSString *frame = [NSString stringWithFormat:@"Content-Length: %d\r\n\r\n%@", [msg length], msg];
+	NSString *frame = [NSString stringWithFormat:@"Content-Length: %ld\r\n\r\n%@", [msg length], msg];
 
 	[self write:[frame UTF8String] count:[frame length]];
 }
@@ -1562,11 +1562,14 @@ static NSDictionary *findInArray(NSArray *list, int handle) {
 	// For each object property,
 	for (int ii = 0; ii < count; ++ii) {
 		jsid jid = JS_IdArrayGet(cx, idArray, ii);
-		jsval idval, propval;
+    jsval _idval;
+    JS::RootedValue propval(cx);
 
-		JS_IdToValue(cx, jid, &idval);
+		JS_IdToValue(cx, jid, &_idval);
 		JS_LookupPropertyById(cx, obj, jid, &propval);
 
+    JS::RootedValue idval(cx, _idval);
+    
 		// Create a new unique handle
 		NSNumber *handle = [NSNumber numberWithInt:(self.next_object_id++)];
 
@@ -1594,7 +1597,7 @@ static NSDictionary *findInArray(NSArray *list, int handle) {
 				NSString *nsprop = [NSString stringWithString:tempprop];
 
 				[self.mirror addObject:[NSDictionary dictionaryWithObjectsAndKeys:handle,@"handle", nsprop,@"value", @"string",@"type", nil]];
-			} else if (JSVAL_IS_OBJECT(propval)) {
+			} else if (!JSVAL_IS_PRIMITIVE(propval)) {
 				JSObject *sub_obj = JSVAL_TO_OBJECT(propval);
 
 				NSDictionary *existing = [cycles objectForKey:[NSValue valueWithPointer:sub_obj]];
@@ -1914,8 +1917,8 @@ static void NewScriptHook(JSContext	 *cx,
 		}
 
 		// Set up debugger hooks
-		JS_SetRuntimeDebugMode(js.rt, JS_TRUE);
-		JS_SetDebugMode(js.cx, JS_TRUE);
+		JS_SetRuntimeDebugMode(js.rt, true);
+		JS_SetDebugMode(js.cx, true);
 		JS_SetNewScriptHook(js.rt, NewScriptHook, self);
 
 		JS_EndRequest(js.cx);
@@ -2185,7 +2188,7 @@ static void NewScriptHook(JSContext	 *cx,
 	return false;
 }
 
-- (bool) onCall:(JSContext *)cx frame:(JSStackFrame *)fp before:(bool)before {
+- (bool) onCall:(JSContext *)cx frame:(JSAbstractFramePtr)fp before:(bool)before {
 	if (self.stepMode == STEP_CONTINUE) {
 		[self setCallHook:false];
 		return false;
@@ -2244,21 +2247,14 @@ static void NewScriptHook(JSContext	 *cx,
 - (void) runQueuedEval:(JSContext *)cx {
 	// NOTE: We don't need to do BeginRequest and EndRequest here to make it GC-threadsafe
 
-	// Grab the stack frame
-	JSStackFrame *fi = 0;
-	JSStackFrame *fp = JS_BrokenFrameIterator(cx, &fi); // "Broken."  Wow.	Should be fine since we don't use IonMonkey.
-
+  JSBrokenFrameIterator fi(cx);
+  JSAbstractFramePtr fp = fi.abstractFramePtr();
+  
 	JSObject *jsobj = 0;
 	if (fp) {
-		jsobj = JS_GetFrameCallObject(cx, fp);
-
-		if (!jsobj) {
-			jsobj = JS_GetFrameScopeChain(cx, fp);
-		}
-	}
-
-	if (!jsobj) {
-		jsobj = JS_GetGlobalObject(cx);
+    jsobj = fp.callObject(cx);
+  } else {
+    jsobj = JS::CurrentGlobalOrNull(cx);
 	}
 
 	// If no stack frame,
@@ -2285,16 +2281,16 @@ static void NewScriptHook(JSContext	 *cx,
 				[eval.expression getCharacters:buffer range:NSMakeRange(0, chars)];
 			}
 
-			jsval rval;
-			if (JS_TRUE == JS_EvaluateUCInStackFrame(cx, fp, buffer, chars, "(debug)", 0, &rval)) {
-				if (JSVAL_IS_OBJECT(rval)) {
+      JS::RootedValue rval(cx);
+			if (fp.evaluateUCInStackFrame(cx, (jschar*)buffer, chars, "(debug)", 0, &rval)) {
+				if (!JSVAL_IS_PRIMITIVE(rval)) {
 					JSObject *obj = JSVAL_TO_OBJECT(rval);
 
 					NSDictionary *dict = [eval.conn.mirror addObject:obj context:cx];
 
 					[eval.conn postResponse:eval.seqno success:true body:dict refs:nil];
 				} else {
-					JSString *jstr = JS_ValueToString(cx, rval);
+          JSString *jstr = JS::ToString(cx, rval);
 
 					if (!jstr) {
 						[eval.conn postResponse:eval.seqno success:true body:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -2358,7 +2354,7 @@ static void NewScriptHook(JSContext	 *cx,
 	}
 }
 
-- (void) broadcast:(const char*)message count:(int)bytes {
+- (void) broadcast:(const char*)message count:(long)bytes {
 	[self.lock lock];
 
 	// For each connexion,
@@ -2376,7 +2372,7 @@ static void NewScriptHook(JSContext	 *cx,
 }
 
 - (void) broadcastMessage:(NSString *)msg {
-	NSString *frame = [NSString stringWithFormat:@"Content-Length: %d\r\n\r\n%@", [msg length], msg];
+	NSString *frame = [NSString stringWithFormat:@"Content-Length: %ld\r\n\r\n%@", [msg length], msg];
 
 	[self broadcast:[frame UTF8String] count:[frame length]];
 }

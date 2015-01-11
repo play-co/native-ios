@@ -43,13 +43,15 @@ JSAG_MEMBER_BEGIN(send, 6)
 
 			for (int ii = 0; ii < count; ++ii) {
 				jsid jid = JS_IdArrayGet(cx, idArray, ii);
-				jsval idval, propval;
+				jsval idval;
+        JS::RootedValue propval(cx);
 
 				JS_IdToValue(cx, jid, &idval);
 				JS_LookupPropertyById(cx, hdr_obj, jid, &propval);
 
+        JS::RootedValue idvalRooted(cx, idval);
 				if (likely(JSVAL_IS_STRING(idval) && JSVAL_IS_STRING(propval))) {
-					JSVAL_TO_NSTR(cx, idval, nsid);
+					JSVAL_TO_NSTR(cx, idvalRooted, nsid);
 					JSVAL_TO_NSTR(cx, propval, nsprop);
 					
 					[headers setObject:nsprop forKey:nsid];
@@ -77,11 +79,16 @@ JSAG_MEMBER_BEGIN(send, 6)
 		jsname = CSTR_TO_JSVAL(cx, "xhr");
 
 		JSObject *xhr_obj = JS_NewObject(cx, NULL, NULL, NULL);
-		JS_SetProperty(cx, xhr_obj, "id", &jsid);
-		JS_SetProperty(cx, xhr_obj, "state", &jsstate);
-		JS_SetProperty(cx, xhr_obj, "status", &jsstatus);
-		JS_SetProperty(cx, xhr_obj, "response", &jsresponse);
-		JS_SetProperty(cx, xhr_obj, "name", &jsname);
+    JS::RootedValue _jsid(cx, jsid);
+    JS::RootedValue _jsstate(cx, jsstate);
+    JS::RootedValue _jsstatus(cx, jsstatus);
+    JS::RootedValue _jsresponse(cx, jsresponse);
+    JS::RootedValue _jsname(cx, jsname);
+		JS_SetProperty(cx, xhr_obj, "id", _jsid);
+		JS_SetProperty(cx, xhr_obj, "state", _jsstate);
+		JS_SetProperty(cx, xhr_obj, "status", _jsstatus);
+		JS_SetProperty(cx, xhr_obj, "response", _jsresponse);
+		JS_SetProperty(cx, xhr_obj, "name", _jsname);
 		xhr_val = OBJECT_TO_JSVAL(xhr_obj);
 
 		[m_core dispatchEvent:&xhr_val];
@@ -137,25 +144,34 @@ JSAG_OBJECT_END
 			[value isKindOfClass:[NSString class]])
 		{
 			jsval key_val = NSTR_TO_JSVAL(cx, (NSString *)key);
-			JS_SetElement(cx, header_keys, i, &key_val);
+      JS::RootedValue _key_val(cx, key_val);
+			JS_SetElement(cx, header_keys, i, &_key_val);
 
 			jsval value_val = NSTR_TO_JSVAL(cx, (NSString *)value);
-			JS_SetElement(cx, header_values, i, &value_val);
+      JS::RootedValue _value_val(cx, value_val);
+			JS_SetElement(cx, header_values, i, &_value_val);
 
 			i++;
 		}
 	}
 
 	JSObject *xhr_obj = JS_NewObject(cx, NULL, NULL, NULL);
-	JS_SetProperty(cx, xhr_obj, "id", &jsid);
-	JS_SetProperty(cx, xhr_obj, "state", &jsstate);
-	JS_SetProperty(cx, xhr_obj, "status", &jsstatus);
-	JS_SetProperty(cx, xhr_obj, "response", &jsresponse);
-	JS_SetProperty(cx, xhr_obj, "name", &jsname);
+  JS::RootedValue _jsid(cx, jsid);
+  JS::RootedValue _jsstate(cx, jsstate);
+  JS::RootedValue _jsstatus(cx, jsstatus);
+  JS::RootedValue _jsresponse(cx, jsresponse);
+  JS::RootedValue _jsname(cx, jsname);
+	JS_SetProperty(cx, xhr_obj, "id", _jsid);
+	JS_SetProperty(cx, xhr_obj, "state", _jsstate);
+	JS_SetProperty(cx, xhr_obj, "status", _jsstatus);
+	JS_SetProperty(cx, xhr_obj, "response", _jsresponse);
+	JS_SetProperty(cx, xhr_obj, "name", _jsname);
 	jsval header_keys_val = OBJECT_TO_JSVAL(header_keys);
 	jsval header_values_val = OBJECT_TO_JSVAL(header_values);
-	JS_SetProperty(cx, xhr_obj, "headerKeys", &header_keys_val);
-	JS_SetProperty(cx, xhr_obj, "headerValues", &header_values_val);
+  JS::RootedValue _header_keys_val(cx, header_keys_val);
+  JS::RootedValue _header_values_val(cx, header_values_val);
+	JS_SetProperty(cx, xhr_obj, "headerKeys", _header_keys_val);
+	JS_SetProperty(cx, xhr_obj, "headerValues", _header_values_val);
 	xhr_val = OBJECT_TO_JSVAL(xhr_obj);
 
 	[m_core dispatchEvent:&xhr_val];

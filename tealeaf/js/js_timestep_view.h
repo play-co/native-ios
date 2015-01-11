@@ -31,7 +31,7 @@ void def_timestep_view_render(void *view, void *ctx, void *opts);
 JSObject *def_get_viewport(JSObject *js_opts);
 void def_restore_viewport(JSObject *js_opts, JSObject *js_viewport);
 
-JSBool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp);
+bool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp);
 
 #ifdef __cplusplus
 }

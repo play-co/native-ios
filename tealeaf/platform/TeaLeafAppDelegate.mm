@@ -260,7 +260,7 @@
 
 - (void) applicationDidEnterBackground:(UIApplication *)application
 {
-	UIBackgroundTaskIdentifier bgTask = nil;
+	UIBackgroundTaskIdentifier bgTask = 0;
 
 	bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
 		// With the mighty power of closures, smite this task!
@@ -472,7 +472,7 @@
 	if (orientation == UIDeviceOrientationUnknown) {
 		NSLOG(@"{core} WARNING: Device orientation unknown");
 
-		orientation = self.tealeafViewController.interfaceOrientation;
+		orientation = (UIDeviceOrientation)self.tealeafViewController.interfaceOrientation;
 	}
 
 	bool portraitMode = (orientation == UIDeviceOrientationFaceUp ||

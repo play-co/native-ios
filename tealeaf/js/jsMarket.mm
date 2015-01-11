@@ -18,13 +18,13 @@
 
 static js_core *m_core = NULL;
 
-static JSBool defMarketUrl(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+static bool defMarketUrl(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	
 	vp.setString(CSTR_TO_JSTR(cx, get_market_url()));
 
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 @implementation jsMarket

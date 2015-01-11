@@ -95,7 +95,7 @@
 	NSString *msg = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 	if (msg) {
 		[msg autorelease];
-		jsval rval;
+    JS::RootedValue rval(self.cx);
 		JS_GetProperty(self.cx, self.thiz, "__id", &rval);
 		NSString *evt = [NSString stringWithFormat: @"{\"id\":%d,\"name\":\"socketRead\"}", JSValToInt32(self.cx, rval, 0)];
 		const char *cEvt = [evt UTF8String];
@@ -174,8 +174,8 @@ JSAG_MEMBER_BEGIN(Socket, 2)
 
 	JSAG_SET_PRIVATE(thiz, socket);
 
-	jsval jsID = INT_TO_JSVAL(idCounter++);
-	JSAG_ADD_PROPERTY(thiz, __id, &jsID);
+  JS::RootedValue jsID(cx, JS::NumberValue(idCounter++));
+	JSAG_ADD_PROPERTY(thiz, __id, jsID);
 
 	JSAG_RETURN_OBJECT(thiz);
 }

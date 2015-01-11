@@ -433,10 +433,10 @@ CEXPORT void device_hide_splash() {
     
 	JSContext* cx = [[js_core lastJS] cx];
 	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "keyboardScreenResize"));
-	jsval height = INT_TO_JSVAL(properlyRotatedCoords.origin.y);
-	JS_SetProperty(cx, event, "name", &name);
-	JS_SetProperty(cx, event, "height", &height);
+  JS::RootedValue name(cx, JS::StringValue(JS_InternString(cx, "keyboardScreenResize")));
+  JS::RootedValue height(cx, JS::NumberValue(properlyRotatedCoords.origin.y));
+	JS_SetProperty(cx, event, "name", name);
+	JS_SetProperty(cx, event, "height", height);
     
 	jsval evt = OBJECT_TO_JSVAL(event);
 	[[js_core lastJS] dispatchEvent:&evt];
@@ -618,10 +618,10 @@ CEXPORT void device_hide_splash() {
 - (void) dispatch:(int)callback {
 	JSContext* cx = [[js_core lastJS] cx];
 	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "dialogButtonClicked"));
-	jsval idv = INT_TO_JSVAL(callback);
-	JS_SetProperty(cx, event, "name", &name);
-	JS_SetProperty(cx, event, "id", &idv);
+  JS::RootedValue name(cx, JS::StringValue(JS_InternString(cx, "dialogButtonClicked")));
+  JS::RootedValue idv(cx, JS::NumberValue(callback));
+	JS_SetProperty(cx, event, "name", name);
+	JS_SetProperty(cx, event, "id", idv);
     
 	jsval evt = OBJECT_TO_JSVAL(event);
 	[[js_core lastJS] dispatchEvent:&evt];

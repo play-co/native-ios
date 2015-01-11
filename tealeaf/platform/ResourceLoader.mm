@@ -127,7 +127,7 @@ static int base_path_len = 0;
 - (NSString *) initStringWithContentsOfURL:(NSString *)url {
 	//check config for test app
 
-	NSURLRequest *request = [NSURLRequest requestWithURL:[self resolve:url] cachePolicy:0 timeoutInterval:600];
+	NSURLRequest *request = [NSURLRequest requestWithURL:[self resolve:url] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:600];
 	NSURLResponse *response = nil;
 	NSError *error = nil;
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];

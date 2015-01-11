@@ -26,13 +26,13 @@
 #define JSTR_TO_CSTR(cx, jstr, cstr) \
 	size_t cstr ## _len = JS_GetStringEncodingLength(cx, jstr); \
 	char *cstr = (char*)alloca(sizeof(char) * (cstr ## _len + 1)); \
-	JS_EncodeStringToBuffer(jstr, cstr, cstr ## _len); \
+	JS_EncodeStringToBuffer(cx, jstr, cstr, cstr ## _len); \
 	cstr[cstr ## _len] = (char)'\0';
 
 #define JSTR_TO_CSTR_PERSIST(cx, jstr, cstr) \
 	size_t cstr ## _len = JS_GetStringEncodingLength(cx, jstr); \
 	char *cstr = (char*)malloc(sizeof(char) * (cstr ## _len + 1)); \
-	JS_EncodeStringToBuffer(jstr, cstr, cstr ## _len); \
+	JS_EncodeStringToBuffer(cx, jstr, cstr, cstr ## _len); \
 	cstr[cstr ## _len] = (char)'\0';
 
 #define PERSIST_CSTR_RELEASE(cstr) \
@@ -51,7 +51,7 @@
 #define JSTR_TO_NSTR(cx, jstr, nstr) \
 	size_t nstr ## _len; \
 	jschar *nstr ## _jc = (jschar*)JS_GetStringCharsZAndLength(cx, jstr, &nstr ## _len); \
-	NSString *nstr = [[[NSString alloc] initWithCharactersNoCopy:nstr ## _jc length:nstr ## _len freeWhenDone:NO] autorelease];
+	NSString *nstr = [[[NSString alloc] initWithCharactersNoCopy:(unichar*)nstr ## _jc length:nstr ## _len freeWhenDone:NO] autorelease];
 
 inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 	int chars = (int)[nstr length];
@@ -63,7 +63,7 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 		buffer = (unichar*)JS_malloc(cx, chars * sizeof(unichar));
 		[nstr getCharacters:buffer range:NSMakeRange(0, chars)];
 
-		JSString *rval = JS_NewUCString(cx, buffer, chars);
+		JSString *rval = JS_NewUCString(cx, (jschar*)buffer, chars);
 		if (!rval) {
 			JS_free(cx, buffer);
 		}
@@ -76,7 +76,7 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 #define NSTR_TO_JSVAL(cx, nstr) STRING_TO_JSVAL(NSTR_TO_JSTR(cx, nstr))
 
 #define JSVAL_TO_NSTR(cx, val, nstr) \
-	JSString *nstr ## _jstr = JSVAL_TO_STRING(val); \
+	JSString *nstr ## _jstr = JS::ToString(cx, val); \
 	JSTR_TO_NSTR(cx, nstr ## _jstr, nstr);
 
 #endif
@@ -85,13 +85,11 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 	JSString *cstr ## _jstr = JSVAL_TO_STRING(val); \
 	JSTR_TO_CSTR(cx, cstr ## _jstr, cstr);
 
-#define JSVAL_IS_OBJECT(v) !JSVAL_IS_PRIMITIVE(v)
-
 inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 	int result = def;
 
 	if (!JSVAL_IS_VOID(v)) {
-		JS_ValueToInt32(cx, v, &result);
+		result = JSVAL_TO_INT(v);
 	}
 
 	return result;
@@ -115,22 +113,22 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 #define JSAG_OBJECT JSObject
 #define JSAG_VALUE jsval
 
-#define JSAG_BOOL JSBool
-#define JSAG_FALSE JS_FALSE
-#define JSAG_TRUE JS_TRUE
+#define JSAG_BOOL bool
+#define JSAG_FALSE false
+#define JSAG_TRUE true
 
 // Member definitions
 
 #define JSAG_MEMBER_BEGIN_NOARGS(jsName) \
 	static const int jsag_member_ ## jsName ## _argCount = 0; \
-	static JSBool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) {
+	static bool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) {
 
 #define JSAG_MEMBER_END_NOARGS \
-	return JS_TRUE; }
+	return true; }
 
 #define JSAG_MEMBER_BEGIN(jsName, minArgs) \
 	static const int jsag_member_ ## jsName ## _argCount = minArgs; \
-	static JSBool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) { \
+	static bool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) { \
 		static const char *JSAG_FN_NAME_STR = #jsName; { \
 		if (unlikely(argc < minArgs)) { goto jsag_fail; } \
 		jsval *argv = JS_ARGV(cx, vp); \
@@ -149,22 +147,29 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 	jsval name = *argv; \
 	--argsLeft; ++argv;
 
+#define JSAG_ARG_JSROOTVAL(cx, name) \
+  JS::RootedValue name(cx, *argv); \
+  --argsLeft; ++argv;
+
 #define JSAG_ARG_INT32(name) \
 	int32_t name; \
-	if (unlikely(JS_FALSE == JS_ValueToECMAInt32(cx, *argv, &name))) { goto jsag_fail; } \
-	--argsLeft; ++argv;
+  JS::RootedValue name##_rooted(cx, *argv); \
+  if (unlikely(false == JS::ToInt32(cx, name##_rooted, &name))) { goto jsag_fail; } \
+	--argsLeft; ++argv; \
 
 #define JSAG_ARG_INT32_OPTIONAL(name, default) \
 	int32_t name = default; \
+  JS::RootedValue name##_rooted(cx, *argv); \
 	if (argsLeft > 0) { \
-		if (unlikely(JS_FALSE == JS_ValueToECMAInt32(cx, *argv, &name))) { goto jsag_fail; } \
+    if (unlikely(false == JS::ToInt32(cx, name##_rooted, &name))) { goto jsag_fail; } \
 		--argsLeft; ++argv; \
 	}
 
 #define JSAG_ARG_JSTR(name) \
-	JSString *name = JS_ValueToString(cx, *argv); \
+  JS::RootedValue name##_rooted(cx, *argv); \
+	JSString *name = JS::ToString(cx, name##_rooted); \
 	if (unlikely(!name)) { goto jsag_fail; } \
-	--argsLeft; ++argv;
+	--argsLeft; ++argv; \
 
 #define JSAG_ARG_NSTR_OPTIONAL(name, default) \
 	NSString *name = default; \
@@ -187,24 +192,26 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 #define JSAG_ARG_CSTR_FIRST(name, count) \
 	JSAG_ARG_JSTR(name ## _jstr); \
 	char name[count] = {0}; \
-	int name ## _len = (int)JS_EncodeStringToBuffer(name ## _jstr, name, count);
+	JS_EncodeStringToBuffer(cx, name ## _jstr, name, count);
 
 #define JSAG_ARG_DOUBLE(name) \
-	double name; \
-	if (unlikely(JS_FALSE == JS_ValueToNumber(cx, *argv, &name))) { goto jsag_fail; } \
+  double name; \
+  JS::RootedValue name##_rootedValue(cx, *argv); \
+	if (unlikely(false == JS::ToNumber(cx, name##_rootedValue, &name))) { goto jsag_fail; } \
 	--argsLeft; ++argv;
 
 #define JSAG_ARG_DOUBLE_OPTIONAL(name, default) \
 	double name = default; \
+  JS::RootedValue name##_rooted(cx, *argv); \
 	if (argsLeft > 0) { \
-		if (unlikely(JS_FALSE == JS_ValueToNumber(cx, *argv, &name))) { goto jsag_fail; } \
+		if (unlikely(false == JS::ToNumber(cx, name##_rooted, &name))) { goto jsag_fail; } \
 		--argsLeft; ++argv; \
 	}
 
 #define JSAG_ARG_OBJECT(name) \
 	JSObject *name; \
 	{ jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		name = JSVAL_TO_OBJECT(name ## _val);\
 	} --argsLeft; ++argv;
 
@@ -213,7 +220,7 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 	JSObject *name = NULL; \
 	if (argsLeft > 0) { \
 		jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		--argsLeft; ++argv; \
 		name = JSVAL_TO_OBJECT(name ## _val);\
 	}
@@ -221,7 +228,7 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 #define JSAG_ARG_ARRAY(name) \
 	JSObject *name; \
 	{ jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		name = JSVAL_TO_OBJECT(name ## _val);\
 		if (unlikely(!JS_IsArrayObject(cx, name))) { goto jsag_fail; } \
 	} --argsLeft; ++argv;
@@ -229,13 +236,14 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 #define JSAG_ARG_FUNCTION(name) \
 	JSObject *name; \
 	{ jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		name = JSVAL_TO_OBJECT(name ## _val);\
 		if (unlikely(!name || !JS_ObjectIsFunction(cx, name))) { goto jsag_fail; } \
 	} --argsLeft; ++argv;
 
 #define JSAG_ARG_BOOL(name) \
-	bool name = ToBoolean(*argv); \
+  JS::RootedValue name##_rooted(cx, *argv); \
+  bool name = JS::ToBoolean(name##_rooted); \
 	--argsLeft; ++argv;
 
 #define JSAG_RETURN_INT32(name) \
@@ -273,12 +281,12 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 
 #define JSAG_MEMBER_END \
 	JS_EndRequest(cx); \
-	return JS_TRUE; \
+	return true; \
 } \
 jsag_fail: \
 	JS_ReportError(cx, "Invalid arguments to %s", JSAG_FN_NAME_STR); \
 	JS_EndRequest(cx); \
-	return JS_FALSE; \
+	return false; \
 }
 
 // Class definition
@@ -289,7 +297,7 @@ jsag_fail: \
 #define JSAG_CLASS_IMPL(name) \
 	static const JSClass name ## _class = { \
 		#name, JSCLASS_HAS_PRIVATE, \
-		JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub, \
+		JS_PropertyStub, JS_DeletePropertyStub, JS_PropertyStub, JS_StrictPropertyStub, \
 		JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, class_ ## name ## _finalizer, \
 		JSCLASS_NO_OPTIONAL_MEMBERS \
 	};

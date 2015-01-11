@@ -27,12 +27,12 @@ CEXPORT void def_timestep_image_map_class_finalize(JSFreeOp *fop, JSObject *obj)
 	}
 }
 
-CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned argc, jsval *vp) {
+CEXPORT bool def_timestep_image_map_class_constructor(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
 
 	JSObject *thiz = timestep_image_map_create_ctor_object(cx, vp);
 	if (!thiz) {
-		return JS_FALSE;
+		return false;
 	}
 
 	timestep_image_map *map = timestep_image_map_init();
@@ -53,7 +53,7 @@ CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned 
 			JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(thiz));
 
 			JS_EndRequest(cx);
-			return JS_TRUE;
+			return true;
 		}
 	} else if (argc == 10) {
 		if (JS_ConvertArguments(cx, argc, JS_ARGV(cx, vp), "oiiiiiiiiS", &parent, &map->x, &map->y, &map->width, &map->height, &map->margin_top, &map->margin_right, &map->margin_bottom, &map->margin_left, &url_jstr)) {
@@ -63,7 +63,7 @@ CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned 
 			JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(thiz));
 			
 			JS_EndRequest(cx);
-			return JS_TRUE;
+			return true;
 		}
 	}
 
@@ -73,5 +73,5 @@ CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned 
 	timestep_image_delete(map);
 
 	JS_EndRequest(cx);
-	return JS_FALSE;
+	return false;
 }
