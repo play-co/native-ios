@@ -370,8 +370,6 @@ JSSecurityCallbacks securityCallbacks = {
 	}
   
   JS_SetGCParameter(rt, JSGC_MAX_BYTES, 0xffffffff);
-  JS_SetGCParameter(rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
-  JS_SetGCParameter(rt, JSGC_SLICE_TIME_BUDGET, 20);
   JS_SetGCCallback(rt, &jsGCcb, nullptr);
   
   JSPrincipals trustedPrincipals;
