@@ -162,7 +162,7 @@ static inline int NextPowerOfTwo(int n) {
 
 - (NSString*) description
 {
-	return [NSString stringWithFormat:@"<%@ = %ld | Name = %i | Dimensions = %ldx%ld | Coordinates = (%.2f, %.2f)>", [self class], (uintptr_t)self, _name, _texWidth, _texHeight, _maxS, _maxT];
+	return [NSString stringWithFormat:@"<%@ = %ld | Name = %i | Dimensions = %ldx%ld | Coordinates = (%.2f, %.2f)>", [self class], (uintptr_t)self, _name, (unsigned long)_texWidth, (unsigned long)_texHeight, _maxS, _maxT];
 }
 
 @end
@@ -496,7 +496,7 @@ static inline int NextPowerOfTwo(int n) {
 			break;
 			
 		default:
-			[NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %ld", contentMode];
+			[NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %ld", (long)contentMode];
 	}
 	
 	CGSize newSize = CGSizeMake(self.size.width * ratio, self.size.height * ratio);

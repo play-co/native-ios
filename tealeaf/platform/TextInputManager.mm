@@ -96,8 +96,8 @@ static id instance = nil;
 	float scale = [[UIScreen mainScreen] scale];
 	float textScale = scale;
 
-	[instance setScale:scale];
-	[instance setTextScale:textScale];
+	[(TextInputManager*)instance setScale:scale];
+	[(TextInputManager*)instance setTextScale:textScale];
 }
 
 @end

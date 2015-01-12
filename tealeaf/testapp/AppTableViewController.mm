@@ -368,8 +368,8 @@ static NSThread *appLoadListThread = nil;
 	if (res_obj && json_is_object(res_obj)) {
 		const char *key;
 		json_t *value;
-		__block int obj_count =	 json_object_size(res_obj);
-		__block int cur_obj_index = 0;
+		__block size_t obj_count =	 json_object_size(res_obj);
+		__block size_t cur_obj_index = 0;
 
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 		NSString *documentsDirectory = [paths objectAtIndex:0];

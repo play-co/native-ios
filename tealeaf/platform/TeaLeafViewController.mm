@@ -122,7 +122,7 @@ CEXPORT void device_hide_splash() {
 	} else if ([title isEqualToString:@"No"]) {
 		//do nothing
 	} else {
-		[(UIAlertViewEx*)sheet dispatch: buttonIndex];
+		[(UIAlertViewEx*)sheet dispatch:(int)buttonIndex];
 		[sheet release];
 	}
 }

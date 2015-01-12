@@ -198,7 +198,7 @@ static int base_path_len = 0;
 - (void) makeTexture2DFromData: (NSData*) data url: (NSString*) url {
     unsigned char *tex_data = NULL;
     int ch, w, h, ow, oh, scale;
-    unsigned int raw_length = [data length];
+    unsigned long raw_length = [data length];
     if (raw_length > 0) {
         const void *raw_data = [data bytes];
         
@@ -219,50 +219,49 @@ static int base_path_len = 0;
 }
 
 - (void) imageThread {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	while(true) {
-		//continue;
-		[self.imageWaiter lock];
-		[self.imageWaiter wait];
-		NSArray* imgs = [NSArray arrayWithArray: self.images];
-		[self.images removeAllObjects];
-		[self.imageWaiter unlock];
-		do {
-			for (NSUInteger i = 0, count = [imgs count]; i < count; i++) {
-				NSString* url = [imgs objectAtIndex:i];
-				NSLOG(@"{resources} Loading url:%@", url);
-				if([url hasPrefix: @"@TEXT"]) {
-					[self performSelectorOnMainThread: @selector(finishLoadingText:) withObject: url waitUntilDone:NO];
-				} else if([url hasPrefix: @"@CONTACTPICTURE"]) {
-					// TODO Contact pictures again...
-				} else if([url hasPrefix: @"MULTICONTACTPICTURES"]) {
-					// TODO sprite contact pictures...
-					NSLOG(@"{resources} ERROR: Contact pictures not supported yet!");
-				} else if([url hasPrefix: @"CAMERA"]) {
-					// do nothing for now
-					NSLOG(@"{resources} ERROR: Camera not supported yet!");
-				} else if([url hasPrefix: @"GALLERYPHOTO"]) {
-					// do nothing for now
-					NSLOG(@"{resources} ERROR: Gallery photo picking not supported yet!");
-				} else {
-					// it's a plain url
-					NSData* data = nil;
-					if([url hasPrefix: @"data:"]) {
-						NSRange range = [url rangeOfString:@","];
-						NSString* str = [url substringFromIndex: range.location+1];
-						data = decodeBase64(str);
-					} else {
-                        data = [NSData dataWithContentsOfURL: [self resolve:url]];
-                        [self makeTexture2DFromData: data url: url];
-					}
-				}
-			}
-			imgs = [NSArray arrayWithArray: self.images];
-			[self.images removeAllObjects];
-		} while([imgs count] > 0);
-	}
-
-	[pool release];
+  @autoreleasepool {
+    while(true) {
+      //continue;
+      [self.imageWaiter lock];
+      [self.imageWaiter wait];
+      NSArray* imgs = [NSArray arrayWithArray: self.images];
+      [self.images removeAllObjects];
+      [self.imageWaiter unlock];
+      do {
+        for (NSUInteger i = 0, count = [imgs count]; i < count; i++) {
+          NSString* url = [imgs objectAtIndex:i];
+          NSLOG(@"{resources} Loading url:%@", url);
+          if([url hasPrefix: @"@TEXT"]) {
+            [self performSelectorOnMainThread: @selector(finishLoadingText:) withObject: url waitUntilDone:NO];
+          } else if([url hasPrefix: @"@CONTACTPICTURE"]) {
+            // TODO Contact pictures again...
+          } else if([url hasPrefix: @"MULTICONTACTPICTURES"]) {
+            // TODO sprite contact pictures...
+            NSLOG(@"{resources} ERROR: Contact pictures not supported yet!");
+          } else if([url hasPrefix: @"CAMERA"]) {
+            // do nothing for now
+            NSLOG(@"{resources} ERROR: Camera not supported yet!");
+          } else if([url hasPrefix: @"GALLERYPHOTO"]) {
+            // do nothing for now
+            NSLOG(@"{resources} ERROR: Gallery photo picking not supported yet!");
+          } else {
+            // it's a plain url
+            NSData* data = nil;
+            if([url hasPrefix: @"data:"]) {
+              NSRange range = [url rangeOfString:@","];
+              NSString* str = [url substringFromIndex: range.location+1];
+              data = decodeBase64(str);
+            } else {
+              data = [NSData dataWithContentsOfURL: [self resolve:url]];
+              [self makeTexture2DFromData: data url: url];
+            }
+          }
+        }
+        imgs = [NSArray arrayWithArray: self.images];
+        [self.images removeAllObjects];
+      } while([imgs count] > 0);
+    }
+  }
 }
 
 - (UIImage *) normalize: (UIImage *) src {
@@ -431,8 +430,8 @@ static int base_path_len = 0;
 static bool read_file(const char *url, unsigned long *sz, unsigned char **data) {
 	// Try to use stack memory if it is small
 	char full_path[512];
-	int url_len = strlen(url);
-	int full_path_len = base_path_len + url_len + 1 + 1;
+	unsigned long url_len = strlen(url);
+	unsigned long full_path_len = base_path_len + url_len + 1 + 1;
 	char *path = full_path;
 	if (full_path_len > sizeof(full_path)) {
 		path = (char*)malloc(full_path_len);
@@ -447,19 +446,19 @@ static bool read_file(const char *url, unsigned long *sz, unsigned char **data) 
 	bool success = false;
 
 	if (fd != -1) {
-		unsigned long len = lseek(fd, 0, SEEK_END);
+		off_t len = lseek(fd, 0, SEEK_END);
 
 		fcntl(fd, F_NOCACHE, 1);
 		fcntl(fd, F_RDAHEAD, 1);
 
 		if (len > 0) {
-			void *raw = mmap(0, len, PROT_READ, MAP_PRIVATE, fd, 0);
+			void *raw = mmap(0, (size_t)len, PROT_READ, MAP_PRIVATE, fd, 0);
 
 			if (raw == MAP_FAILED) {
 				LOG("{resources} WARNING: mmap failed errno=%d for %s/%s len=%d", errno, base_path, url, (int)len);
 			} else {
 				*data = (unsigned char*)raw;
-				*sz = len;
+				*sz = (unsigned long)len;
 				success = true;
 			}
 		}

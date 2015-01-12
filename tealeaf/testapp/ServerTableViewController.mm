@@ -119,7 +119,7 @@
 	}
 
 	NSString *ns_ip_str = [NSString stringWithUTF8String:ip_str];
-	int insert_index, list_len;
+	size_t insert_index, list_len;
 
 	for (insert_index = 0, list_len = [self.listData count]; insert_index < list_len; ++insert_index) {
 		ServerInfo *server = [self.listData objectAtIndex:insert_index];
@@ -206,7 +206,7 @@
 	ServerInfo *serverInfo = (ServerInfo *)[self.listData objectAtIndex:row];
 	if (serverInfo != nil) {
 		self.ipInputView.text = serverInfo.ip;
-		self.portInputView.text = [NSString stringWithFormat:@"%d", serverInfo.port];
+		self.portInputView.text = [NSString stringWithFormat:@"%ld", (long)serverInfo.port];
 
 		[self launch];
 	}

@@ -661,7 +661,7 @@ SplashDescriptor SPLASHES[] = {
 				self.gameSupportsLandscape = NO;
 				self.gameSupportsPortrait = NO;
 
-				for (int ii = 0, count = [orientations count]; ii < count; ++ii) {
+				for (size_t ii = 0, count = [orientations count]; ii < count; ++ii) {
 					NSString *str = (NSString *)[orientations objectAtIndex:ii];
 					NSLOG(@"{manifest} Read orientation: %@", str);
 					if ([str caseInsensitiveCompare:@"landscape"] == NSOrderedSame) {

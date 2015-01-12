@@ -36,8 +36,8 @@
 
 @interface DebugScript : NSObject
 
-@property(nonatomic) int index;
-@property(nonatomic) int lineCount;
+@property(nonatomic) long index;
+@property(nonatomic) long lineCount;
 @property(nonatomic, retain) NSString *key;
 @property(nonatomic, retain) NSString *path;
 @property(nonatomic, retain) NSString *source;

@@ -11,8 +11,6 @@
 
 @interface TeaLeafTextFieldDelegate : NSObject<UITextFieldDelegate>
 @property (nonatomic) int maxLength;
-- (void) hide;
-- (void) gotoNextTextfield;
 @end
 
 @interface TeaLeafTextField : UITextField
@@ -21,5 +19,9 @@
 @property (nonatomic, retain) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, retain) UIColor *_placeholderColor;
 @property (nonatomic, retain) TeaLeafTextFieldDelegate *textFieldDelegate;
+- (void) gotoNextTextfield;
+- (void) hide;
+- (void) show;
+- (void) submit;
 @end
 
