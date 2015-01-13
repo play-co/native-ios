@@ -100,6 +100,7 @@ static inline int NextPowerOfTwo(int n) {
 
 - (id) initWithData:(const void*)data andFormat:(Texture2DPixelFormat)pixelFormat andSize:(CGSize)realSize contentSize:(CGSize)contentSize andScale: (float) tex_scale
 {
+
 	//GLint saveName;
 	if((self = [super init])) {
 		GLTRACE(glGenTextures(1, &_name));
@@ -334,8 +335,16 @@ static inline int NextPowerOfTwo(int n) {
 
 	CGContextTranslateCTM(context, 0.0, h);
 	CGContextScaleCTM(context, 1.0, -1.0); //NOTE: NSString draws in UIKit referential i.e. renders upside-down compared to CGBitmapContext referential
-	CGColorRef colorf = CGColorCreate(colorSpace, (CGFloat*)color);
+  CGFloat cgColor[4] = {
+    static_cast<CGFloat>(color[0]),
+    static_cast<CGFloat>(color[1]),
+    static_cast<CGFloat>(color[2]),
+    static_cast<CGFloat>(color[3]),
+  };
+	CGColorRef colorf = CGColorCreate(colorSpace, cgColor);
 	CGContextSetFillColorWithColor(context, colorf);
+  CFShow(colorf);
+  CFShow(context);
 	if (textStyle == TEXT_STYLE_STROKE) {
 		CGContextSetTextDrawingMode(context, kCGTextStroke);
 		CGContextSetStrokeColorWithColor(context, colorf);
@@ -349,8 +358,28 @@ static inline int NextPowerOfTwo(int n) {
 	CGContextSetShouldSmoothFonts(context, YES);
 
 	UIGraphicsPushContext(context);
-	[string drawInRect:CGRectMake(strokeWidth, strokeWidth, dimensions.width, dimensions.height) withFont:font lineBreakMode:(NSLineBreakMode)UILineBreakModeTailTruncation alignment: (NSTextAlignment)UITextAlignmentLeft];
+//	[string drawInRect:CGRectMake(strokeWidth, strokeWidth, dimensions.width, dimensions.height) withFont:font lineBreakMode:NSLineBreakByTruncatingTail alignment:NSTextAlignmentLeft];
+  [string drawInRect:CGRectMake(strokeWidth, strokeWidth, dimensions.width, dimensions.height) withAttributes:@{
+    NSFontAttributeName:font
+   }];
+  
 	UIGraphicsPopContext();
+  
+  printf("%s\n", "start_count");
+  bool had_value=false;
+  for (size_t i=0; i!=(h*w); i++) {
+    uint32_t j = ((uint32_t*)data)[i];
+    
+    if (j) {
+      had_value=true;
+      printf("%x\n", j);
+    }
+  }
+  printf("%s\n", "done_count");
+  
+  if(!had_value) {
+    printf("%s\n", "ERROR CREATING DATA FOR FONT RENDER");
+  }
 
 	self = [self initWithData:data andFormat:kTexture2DPixelFormat_RGBA8888 andSize: CGSizeMake(w, h) contentSize:act_dim andScale: 1];
 

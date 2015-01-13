@@ -363,13 +363,15 @@ JSSecurityCallbacks securityCallbacks = {
   }
 
   JSRuntime* rt;
-	self.rt = rt = JS_NewRuntime(32L * 1024L * 1024L, JS_USE_HELPER_THREADS);
+	self.rt = rt = JS_NewRuntime(8L * 1024L * 1024L, JS_USE_HELPER_THREADS);
 	if (!self.rt) {
 		LOG("{js} FATAL: Unable to create JS runtime");
 		return nullptr;
 	}
   
   JS_SetGCParameter(rt, JSGC_MAX_BYTES, 0xffffffff);
+  JS_SetGCParameter(rt, JSGC_SLICE_TIME_BUDGET, 10);
+  JS_SetGCParameter(rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
   JS_SetGCCallback(rt, &jsGCcb, nullptr);
   
   JSPrincipals trustedPrincipals;
@@ -497,7 +499,6 @@ JSSecurityCallbacks securityCallbacks = {
 }
 
 -(jsval) evalStr:(NSString *)source withPath:(NSString *)path {
-	jsval rval = JSVAL_NULL;
 
   const size_t length = [source lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
   const char* buffer = [source UTF8String];
@@ -517,15 +518,17 @@ JSSecurityCallbacks securityCallbacks = {
   JSAutoRequest ar(self.cx);
 
   JS::RootedObject global(self.cx, self.global);
+  JSAutoCompartment(self.cx, global);
   JS::CompileOptions opts(self.cx, JSVERSION_LATEST);
   opts.setUTF8(true).setFileAndLine(filename, 1);
+  JS::RootedValue rval(self.cx);
   
-  if(!JS::Evaluate(self.cx, global, opts, buffer, length, &rval)) {
+  if(!JS::Evaluate(self.cx, global, opts, buffer, length, rval.address())) {
     NSLOG(@"{js} Error while evaluating JavaScript from %@ (%d script chars)", path, (int)length);
   }
   
 //	if (!JS_EvaluateUCScript(self.cx, self.global, (jschar*)buffer, unicode_length, filename, 1, &rval)) {
-//		NSLOG(@"{js} Error while evaluating JavaScript from %@ (%d script chars)", path, (int)length);
+//		NSLOG(@"{js} Error wh'ile evaluating JavaScript from %@ (%d script chars)", path, (int)length);
 //	}
 
 	return rval;
@@ -579,7 +582,7 @@ JSSecurityCallbacks securityCallbacks = {
 -(void) performMaybeGC {
 	LOG("{js} Maybe GC");
 	
-	JS_MaybeGC(self.cx);
+	JS_GC(self.rt);
 }
 
 +(js_core*) lastJS {

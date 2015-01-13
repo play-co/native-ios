@@ -167,7 +167,7 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 
 #define JSAG_ARG_JSTR(name) \
   JS::RootedValue name##_rooted(cx, *argv); \
-	JSString *name = JS::ToString(cx, name##_rooted); \
+	JS::RootedString name(cx, JS::ToString(cx, name##_rooted)); \
 	if (unlikely(!name)) { goto jsag_fail; } \
 	--argsLeft; ++argv; \
 
@@ -338,9 +338,9 @@ JS_FN(#jsName, jsag_member_ ## functionName, jsag_member_ ## functionName ## _ar
 	JS_FS_END };
 
 #define JSAG_OBJECT_ATTACH(cx, parent, jsClassName) { \
-		JSObject *jsClassName ## _obj = JS_NewObject(cx, NULL, NULL, NULL); \
-		JS_DefineProperty(cx, parent, #jsClassName, OBJECT_TO_JSVAL(jsClassName ## _obj), NULL, NULL, PROPERTY_FLAGS); \
-		JS_DefineFunctions(cx, jsClassName ## _obj,  (JSFunctionSpec*)jsag_ ## jsClassName ## _members); \
+    JS::RootedObject jsClassName ## _obj(cx, JS_NewObject(cx, nullptr, nullptr, nullptr)); \
+		JS_DefineProperty(cx, parent, #jsClassName, JS::ObjectValue(*jsClassName ## _obj.get()), nullptr, nullptr, PROPERTY_FLAGS); \
+		JS_DefineFunctions(cx, jsClassName ## _obj.get(),  (JSFunctionSpec*)jsag_ ## jsClassName ## _members); \
 	}
 
 #define JSAG_OBJECT_ATTACH_EXISTING(cx, parent, jsClassName, existingObject) { \

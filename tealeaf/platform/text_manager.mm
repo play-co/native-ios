@@ -42,7 +42,7 @@ texture_2d *text_manager_get_text(const char *raw_font_name, int size, const cha
 	NSString *ns_font_name = [FontUtil fixFontName:raw_font_name];
 	const char *font_name = [ns_font_name UTF8String];
 
-	const int buf_len = (int)(FMT_STR_LEN + MAX_COLOR_DIGITS * NUM_COLOR_CHANNELS + INT_MAX_CHARS*2 + strlen(font_name) + strlen(text) + 1);
+	const size_t buf_len = (FMT_STR_LEN + MAX_COLOR_DIGITS * NUM_COLOR_CHANNELS + INT_MAX_CHARS*2 + strlen(font_name) + strlen(text) + 1);
 	bool dynamic = false;
 	char *buf = NULL;
 

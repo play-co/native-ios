@@ -228,7 +228,7 @@ static double measureText(JSContext *cx, JSObject *font_info, const char *text) 
 	double width = 0;
 
   JS::RootedValue _custom_font(cx), _dimensions(cx);
-	JSObject  *custom_font, *dimensions;
+  JS::RootedObject  custom_font(cx), dimensions(cx);
 
 	JS_GetProperty(cx, font_info, "customFont", &_custom_font);
   if(!_custom_font.isObject()) {
@@ -245,7 +245,7 @@ static double measureText(JSContext *cx, JSObject *font_info, const char *text) 
   dimensions = _dimensions.toObjectOrNull();
 
   JS::RootedValue _horizontal(cx);
-	JSObject *horizontal;
+  JS::RootedObject horizontal(cx);
 
 	JS_GetProperty(cx, custom_font, "horizontal", &_horizontal);
   if (!_horizontal.isObject()) { return 0; }
@@ -270,12 +270,12 @@ static double measureText(JSContext *cx, JSObject *font_info, const char *text) 
 	outline *= scale;
 
 	char c = 0;
-	for (int i = 0; (c = text[i]) != 0; i++) {
+	for (size_t i = 0; (c = text[i]) != 0; i++) {
 		if (c == ' ') {
 			width += space_width;
 		} else {
       JS::RootedValue _dimension(cx);
-			JSObject *dimension;
+      JS::RootedObject dimension(cx);
 			JS_GetElement(cx, dimensions, (int)c, &_dimension);
       if (!_dimension.isObject()) {
         return -1;
@@ -310,7 +310,7 @@ JSAG_MEMBER_BEGIN(measureText, 3)
 
 	int width = text_manager_measure_text(font, size, str);
 	
-	JSObject *metrics = JS_NewObject(cx, NULL, NULL, NULL);
+  JS::RootedObject metrics(cx, JS_NewObject(cx, nullptr, nullptr, nullptr));
   JS::RootedValue w(cx, JS::NumberValue(width));
 	JS_SetProperty(cx, metrics, "width", w);
 
@@ -325,12 +325,11 @@ JSAG_MEMBER_BEGIN(measureTextBitmap, 2)
 
 	double width = measureText(cx, font_info, str);
 	
-	jsval width_val = DOUBLE_TO_JSVAL(width);
-	jsval failed_val = BOOLEAN_TO_JSVAL(width < 0);
-	
-	JSObject *metrics = JS_NewObject(cx, NULL, NULL, NULL);
-	JS_DefineProperty(cx, metrics, "width", width_val, NULL, NULL, 0);
-	JS_DefineProperty(cx, metrics, "failed", failed_val, NULL, NULL, 0);
+  JS::RootedValue width_val(cx, JS::NumberValue(width));
+  JS::RootedValue failed_val(cx, JS::BooleanValue(width < 0));
+  JS::RootedObject metrics(cx, JS_NewObject(cx, nullptr, nullptr, nullptr));
+	JS_DefineProperty(cx, metrics, "width", width_val, nullptr, nullptr, 0);
+	JS_DefineProperty(cx, metrics, "failed", failed_val, nullptr, nullptr, 0);
 
 	JSAG_RETURN_OBJECT(metrics);
 }
@@ -582,7 +581,10 @@ JSAG_MEMBER_BEGIN_NOARGS(clearFilters)
 }
 JSAG_MEMBER_END_NOARGS
 
-static double textBaselineValue(JSContext *cx, JSObject *ctx, JSObject *custom_font, double scale) {
+static double textBaselineValue(JSContext *cx,
+                                JSObject *ctx,
+                                JSObject *custom_font,
+                                double scale) {
   JS::RootedValue jtext_baseline(cx);
 	JS_GetProperty(cx, ctx, "textBaseline", &jtext_baseline);
 	if (JSVAL_IS_STRING(jtext_baseline)) {
@@ -623,7 +625,10 @@ static double textBaselineValue(JSContext *cx, JSObject *ctx, JSObject *custom_f
 	return 0;
 }
 
-double textAlignValue(JSContext *cx, JSObject *ctx, JSObject *font_info, const char *text) {
+double textAlignValue(JSContext *cx,
+                      JSObject *ctx,
+                      JSObject *font_info,
+                      const char *text) {
   JS::RootedValue jalign(cx);
 	JS_GetProperty(cx, ctx, "textAlign", &jalign);
 
@@ -658,7 +663,8 @@ JSAG_MEMBER_BEGIN(fillTextBitmap, 7)
 	
 	//get customfont and images from font_info
   JS::RootedValue v(cx);
-	JSObject *custom_font, *images1, *dimensions, *horizontal, *images2;
+  JS::RootedObject custom_font(cx), images1(cx),
+    dimensions(cx), horizontal(cx), images2(cx);
 	double scale, space_width, tracking, outline;
 	JS_GetProperty(cx, font_info, "customFont", &v);
   custom_font = v.toObjectOrNull();

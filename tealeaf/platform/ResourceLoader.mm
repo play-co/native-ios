@@ -36,7 +36,7 @@
 
 #define MAX_HALFSIZE_SKIP 64
 
-static BOOL VERBOSE_LOGS = false;
+static BOOL VERBOSE_LOGS = true;
 static ResourceLoader *instance = nil;
 static NSThread *imgThread = nil;
 static const char *base_path = 0;
