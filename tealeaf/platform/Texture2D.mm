@@ -335,16 +335,19 @@ static inline int NextPowerOfTwo(int n) {
 
 	CGContextTranslateCTM(context, 0.0, h);
 	CGContextScaleCTM(context, 1.0, -1.0); //NOTE: NSString draws in UIKit referential i.e. renders upside-down compared to CGBitmapContext referential
-  CGFloat cgColor[4] = {
-    static_cast<CGFloat>(color[0]),
-    static_cast<CGFloat>(color[1]),
-    static_cast<CGFloat>(color[2]),
-    static_cast<CGFloat>(color[3]),
-  };
+    CGFloat cgColor[4] = {
+      static_cast<CGFloat>(color[0]),
+      static_cast<CGFloat>(color[1]),
+      static_cast<CGFloat>(color[2]),
+      static_cast<CGFloat>(color[3]),
+    };
+    UIColor* uiColor = [UIColor colorWithRed:color[0] green:color[1] blue:color[2] alpha:color[3]];
+    CGContextSetRGBFillColor(context, color[0], color[1], color[2], color[3]);
+    UIGraphicsPushContext(context);
+
 	CGColorRef colorf = CGColorCreate(colorSpace, cgColor);
 	CGContextSetFillColorWithColor(context, colorf);
-  CFShow(colorf);
-  CFShow(context);
+
 	if (textStyle == TEXT_STYLE_STROKE) {
 		CGContextSetTextDrawingMode(context, kCGTextStroke);
 		CGContextSetStrokeColorWithColor(context, colorf);
@@ -356,12 +359,13 @@ static inline int NextPowerOfTwo(int n) {
 	CGContextSetAllowsAntialiasing(context, YES);
 	CGContextSetShouldAntialias(context, YES);
 	CGContextSetShouldSmoothFonts(context, YES);
+    CGContextSetFillColorWithColor(context, colorf);
 
-	UIGraphicsPushContext(context);
-//	[string drawInRect:CGRectMake(strokeWidth, strokeWidth, dimensions.width, dimensions.height) withFont:font lineBreakMode:NSLineBreakByTruncatingTail alignment:NSTextAlignmentLeft];
   [string drawInRect:CGRectMake(strokeWidth, strokeWidth, dimensions.width, dimensions.height) withAttributes:@{
-    NSFontAttributeName:font
+    NSFontAttributeName:font,
+    NSForegroundColorAttributeName:uiColor
    }];
+
   
 	UIGraphicsPopContext();
   
