@@ -133,39 +133,8 @@ void js_timer_fire(core_timer *timer) {
 	JS_BeginRequest(cx);
 	JS_CallFunctionValue(cx, js_data->global, OBJECT_TO_JSVAL(js_data->callback), 0, NULL, &ret);
 	JS_EndRequest(cx);
+
 }
-
-static void jsGCcb(JSRuntime* rt, JSGCStatus status, void* data) {
-	switch (status) {
-	case JSGC_BEGIN:
-		if (m_start_date) {
-			[m_start_date release];
-		}
-		m_start_date = [[NSDate date] retain];
-		break;
-
-	case JSGC_END:
-		if (m_start_date != nil) {
-			// Get time in milliseconds
-			NSTimeInterval msInterval = fabs([m_start_date timeIntervalSinceNow] * 1000.0);
-			m_start_date = nil;
-
-      if (JS::WasIncrementalGC(rt)) {
-        LOG("{js} GC took %lf ms (incremental)", msInterval);
-      } else {
-        LOG("{js} GC took %lf ms", msInterval);
-      }
-		}
-		break;
-
-	default: // JSGC_MARK_END, JSGC_FINALIZE_END
-		LOG("{js} GC MARK/FINALIZE END");
-		break;
-	}
-}
-
-
-//// GLOBAL
 
 static int startTimer(BOOL repeats, JSContext *cx, JS::HandleObject callback, double interval) {
 	js_timer_info *js_data = (js_timer_info *)malloc(sizeof(js_timer_info));
@@ -293,6 +262,35 @@ JSAG_OBJECT_MEMBER(_call)
 JSAG_OBJECT_MEMBER(isSimulator)
 JSAG_OBJECT_END
 
+
+static void jsGCcb(JSRuntime* rt, JSGCStatus status, void* data) {
+  switch (status) {
+    case JSGC_BEGIN:
+      if (m_start_date) {
+        [m_start_date release];
+      }
+      m_start_date = [[NSDate date] retain];
+      break;
+
+    case JSGC_END:
+      if (m_start_date != nil) {
+        // Get time in milliseconds
+        NSTimeInterval msInterval = fabs([m_start_date timeIntervalSinceNow] * 1000.0);
+        m_start_date = nil;
+
+        if (JS::WasIncrementalGC(rt)) {
+          LOG("{js} GC took %lf ms (incremental)", msInterval);
+        } else {
+          LOG("{js} GC took %lf ms", msInterval);
+        }
+      }
+      break;
+
+    default: // JSGC_MARK_END, JSGC_FINALIZE_END
+      LOG("{js} GC MARK/FINALIZE END");
+      break;
+  }
+}
 
 @implementation js_core
 
