@@ -368,22 +368,6 @@ static inline int NextPowerOfTwo(int n) {
 
   
 	UIGraphicsPopContext();
-  
-  printf("%s\n", "start_count");
-  bool had_value=false;
-  for (size_t i=0; i!=(h*w); i++) {
-    uint32_t j = ((uint32_t*)data)[i];
-    
-    if (j) {
-      had_value=true;
-      printf("%x\n", j);
-    }
-  }
-  printf("%s\n", "done_count");
-  
-  if(!had_value) {
-    printf("%s\n", "ERROR CREATING DATA FOR FONT RENDER");
-  }
 
 	self = [self initWithData:data andFormat:kTexture2DPixelFormat_RGBA8888 andSize: CGSizeMake(w, h) contentSize:act_dim andScale: 1];
 
