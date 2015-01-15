@@ -347,13 +347,13 @@ JSSecurityCallbacks securityCallbacks = {
   }
 
   JSRuntime* rt;
-	self.rt = rt = JS_NewRuntime(32L * 1024L * 1024L, JS_USE_HELPER_THREADS);
+	self.rt = rt = JS_NewRuntime(8L * 1024L * 1024L, JS_USE_HELPER_THREADS);
 	if (!self.rt) {
 		LOG("{js} FATAL: Unable to create JS runtime");
 		return nullptr;
 	}
   
-  JS_SetGCParameter(rt, JSGC_MAX_BYTES, 0xffffffff);
+  JS_SetGCParameter(rt, JSGC_MAX_BYTES, 0xfffffff);
   JS_SetGCParameter(rt, JSGC_SLICE_TIME_BUDGET, 20);
   JS_SetGCParameter(rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
   JS_SetGCCallback(rt, &jsGCcb, nullptr);
