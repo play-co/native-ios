@@ -131,10 +131,9 @@ void js_timer_fire(core_timer *timer) {
 	JSContext *cx = js_data->cx;
   JS::AutoRequest areq(cx);
   JS::RootedValue ret(cx);
-
-  JS::RootedObject cbObject(cx);
-  cbObject = js_data->callback;
+  JS::RootedObject cbObject(cx, js_data->callback);
   JS::RootedValue cb(cx, OBJECT_TO_JSVAL(cbObject));
+  
   JS_CallFunctionValue(cx, js_data->global, cb, 0, NULL, ret.address());
 }
 
