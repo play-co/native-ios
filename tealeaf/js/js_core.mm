@@ -15,6 +15,7 @@
 
 #import "js/js_core.h"
 #include "jsapi.h"
+#include "GCAPI.h" // SpiderMonkey Garbage Collect API
 #import "js/jsMacros.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -60,7 +61,7 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	NSLOG(@"{js} JavaScript error in %s:%d", url, (unsigned int) report->lineno);
 	LOG("{js} Error: %s", message);
 
-	JS_BeginRequest(cx);
+  JS::AutoRequest areq(cx);
 
   JS::RootedValue exception(cx);
 	if (JS_GetPendingException(cx, &exception) && exception.isObject()) {
@@ -87,8 +88,6 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	strncpy(LAST_ERROR.url, url, sizeof(LAST_ERROR.url));
 	LAST_ERROR.url[sizeof(LAST_ERROR.url) - 1] = '\0';
 	LAST_ERROR.line_number = report->lineno;
-
-	JS_EndRequest(cx);
 
 	// If getting an out of memory error,
 	if (strcmp(message, "out of memory") == 0) {
@@ -146,29 +145,16 @@ static void jsGCcb(JSRuntime* rt, JSGCStatus status, void* data) {
 		break;
 
 	case JSGC_END:
-		if (m_start_date != nil)
-		{
+		if (m_start_date != nil) {
 			// Get time in milliseconds
 			NSTimeInterval msInterval = fabs([m_start_date timeIntervalSinceNow] * 1000.0);
 			m_start_date = nil;
 
-			LOG("{js} GC took %lf ms", msInterval);
-/*
-			NSString *fileName = @"heap.dump";
-			NSString *appBundle = [[[NSBundle mainBundle] pathForResource:@"resources" ofType:@"bundle"] retain];
-			NSString *filePath = [NSString stringWithFormat:@"%@/%@", appBundle, fileName];
-
-			FILE *fp = fopen([filePath UTF8String], "w");
-
-			if (fp) {
-				if (JS_DumpHeap(cx, fp, NULL, 0, NULL, 65535, NULL) == JS_TRUE) {
-					LOG(@"Dumped heap to %@", filePath);
-				} else {
-					LOG(@"ERROR: Unable to dump heap!");
-				}
-				
-				fclose(fp);
-			} */
+      if (JS::WasIncrementalGC(rt)) {
+        LOG("{js} GC took %lf ms (incremental)", msInterval);
+      } else {
+        LOG("{js} GC took %lf ms", msInterval);
+      }
 		}
 		break;
 
@@ -363,14 +349,14 @@ JSSecurityCallbacks securityCallbacks = {
   }
 
   JSRuntime* rt;
-	self.rt = rt = JS_NewRuntime(8L * 1024L * 1024L, JS_USE_HELPER_THREADS);
+	self.rt = rt = JS_NewRuntime(32L * 1024L * 1024L, JS_USE_HELPER_THREADS);
 	if (!self.rt) {
 		LOG("{js} FATAL: Unable to create JS runtime");
 		return nullptr;
 	}
   
   JS_SetGCParameter(rt, JSGC_MAX_BYTES, 0xffffffff);
-  JS_SetGCParameter(rt, JSGC_SLICE_TIME_BUDGET, 10);
+  JS_SetGCParameter(rt, JSGC_SLICE_TIME_BUDGET, 20);
   JS_SetGCParameter(rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
   JS_SetGCCallback(rt, &jsGCcb, nullptr);
   
@@ -575,14 +561,12 @@ JSSecurityCallbacks securityCallbacks = {
 
 -(void) performGC {
 	LOG("{js} Full GC");
-
-	JS_GC(self.rt);
+  JS_GC(self.rt);
 }
 
 -(void) performMaybeGC {
 	LOG("{js} Maybe GC");
-	
-	JS_GC(self.rt);
+  JS_MaybeGC(self.cx);
 }
 
 +(js_core*) lastJS {

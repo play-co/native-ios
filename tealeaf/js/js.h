@@ -31,6 +31,9 @@ extern "C" {
 void js_object_wrapper_init(PERSISTENT_JS_OBJECT_WRAPPER *obj);
 void js_object_wrapper_root(PERSISTENT_JS_OBJECT_WRAPPER *obj, JS_OBJECT_WRAPPER target);
 void js_object_wrapper_delete(PERSISTENT_JS_OBJECT_WRAPPER *obj);
+namespace JS {
+  typedef JSAutoRequest AutoRequest;
+}
 
 #ifdef __cplusplus
 }

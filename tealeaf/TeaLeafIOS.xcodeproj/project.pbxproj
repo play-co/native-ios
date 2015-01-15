@@ -479,6 +479,30 @@
 		A23214D313D8AFD600FA4C7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A25F91F61489AC0300B39375 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		A25F91F81489AC0300B39375 /* TeaLeafIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeaLeafIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEDE139D1A672ED700E71BFE /* Anchor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Anchor.h; sourceTree = "<group>"; };
+		AEDE139E1A672ED700E71BFE /* CallArgs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallArgs.h; sourceTree = "<group>"; };
+		AEDE139F1A672ED700E71BFE /* CallNonGenericMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallNonGenericMethod.h; sourceTree = "<group>"; };
+		AEDE13A01A672ED700E71BFE /* CharacterEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharacterEncoding.h; sourceTree = "<group>"; };
+		AEDE13A11A672ED700E71BFE /* Class.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Class.h; sourceTree = "<group>"; };
+		AEDE13A21A672ED700E71BFE /* Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Date.h; sourceTree = "<group>"; };
+		AEDE13A31A672ED700E71BFE /* GCAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCAPI.h; sourceTree = "<group>"; };
+		AEDE13A41A672ED700E71BFE /* HashTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HashTable.h; sourceTree = "<group>"; };
+		AEDE13A51A672ED700E71BFE /* HeapAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeapAPI.h; sourceTree = "<group>"; };
+		AEDE13A61A672ED700E71BFE /* Id.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Id.h; sourceTree = "<group>"; };
+		AEDE13A71A672ED700E71BFE /* LegacyIntTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LegacyIntTypes.h; sourceTree = "<group>"; };
+		AEDE13A81A672ED700E71BFE /* MemoryMetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryMetrics.h; sourceTree = "<group>"; };
+		AEDE13A91A672ED700E71BFE /* OldDebugAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldDebugAPI.h; sourceTree = "<group>"; };
+		AEDE13AA1A672ED700E71BFE /* ProfilingStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilingStack.h; sourceTree = "<group>"; };
+		AEDE13AB1A672ED700E71BFE /* PropertyKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyKey.h; sourceTree = "<group>"; };
+		AEDE13AC1A672ED700E71BFE /* RequiredDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequiredDefines.h; sourceTree = "<group>"; };
+		AEDE13AD1A672ED700E71BFE /* RootingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootingAPI.h; sourceTree = "<group>"; };
+		AEDE13AE1A672ED700E71BFE /* SliceBudget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliceBudget.h; sourceTree = "<group>"; };
+		AEDE13AF1A672ED700E71BFE /* StructuredClone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructuredClone.h; sourceTree = "<group>"; };
+		AEDE13B01A672ED700E71BFE /* Tracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tracer.h; sourceTree = "<group>"; };
+		AEDE13B11A672ED700E71BFE /* TypeDecls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeDecls.h; sourceTree = "<group>"; };
+		AEDE13B21A672ED700E71BFE /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		AEDE13B31A672ED700E71BFE /* Value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Value.h; sourceTree = "<group>"; };
+		AEDE13B41A672ED700E71BFE /* Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
 		D510CFBE139059A20066D881 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		D5121A771593B42F00C2169F /* native.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = native.mm; sourceTree = "<group>"; };
 		D54113A51783E7AD002B6E3E /* RawImageInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawImageInfo.h; sourceTree = "<group>"; };
@@ -960,6 +984,38 @@
 			name = Plugins;
 			sourceTree = "<group>";
 		};
+		AEDE139C1A672ED700E71BFE /* js */ = {
+			isa = PBXGroup;
+			children = (
+				AEDE139D1A672ED700E71BFE /* Anchor.h */,
+				AEDE139E1A672ED700E71BFE /* CallArgs.h */,
+				AEDE139F1A672ED700E71BFE /* CallNonGenericMethod.h */,
+				AEDE13A01A672ED700E71BFE /* CharacterEncoding.h */,
+				AEDE13A11A672ED700E71BFE /* Class.h */,
+				AEDE13A21A672ED700E71BFE /* Date.h */,
+				AEDE13A31A672ED700E71BFE /* GCAPI.h */,
+				AEDE13A41A672ED700E71BFE /* HashTable.h */,
+				AEDE13A51A672ED700E71BFE /* HeapAPI.h */,
+				AEDE13A61A672ED700E71BFE /* Id.h */,
+				AEDE13A71A672ED700E71BFE /* LegacyIntTypes.h */,
+				AEDE13A81A672ED700E71BFE /* MemoryMetrics.h */,
+				AEDE13A91A672ED700E71BFE /* OldDebugAPI.h */,
+				AEDE13AA1A672ED700E71BFE /* ProfilingStack.h */,
+				AEDE13AB1A672ED700E71BFE /* PropertyKey.h */,
+				AEDE13AC1A672ED700E71BFE /* RequiredDefines.h */,
+				AEDE13AD1A672ED700E71BFE /* RootingAPI.h */,
+				AEDE13AE1A672ED700E71BFE /* SliceBudget.h */,
+				AEDE13AF1A672ED700E71BFE /* StructuredClone.h */,
+				AEDE13B01A672ED700E71BFE /* Tracer.h */,
+				AEDE13B11A672ED700E71BFE /* TypeDecls.h */,
+				AEDE13B21A672ED700E71BFE /* Utility.h */,
+				AEDE13B31A672ED700E71BFE /* Value.h */,
+				AEDE13B41A672ED700E71BFE /* Vector.h */,
+			);
+			name = js;
+			path = spidermonkey/js;
+			sourceTree = "<group>";
+		};
 		D551A74A178F345E0028DACC /* uthash */ = {
 			isa = PBXGroup;
 			children = (
@@ -1067,6 +1123,7 @@
 		D5582154150E7C7500549BF6 /* deps */ = {
 			isa = PBXGroup;
 			children = (
+				AEDE139C1A672ED700E71BFE /* js */,
 				4EB0C66D16BBA2D800838A49 /* js-config.h */,
 				4EB0C66E16BBA2D800838A49 /* jsalloc.h */,
 				4EB0C66F16BBA2D800838A49 /* jsapi.h */,
