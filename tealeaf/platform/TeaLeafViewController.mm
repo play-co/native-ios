@@ -437,8 +437,8 @@ CEXPORT void device_hide_splash() {
 	JS_SetProperty(cx, event, "name", name);
 	JS_SetProperty(cx, event, "height", height);
     
-	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt];
+  JS::RootedValue evt(cx, OBJECT_TO_JSVAL(event));
+	[[js_core lastJS] dispatchEvent:evt];
 }
 
 - (IBAction)rotationDetected:(UIGestureRecognizer *)sender {
@@ -458,8 +458,8 @@ CEXPORT void device_hide_splash() {
 
 - (void)runCallback:(char *)arg {
 	js_core* instance = [js_core lastJS];
-	jsval args[] = { STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)) };
-	[instance dispatchEvent:args];
+  JS::RootedValue js_arg(instance.cx, STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)));
+	[instance dispatchEvent:js_arg];
 }
 
 - (void)sendSMSTo:(NSString *)number withMessage:(NSString *)msg andCallback:(int)cb {
@@ -616,14 +616,14 @@ CEXPORT void device_hide_splash() {
 
 - (void) dispatch:(int)callback {
 	JSContext* cx = [[js_core lastJS] cx];
-	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
+  JS::RootedObject event(cx, JS_NewObject(cx, NULL, NULL, NULL));
   JS::RootedValue name(cx, JS::StringValue(JS_InternString(cx, "dialogButtonClicked")));
   JS::RootedValue idv(cx, JS::NumberValue(callback));
 	JS_SetProperty(cx, event, "name", name);
 	JS_SetProperty(cx, event, "id", idv);
     
-	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt];
+  JS::RootedValue evt(cx, OBJECT_TO_JSVAL(event));
+	[[js_core lastJS] dispatchEvent:evt];
 }
 
 - (void) registerCallbacks:(int *)cbs length:(int)len {

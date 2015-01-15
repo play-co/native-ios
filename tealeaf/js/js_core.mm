@@ -427,8 +427,7 @@ void trace_js_gc_things(JSTracer* tracer, void * data) {
 	JS_SetContextPrivate(cx, self.privateStore);
   
 	self.native = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval _uuid = NSTR_TO_JSVAL(cx, [js_core getDeviceId]);
-  JS::RootedValue uuid(cx, _uuid);
+  JS::RootedValue uuid(cx, NSTR_TO_JSVAL(cx, [js_core getDeviceId]));
 	JS_SetProperty(cx, self.native, "deviceUUID", uuid);
 
 	JSAG_OBJECT_ATTACH_EXISTING(self.cx, self.global, GLOBAL, self.global);
@@ -451,10 +450,9 @@ void trace_js_gc_things(JSTracer* tracer, void * data) {
 	JS_SetProperty(self.cx, self.global, "GLOBAL", global_val);
 	JS_SetProperty(self.cx, self.global, "screen", screen);
 	
-	jsval _gid = NSTR_TO_JSVAL(cx, [js_core getDeviceId]);
-  jsval _device = OBJECT_TO_JSVAL(JS_NewObject(self.cx, NULL, NULL, NULL));
+  JS::RootedValue gid(cx, NSTR_TO_JSVAL(cx, [js_core getDeviceId]));
+  JS::RootedValue _device(cx, OBJECT_TO_JSVAL(JS_NewObject(self.cx, NULL, NULL, NULL)));
 
-  JS::RootedValue gid(cx, _gid);
   JS::RootedValue device(cx, _device);
   
 	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(device), "globalID", gid);
@@ -529,36 +527,30 @@ void trace_js_gc_things(JSTracer* tracer, void * data) {
   if(!JS::Evaluate(self.cx, global, opts, buffer, length, rval.address())) {
     NSLOG(@"{js} Error while evaluating JavaScript from %@ (%d script chars)", path, (int)length);
   }
-  
-//	if (!JS_EvaluateUCScript(self.cx, self.global, (jschar*)buffer, unicode_length, filename, 1, &rval)) {
-//		NSLOG(@"{js} Error wh'ile evaluating JavaScript from %@ (%d script chars)", path, (int)length);
-//	}
 
 	return rval;
 }
 
--(void) dispatchEvent:(jsval *)arg {
+-(void) dispatchEvent:(JS::HandleValue)arg {
     [self dispatchEvent:arg withRequestId:0];
 }
 
--(void) dispatchEvent:(jsval *)arg withRequestId:(int)requestId {
+-(void) dispatchEvent:(JS::HandleValue)arg withRequestId:(int)requestId {
   JSContext* cx = self.cx;
   JSAutoRequest req(cx);
   
   JS::RootedValue events(cx), dispatch(cx), rval(cx);
-  JS::RootedValue _arg(cx, *arg);
-  JS::RootedValue _reqId(cx, JS::NumberValue(requestId));
-  jsval args[] = {_arg.get(), _reqId.get()};
+  JS::Value args[] = {arg, JS::NumberValue(requestId)};
   
 	if (js_ready) {
 		JS_GetProperty(self.cx, self.native, "events", &events);
     
 		if (events.isObject()) {
-      JSObject* eventsObject = events.toObjectOrNull();
+      JS::RootedObject eventsObject(cx, events.toObjectOrNull());
 			JS_GetProperty(self.cx, eventsObject, "dispatchEvent", &dispatch);
       
 			if (!dispatch.isUndefined()) {
-				JS_CallFunctionName(self.cx, eventsObject, "dispatchEvent", 2, args, &(rval.get()));
+				JS_CallFunctionName(self.cx, eventsObject, "dispatchEvent", 2, args, rval.address());
         return;
 			}
 		}
@@ -568,8 +560,8 @@ void trace_js_gc_things(JSTracer* tracer, void * data) {
 }
 
 -(void) dispatchEventFromString:(NSString *)evt withRequestId:(int)id{
-	jsval str = NSTR_TO_JSVAL(self.cx, evt);
-	[self dispatchEvent:&str withRequestId:id];
+  JS::RootedValue str(self.cx, NSTR_TO_JSVAL(self.cx, evt));
+	[self dispatchEvent:str withRequestId:id];
 }
 
 -(void) dispatchEventFromString:(NSString *)evt {
