@@ -16,6 +16,7 @@
 #import "js/js_core.h"
 #include "jsapi.h"
 #include "GCAPI.h" // SpiderMonkey Garbage Collect API
+#include "Tracer.h"
 #import "js/jsMacros.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -113,7 +114,7 @@ JSClass global_class = {
 };
 
 typedef struct js_timer_info_t {
-	JSObject *callback;
+  JS::Heap<JSObject*> callback;
 	JSContext *cx;
 	JSObject *global;
 } js_timer_info;
@@ -121,19 +122,20 @@ typedef struct js_timer_info_t {
 void js_timer_unlink(core_timer *timer) {
 	js_timer_info *js_data = (js_timer_info*)timer->js_data;
 	JSContext *cx = js_data->cx;
-	JS_BeginRequest(cx);
-	js_object_wrapper_delete(&js_data->callback);
-	JS_EndRequest(cx);
+  JS::AutoRequest areq(cx);
+  js_data->callback = nullptr;
 }
 
 void js_timer_fire(core_timer *timer) {
 	js_timer_info *js_data = (js_timer_info*)timer->js_data;
 	JSContext *cx = js_data->cx;
-	jsval ret;
-	JS_BeginRequest(cx);
-	JS_CallFunctionValue(cx, js_data->global, OBJECT_TO_JSVAL(js_data->callback), 0, NULL, &ret);
-	JS_EndRequest(cx);
+  JS::AutoRequest areq(cx);
+  JS::RootedValue ret(cx);
 
+  JS::RootedObject cbObject(cx);
+  cbObject = js_data->callback;
+  JS::RootedValue cb(cx, OBJECT_TO_JSVAL(cbObject));
+  JS_CallFunctionValue(cx, js_data->global, cb, 0, NULL, ret.address());
 }
 
 static int startTimer(BOOL repeats, JSContext *cx, JS::HandleObject callback, double interval) {
@@ -141,12 +143,10 @@ static int startTimer(BOOL repeats, JSContext *cx, JS::HandleObject callback, do
 
 	js_data->cx = cx;
 	js_data->global = global_obj;
-	js_object_wrapper_init(&js_data->callback);
-	js_object_wrapper_root(&js_data->callback, callback.get());
-	
+  js_data->callback = callback;
+
 	core_timer *timer = core_get_timer((void*)js_data, interval, repeats);
 	core_timer_schedule(timer);
-	
 	return timer->id;
 }
 
@@ -337,6 +337,24 @@ JSSecurityCallbacks securityCallbacks = {
   nullptr
 };
 
+void trace_core_timer_list(JSTracer* tracer, core_timer* head) {
+  core_timer* timer = head;
+  js_timer_info* js_timer;
+  while (timer != NULL) {
+    js_timer = (js_timer_info*)(timer->js_data);
+    JS_CallHeapObjectTracer(tracer, &(js_timer->callback), "timer");
+    if (timer->next == head) {
+      break;
+    }
+    timer = timer->next;
+  }
+}
+
+void trace_js_gc_things(JSTracer* tracer, void * data) {
+  trace_core_timer_list(tracer, core_get_timers());
+  trace_core_timer_list(tracer, core_get_queued_timers());
+}
+
 - (id) initRuntime {
 	self = [super init];
 	lastJS = self;
@@ -357,6 +375,8 @@ JSSecurityCallbacks securityCallbacks = {
   JS_SetGCParameter(rt, JSGC_SLICE_TIME_BUDGET, 20);
   JS_SetGCParameter(rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
   JS_SetGCCallback(rt, &jsGCcb, nullptr);
+  
+  JS_AddExtraGCRootsTracer(self.rt, trace_js_gc_things, nullptr);
   
   JSPrincipals trustedPrincipals;
   trustedPrincipals.refcount = 1;
