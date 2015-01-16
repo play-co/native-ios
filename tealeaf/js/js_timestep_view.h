@@ -18,18 +18,15 @@
 
 #include "gen/js_timestep_view_template.gen.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void def_timestep_view_needs_reflow(void *js_view, bool force);
-void def_timestep_view_tick(void *js_view, double dt);
-//void def_timestep_view_build_view(void *data);
-  void def_timestep_view_render(JS::HandleObject view, JS::HandleObject ctx, JS::HandleObject opts);
+void def_timestep_view_tick(JS::HandleObject js_view, double dt);
+void def_timestep_view_render(JS::HandleObject view, JS::HandleObject ctx, JS::HandleObject opts);
 
 JSObject *def_get_viewport(JS::HandleObject js_opts);
-  void def_restore_viewport(JS::HandleObject js_opts, JS::Heap<JSObject*>* js_viewport);
+void def_restore_viewport(JS::HandleObject js_opts, JS::HandleObject js_viewport);
 
 bool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp);
 

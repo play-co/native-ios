@@ -288,15 +288,14 @@ CEXPORT JSObject* def_get_viewport(JS::HandleObject js_opts) {
   return val.toObjectOrNull();
 }
 
-CEXPORT void def_restore_viewport(JS::HandleObject js_opts, JS::Heap<JSObject*>* js_viewport) {
+CEXPORT void def_restore_viewport(JS::HandleObject js_opts, JS::HandleObject js_viewport) {
 	JSContext *cx = get_js_context();
   JSAutoRequest areq(cx);
-  JS::RootedValue val(cx, OBJECT_TO_JSVAL(*js_viewport));
+  JS::RootedValue val(cx, OBJECT_TO_JSVAL(js_viewport.get()));
 	JS_SetProperty(cx, js_opts, "viewport", val);
 }
 
-CEXPORT void def_timestep_view_tick(void *data, double dt) {
-	JSObject *js_view = (JSObject*)data;
+CEXPORT void def_timestep_view_tick(JS::HandleObject js_view, double dt) {
 	static const char *name = "tick";
 	JSContext *cx = get_js_context();
   JSAutoRequest areq(cx);
