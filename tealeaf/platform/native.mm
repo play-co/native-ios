@@ -71,7 +71,7 @@ const char *get_install_referrer() {
 }
 
 CEXPORT void set_halfsized_textures(bool on) {
-	texture_manager_set_use_halfsized_textures();
+	texture_manager_set_use_halfsized_textures(on);
 }
 
 CEXPORT void native_stay_awake(bool on) {

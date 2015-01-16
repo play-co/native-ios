@@ -374,7 +374,6 @@ static int base_path_len = 0;
 	//create the texture
 	int shift = info.scale - 1;
 	GLTRACE(glTexImage2D(GL_TEXTURE_2D, 0, format, info.w >> shift, info.h >> shift, 0, format, GL_UNSIGNED_BYTE, info.raw_data));
-	core_check_gl_error();
 
 	texture_manager_on_texture_loaded(texture_manager_get(), url, texture,
 									  info.w, info.h, info.ow, info.oh,
