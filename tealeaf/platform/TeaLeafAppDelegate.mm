@@ -434,7 +434,7 @@
 		[[SoundManager get] clearEffects];
 
 		// Allow texture manager to react to a low memory warning as it deems appropriate
-		texture_manager_memory_warning(texture_manager_get());
+		texture_manager_memory_warning();
 	}
 }
 

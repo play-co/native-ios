@@ -95,6 +95,7 @@ texture_2d *text_manager_get_text(const char *raw_font_name, int size, const cha
 		tex = texture_manager_get_texture(texture_manager_get(), buf);
 		if (!tex) {
 			tex = texture_manager_load_texture(texture_manager_get(), buf);
+			tex->is_text = true;
 		}
 	}
 
