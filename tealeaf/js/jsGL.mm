@@ -174,11 +174,11 @@ JSAG_MEMBER_BEGIN(setGlobalAlpha, 1)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN_NOARGS(getGlobalAlpha)
+JSAG_MEMBER_BEGIN(getGlobalAlpha, 0)
 {
 	JSAG_RETURN_DOUBLE(context_2d_getGlobalAlpha(GET_CONTEXT_2D()));
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN(setGlobalCompositeOperation, 1)
 {
@@ -189,12 +189,12 @@ JSAG_MEMBER_BEGIN(setGlobalCompositeOperation, 1)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN_NOARGS(getGlobalCompositeOperation)
+JSAG_MEMBER_BEGIN(getGlobalCompositeOperation, 0)
 {
 	JSAG_RETURN_INT32(context_2d_getGlobalCompositeOperation(GET_CONTEXT_2D()));
 	return true;
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN(loadImage, 1)
 {

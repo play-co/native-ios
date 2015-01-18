@@ -114,6 +114,7 @@
 		}
 	} else {
 		const char *err = "Error converting received data into UTF-8 String";
+    
 		LOG("{socket} %s", err);
 
 		jsval rval, jstr = CSTR_TO_JSVAL(self.cx, err);
@@ -207,9 +208,9 @@ JSAG_MEMBER_BEGIN(send, 1)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN_NOARGS(close)
+JSAG_MEMBER_BEGIN(close, 0)
 {
-	JSObject *thiz = JSAG_THIS;
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
 
 	if (likely(!!thiz)) {
 		SocketWrapper *socket = (SocketWrapper *)JSAG_GET_PRIVATE(thiz);
@@ -220,7 +221,7 @@ JSAG_MEMBER_BEGIN_NOARGS(close)
 		}
 	}
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN_NOARGS(defaultCallback)
 {

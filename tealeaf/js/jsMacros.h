@@ -111,8 +111,6 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 #define JSAG_MEMBER_BEGIN_NOARGS(jsName) \
 	static const int jsag_member_ ## jsName ## _argCount = 0; \
 	static bool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) { \
-  JS::CallArgs args = JS::CallArgsFromVp(argc, vp); \
-  JSAutoRequest areq(cx);
 
 #define JSAG_MEMBER_END_NOARGS \
 	return true; }

@@ -65,11 +65,11 @@ JSAG_MEMBER_BEGIN(showKeyboard, 6)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN(hideKeyboard, 0)
+JSAG_MEMBER_BEGIN_NOARGS(hideKeyboard)
 {
 	[[InputAccessory get] hide];
 }
-JSAG_MEMBER_END
+JSAG_MEMBER_END_NOARGS
 
 JSAG_OBJECT_START(input)
 JSAG_OBJECT_MEMBER(openPrompt)

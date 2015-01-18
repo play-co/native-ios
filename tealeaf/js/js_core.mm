@@ -247,12 +247,12 @@ JSAG_MEMBER_BEGIN(_call, 2)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN_NOARGS(isSimulator)
+JSAG_MEMBER_BEGIN(isSimulator, 0)
 {
     bool is_simulator = device_is_simulator();
     JSAG_RETURN_BOOL(is_simulator);
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_OBJECT_START(NATIVE)
 JSAG_OBJECT_MEMBER(doneLoading)
