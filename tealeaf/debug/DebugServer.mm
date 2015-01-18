@@ -843,6 +843,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 	size_t original_bytes = bytes;
 
 	for (;;) {
+    if (!bytes) { break; }
 		if (self.deframe_expected == 0) {
 			bool found = false;
 
@@ -1343,7 +1344,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 	}
 
 	NSError *err;
-	NSString *str = [msg JSONStringWithOptions:JK_ENCODE_FLAGS error:&err];
+  NSString *str = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:msg options:0 error:&err] encoding:NSUTF8StringEncoding];
 	
 	if (!str) {
 		NSLOG(@"{debugger} WARNING: Unable to post response for object: %@. Error: %@", [msg debugDescription], err);
@@ -1363,7 +1364,7 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 	}
 
 	NSError *err;
-	NSString *str = [msg JSONStringWithOptions:JK_ENCODE_FLAGS error:&err];
+	NSString *str = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:msg options:0 error:&err] encoding:NSUTF8StringEncoding];
 	
 	if (!str) {
 		NSLOG(@"{debugger} WARNING: Unable to post event for object: %@. Error: %@", [msg debugDescription], err);
@@ -2252,7 +2253,7 @@ static void NewScriptHook(JSContext	 *cx,
   JSBrokenFrameIterator fi(cx);
   JSAbstractFramePtr fp = fi.abstractFramePtr();
   
-	JSObject *jsobj = 0;
+  JS::RootedObject jsobj(cx);
 	if (fp) {
     jsobj = fp.callObject(cx);
   } else {
@@ -2286,13 +2287,13 @@ static void NewScriptHook(JSContext	 *cx,
       JS::RootedValue rval(cx);
 			if (fp.evaluateUCInStackFrame(cx, (jschar*)buffer, chars, "(debug)", 0, &rval)) {
 				if (!JSVAL_IS_PRIMITIVE(rval)) {
-					JSObject *obj = JSVAL_TO_OBJECT(rval);
+          JS::RootedObject obj(cx, JSVAL_TO_OBJECT(rval));
 
 					NSDictionary *dict = [eval.conn.mirror addObject:obj context:cx];
 
 					[eval.conn postResponse:eval.seqno success:true body:dict refs:nil];
 				} else {
-          JSString *jstr = JS::ToString(cx, rval);
+          JS::RootedString jstr(cx, JS::ToString(cx, rval));
 
 					if (!jstr) {
 						[eval.conn postResponse:eval.seqno success:true body:[NSDictionary dictionaryWithObjectsAndKeys:
