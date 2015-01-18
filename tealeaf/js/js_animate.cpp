@@ -87,9 +87,13 @@ static inline void build_frame(JSContext *cx, JS::HandleObject target, unsigned 
 	}
 
 	if (argc > 1) {
-		duration = JSValToInt32(cx, args[1], duration);
+    if(!JS::ToInt32(cx, args[1], &duration)) {
+      duration = 500;
+    }
 		if (argc > 2) {
-			transition = JSValToInt32(cx, args[2], transition);
+      if(!JS::ToInt32(cx, args[2], &transition)) {
+        transition = 0;
+      }
 		}
 	}
 
