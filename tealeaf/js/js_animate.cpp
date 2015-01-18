@@ -57,15 +57,15 @@ static inline void build_style_frame(anim_frame *frame, JSObject *target) {
 	frame->type = STYLE_FRAME;
 }
 
-static inline void build_func_frame(anim_frame *frame, JSObject *cb) {
-	js_object_wrapper_root(&frame->cb, cb);
+static inline void build_func_frame(anim_frame *frame, JS::HandleObject cb) {
+	js_object_wrapper_root(&frame->cb, cb.get());
 	frame->type = FUNC_FRAME;
 }
 
 typedef void
 (* NextAnimationFrame)(view_animation*, anim_frame*, unsigned, unsigned);
 
-static inline void build_frame(JSContext *cx, JSObject *target, unsigned argc, jsval *vp, NextAnimationFrame next) {
+static inline void build_frame(JSContext *cx, JS::HandleObject target, unsigned argc, jsval *vp, NextAnimationFrame next) {
 	LOGFN("build_frame");
   
   JSAutoRequest areq(cx);
@@ -250,7 +250,7 @@ CEXPORT bool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *
 			view_animation *anim = view_animation_init(view);
 			
 			JS_SetPrivate(thiz, (void*)anim);
-			anim->js_anim = thiz;
+			anim->js_anim = thiz.get();
 			
 			js_object_wrapper_root(&anim->js_group, js_group);
 		}
@@ -268,7 +268,7 @@ void def_animate_finish(JS_OBJECT_WRAPPER a) {
   JS::RootedObject js_anim(cx, a);
 
 	view_animation *anim = (view_animation *)JS_GetPrivate(js_anim);
-  JSObject* js_group = anim->js_group;
+  JSObject* js_group = (JSObject*)anim->js_group;
   JS::RootedValue finish_val(cx);
 	JS_GetProperty(cx, js_group, "onAnimationFinish", &finish_val);
 	if (!JSVAL_TO_BOOLEAN(finish_val)) {
@@ -287,8 +287,8 @@ void def_animate_cb(JS_OBJECT_WRAPPER view, JS_OBJECT_WRAPPER cb, double tt, dou
   JSContext *cx = get_js_context();
   JSAutoRequest areq(cx);
 
-  JS::RootedObject js_view(cx, (JSObject*)view);
-  JS::RootedObject js_cb(cx, (JSObject*)cb);
+  JS::RootedObject js_view(cx, view);
+  JS::RootedObject js_cb(cx, cb);
   JS::Value args[] = {JS::NumberValue(tt),JS::NumberValue(t)};
 
   JS::RootedValue ret(cx);
