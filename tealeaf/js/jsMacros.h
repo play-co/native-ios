@@ -85,17 +85,6 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 	JSString *cstr ## _jstr = JSVAL_TO_STRING(val); \
 	JSTR_TO_CSTR(cx, cstr ## _jstr, cstr);
 
-inline int JSValToInt32(JSContext *cx, jsval v, int def) {
-	int result = def;
-
-	if (!JSVAL_IS_VOID(v)) {
-		result = JSVAL_TO_INT(v);
-	}
-
-	return result;
-}
-
-
 // TODO: Needed?
 //#ifndef __UNUSED
 //#define __UNUSED __attribute__((unused))

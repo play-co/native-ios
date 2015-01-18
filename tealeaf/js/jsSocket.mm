@@ -97,7 +97,11 @@
 		[msg autorelease];
     JS::RootedValue rval(self.cx);
 		JS_GetProperty(self.cx, self.thiz, "__id", &rval);
-		NSString *evt = [NSString stringWithFormat: @"{\"id\":%d,\"name\":\"socketRead\"}", JSValToInt32(self.cx, rval, 0)];
+    int32_t intVal = 0;
+    if (!JS::ToInt32(self.cx, rval, &intVal)) {
+      intVal = 0;
+    }
+		NSString *evt = [NSString stringWithFormat: @"{\"id\":%d,\"name\":\"socketRead\"}", intVal];
 		const char *cEvt = [evt UTF8String];
 		json_error_t err;
 		json_t *jsEvt = json_loads(cEvt, 0, &err);
