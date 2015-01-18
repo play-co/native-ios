@@ -22,7 +22,8 @@ JSAG_MEMBER_BEGIN(_showDialog, 5)
 	JSAG_ARG_CSTR(text);
 	JSAG_ARG_CSTR(image);
 	JSAG_ARG_OBJECT(btns);
-	JSAG_ARG_OBJECT(cbs);
+  JSAG_ARG_OBJECT(cbs);
+
 
 	uint32_t buttonCount, cbCount;
 	JS_GetArrayLength(cx, btns, &buttonCount);
@@ -40,7 +41,7 @@ JSAG_MEMBER_BEGIN(_showDialog, 5)
 	
 	for (int i = 0; i < buttonCount; ++i) {
 		JS_GetElement(cx, btns, i, el);
-    JSString * str = JS::ToString(cx, el);
+    JS::RootedString str(cx, JS::ToString(cx, el));
 		buttons[i] = JS_EncodeString(cx, str);
 	}
 	

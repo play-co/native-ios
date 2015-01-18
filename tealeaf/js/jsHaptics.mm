@@ -56,7 +56,8 @@ static bool JSPOP_HasVibrator(JSContext *cx, JS::HandleObject obj, JS::HandleId 
 +(void) addToRuntime:(js_core *)js {
 	m_core = js;
 
-	JSObject *obj = JS_NewObject(js.cx, NULL, NULL, NULL);
+  JSContext* cx = get_js_context();
+  JS::RootedObject obj(cx, JS_NewObject(js.cx, NULL, NULL, NULL));
 
 	JSAG_OBJECT_ATTACH_EXISTING(js.cx, js.native, haptics, obj);
 

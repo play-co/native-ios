@@ -100,7 +100,7 @@ CEXPORT bool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp) {
 
 	jsval *argv = JS_ARGV(cx, vp);
 
-	if (argc < 2 || !!JSVAL_IS_PRIMITIVE(argv[0]) || !!JSVAL_IS_PRIMITIVE(argv[1])) {
+	if (argc < 2 || JSVAL_IS_PRIMITIVE(argv[0]) || JSVAL_IS_PRIMITIVE(argv[1])) {
 		JS_ReportError(cx, "Invalid arguments to setImageOnImageView");
 
 		return false;
@@ -133,7 +133,7 @@ static const char *NAME_ARRAY[11] = {
 };
 
 CEXPORT bool def_timestep_view_get_compositeOperation(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
-	JS_BeginRequest(cx);
+	JSAutoRequest areq(cx);
 
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
 	if (view) {
@@ -151,7 +151,6 @@ CEXPORT bool def_timestep_view_get_compositeOperation(JSContext *cx, JS::HandleO
 		}
 	}
 
-	JS_EndRequest(cx);
 	return true;
 }
 
@@ -171,7 +170,7 @@ CEXPORT bool def_timestep_view_set_compositeOperation(JSContext *cx,
 		int op = 0;
 
 		if (vp.isString()) {
-			JSString *jstr = vp.toString();
+      JS::RootedString jstr(cx, JSVAL_TO_STRING(vp));
 			JSTR_TO_CSTR(cx, jstr, code);
       switch (code[0]) {
         case 'l':
@@ -339,7 +338,7 @@ CEXPORT bool def_timestep_view_removeSubview(JSContext *cx, unsigned argc, jsval
 
   JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
-  JS::RootedObject subview_obj(cx, args[0].toObjectOrNull());
+  JS::RootedObject subview_obj(cx, JSVAL_TO_OBJECT(args[0]));
 	JS::RootedValue _view(cx);
 	JS_GetProperty(cx, subview_obj, "__view", &_view);
   
@@ -356,9 +355,7 @@ CEXPORT bool def_timestep_view_removeSubview(JSContext *cx, unsigned argc, jsval
 CEXPORT bool def_timestep_view_getSuperview(JSContext *cx, unsigned argc, jsval *vp) {
 	JSAutoRequest areq(cx);
   JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-  JS::RootedObject thiz(cx, args.thisv().toObjectOrNull());
-  
-  //JS::Heap<JSObject*> thiz(JSVAL_TO_OBJECT(JS_THIS(cx, vp)));
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
   
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
 	timestep_view *superview = timestep_view_get_superview(view);
@@ -442,10 +439,10 @@ CEXPORT bool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsval
 	JSAutoRequest areq(cx);
   JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
   
-  JS::RootedObject thiz(cx, args.thisv().toObjectOrNull());
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
 	timestep_view *v = (timestep_view *)JS_GetPrivate(thiz);
   
-  JS::RootedObject pt(cx, args[0].toObjectOrNull());
+  JS::RootedObject pt(cx, JSVAL_TO_OBJECT(args[0]));
 	JS::RootedValue x_val(cx), y_val(cx);
 	JS_GetProperty(cx, pt, "x", &x_val);
 	JS_GetProperty(cx, pt, "y", &y_val);

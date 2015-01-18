@@ -32,7 +32,7 @@ static bool defMarketUrl(JSContext *cx, JS::HandleObject obj, JS::HandleId id, J
 + (void) addToRuntime:(js_core *)js {
 	m_core = js;
 
-	JSObject *market = JS_NewObject(js.cx, NULL, NULL, NULL);
+  JS::RootedObject market(js.cx, JS_NewObject(js.cx, NULL, NULL, NULL));
 	JS_DefineProperty(js.cx, js.native, "market", OBJECT_TO_JSVAL(market), NULL, NULL, PROPERTY_FLAGS);
 	JS_DefineProperty(js.cx, market, "url", JSVAL_FALSE, defMarketUrl, NULL, PROPERTY_FLAGS);
 }

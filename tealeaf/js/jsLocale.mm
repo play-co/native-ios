@@ -23,7 +23,7 @@
 
 	JSContext *cx = js.cx;
 
-	JSObject *obj_locale = JS_NewObject(cx, NULL, NULL, NULL);
+  JS::RootedObject obj_locale(cx, JS_NewObject(cx, NULL, NULL, NULL));
 	JS_DefineProperty(cx, obj_locale, "language", CSTR_TO_JSVAL(cx, info->language), NULL, NULL, PROPERTY_FLAGS);
 	JS_DefineProperty(cx, obj_locale, "country", CSTR_TO_JSVAL(cx, info->country), NULL, NULL, PROPERTY_FLAGS);
 	JS_DefineProperty(cx, js.native, "locale", OBJECT_TO_JSVAL(obj_locale), NULL, NULL, PROPERTY_FLAGS);

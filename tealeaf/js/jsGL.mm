@@ -911,7 +911,7 @@ JSAG_CLASS_IMPL(Context2D);
 
 JSAG_MEMBER_BEGIN(Context2D, 3)
 {
-	JSAG_ARG_JSROOTVAL(cx, canvas);
+	JSAG_ARG_JSVAL(cx, canvas);
 	JSAG_ARG_CSTR(url);
 	JSAG_ARG_INT32(destTex);
 
