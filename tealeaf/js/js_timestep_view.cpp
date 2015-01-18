@@ -49,12 +49,12 @@ CEXPORT bool def_timestep_view_class_constructor(JSContext *cx, unsigned argc, j
   
   JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
-  JS::RootedObject js_view(cx);
+  JSObject* js_view = nullptr;
 	if (argc >= 1 && !JSVAL_IS_PRIMITIVE(args[0])) {
 		js_view = JSVAL_TO_OBJECT(args[0]);
-	}
-	view->js_view = js_view;
-
+  }
+  view->js_view = js_view;
+  
 	bool has_jsrender = false;
   JS::RootedValue render_val(cx);
 	JS_GetProperty(cx, js_view, "render", &render_val);
@@ -285,7 +285,7 @@ CEXPORT JSObject* def_get_viewport(JS::HandleObject js_opts) {
 	JS::RootedValue val(cx);
 	JS_GetProperty(cx, js_opts, "viewport", &val);
   
-  return val.toObjectOrNull();
+  return JSVAL_TO_OBJECT(val);
 }
 
 CEXPORT void def_restore_viewport(JS::HandleObject js_opts, JS::HandleObject js_viewport) {
