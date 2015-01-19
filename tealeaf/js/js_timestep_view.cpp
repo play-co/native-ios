@@ -258,9 +258,9 @@ CEXPORT bool def_timestep_view_set_zIndex(JSContext *cx,
 	return true;
 }
 
-CEXPORT void def_timestep_view_render(JS::HandleObject view,
-                                      JS::HandleObject ctx,
-                                      JS::HandleObject opts) {
+CEXPORT void def_timestep_view_render(JSObject* view,
+                                      JSObject* ctx,
+                                      JSObject* opts) {
 
 	static const char *renderFunctionName = "render";
 	JSContext *cx = get_js_context();
@@ -278,7 +278,7 @@ CEXPORT void def_timestep_view_render(JS::HandleObject view,
 	}
 }
 
-CEXPORT JSObject* def_get_viewport(JS::HandleObject js_opts) {
+CEXPORT JSObject* def_get_viewport(JSObject* js_opts) {
 	JSContext *cx = get_js_context();
   JSAutoRequest areq(cx);
 	JS::RootedValue val(cx);
@@ -287,14 +287,14 @@ CEXPORT JSObject* def_get_viewport(JS::HandleObject js_opts) {
   return JSVAL_TO_OBJECT(val);
 }
 
-CEXPORT void def_restore_viewport(JS::HandleObject js_opts, JS::HandleObject js_viewport) {
+CEXPORT void def_restore_viewport(JSObject* js_opts, JSObject* js_viewport) {
 	JSContext *cx = get_js_context();
   JSAutoRequest areq(cx);
-  JS::RootedValue val(cx, OBJECT_TO_JSVAL(js_viewport.get()));
+  JS::RootedValue val(cx, OBJECT_TO_JSVAL(js_viewport));
 	JS_SetProperty(cx, js_opts, "viewport", val);
 }
 
-CEXPORT void def_timestep_view_tick(JS::HandleObject js_view, double dt) {
+CEXPORT void def_timestep_view_tick(JSObject* js_view, double dt) {
 	static const char *name = "tick";
 	JSContext *cx = get_js_context();
   JSAutoRequest areq(cx);

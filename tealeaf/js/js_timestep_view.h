@@ -22,11 +22,11 @@
 extern "C" {
 #endif
 
-void def_timestep_view_tick(JS::HandleObject js_view, double dt);
-void def_timestep_view_render(JS::HandleObject view, JS::HandleObject ctx, JS::HandleObject opts);
+void def_timestep_view_tick(JSObject* js_view, double dt);
+void def_timestep_view_render(JSObject* view, JSObject* ctx, JSObject* opts);
 
-JSObject *def_get_viewport(JS::HandleObject js_opts);
-void def_restore_viewport(JS::HandleObject js_opts, JS::HandleObject js_viewport);
+JSObject *def_get_viewport(JSObject* js_opts);
+void def_restore_viewport(JSObject* js_opts, JSObject* js_viewport);
 
 bool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp);
 
