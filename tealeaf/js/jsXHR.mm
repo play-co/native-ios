@@ -168,12 +168,10 @@ JSAG_OBJECT_END
 	JS_SetProperty(cx, xhr_obj, "status", _jsstatus);
 	JS_SetProperty(cx, xhr_obj, "response", _jsresponse);
 	JS_SetProperty(cx, xhr_obj, "name", _jsname);
-	jsval header_keys_val = OBJECT_TO_JSVAL(header_keys);
-	jsval header_values_val = OBJECT_TO_JSVAL(header_values);
-  JS::RootedValue _header_keys_val(cx, header_keys_val);
-  JS::RootedValue _header_values_val(cx, header_values_val);
-	JS_SetProperty(cx, xhr_obj, "headerKeys", _header_keys_val);
-	JS_SetProperty(cx, xhr_obj, "headerValues", _header_values_val);
+  JS::RootedValue header_keys_val(cx, OBJECT_TO_JSVAL(header_keys));
+  JS::RootedValue header_values_val(cx, OBJECT_TO_JSVAL(header_values));
+	JS_SetProperty(cx, xhr_obj, "headerKeys", header_keys_val);
+	JS_SetProperty(cx, xhr_obj, "headerValues", header_values_val);
   JS::RootedValue xhr_val(cx, OBJECT_TO_JSVAL(xhr_obj));
 
   [m_core dispatchEvent:xhr_val];
