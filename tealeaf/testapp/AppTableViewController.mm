@@ -93,7 +93,7 @@ static NSThread *appLoadListThread = nil;
 	[backButton setFrame:backButtonRect];
 	[backButton setTitle:@"Back" forState:UIControlStateNormal];
 	backButton.titleLabel.textColor = [UIColor blackColor];
-	backButton.titleLabel.textAlignment = UITextAlignmentCenter;
+	backButton.titleLabel.textAlignment = (NSTextAlignment)UITextAlignmentCenter;
 	[backButton addTarget:self action:@selector(backButtonFunc) forControlEvents:UIControlEventTouchUpInside];
 
 		
@@ -368,8 +368,8 @@ static NSThread *appLoadListThread = nil;
 	if (res_obj && json_is_object(res_obj)) {
 		const char *key;
 		json_t *value;
-		__block int obj_count =	 json_object_size(res_obj);
-		__block int cur_obj_index = 0;
+		__block size_t obj_count =	 json_object_size(res_obj);
+		__block size_t cur_obj_index = 0;
 
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 		NSString *documentsDirectory = [paths objectAtIndex:0];

@@ -18,25 +18,26 @@
 @implementation jsBuild
 
 + (void) addToRuntime:(js_core *)js {
-	JSObject *build_obj = JS_NewObject(js.cx, NULL, NULL, NULL);
-	jsval build_val = OBJECT_TO_JSVAL(build_obj);
+  JSContext* cx = get_js_context();
+  JS::RootedObject build_obj(cx, JS_NewObject(js.cx, NULL, NULL, NULL));
+  JS::RootedValue build_val(cx, OBJECT_TO_JSVAL(build_obj));
 	
 	NSString *sdk_hash = [js.config objectForKey:@"sdk_hash"];
 	if (sdk_hash != nil) {
-		JS_DefineProperty(js.cx, build_obj, "sdkHash", NSTR_TO_JSVAL(js.cx, sdk_hash), NULL, NULL, PROPERTY_FLAGS);
+		JS_DefineProperty(cx, build_obj, "sdkHash", NSTR_TO_JSVAL(cx, sdk_hash), NULL, NULL, PROPERTY_FLAGS);
 	}
 	
 	NSString *native_hash = [js.config objectForKey:@"native_hash"];
 	if (native_hash != nil) {
-		JS_DefineProperty(js.cx, build_obj, "iosHash", NSTR_TO_JSVAL(js.cx, native_hash), NULL, NULL, PROPERTY_FLAGS);
+		JS_DefineProperty(cx, build_obj, "iosHash", NSTR_TO_JSVAL(cx, native_hash), NULL, NULL, PROPERTY_FLAGS);
 	}
 	
 	NSString *game_hash = [js.config objectForKey:@"game_hash"];
 	if (game_hash != nil) {
-		JS_DefineProperty(js.cx, build_obj, "gameHash", NSTR_TO_JSVAL(js.cx, game_hash), NULL, NULL, PROPERTY_FLAGS);
+		JS_DefineProperty(cx, build_obj, "gameHash", NSTR_TO_JSVAL(cx, game_hash), NULL, NULL, PROPERTY_FLAGS);
 	}
 
-	JS_DefineProperty(js.cx, js.native, "build", build_val, NULL, NULL, PROPERTY_FLAGS);
+	JS_DefineProperty(cx, js.native, "build", build_val, NULL, NULL, PROPERTY_FLAGS);
 }
 
 + (void) onDestroyRuntime {

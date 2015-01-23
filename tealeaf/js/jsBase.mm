@@ -56,8 +56,8 @@ JSAG_OBJECT_END
 
 // GLOBAL.location setter/getter
 
-static JSBool jsSetLocation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
+static bool jsSetLocation(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
+  JSAutoRequest ar(cx);
 
 	JSString *jsurl = vp.toString();
 
@@ -66,12 +66,11 @@ static JSBool jsSetLocation(JSContext *cx, JSHandleObject obj, JSHandleId id, JS
 	// Pass the string over to jsBase
 	[jsBase setLocation:url];
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-static JSBool jsGetLocation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
+static bool jsGetLocation(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
+  JSAutoRequest ar(cx);
 
 	NSString *url = m_location;
 
@@ -83,8 +82,7 @@ static JSBool jsGetLocation(JSContext *cx, JSHandleObject obj, JSHandleId id, JS
 		vp.setString(NSTR_TO_JSTR(cx, url));
 	}
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 

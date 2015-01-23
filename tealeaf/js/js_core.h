@@ -57,6 +57,7 @@ CEXPORT JSObject *get_global_object();
 @property (nonatomic) JSRuntime *rt;
 @property (nonatomic) JSContext *cx;
 @property (nonatomic) JSObject *global;
+@property (nonatomic) JSCompartment *globalCompartment;
 @property (nonatomic) JSObject *native;
 
 // Call this first from the main thread to initialize the runtime thread info
@@ -74,8 +75,8 @@ CEXPORT JSObject *get_global_object();
 -(void) addExtension: (id) extension;
 
 
--(void) dispatchEvent:(jsval *)arg;
--(void) dispatchEvent:(jsval *)arg withRequestId:(int)id;
+-(void) dispatchEvent:(JS::HandleValue)arg;
+-(void) dispatchEvent:(JS::HandleValue)arg withRequestId:(int)id;
 
 -(void) dispatchEventFromString:(NSString *)evt withRequestId:(int)id;
 -(void) dispatchEventFromString:(NSString *)evt;

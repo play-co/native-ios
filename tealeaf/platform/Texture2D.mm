@@ -94,11 +94,13 @@ static inline int NextPowerOfTwo(int n) {
 @synthesize contentSize=_size;
 @synthesize originalWidth=_originalWidth;
 @synthesize originalHeight=_originalHeight;
-@synthesize texWidth=_texWidth,texHeight=_texHeight;
+@synthesize texWidth=_texWidth;
+@synthesize texHeight=_texHeight;
 @synthesize scale;
 
 - (id) initWithData:(const void*)data andFormat:(Texture2DPixelFormat)pixelFormat andSize:(CGSize)realSize contentSize:(CGSize)contentSize andScale: (float) tex_scale
 {
+
 	//GLint saveName;
 	if((self = [super init])) {
 		GLTRACE(glGenTextures(1, &_name));
@@ -161,7 +163,7 @@ static inline int NextPowerOfTwo(int n) {
 
 - (NSString*) description
 {
-	return [NSString stringWithFormat:@"<%@ = %08X | Name = %i | Dimensions = %ix%i | Coordinates = (%.2f, %.2f)>", [self class], (unsigned int)self, _name, _texWidth, _texHeight, _maxS, _maxT];
+	return [NSString stringWithFormat:@"<%@ = %ld | Name = %i | Dimensions = %ldx%ld | Coordinates = (%.2f, %.2f)>", [self class], (uintptr_t)self, _name, (unsigned long)_texWidth, (unsigned long)_texHeight, _maxS, _maxT];
 }
 
 @end
@@ -333,8 +335,19 @@ static inline int NextPowerOfTwo(int n) {
 
 	CGContextTranslateCTM(context, 0.0, h);
 	CGContextScaleCTM(context, 1.0, -1.0); //NOTE: NSString draws in UIKit referential i.e. renders upside-down compared to CGBitmapContext referential
-	CGColorRef colorf = CGColorCreate(colorSpace, color);
+    CGFloat cgColor[4] = {
+      static_cast<CGFloat>(color[0]),
+      static_cast<CGFloat>(color[1]),
+      static_cast<CGFloat>(color[2]),
+      static_cast<CGFloat>(color[3]),
+    };
+    UIColor* uiColor = [UIColor colorWithRed:color[0] green:color[1] blue:color[2] alpha:color[3]];
+    CGContextSetRGBFillColor(context, color[0], color[1], color[2], color[3]);
+    UIGraphicsPushContext(context);
+
+	CGColorRef colorf = CGColorCreate(colorSpace, cgColor);
 	CGContextSetFillColorWithColor(context, colorf);
+
 	if (textStyle == TEXT_STYLE_STROKE) {
 		CGContextSetTextDrawingMode(context, kCGTextStroke);
 		CGContextSetStrokeColorWithColor(context, colorf);
@@ -346,9 +359,14 @@ static inline int NextPowerOfTwo(int n) {
 	CGContextSetAllowsAntialiasing(context, YES);
 	CGContextSetShouldAntialias(context, YES);
 	CGContextSetShouldSmoothFonts(context, YES);
+    CGContextSetFillColorWithColor(context, colorf);
 
-	UIGraphicsPushContext(context);
-	[string drawInRect:CGRectMake(strokeWidth, strokeWidth, dimensions.width, dimensions.height) withFont:font lineBreakMode:UILineBreakModeTailTruncation alignment: UITextAlignmentLeft];
+  [string drawInRect:CGRectMake(strokeWidth, strokeWidth, dimensions.width, dimensions.height) withAttributes:@{
+    NSFontAttributeName:font,
+    NSForegroundColorAttributeName:uiColor
+   }];
+
+  
 	UIGraphicsPopContext();
 
 	self = [self initWithData:data andFormat:kTexture2DPixelFormat_RGBA8888 andSize: CGSizeMake(w, h) contentSize:act_dim andScale: 1];
@@ -415,10 +433,10 @@ static inline int NextPowerOfTwo(int n) {
 	};
 	
 	GLfloat vertices[] = {
-		rect.origin.x,							rect.origin.y + rect.size.height,	0.0,
-		rect.origin.x + rect.size.width,		rect.origin.y + rect.size.height,	0.0,
-		rect.origin.x,							rect.origin.y,						0.0,
-		rect.origin.x + rect.size.width,		rect.origin.y,						0.0
+		(GLfloat)rect.origin.x,                     (GLfloat)(rect.origin.y + rect.size.height), 0.0,
+		(GLfloat)(rect.origin.x + rect.size.width), (GLfloat)(rect.origin.y + rect.size.height), 0.0,
+		(GLfloat)rect.origin.x,                     (GLfloat)rect.origin.y,                      0.0,
+		(GLfloat)(rect.origin.x + rect.size.width), (GLfloat)rect.origin.y,                      0.0
 	};
 	
 	GLTRACE(glEnable(GL_TEXTURE_2D));
@@ -495,7 +513,7 @@ static inline int NextPowerOfTwo(int n) {
 			break;
 			
 		default:
-			[NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %d", contentMode];
+			[NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %ld", (long)contentMode];
 	}
 	
 	CGSize newSize = CGSizeMake(self.size.width * ratio, self.size.height * ratio);

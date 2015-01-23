@@ -18,13 +18,13 @@
 
 static js_core *m_core = NULL;
 
-static JSBool defMarketUrl(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+static bool defMarketUrl(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	
 	vp.setString(CSTR_TO_JSTR(cx, get_market_url()));
 
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 @implementation jsMarket
@@ -32,7 +32,7 @@ static JSBool defMarketUrl(JSContext *cx, JSHandleObject obj, JSHandleId id, JSM
 + (void) addToRuntime:(js_core *)js {
 	m_core = js;
 
-	JSObject *market = JS_NewObject(js.cx, NULL, NULL, NULL);
+  JS::RootedObject market(js.cx, JS_NewObject(js.cx, NULL, NULL, NULL));
 	JS_DefineProperty(js.cx, js.native, "market", OBJECT_TO_JSVAL(market), NULL, NULL, PROPERTY_FLAGS);
 	JS_DefineProperty(js.cx, market, "url", JSVAL_FALSE, defMarketUrl, NULL, PROPERTY_FLAGS);
 }

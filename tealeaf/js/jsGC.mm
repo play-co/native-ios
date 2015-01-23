@@ -41,7 +41,7 @@ JSAG_OBJECT_END
 + (void) addToRuntime:(js_core *)js {
 	m_core = js;
 
-	JSAG_OBJECT_ATTACH(js.cx, js.native, gc);
+  JSAG_OBJECT_ATTACH(js.cx, js.native, gc);
 }
 
 + (void) onDestroyRuntime {

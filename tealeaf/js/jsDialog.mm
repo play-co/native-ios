@@ -22,7 +22,8 @@ JSAG_MEMBER_BEGIN(_showDialog, 5)
 	JSAG_ARG_CSTR(text);
 	JSAG_ARG_CSTR(image);
 	JSAG_ARG_OBJECT(btns);
-	JSAG_ARG_OBJECT(cbs);
+  JSAG_ARG_OBJECT(cbs);
+
 
 	uint32_t buttonCount, cbCount;
 	JS_GetArrayLength(cx, btns, &buttonCount);
@@ -31,16 +32,17 @@ JSAG_MEMBER_BEGIN(_showDialog, 5)
 	char **buttons = (char**)malloc(buttonCount * sizeof(char*));
 	int *callbacks = (int*)malloc(cbCount * sizeof(int));
 	
+  JS::RootedValue rootedValue(cx);
+  JS::MutableHandleValue el = &rootedValue;
 	for (int i = 0; i < cbCount; ++i) {
-		jsval el;
-		JS_GetElement(cx, cbs, i, &el);
-		callbacks[i] = JSVAL_TO_INT(el);
+		JS_GetElement(cx, cbs, i, el);
+    JS::ToInt32(cx, el, &callbacks[i]);
 	}
 	
 	for (int i = 0; i < buttonCount; ++i) {
-		jsval el;
-		JS_GetElement(cx, btns, i, &el);
-		buttons[i] = JS_EncodeString(cx, JSVAL_TO_STRING(el));
+		JS_GetElement(cx, btns, i, el);
+    JS::RootedString str(cx, JS::ToString(cx, el));
+		buttons[i] = JS_EncodeString(cx, str);
 	}
 	
 	dialog_show_dialog(title, text, image, buttons, buttonCount, callbacks, cbCount);

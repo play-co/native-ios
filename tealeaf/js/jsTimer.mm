@@ -15,6 +15,7 @@
 
 #import "js/jsTimer.h"
 #include "core/timestep/timestep_animate.h"
+#include "GCAPI.h"
 
 static JSObject *m_callback = nil;
 static js_core *m_core = nil;
@@ -30,7 +31,7 @@ static void window_on_error(JSContext *cx, const char *msg, const char *url, int
 		
 	JSObject *global = get_global_object();
 		
-	jsval onerror;
+  JS::RootedValue onerror(cx);
 	JS_GetProperty(cx, global, "onerror", &onerror);
 		
 	if (!JSVAL_IS_VOID(onerror)) {
@@ -47,25 +48,27 @@ static void window_on_error(JSContext *cx, const char *msg, const char *url, int
 	JS_EndRequest(cx);
 }
 
-CEXPORT void js_tick(int dt) {
+CEXPORT void js_tick(long dt) {
 	if (m_callback) {
-		jsval ret, args[] = {
-			INT_TO_JSVAL(dt)
-		};
+    JSAutoRequest ar(m_core.cx);
 
-		JS_BeginRequest(m_core.cx);
-		JS_CallFunctionValue(m_core.cx, m_core.global, OBJECT_TO_JSVAL(m_callback), 1, args, &ret);
-		JS_EndRequest(m_core.cx);
+		jsval args[] = {
+      JS::NumberValue(dt)
+		};
+    
+    JS::RootedValue ret(m_core.cx);
+
+		JS_CallFunctionValue(m_core.cx, m_core.global, OBJECT_TO_JSVAL(m_callback), 1, args, ret.address());
 	}
 
 	view_animation_tick_animations(dt);
 
-#ifdef GC_REPORT_INCREMENTAL_TIMES
-	NSDate *start_date = [NSDate date];
-#endif
 
-	if ((gc_tick_twiddle++ & 3) == 0) {
+
+
+	if ((gc_tick_twiddle++ & 60) == 0) {
 		JS_MaybeGC(m_core.cx);
+
 
 		if (LAST_ERROR.valid) {
 			window_on_error(get_js_context(), LAST_ERROR.msg, LAST_ERROR.url, LAST_ERROR.line_number);
@@ -73,14 +76,6 @@ CEXPORT void js_tick(int dt) {
 			LAST_ERROR.valid = false;
 		}
 	}
-	
-#ifdef GC_REPORT_INCREMENTAL_TIMES
-	NSTimeInterval msInterval = fabs([start_date timeIntervalSinceNow] * 1000.0);
-
-	if (msInterval > 1.5f) {
-		LOG("{js} GC took %lf ms (incremental)", msInterval);
-	}
-#endif
 }
 
 

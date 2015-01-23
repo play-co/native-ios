@@ -24,7 +24,7 @@
 
 static JSObject *evt_ctor = NULL;
 
-static JSBool defGetEvents(JSContext *cx, unsigned argc, jsval *vp) {
+static bool defGetEvents(JSContext *cx, unsigned argc, jsval *vp) {
 	JS_BeginRequest(cx);
 
 	input_event_list events = timestep_events_get();
@@ -33,9 +33,9 @@ static JSBool defGetEvents(JSContext *cx, unsigned argc, jsval *vp) {
 	if (!evt_ctor) {
 		jsval thiz_val = JS_THIS(cx, vp);
 		JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
-		jsval ctor_val;
+    JS::RootedValue ctor_val(cx);
 		JS_GetProperty(cx, thiz, "InputEvent", &ctor_val);
-		if (JSVAL_IS_OBJECT(ctor_val)) {
+		if (!JSVAL_IS_PRIMITIVE(ctor_val)) {
 			JSObject *ctor_obj = JSVAL_TO_OBJECT(ctor_val);
 			if (ctor_obj && JS_ObjectIsFunction(cx, ctor_obj)) {
 				evt_ctor = ctor_obj;
@@ -54,13 +54,13 @@ static JSBool defGetEvents(JSContext *cx, unsigned argc, jsval *vp) {
 
 		jsval argv[4] =	 {id, type, x, y};
 		JSObject *evt_obj = JS_New(cx, evt_ctor, 6,argv);
-		jsval evt_val = OBJECT_TO_JSVAL(evt_obj);
+    JS::RootedValue evt_val(cx, JS::ObjectValue(*evt_obj));
 		JS_SetElement(cx, arr, i, &evt_val);
 	}
 	JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(arr));
 
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 static const JSFunctionSpec functionSpec[] = {

@@ -35,32 +35,33 @@ CEXPORT void def_timestep_view_class_finalize(JSFreeOp *fop, JSObject *obj) {
 	}
 }
 
-CEXPORT JSBool def_timestep_view_class_constructor(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_class_constructor(JSContext *cx, unsigned argc, jsval *vp) {
+	JSAutoRequest areq(cx);
 
-	JSObject *thiz = timestep_view_create_ctor_object(cx, vp);
+  JS::RootedObject thiz(cx, timestep_view_create_ctor_object(cx, vp));
 	if (!thiz) {
-		return JS_FALSE;
+		return false;
 	}
 
 	timestep_view *view = timestep_view_init();
 
 	JS_SetPrivate(thiz, view);
+  
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
-	JSObject *js_view = NULL;
-	jsval *argv = JS_ARGV(cx, vp);
-	if (argc >= 1 && JSVAL_IS_OBJECT(argv[0])) {
-		js_view = JSVAL_TO_OBJECT(argv[0]);
-	}
-	view->js_view = js_view;
-
+  JSObject* js_view = nullptr;
+	if (argc >= 1 && !JSVAL_IS_PRIMITIVE(args[0])) {
+		js_view = JSVAL_TO_OBJECT(args[0]);
+  }
+  view->js_view = js_view;
+  
 	bool has_jsrender = false;
-	jsval render_val;
+  JS::RootedValue render_val(cx);
 	JS_GetProperty(cx, js_view, "render", &render_val);
-	if (JSVAL_IS_OBJECT(render_val)) {
+	if (!JSVAL_IS_PRIMITIVE(render_val)) {
 		JSObject *render = JSVAL_TO_OBJECT(render_val);
 		if (render && JS_ObjectIsFunction(cx, render)) {
-			jsval has_native_render_val;
+      JS::RootedValue has_native_render_val(cx);
 			JS_GetProperty(cx, render, "HAS_NATIVE_IMPL", &has_native_render_val);
 			if (JSVAL_IS_BOOLEAN(has_native_render_val) && JSVAL_TO_BOOLEAN(has_native_render_val)) {
 				has_jsrender = false;
@@ -71,9 +72,9 @@ CEXPORT JSBool def_timestep_view_class_constructor(JSContext *cx, unsigned argc,
 	}
 	view->has_jsrender = has_jsrender;
 
-	jsval tick_val;
+  JS::RootedValue tick_val(cx);
 	JS_GetProperty(cx, js_view, "tick", &tick_val);
-	if (JSVAL_IS_OBJECT(tick_val)) {
+	if (!JSVAL_IS_PRIMITIVE(tick_val)) {
 		JSObject *tick = JSVAL_TO_OBJECT(tick_val);
 		if (tick && JS_ObjectIsFunction(cx, tick)) {
 			view->has_jstick = true;
@@ -82,37 +83,38 @@ CEXPORT JSBool def_timestep_view_class_constructor(JSContext *cx, unsigned argc,
 		}
 	}
 
-	jsval type_val;
+  JS::RootedValue type_val(cx);
 	JS_GetProperty(cx, js_view, "__type", &type_val);
-	timestep_view_set_type(view, JSVAL_TO_INT(type_val));
-
-	JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(thiz));
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
+  int view_type;
+  JS::ToInt32(cx, type_val, &view_type);
+	timestep_view_set_type(view, view_type);
+  
+  args.rval().set(OBJECT_TO_JSVAL(thiz));
+  
+	return true;
 }
 
 
-CEXPORT JSBool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_image_view_set_image(JSContext *cx, unsigned argc, jsval *vp) {
+	JSAutoRequest areq(cx);
 
 	jsval *argv = JS_ARGV(cx, vp);
 
-	if (argc < 2 || !JSVAL_IS_OBJECT(argv[0]) || !JSVAL_IS_OBJECT(argv[1])) {
+	if (argc < 2 || JSVAL_IS_PRIMITIVE(argv[0]) || JSVAL_IS_PRIMITIVE(argv[1])) {
 		JS_ReportError(cx, "Invalid arguments to setImageOnImageView");
 
-		JS_EndRequest(cx);
-		return JS_FALSE;
+		return false;
 	} else {
-		JSObject *view_obj = JSVAL_TO_OBJECT(argv[0]), *map_obj = JSVAL_TO_OBJECT(argv[1]);
+    JS::RootedObject view_obj(cx, JSVAL_TO_OBJECT(argv[0]));
+    JS::RootedObject map_obj(cx, JSVAL_TO_OBJECT(argv[1]));
+    
 		timestep_view *view = (timestep_view *)JS_GetPrivate(view_obj);
 		timestep_image_map *map = (timestep_image_map *)JS_GetPrivate(map_obj);
 
-		js_object_wrapper_root(&view->map_ref, map_obj);
+		js_object_wrapper_root(&view->map_ref, map_obj.get());
 		view->view_data = map;
 
-		JS_EndRequest(cx);
-		return JS_TRUE;
+		return true;
 	}
 }
 
@@ -130,8 +132,8 @@ static const char *NAME_ARRAY[11] = {
 	"copy"
 };
 
-CEXPORT JSBool def_timestep_view_get_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_get_compositeOperation(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
+	JSAutoRequest areq(cx);
 
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
 	if (view) {
@@ -149,236 +151,242 @@ CEXPORT JSBool def_timestep_view_get_compositeOperation(JSContext *cx, JSHandleO
 		}
 	}
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-CEXPORT JSBool def_timestep_view_set_compositeOperation(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
+static __attribute__((always_inline)) void print_invalid_composite_op_warning(const char * code) {
+  LOG("{view} WARNING: View given invalid composite operation %s", code);
+}
 
+CEXPORT bool def_timestep_view_set_compositeOperation(JSContext *cx,
+                                                      JS::HandleObject obj,
+                                                      JS::HandleId id,
+                                                      bool strict,
+                                                      JS::MutableHandleValue vp) {
+  JSAutoRequest areq(cx);
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
+  
 	if (view) {
 		int op = 0;
 
 		if (vp.isString()) {
-			JSString *jstr = vp.toString();
+      JS::RootedString jstr(cx, JSVAL_TO_STRING(vp));
 			JSTR_TO_CSTR(cx, jstr, code);
-
-			if (code[0] == 'l') {
-				op = 1345;
-			} else if (code[0] == 'x') {
-				op = 1346;
-			} else if (code[0] == 'c') {
-				op = 1347;
-			} else if (code[0] == 's') {
-				if (0 == strcmp(code, "source-atop")) {
-					op = 1337;
-				} else if (0 == strcmp(code, "source-in")) {
-					op = 1338;
-				} else if (0 == strcmp(code, "source-out")) {
-					op = 1339;
-				} else if (0 == strcmp(code, "source-over")) {
-					op = 1340;
-				}
-			} else if (code[0] == 'd') {
-				if (0 == strcmp(code, "destination-atop")) {
-					op = 1341;
-				} else if (0 == strcmp(code, "destination-in")) {
-					op = 1342;
-				} else if (0 == strcmp(code, "destination-out")) {
-					op = 1343;
-				} else if (0 == strcmp(code, "destination-over")) {
-					op = 1344;
-				}
-			}
+      switch (code[0]) {
+        case 'l':
+          op = 1345;
+          break;
+        case 'x':
+          op = 1346;
+          break;
+        case 'c':
+          op = 1347;
+          break;
+        case 's':
+          if (0 == strcmp(code, "source-atop")) {
+            op = 1337;
+          } else if (0 == strcmp(code, "source-in")) {
+            op = 1338;
+          } else if (0 == strcmp(code, "source-out")) {
+            op = 1339;
+          } else if (0 == strcmp(code, "source-over")) {
+            op = 1340;
+          } else {
+            print_invalid_composite_op_warning(code);
+          }
+          break;
+        case 'd':
+          if (0 == strcmp(code, "destination-atop")) {
+            op = 1341;
+          } else if (0 == strcmp(code, "destination-in")) {
+            op = 1342;
+          } else if (0 == strcmp(code, "destination-out")) {
+            op = 1343;
+          } else if (0 == strcmp(code, "destination-over")) {
+            op = 1344;
+          } else {
+            print_invalid_composite_op_warning(code);
+          }
+          break;
+        case '\0':
+          // Clear composite op on empty string
+          break;
+        default:
+          // If code is not empty, it must be an invalid operation.
+          print_invalid_composite_op_warning(code);
+          break;
+      }
 		}
 
 		view->composite_operation = op;
 	}
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-CEXPORT JSBool def_timestep_view_set_opacity(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_set_opacity(JSContext *cx,
+                                           JS::HandleObject obj,
+                                           JS::HandleId id,
+                                           bool strict,
+                                           JS::MutableHandleValue vp) {
+	JSAutoRequest areq(cx);
 
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
-
 	view->opacity = vp.isNumber() ? vp.toNumber() : 1.0;
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-CEXPORT JSBool def_timestep_view_set_zIndex(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_set_zIndex(JSContext *cx,
+                                          JS::HandleObject obj,
+                                          JS::HandleId id,
+                                          bool strict,
+                                          JS::MutableHandleValue vp) {
+	JSAutoRequest areq(cx);
 
 	timestep_view *view = (timestep_view *)JS_GetPrivate(obj);
 
 	if (vp.isNumber()) {
 		view->z_index = vp.toNumber();
-
+    
 		timestep_view *superview = timestep_view_get_superview(view);
 		if (superview) {
 			superview->dirty_z_index = true;
 		}
 	}
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-CEXPORT void def_timestep_view_build_view(void *data) {
-	JSObject *js_view = (JSObject*)data;
-	jsval fn;
-	static const char *name = "buildView";
+CEXPORT void def_timestep_view_render(JSObject* view,
+                                      JSObject* ctx,
+                                      JSObject* opts) {
+
+	static const char *renderFunctionName = "render";
 	JSContext *cx = get_js_context();
-	JSBool success = JS_GetProperty(cx, js_view, name, &fn);
-	JSObject *fn_obj = JSVAL_TO_OBJECT(fn);
+  JSAutoRequest areq(cx);
+  JS::RootedValue fn(cx);
+	bool success = JS_GetProperty(cx, view, renderFunctionName, &fn);
+  JS::RootedObject fn_obj(cx, JSVAL_TO_OBJECT(fn));
 	if (success && fn_obj && JS_ObjectIsFunction(cx, fn_obj)) {
-		jsval rval;
-		JS_CallFunctionName(cx, js_view, name, 0, NULL, &rval);
+    JS::RootedValue rval(cx);
+    JS::Value args[] = {
+      JS::ObjectValue(*ctx),
+      JS::ObjectValue(*opts)
+    };
+		JS_CallFunctionName(cx, view, renderFunctionName, 2, args, rval.address());
 	}
 }
 
-CEXPORT void def_timestep_view_render(void *view, void *ctx, void *opts) {
-	JSObject *js_view = (JSObject*)view;
-	JSObject *js_ctx = (JSObject*)ctx;
-	JSObject *js_opts = (JSObject*)opts;
-	jsval fn;
-	static const char *name = "render";
+CEXPORT JSObject* def_get_viewport(JSObject* js_opts) {
 	JSContext *cx = get_js_context();
-	JSBool success = JS_GetProperty(cx, js_view, name, &fn);
-	JSObject *fn_obj = JSVAL_TO_OBJECT(fn);
-	if (success && fn_obj && JS_ObjectIsFunction(cx, fn_obj)) {
-		jsval rval;
-		jsval args[] = {OBJECT_TO_JSVAL(js_ctx), OBJECT_TO_JSVAL(js_opts)};
-		JS_CallFunctionName(cx, js_view, name, 2, args, &rval);
-
-	}
-}
-
-CEXPORT JSObject *def_get_viewport(JSObject *js_opts) {
-	JSContext *cx = get_js_context();
-	jsval val;
-
+  JSAutoRequest areq(cx);
+	JS::RootedValue val(cx);
 	JS_GetProperty(cx, js_opts, "viewport", &val);
-	return val.isObject() && !val.isNullOrUndefined() ? JSVAL_TO_OBJECT(val) : NULL;
+  
+  return JSVAL_TO_OBJECT(val);
 }
 
-CEXPORT void def_restore_viewport(JSObject *js_opts, JSObject *js_viewport) {
+CEXPORT void def_restore_viewport(JSObject* js_opts, JSObject* js_viewport) {
 	JSContext *cx = get_js_context();
-	jsval val = OBJECT_TO_JSVAL(js_viewport);
-
-	JS_SetProperty(cx, js_opts, "viewport", &val);
+  JSAutoRequest areq(cx);
+  JS::RootedValue val(cx, OBJECT_TO_JSVAL(js_viewport));
+	JS_SetProperty(cx, js_opts, "viewport", val);
 }
 
-CEXPORT void def_timestep_view_tick(void *data, double dt) {
-	JSObject *js_view = (JSObject*)data;
-	jsval fn;
+CEXPORT void def_timestep_view_tick(JSObject* js_view, double dt) {
 	static const char *name = "tick";
 	JSContext *cx = get_js_context();
+  JSAutoRequest areq(cx);
+  JS::RootedValue fn(cx);
 
-	JS_BeginRequest(cx);
-
-	JSBool success = JS_GetProperty(cx, js_view, name, &fn);
-	JSObject *fn_obj = JSVAL_TO_OBJECT(fn);
+	bool success = JS_GetProperty(cx, js_view, name, &fn);
+  JS::RootedObject fn_obj(cx, JSVAL_TO_OBJECT(fn));
 	if (success && fn_obj && JS_ObjectIsFunction(cx, fn_obj)) {
-		jsval rval;
-		jsval dt_val = DOUBLE_TO_JSVAL(dt);
-		jsval args[] = {dt_val};
-		JS_CallFunctionName(cx, js_view, name, 1, args, &rval);
+    JS::RootedValue rval(cx);
+    JS::Value args[] = {JS::NumberValue(dt)};
+		JS_CallFunctionName(cx, js_view, name, 1, args, rval.address());
 	}
 
-	JS_EndRequest(cx);
 }
 
-CEXPORT JSBool def_timestep_view_addSubview(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
-
-	jsval *vals = JS_ARGV(cx, vp);
-	JSObject *thiz = JSVAL_TO_OBJECT(JS_THIS(cx, vp));
+CEXPORT bool def_timestep_view_addSubview(JSContext *cx, unsigned argc, jsval *vp) {
+  JSAutoRequest areq(cx);
+  
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
+  
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
-	JSObject *subview_obj = JSVAL_TO_OBJECT(*vals);
-	jsval _view;
+  
+  JS::RootedObject subview_obj(cx, args[0].toObjectOrNull());
+	JS::RootedValue _view(cx);
 	JS_GetProperty(cx, subview_obj, "__view", &_view);
-	if (JSVAL_IS_OBJECT(_view)) {
+	if (!JSVAL_IS_PRIMITIVE(_view)) {
 		timestep_view *subview = (timestep_view *)JS_GetPrivate(JSVAL_TO_OBJECT(_view));
 		bool result = timestep_view_add_subview(view, subview);
 
 		// Set result based on add_subview return value
-		JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(result ? JS_TRUE : JS_FALSE));
+    args.rval().setBoolean(!!result);
 	}
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-CEXPORT JSBool def_timestep_view_removeSubview(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_removeSubview(JSContext *cx, unsigned argc, jsval *vp) {
+	JSAutoRequest areq(cx);
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
-	jsval *vals = JS_ARGV(cx, vp);
-	JSObject *thiz = JSVAL_TO_OBJECT(JS_THIS(cx, vp));
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
-	JSObject *subview_obj = JSVAL_TO_OBJECT(*vals);
-	jsval _view;
+  JS::RootedObject subview_obj(cx, JSVAL_TO_OBJECT(args[0]));
+	JS::RootedValue _view(cx);
 	JS_GetProperty(cx, subview_obj, "__view", &_view);
-	bool result;
-	if (JSVAL_IS_OBJECT(_view)) {
+  
+	bool result = false;
+	if (!JSVAL_IS_PRIMITIVE(_view)) {
 		timestep_view *subview = (timestep_view *)JS_GetPrivate(JSVAL_TO_OBJECT(_view));
 		result = timestep_view_remove_subview(view, subview);
-	} else {
-		result = false;
 	}
-	jsval rval = BOOLEAN_TO_JSVAL(result);
 
-	JS_SET_RVAL(cx, vp, rval);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
+  args.rval().setBoolean(result);
+	return true;
 }
 
-CEXPORT JSBool def_timestep_view_getSuperview(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
-
-	JSObject *thiz = JSVAL_TO_OBJECT(JS_THIS(cx, vp));
+CEXPORT bool def_timestep_view_getSuperview(JSContext *cx, unsigned argc, jsval *vp) {
+	JSAutoRequest areq(cx);
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
+  
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
 	timestep_view *superview = timestep_view_get_superview(view);
-	jsval rval;
-	if (!view) {
-		rval = JSVAL_NULL;
-	} else {
-		if (superview) {
-			JSObject *js_view = (JSObject*)superview->js_view;
-			rval = OBJECT_TO_JSVAL(js_view);
-		} else {
-			rval = JSVAL_NULL;
-		}
-	}
+  JS::RootedValue rval(cx, JS::NullValue());
+  if (view && superview) {
+    JS::RootedObject js_view(cx, (JSObject*)superview->js_view);
+    rval = JS::ObjectValue(*js_view);
+  }
+  
+  args.rval().set(rval);
 
-	JS_SET_RVAL(cx, vp, rval);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 // we only call wrapRender from JS once on the root view
 // to start the render
-CEXPORT JSBool def_timestep_view_wrapRender(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_wrapRender(JSContext *cx, unsigned argc, jsval *vp) {
+  JSAutoRequest ar(cx);
+  JS::CallArgs args = CallArgsFromVp(argc, vp);
 
-	jsval *vals = JS_ARGV(cx, vp);
-	jsval thiz_val = JS_THIS(cx, vp);
-	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
-	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
-	jsval ctx_val = *vals++;
-	JSObject *js_ctx = JSVAL_TO_OBJECT(ctx_val);
-	jsval _ctx_val;
+	JS::RootedObject thiz_val(cx, JSVAL_TO_OBJECT(JS_THIS(cx, vp)));
+	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz_val);
+  
+  // JS::HandleValue ctx_val = args[0];
+  JS::RootedObject js_ctx(cx, args[0].toObjectOrNull());
+  
+	JS::RootedValue _ctx_val(cx);
 	JS_GetProperty(cx, js_ctx, "_ctx", &_ctx_val);
-	JSObject *_ctx = JSVAL_TO_OBJECT(_ctx_val);
-	jsval opts_val = *vals;
-	JSObject *js_opts = JSVAL_TO_OBJECT(opts_val);
+  JS::RootedObject _ctx(cx, _ctx_val.toObjectOrNull());
+  JS::RootedObject js_opts(cx, args[1].toObjectOrNull());
+  
 	context_2d *ctx = (context_2d*)JS_GetPrivate(_ctx);
 
 	// reset the render properties (e.g. absScale)
@@ -387,62 +395,61 @@ CEXPORT JSBool def_timestep_view_wrapRender(JSContext *cx, unsigned argc, jsval 
 	// recursively render all views/subviews
 	timestep_view_wrap_render(view, ctx, js_ctx, js_opts);
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
-CEXPORT JSBool def_timestep_view_wrapTick(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_wrapTick(JSContext *cx, unsigned argc, jsval *vp) {
+	JSAutoRequest areq(cx);
 
-	jsval *vals = JS_ARGV(cx, vp);
-	jsval thiz_val = JS_THIS(cx, vp);
 	double dt;
-	JS_ValueToNumber(cx, *vals, (double*)&dt);
-	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
+  
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+  JS::RootedValue in(cx, args[0]);
+  JS::ToNumber(cx, in, &dt);
+  JS::RootedObject thiz(cx, args.thisv().toObjectOrNull());
+  
 	timestep_view *view = (timestep_view *)JS_GetPrivate(thiz);
 	timestep_view_wrap_tick(view, dt);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
-CEXPORT JSBool def_timestep_view_getSubviews(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
+CEXPORT bool def_timestep_view_getSubviews(JSContext *cx, unsigned argc, jsval *vp) {
+  JSAutoRequest areq(cx);
 
-	jsval thiz_val = JS_THIS(cx, vp);
-	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+  JS::RootedObject thiz(cx, args.thisv().toObjectOrNull());
 	timestep_view *v = (timestep_view *)JS_GetPrivate(thiz);
-	JSObject *subviews = JS_NewArrayObject(cx, v->subview_count, 0);
+  JS::RootedObject subviews(cx, JS_NewArrayObject(cx, v->subview_count, 0));
+  
 	for (int i = 0; i < v->subview_count; i++) {
 		timestep_view *subview = v->subviews[i];
 
-		jsval value = OBJECT_TO_JSVAL((JSObject*)subview->js_view);
+    JS::RootedValue value(cx, OBJECT_TO_JSVAL((JSObject*)subview->js_view));
 		JS_SetElement(cx, subviews, i, &value);
 	}
-	jsval ret = OBJECT_TO_JSVAL(subviews);
-	JS_SET_RVAL(cx, vp, ret);
+  
+  args.rval().setObject(*subviews);
 
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-CEXPORT JSBool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
-
-	jsval *js_pt = JS_ARGV(cx, vp);
-	jsval thiz_val = JS_THIS(cx, vp);
-	JSObject *thiz = JSVAL_TO_OBJECT(thiz_val);
+CEXPORT bool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsval *vp) {
+	JSAutoRequest areq(cx);
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+  
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
 	timestep_view *v = (timestep_view *)JS_GetPrivate(thiz);
-	JSObject *pt = JSVAL_TO_OBJECT(*js_pt);
-	jsval x_val, y_val;
+  
+  JS::RootedObject pt(cx, JSVAL_TO_OBJECT(args[0]));
+	JS::RootedValue x_val(cx), y_val(cx);
 	JS_GetProperty(cx, pt, "x", &x_val);
 	JS_GetProperty(cx, pt, "y", &y_val);
 	double x;
-	JS_ValueToNumber(cx, x_val, (double*)&x);
+  JS::ToNumber(cx, x_val, &x);
 	double y;
-	JS_ValueToNumber(cx, y_val, (double*)&y);
+  JS::ToNumber(cx, y_val, &y);
 
 
 	x -= v->x + v->anchor_x + v->offset_x;
@@ -466,31 +473,44 @@ CEXPORT JSBool def_timestep_view_localizePoint(JSContext *cx, unsigned argc, jsv
 	x += v->anchor_x;
 	y += v->anchor_y;
 
-	jsval new_x = DOUBLE_TO_JSVAL(x);
-	jsval new_y = DOUBLE_TO_JSVAL(y);
+  JS::RootedValue new_x(cx, JS::NumberValue(x));
+  JS::RootedValue new_y(cx, JS::NumberValue(y));
+  
+	JS_SetProperty(cx, pt, "x", new_x);
+	JS_SetProperty(cx, pt, "y", new_y);
+  
+  args.rval().setObject(*pt);
 
-	JS_SetProperty(cx, pt, "x", &new_x);
-	JS_SetProperty(cx, pt, "y", &new_y);
-
-	JS_SET_RVAL(cx, vp, *js_pt);
-
-	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
-CEXPORT JSBool def_timestep_view_get__width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get__width(JSContext *cx,
+                                          JS::HandleObject obj,
+                                          JS::HandleId id,
+                                          JS::MutableHandleValue vp) {
 	return def_timestep_view_get_width(cx, obj, id, vp);
 }
 
-CEXPORT JSBool def_timestep_view_set__width(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set__width(JSContext *cx,
+                                          JS::HandleObject obj,
+                                          JS::HandleId id,
+                                          bool strict,
+                                          JS::MutableHandleValue vp) {
 	return def_timestep_view_set_width(cx, obj, id, strict, vp);
 }
 
-CEXPORT JSBool def_timestep_view_get__height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get__height(JSContext *cx,
+                                           JS::HandleObject obj,
+                                           JS::HandleId id,
+                                           JS::MutableHandleValue vp) {
 	return def_timestep_view_get_height(cx, obj, id, vp);
 }
 
-CEXPORT JSBool def_timestep_view_set__height(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set__height(JSContext *cx,
+                                           JS::HandleObject obj,
+                                           JS::HandleId id,
+                                           bool strict,
+                                           JS::MutableHandleValue vp) {
 	return def_timestep_view_set_height(cx, obj, id, strict, vp);
 }
 

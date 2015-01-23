@@ -20,14 +20,12 @@
 #include "core/config.h"
 
 
-static JSBool JSPOP_Online(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+static bool JSPOP_Online(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-
-	JS_BeginRequest(cx);
+  JSAutoRequest areq(cx);
+  
 	vp.setBoolean(app.isOnline == YES);
-	JS_EndRequest(cx);
-
-	return JS_TRUE;
+	return true;
 }
 
 
@@ -37,7 +35,7 @@ static JSBool JSPOP_Online(JSContext *cx, JSHandleObject obj, JSHandleId id, JSM
 	locale_info *info = locale_get_locale();
 
 	JSContext *cx = js.cx;
-	JSObject *obj_navigator = JS_NewObject(cx, NULL, NULL, NULL);
+  JS::RootedObject obj_navigator(cx, JS_NewObject(cx, NULL, NULL, NULL));
 
 	// Support older versions of iOS conditionally
 	float scale = 1;
@@ -57,12 +55,12 @@ static JSBool JSPOP_Online(JSContext *cx, JSHandleObject obj, JSHandleId id, JSM
 	dpi *= scale;
 
 	//add the pixel ratio to the window object
-	JSObject* window = get_global_object();
-	JS_DefineProperty(cx, window, "devicePixelRatio", DOUBLE_TO_JSVAL(scale), NULL, NULL, PROPERTY_FLAGS);
+  JS::RootedObject window(cx, get_global_object());
+  JS_DefineProperty(cx, window, "devicePixelRatio", JS::NumberValue(scale), NULL, NULL, PROPERTY_FLAGS);
 
 	// displayMetrics subobject
-	JSObject *obj_metric = JS_NewObject(cx, NULL, NULL, NULL);
-	JS_DefineProperty(cx, obj_metric, "densityDpi", DOUBLE_TO_JSVAL(dpi), NULL, NULL, PROPERTY_FLAGS);
+  JS::RootedObject obj_metric(cx, JS_NewObject(cx, NULL, NULL, NULL));
+	JS_DefineProperty(cx, obj_metric, "densityDpi", JS::NumberValue(dpi), NULL, NULL, PROPERTY_FLAGS);
 	JS_DefineProperty(cx, obj_navigator, "displayMetrics", OBJECT_TO_JSVAL(obj_metric), NULL, NULL, PROPERTY_FLAGS);
 
 	NSString *sdk_hash = [js.config objectForKey:@"sdk_hash"];

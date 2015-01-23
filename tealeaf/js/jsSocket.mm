@@ -95,9 +95,13 @@
 	NSString *msg = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 	if (msg) {
 		[msg autorelease];
-		jsval rval;
+    JS::RootedValue rval(self.cx);
 		JS_GetProperty(self.cx, self.thiz, "__id", &rval);
-		NSString *evt = [NSString stringWithFormat: @"{\"id\":%d,\"name\":\"socketRead\"}", JSValToInt32(self.cx, rval, 0)];
+    int32_t intVal = 0;
+    if (!JS::ToInt32(self.cx, rval, &intVal)) {
+      intVal = 0;
+    }
+		NSString *evt = [NSString stringWithFormat: @"{\"id\":%d,\"name\":\"socketRead\"}", intVal];
 		const char *cEvt = [evt UTF8String];
 		json_error_t err;
 		json_t *jsEvt = json_loads(cEvt, 0, &err);
@@ -110,6 +114,7 @@
 		}
 	} else {
 		const char *err = "Error converting received data into UTF-8 String";
+    
 		LOG("{socket} %s", err);
 
 		jsval rval, jstr = CSTR_TO_JSVAL(self.cx, err);
@@ -166,7 +171,8 @@ JSAG_MEMBER_BEGIN(Socket, 2)
 	JSAG_ARG_INT32(port);
 	JSAG_ARG_INT32_OPTIONAL(timeout, 5);
 
-	JSAG_OBJECT *thiz = JSAG_CLASS_INSTANCE(Socket);
+//  JSAG_OBJECT *thiz(cx, JSAG_CLASS_INSTANCE(Socket));
+  JS::RootedObject thiz(cx, JS_NewObjectForConstructor(cx, &Socket_class, vp));
 	
 	NSLOG(@"{socket} Created for %@:%d", host, port);
 
@@ -174,8 +180,8 @@ JSAG_MEMBER_BEGIN(Socket, 2)
 
 	JSAG_SET_PRIVATE(thiz, socket);
 
-	jsval jsID = INT_TO_JSVAL(idCounter++);
-	JSAG_ADD_PROPERTY(thiz, __id, &jsID);
+  JS::RootedValue jsID(cx, JS::NumberValue(idCounter++));
+	JSAG_ADD_PROPERTY(thiz, __id, jsID);
 
 	JSAG_RETURN_OBJECT(thiz);
 }
@@ -202,9 +208,9 @@ JSAG_MEMBER_BEGIN(send, 1)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN_NOARGS(close)
+JSAG_MEMBER_BEGIN(close, 0)
 {
-	JSObject *thiz = JSAG_THIS;
+  JS::RootedObject thiz(cx, JSVAL_TO_OBJECT(args.thisv()));
 
 	if (likely(!!thiz)) {
 		SocketWrapper *socket = (SocketWrapper *)JSAG_GET_PRIVATE(thiz);
@@ -215,7 +221,7 @@ JSAG_MEMBER_BEGIN_NOARGS(close)
 		}
 	}
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN_NOARGS(defaultCallback)
 {

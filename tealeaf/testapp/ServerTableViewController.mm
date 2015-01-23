@@ -55,7 +55,7 @@
 	[self.ipInputView setFont:[UIFont systemFontOfSize:25.0]];
 	[self.ipInputView setBackgroundColor:[UIColor lightGrayColor]];
 	[self.ipInputView setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-	self.ipInputView.textAlignment = UITextAlignmentCenter;
+	self.ipInputView.textAlignment = (NSTextAlignment)UITextAlignmentCenter;
 	
 	CGRect portInputViewRect = CGRectMake(frame.size.width *.54f, frame.size.height *.01f, frame.size.width *.28f, frame.size.height * .10f);
 	self.portInputView = [[UITextField alloc] initWithFrame:portInputViewRect];
@@ -63,7 +63,7 @@
 	[self.portInputView setFont:[UIFont systemFontOfSize:25.0]];
 	[self.portInputView setBackgroundColor:[UIColor lightGrayColor]];
 	[self.portInputView setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-	self.portInputView.textAlignment = UITextAlignmentCenter;
+	self.portInputView.textAlignment = (NSTextAlignment)UITextAlignmentCenter;
 	
 	CGRect buttonRect = CGRectMake(frame.size.width - frame.size.width * .16f, frame.size.height *.01f, frame.size.width * .15f, frame.size.height * .10f);
 	UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -119,7 +119,7 @@
 	}
 
 	NSString *ns_ip_str = [NSString stringWithUTF8String:ip_str];
-	int insert_index, list_len;
+	size_t insert_index, list_len;
 
 	for (insert_index = 0, list_len = [self.listData count]; insert_index < list_len; ++insert_index) {
 		ServerInfo *server = [self.listData objectAtIndex:insert_index];
@@ -206,7 +206,7 @@
 	ServerInfo *serverInfo = (ServerInfo *)[self.listData objectAtIndex:row];
 	if (serverInfo != nil) {
 		self.ipInputView.text = serverInfo.ip;
-		self.portInputView.text = [NSString stringWithFormat:@"%d", serverInfo.port];
+		self.portInputView.text = [NSString stringWithFormat:@"%ld", (long)serverInfo.port];
 
 		[self launch];
 	}

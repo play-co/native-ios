@@ -26,13 +26,13 @@
 #define JSTR_TO_CSTR(cx, jstr, cstr) \
 	size_t cstr ## _len = JS_GetStringEncodingLength(cx, jstr); \
 	char *cstr = (char*)alloca(sizeof(char) * (cstr ## _len + 1)); \
-	JS_EncodeStringToBuffer(jstr, cstr, cstr ## _len); \
+	JS_EncodeStringToBuffer(cx, jstr, cstr, cstr ## _len); \
 	cstr[cstr ## _len] = (char)'\0';
 
 #define JSTR_TO_CSTR_PERSIST(cx, jstr, cstr) \
 	size_t cstr ## _len = JS_GetStringEncodingLength(cx, jstr); \
 	char *cstr = (char*)malloc(sizeof(char) * (cstr ## _len + 1)); \
-	JS_EncodeStringToBuffer(jstr, cstr, cstr ## _len); \
+	JS_EncodeStringToBuffer(cx, jstr, cstr, cstr ## _len); \
 	cstr[cstr ## _len] = (char)'\0';
 
 #define PERSIST_CSTR_RELEASE(cstr) \
@@ -51,7 +51,7 @@
 #define JSTR_TO_NSTR(cx, jstr, nstr) \
 	size_t nstr ## _len; \
 	jschar *nstr ## _jc = (jschar*)JS_GetStringCharsZAndLength(cx, jstr, &nstr ## _len); \
-	NSString *nstr = [[[NSString alloc] initWithCharactersNoCopy:nstr ## _jc length:nstr ## _len freeWhenDone:NO] autorelease];
+	NSString *nstr = [[[NSString alloc] initWithCharactersNoCopy:(unichar*)nstr ## _jc length:nstr ## _len freeWhenDone:NO] autorelease];
 
 inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 	int chars = (int)[nstr length];
@@ -63,7 +63,7 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 		buffer = (unichar*)JS_malloc(cx, chars * sizeof(unichar));
 		[nstr getCharacters:buffer range:NSMakeRange(0, chars)];
 
-		JSString *rval = JS_NewUCString(cx, buffer, chars);
+		JSString *rval = JS_NewUCString(cx, (jschar*)buffer, chars);
 		if (!rval) {
 			JS_free(cx, buffer);
 		}
@@ -76,7 +76,7 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 #define NSTR_TO_JSVAL(cx, nstr) STRING_TO_JSVAL(NSTR_TO_JSTR(cx, nstr))
 
 #define JSVAL_TO_NSTR(cx, val, nstr) \
-	JSString *nstr ## _jstr = JSVAL_TO_STRING(val); \
+	JSString *nstr ## _jstr = JS::ToString(cx, val); \
 	JSTR_TO_NSTR(cx, nstr ## _jstr, nstr);
 
 #endif
@@ -84,19 +84,6 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 #define JSVAL_TO_CSTR(cx, val, cstr) \
 	JSString *cstr ## _jstr = JSVAL_TO_STRING(val); \
 	JSTR_TO_CSTR(cx, cstr ## _jstr, cstr);
-
-#define JSVAL_IS_OBJECT(v) !JSVAL_IS_PRIMITIVE(v)
-
-inline int JSValToInt32(JSContext *cx, jsval v, int def) {
-	int result = def;
-
-	if (!JSVAL_IS_VOID(v)) {
-		JS_ValueToInt32(cx, v, &result);
-	}
-
-	return result;
-}
-
 
 // TODO: Needed?
 //#ifndef __UNUSED
@@ -112,30 +99,30 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 
 // Engine-agnosticizer
 
-#define JSAG_OBJECT JSObject
-#define JSAG_VALUE jsval
+#define JSAG_OBJECT JS::RootedObject
+#define JSAG_VALUE JS::Value
 
-#define JSAG_BOOL JSBool
-#define JSAG_FALSE JS_FALSE
-#define JSAG_TRUE JS_TRUE
+#define JSAG_BOOL bool
+#define JSAG_FALSE false
+#define JSAG_TRUE true
 
 // Member definitions
 
 #define JSAG_MEMBER_BEGIN_NOARGS(jsName) \
 	static const int jsag_member_ ## jsName ## _argCount = 0; \
-	static JSBool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) {
+	static bool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) { \
 
 #define JSAG_MEMBER_END_NOARGS \
-	return JS_TRUE; }
+	return true; }
 
 #define JSAG_MEMBER_BEGIN(jsName, minArgs) \
 	static const int jsag_member_ ## jsName ## _argCount = minArgs; \
-	static JSBool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) { \
+	static bool jsag_member_ ## jsName (JSContext *cx, unsigned argc, jsval *vp) { \
 		static const char *JSAG_FN_NAME_STR = #jsName; { \
 		if (unlikely(argc < minArgs)) { goto jsag_fail; } \
-		jsval *argv = JS_ARGV(cx, vp); \
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp); \
 		unsigned argsLeft = argc; \
-		JS_BeginRequest(cx);
+		JSAutoRequest areq(cx);
 
 // JS function arguments
 
@@ -143,42 +130,46 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 	JS_THIS_OBJECT(cx, vp)
 
 #define JSAG_ARG_SKIP \
-	--argsLeft; ++argv;
+	--argsLeft;
 
-#define JSAG_ARG_JSVAL(name) \
-	jsval name = *argv; \
-	--argsLeft; ++argv;
+#define JSAG_ARG_JSVAL(cx, name) \
+	JS::RootedValue name(cx, args[argc-argsLeft]); \
+	--argsLeft;
 
 #define JSAG_ARG_INT32(name) \
 	int32_t name; \
-	if (unlikely(JS_FALSE == JS_ValueToECMAInt32(cx, *argv, &name))) { goto jsag_fail; } \
-	--argsLeft; ++argv;
+  JS::RootedValue name##_rooted(cx, args[argc-argsLeft]); \
+  if (unlikely(false == JS::ToInt32(cx, name##_rooted, &name))) { goto jsag_fail; } \
+	--argsLeft;
 
 #define JSAG_ARG_INT32_OPTIONAL(name, default) \
 	int32_t name = default; \
+  JS::RootedValue name##_rooted(cx, args[argc-argsLeft]); \
 	if (argsLeft > 0) { \
-		if (unlikely(JS_FALSE == JS_ValueToECMAInt32(cx, *argv, &name))) { goto jsag_fail; } \
-		--argsLeft; ++argv; \
+    if (unlikely(false == JS::ToInt32(cx, name##_rooted, &name))) { goto jsag_fail; } \
+		--argsLeft; \
 	}
 
 #define JSAG_ARG_JSTR(name) \
-	JSString *name = JS_ValueToString(cx, *argv); \
+  JS::RootedValue name##_rooted(cx, args[argc-argsLeft]); \
+	JS::RootedString name(cx, JS::ToString(cx, name##_rooted)); \
 	if (unlikely(!name)) { goto jsag_fail; } \
-	--argsLeft; ++argv;
+	--argsLeft; \
 
 #define JSAG_ARG_NSTR_OPTIONAL(name, default) \
 	NSString *name = default; \
 	if (argsLeft > 0) { \
-		JSString *name ## _jstr = JS_ValueToString(cx, *argv); \
+		JS::RootedString name(cx, ## _jstr = JS_ValueToString(cx, args[argc-argsLeft])); \
 		if (unlikely(!name)) { goto jsag_fail; } \
-		--argsLeft; ++argv; \
+		--argsLeft; \
 		JSTR_TO_NSTR(cx, name ## _jstr, name ## _tmp); \
 		name = name ## _tmp; \
 	}
 
-#define JSAG_ARG_IS_STRING JSVAL_IS_STRING(*argv)
+#define JSAG_ARG_IS_STRING JSVAL_IS_STRING(args[argc-argsLeft])
 
-#define JSAG_ARG_IS_ARRAY ( JSVAL_IS_OBJECT(*argv) && JS_IsArrayObject(cx, JSVAL_TO_OBJECT(*argv)) )
+#define JSAG_ARG_IS_ARRAY ( JSVAL_IS_OBJECT(args[argc-argsLeft]) && \
+  JS_IsArrayObject(cx, JSVAL_TO_OBJECT(args[argc-argsLeft])) )
 
 #define JSAG_ARG_CSTR(name) JSAG_ARG_JSTR(name ## _jstr); JSTR_TO_CSTR(cx, name ## _jstr, name);
 
@@ -187,98 +178,99 @@ inline int JSValToInt32(JSContext *cx, jsval v, int def) {
 #define JSAG_ARG_CSTR_FIRST(name, count) \
 	JSAG_ARG_JSTR(name ## _jstr); \
 	char name[count] = {0}; \
-	int name ## _len = (int)JS_EncodeStringToBuffer(name ## _jstr, name, count);
+	JS_EncodeStringToBuffer(cx, name ## _jstr, name, count);
 
 #define JSAG_ARG_DOUBLE(name) \
-	double name; \
-	if (unlikely(JS_FALSE == JS_ValueToNumber(cx, *argv, &name))) { goto jsag_fail; } \
-	--argsLeft; ++argv;
+  double name; \
+  JS::RootedValue name##_rootedValue(cx, args[argc-argsLeft]); \
+	if (unlikely(false == JS::ToNumber(cx, name##_rootedValue, &name))) { goto jsag_fail; } \
+	--argsLeft;
 
 #define JSAG_ARG_DOUBLE_OPTIONAL(name, default) \
 	double name = default; \
+  JS::RootedValue name##_rooted(cx, args[argc-argsLeft]); \
 	if (argsLeft > 0) { \
-		if (unlikely(JS_FALSE == JS_ValueToNumber(cx, *argv, &name))) { goto jsag_fail; } \
-		--argsLeft; ++argv; \
+		if (unlikely(false == JS::ToNumber(cx, name##_rooted, &name))) { goto jsag_fail; } \
+		--argsLeft; \
 	}
 
 #define JSAG_ARG_OBJECT(name) \
-	JSObject *name; \
-	{ jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
+	JS::RootedObject name(cx); \
+	{ JS::RootedValue name ## _val(cx, args[argc-argsLeft]); \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		name = JSVAL_TO_OBJECT(name ## _val);\
-	} --argsLeft; ++argv;
+	} --argsLeft;
 
 // Will be NULL if not present
 #define JSAG_ARG_OBJECT_OPTIONAL(name) \
-	JSObject *name = NULL; \
+	JS::RootedObject name(cx); \
 	if (argsLeft > 0) { \
-		jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
-		--argsLeft; ++argv; \
+		JS::RootedValue name ## _val(cx, args[argc-argsLeft]); \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
+		--argsLeft; \
 		name = JSVAL_TO_OBJECT(name ## _val);\
 	}
 
 #define JSAG_ARG_ARRAY(name) \
-	JSObject *name; \
-	{ jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
+	JS::RootedObject name(cx); \
+	{ JS::RootedValue name ## _val(cx, args[argc-argsLeft]); \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		name = JSVAL_TO_OBJECT(name ## _val);\
 		if (unlikely(!JS_IsArrayObject(cx, name))) { goto jsag_fail; } \
-	} --argsLeft; ++argv;
+	} --argsLeft;
 
 #define JSAG_ARG_FUNCTION(name) \
-	JSObject *name; \
-	{ jsval name ## _val = *argv; \
-		if (unlikely(!JSVAL_IS_OBJECT(name ## _val))) { goto jsag_fail; } \
+	JS::RootedObject name(cx); \
+	{ JS::RootedValue name ## _val(cx, args[argc-argsLeft]); \
+		if (unlikely(JSVAL_IS_PRIMITIVE(name ## _val))) { goto jsag_fail; } \
 		name = JSVAL_TO_OBJECT(name ## _val);\
 		if (unlikely(!name || !JS_ObjectIsFunction(cx, name))) { goto jsag_fail; } \
-	} --argsLeft; ++argv;
+	} --argsLeft;
 
 #define JSAG_ARG_BOOL(name) \
-	bool name = ToBoolean(*argv); \
-	--argsLeft; ++argv;
+  JS::RootedValue name##_rooted(cx, args[argc-argsLeft]); \
+  bool name = JS::ToBoolean(name##_rooted); \
+	--argsLeft;
 
 #define JSAG_RETURN_INT32(name) \
-	JS_SET_RVAL(cx, vp, INT_TO_JSVAL(name));
+  args.rval().set(INT_TO_JSVAL(name));
 
 #define JSAG_RETURN_DOUBLE(name) \
-	JS_SET_RVAL(cx, vp, DOUBLE_TO_JSVAL(name));
+  args.rval().set(DOUBLE_TO_JSVAL(name));
 
 #define JSAG_RETURN_BOOL(name) \
-	JS_SET_RVAL(cx, vp, BOOLEAN_TO_JSVAL(name));
+  args.rval().set(BOOLEAN_TO_JSVAL(name));
 
 #define JSAG_RETURN_TRUE \
-	JS_SET_RVAL(cx, vp, JSVAL_TRUE);
+  args.rval().setBoolean(true);
 
 #define JSAG_RETURN_FALSE \
-	JS_SET_RVAL(cx, vp, JSVAL_FALSE);
+  args.rval().setBoolean(false);
 
 #define JSAG_RETURN_CSTR(cstr) \
-	JS_SET_RVAL(cx, vp, CSTR_TO_JSVAL(cx, cstr));
+  args.rval().set(CSTR_TO_JSVAL(cx, cstr));
 
 #define JSAG_RETURN_NSTR(nstr) \
-	JS_SET_RVAL(cx, vp, NSTR_TO_JSVAL(cx, nstr));
+  args.rval().set(NSTR_TO_JSVAL(cx, nstr));
 
 #define JSAG_RETURN_NULL \
-	JS_SET_RVAL(cx, vp, JSVAL_NULL);
+  args.rval().set(JSVAL_NULL);
 
 #define JSAG_RETURN_VOID \
-	JS_SET_RVAL(cx, vp, JSVAL_VOID);
+  args.rval().set(JSVAL_VOID);
 
 #define JSAG_RETURN_OBJECT(obj) \
-	JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(obj));
+  args.rval().set(OBJECT_TO_JSVAL(obj));
 
 #define JSAG_RETURN_JSVAL(val) \
-	JS_SET_RVAL(cx, vp, val);
+  args.rval().set(val);
 
 #define JSAG_MEMBER_END \
-	JS_EndRequest(cx); \
-	return JS_TRUE; \
+	return true; \
 } \
 jsag_fail: \
 	JS_ReportError(cx, "Invalid arguments to %s", JSAG_FN_NAME_STR); \
-	JS_EndRequest(cx); \
-	return JS_FALSE; \
+	return false; \
 }
 
 // Class definition
@@ -289,7 +281,7 @@ jsag_fail: \
 #define JSAG_CLASS_IMPL(name) \
 	static const JSClass name ## _class = { \
 		#name, JSCLASS_HAS_PRIVATE, \
-		JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub, \
+		JS_PropertyStub, JS_DeletePropertyStub, JS_PropertyStub, JS_StrictPropertyStub, \
 		JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, class_ ## name ## _finalizer, \
 		JSCLASS_NO_OPTIONAL_MEMBERS \
 	};
@@ -330,9 +322,9 @@ JS_FN(#jsName, jsag_member_ ## functionName, jsag_member_ ## functionName ## _ar
 	JS_FS_END };
 
 #define JSAG_OBJECT_ATTACH(cx, parent, jsClassName) { \
-		JSObject *jsClassName ## _obj = JS_NewObject(cx, NULL, NULL, NULL); \
-		JS_DefineProperty(cx, parent, #jsClassName, OBJECT_TO_JSVAL(jsClassName ## _obj), NULL, NULL, PROPERTY_FLAGS); \
-		JS_DefineFunctions(cx, jsClassName ## _obj,  (JSFunctionSpec*)jsag_ ## jsClassName ## _members); \
+    JS::RootedObject jsClassName ## _obj(cx, JS_NewObject(cx, nullptr, nullptr, nullptr)); \
+		JS_DefineProperty(cx, parent, #jsClassName, JS::ObjectValue(*jsClassName ## _obj.get()), nullptr, nullptr, PROPERTY_FLAGS); \
+		JS_DefineFunctions(cx, jsClassName ## _obj.get(),  (JSFunctionSpec*)jsag_ ## jsClassName ## _members); \
 	}
 
 #define JSAG_OBJECT_ATTACH_EXISTING(cx, parent, jsClassName, existingObject) { \

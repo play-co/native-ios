@@ -53,7 +53,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	self.data = [NSMutableData data];
 	self.headers = [(NSHTTPURLResponse*)response allHeaderFields];
-	self.status = [(NSHTTPURLResponse*)response statusCode];
+	self.status = (int)[(NSHTTPURLResponse*)response statusCode];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)d {

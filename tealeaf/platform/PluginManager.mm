@@ -203,9 +203,9 @@ JSAG_OBJECT_END
         JSContext *cx = m_core.cx;
 		dispatch_async(dispatch_get_main_queue(), ^{
             if (m_core) {
-                JS_BeginRequest(cx);
-                jsval evt_val = NSTR_TO_JSVAL(cx, str);
-                [m_core dispatchEvent:&evt_val withRequestId:[requestId intValue]];
+                JSAutoRequest areq(cx);
+                JS::RootedValue evt_val(cx, NSTR_TO_JSVAL(cx, str));
+                [m_core dispatchEvent:evt_val withRequestId:[requestId intValue]];
             }
         });
     } else {
