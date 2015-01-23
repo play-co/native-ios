@@ -94,6 +94,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (void)startRendering {
 	m_ogl_en = YES;
+	last_timestamp = CFAbsoluteTimeGetCurrent();
 }
 
 - (void)stopRendering {
