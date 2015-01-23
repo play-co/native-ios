@@ -14,6 +14,9 @@
  */
 
 #import "js/js_core.h"
+#include "jsapi.h"
+#include "GCAPI.h" // SpiderMonkey Garbage Collect API
+#include "Tracer.h"
 #import "js/jsMacros.h"
 #include <stddef.h>
 #include <stdio.h>
@@ -59,16 +62,16 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	NSLOG(@"{js} JavaScript error in %s:%d", url, (unsigned int) report->lineno);
 	LOG("{js} Error: %s", message);
 
-	JS_BeginRequest(cx);
+  JS::AutoRequest areq(cx);
 
-	jsval exception;
-	if (JS_GetPendingException(cx, &exception) && JSVAL_IS_OBJECT(exception)) {
-		JSObject *exn = JSVAL_TO_OBJECT(exception);
+  JS::RootedValue exception(cx);
+	if (JS_GetPendingException(cx, &exception) && exception.isObject()) {
+		JSObject *exn = exception.toObjectOrNull();
 
-		jsval stack;
+    JS::RootedValue stack(cx);
 		JS_GetProperty(cx, exn, "stack", &stack);
 
-		JSString *s = JS_ValueToString(cx, stack);
+    JSString *s = JS::ToString(cx, stack);
 
 		if (s) {
 			JSTR_TO_CSTR_PERSIST(cx, s, cstr);
@@ -86,8 +89,6 @@ static void reportError(JSContext *cx, const char *message, JSErrorReport *repor
 	strncpy(LAST_ERROR.url, url, sizeof(LAST_ERROR.url));
 	LAST_ERROR.url[sizeof(LAST_ERROR.url) - 1] = '\0';
 	LAST_ERROR.line_number = report->lineno;
-
-	JS_EndRequest(cx);
 
 	// If getting an out of memory error,
 	if (strcmp(message, "out of memory") == 0) {
@@ -107,13 +108,13 @@ static void js_global_finalize(JSFreeOp *fop, JSObject *obj) {
 /* The class of the global object. */
 JSClass global_class = {
 	"global", JSCLASS_GLOBAL_FLAGS | JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
+	JS_PropertyStub, JS_DeletePropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
 	JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, js_global_finalize,
 	JSCLASS_NO_OPTIONAL_MEMBERS
 };
 
 typedef struct js_timer_info_t {
-	JSObject *callback;
+  JS::Heap<JSObject*> callback;
 	JSContext *cx;
 	JSObject *global;
 } js_timer_info;
@@ -121,76 +122,30 @@ typedef struct js_timer_info_t {
 void js_timer_unlink(core_timer *timer) {
 	js_timer_info *js_data = (js_timer_info*)timer->js_data;
 	JSContext *cx = js_data->cx;
-	JS_BeginRequest(cx);
-	js_object_wrapper_delete(&js_data->callback);
-	JS_EndRequest(cx);
+  JS::AutoRequest areq(cx);
+  js_data->callback = nullptr;
 }
 
 void js_timer_fire(core_timer *timer) {
 	js_timer_info *js_data = (js_timer_info*)timer->js_data;
 	JSContext *cx = js_data->cx;
-	jsval ret;
-	JS_BeginRequest(cx);
-	JS_CallFunctionValue(cx, js_data->global, OBJECT_TO_JSVAL(js_data->callback), 0, NULL, &ret);
-	JS_EndRequest(cx);
+  JS::AutoRequest areq(cx);
+  JS::RootedValue ret(cx);
+  JS::RootedObject cbObject(cx, js_data->callback);
+  JS::RootedValue cb(cx, OBJECT_TO_JSVAL(cbObject));
+  
+  JS_CallFunctionValue(cx, js_data->global, cb, 0, NULL, ret.address());
 }
 
-static void jsGCcb(JSRuntime *rt, JSGCStatus status) {
-	switch (status) {
-	case JSGC_BEGIN:
-		if (m_start_date) {
-			[m_start_date release];
-		}
-		m_start_date = [[NSDate date] retain];
-		break;
-
-	case JSGC_END:
-		if (m_start_date != nil)
-		{
-			// Get time in milliseconds
-			NSTimeInterval msInterval = fabs([m_start_date timeIntervalSinceNow] * 1000.0);
-			m_start_date = nil;
-
-			LOG("{js} GC took %lf ms", msInterval);
-/*
-			NSString *fileName = @"heap.dump";
-			NSString *appBundle = [[[NSBundle mainBundle] pathForResource:@"resources" ofType:@"bundle"] retain];
-			NSString *filePath = [NSString stringWithFormat:@"%@/%@", appBundle, fileName];
-
-			FILE *fp = fopen([filePath UTF8String], "w");
-
-			if (fp) {
-				if (JS_DumpHeap(cx, fp, NULL, 0, NULL, 65535, NULL) == JS_TRUE) {
-					LOG(@"Dumped heap to %@", filePath);
-				} else {
-					LOG(@"ERROR: Unable to dump heap!");
-				}
-				
-				fclose(fp);
-			} */
-		}
-		break;
-
-	default: // JSGC_MARK_END, JSGC_FINALIZE_END
-		LOG("{js} GC MARK/FINALIZE END");
-		break;
-	}
-}
-
-
-//// GLOBAL
-
-static int startTimer(BOOL repeats, JSContext *cx, JSAG_OBJECT *callback, double interval) {
+static int startTimer(BOOL repeats, JSContext *cx, JS::HandleObject callback, double interval) {
 	js_timer_info *js_data = (js_timer_info *)malloc(sizeof(js_timer_info));
 
 	js_data->cx = cx;
 	js_data->global = global_obj;
-	js_object_wrapper_init(&js_data->callback);
-	js_object_wrapper_root(&js_data->callback, callback);
-	
+  js_data->callback = callback;
+
 	core_timer *timer = core_get_timer((void*)js_data, interval, repeats);
 	core_timer_schedule(timer);
-	
 	return timer->id;
 }
 
@@ -292,12 +247,12 @@ JSAG_MEMBER_BEGIN(_call, 2)
 }
 JSAG_MEMBER_END
 
-JSAG_MEMBER_BEGIN_NOARGS(isSimulator)
+JSAG_MEMBER_BEGIN(isSimulator, 0)
 {
     bool is_simulator = device_is_simulator();
     JSAG_RETURN_BOOL(is_simulator);
 }
-JSAG_MEMBER_END_NOARGS
+JSAG_MEMBER_END
 
 JSAG_OBJECT_START(NATIVE)
 JSAG_OBJECT_MEMBER(doneLoading)
@@ -306,6 +261,35 @@ JSAG_OBJECT_MEMBER(_call)
 JSAG_OBJECT_MEMBER(isSimulator)
 JSAG_OBJECT_END
 
+
+static void jsGCcb(JSRuntime* rt, JSGCStatus status, void* data) {
+  switch (status) {
+    case JSGC_BEGIN:
+      if (m_start_date) {
+        [m_start_date release];
+      }
+      m_start_date = [[NSDate date] retain];
+      break;
+
+    case JSGC_END:
+      if (m_start_date != nil) {
+        // Get time in milliseconds
+        NSTimeInterval msInterval = fabs([m_start_date timeIntervalSinceNow] * 1000.0);
+        m_start_date = nil;
+
+        if (JS::WasIncrementalGC(rt)) {
+          LOG("{js} GC took %lf ms (incremental)", msInterval);
+        } else {
+          LOG("{js} GC took %lf ms", msInterval);
+        }
+      }
+      break;
+
+    default: // JSGC_MARK_END, JSGC_FINALIZE_END
+      LOG("{js} GC MARK/FINALIZE END");
+      break;
+  }
+}
 
 @implementation js_core
 
@@ -340,39 +324,90 @@ JSAG_OBJECT_END
 	JS_ShutDown();
 }
 
+static bool
+CheckObjectAccess(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JSAccessMode mode,
+                  JS::MutableHandleValue vp) {
+  return true;
+}
+
+static const
+JSSecurityCallbacks securityCallbacks = {
+  CheckObjectAccess,
+  nullptr
+};
+
+void trace_core_timer_list(JSTracer* tracer, core_timer* head) {
+  core_timer* timer = head;
+  js_timer_info* js_timer;
+  while (timer != NULL) {
+    js_timer = (js_timer_info*)(timer->js_data);
+    JS_CallHeapObjectTracer(tracer, &(js_timer->callback), "timer");
+    if (timer->next == head) {
+      break;
+    }
+    timer = timer->next;
+  }
+}
+
+void trace_js_gc_things(JSTracer* tracer, void * data) {
+  trace_core_timer_list(tracer, core_get_timers());
+  trace_core_timer_list(tracer, core_get_queued_timers());
+}
+
 - (id) initRuntime {
 	self = [super init];
 	lastJS = self;
+  self.globalCompartment = nullptr;
+  
+  if (!JS_Init()) {
+    return nullptr;
+  }
 
-	self.rt = JS_NewRuntime(26L * 1024L * 1024L, JS_USE_HELPER_THREADS);
+  JSRuntime* rt;
+	self.rt = rt = JS_NewRuntime(8L * 1024L * 1024L, JS_USE_HELPER_THREADS);
 	if (!self.rt) {
 		LOG("{js} FATAL: Unable to create JS runtime");
-		return NULL;
+		return nullptr;
 	}
-	
+  
+  JS_SetGCParameter(rt, JSGC_MAX_BYTES, 0xfffffff);
+  JS_SetGCParameter(rt, JSGC_SLICE_TIME_BUDGET, 20);
+  JS_SetGCParameter(rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
+  JS_SetGCCallback(rt, &jsGCcb, nullptr);
+  
+  JS_AddExtraGCRootsTracer(self.rt, trace_js_gc_things, nullptr);
+  
+  JSPrincipals trustedPrincipals;
+  trustedPrincipals.refcount = 1;
+  JS_SetTrustedPrincipals(rt, &trustedPrincipals);
+  
+  JS_SetSecurityCallbacks(rt, &securityCallbacks);
+  
+  JS_SetNativeStackQuota(rt, 128 * sizeof(size_t) * 1024);
+  
 	// Create a context
-	self.cx = JS_NewContext(self.rt, 8192);
-	if (!self.cx) {
+  JSContext * cx;
+  self.cx = cx = JS_NewContext(rt, 8192);
+	if (!cx) {
 		LOG("{js} FATAL: Unable to create JS context");
 		return NULL;
 	}
-
-	JS_SetGCParameter(self.rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
-	//JS_SetGCParameter(self.rt, JSGC_DYNAMIC_MARK_SLICE, 1);
-	JS_SetGCParameter(self.rt, JSGC_SLICE_TIME_BUDGET, 20);
-	JS_SetGCCallback(self.rt, &jsGCcb);
-	
-	JS_SetOptions(self.cx, JSOPTION_VAROBJFIX | JSOPTION_MOAR_XML);
-	JS_SetVersion(self.cx, JSVERSION_LATEST);
-	JS_SetErrorReporter(self.cx, reportError);
+  
+  JSAutoRequest areq(cx);
+  JS::ContextOptionsRef(cx).setVarObjFix(true);
+  
+	JS_SetErrorReporter(cx, reportError);
 	
 	// Create the global object
-	self.global = JS_NewGlobalObject(self.cx, &global_class, NULL);
-	global_obj = self.global;
-	if (self.global == NULL) { return NULL; }
+  JS::RootedObject global(cx);
+  global_obj = self.global = JS_NewGlobalObject(cx, &global_class, nullptr, JS::DontFireOnNewGlobalHook);
+  global = self.global;
+	if (self.global == nullptr) { return nullptr; }
 
+  self.globalCompartment = JS_EnterCompartment(cx, global);
+  
 	// Populate the global object with the standard globals, like Object and Array
-	if (!JS_InitStandardClasses(self.cx, self.global)) { return NULL; }
+	if (!JS_InitStandardClasses(cx, global)) { return NULL; }
 	
 	JS_GC(self.rt);
 	
@@ -382,41 +417,52 @@ JSAG_OBJECT_END
 - (id) setConfig:(NSDictionary*)config pluginManager:(PluginManager*)pluginManager {
 	self.config = config;
 	self.pluginManager = pluginManager;
+  JSContext *cx = self.cx;
+  JSAutoRequest areq(cx);
 
 	LOG("{js} SpiderMonkey version: %s", JS_GetImplementationVersion());
 
 	self.privateStore = [NSMutableDictionary dictionary];
 	[self.privateStore setValue:self forKey:@"self"];
-	JS_SetContextPrivate(self.cx, self.privateStore);
-
-	self.native = JS_NewObject(self.cx, NULL, NULL, NULL);
-	JSContext *cx = self.cx;
-	jsval uuid = NSTR_TO_JSVAL(cx, [js_core getDeviceId]);
-	JS_SetProperty(self.cx, self.native, "deviceUUID", &uuid);
+	JS_SetContextPrivate(cx, self.privateStore);
+  
+	self.native = JS_NewObject(cx, NULL, NULL, NULL);
+  JS::RootedValue uuid(cx, NSTR_TO_JSVAL(cx, [js_core getDeviceId]));
+	JS_SetProperty(cx, self.native, "deviceUUID", uuid);
 
 	JSAG_OBJECT_ATTACH_EXISTING(self.cx, self.global, GLOBAL, self.global);
 	JSAG_OBJECT_ATTACH_EXISTING(self.cx, self.global, NATIVE, self.native);
 
-	jsval screen = OBJECT_TO_JSVAL(JS_NewObject(self.cx, NULL, NULL, NULL));
+  JSObject* screenObject = JS_NewObject(cx, nullptr, nullptr, nullptr);
+  int screenW = config_get_screen_width();
+  int screenH = config_get_screen_height();
 
-	int screenW = config_get_screen_width(), screenH = config_get_screen_height();
-	jsval jscreenW = INT_TO_JSVAL(screenW), jscreenH = INT_TO_JSVAL(screenH);
-	JS_SetProperty(self.cx, self.native, "screen", &screen);
-	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(screen), "width", &jscreenW);
-	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(screen), "height", &jscreenH);
-	jsval global_val = OBJECT_TO_JSVAL(self.global);
-	JS_SetProperty(self.cx, self.global, "window", &global_val);
-	JS_SetProperty(self.cx, self.global, "GLOBAL", &global_val);
-	JS_SetProperty(self.cx, self.global, "screen", &screen);
+  JS::RootedValue screen(cx, JS::ObjectValue(*screenObject));
+  JS::RootedValue jscreenW(cx, JS::NumberValue(screenW));
+  JS::RootedValue jscreenH(cx, JS::NumberValue(screenH));
+  JS::RootedValue global_val(cx, JS::ObjectValue(*self.global));
+
+	JS_SetProperty(self.cx, self.native, "screen", screen);
+	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(screen), "width", jscreenW);
+	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(screen), "height", jscreenH);
+  
+	JS_SetProperty(self.cx, self.global, "window", global_val);
+	JS_SetProperty(self.cx, self.global, "GLOBAL", global_val);
+	JS_SetProperty(self.cx, self.global, "screen", screen);
 	
-	jsval gid = NSTR_TO_JSVAL(cx, [js_core getDeviceId]);
-	jsval device = OBJECT_TO_JSVAL(JS_NewObject(self.cx, NULL, NULL, NULL));
-	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(device), "globalID", &gid);
-	JS_SetProperty(self.cx, self.native, "device", &device);
-	jsval tcpport = INT_TO_JSVAL([[self.config objectForKey:@"tcp_port"] intValue]);
-	jsval tcphost = NSTR_TO_JSVAL(cx, [self.config objectForKey:@"tcp_host"]);
-	JS_SetProperty(self.cx, self.native, "tcpHost", &tcphost);
-	JS_SetProperty(self.cx, self.native, "tcpPort", &tcpport);
+  JS::RootedValue gid(cx, NSTR_TO_JSVAL(cx, [js_core getDeviceId]));
+  JS::RootedValue _device(cx, OBJECT_TO_JSVAL(JS_NewObject(self.cx, NULL, NULL, NULL)));
+
+  JS::RootedValue device(cx, _device);
+  
+	JS_SetProperty(self.cx, JSVAL_TO_OBJECT(device), "globalID", gid);
+	JS_SetProperty(self.cx, self.native, "device", device);
+  
+  JS::RootedValue tcpport(cx, JS::NumberValue([[self.config objectForKey:@"tcp_port"] intValue]));
+  JS::RootedValue tcphost(cx, NSTR_TO_JSVAL(cx, [self.config objectForKey:@"tcp_host"]));
+  
+	JS_SetProperty(self.cx, self.native, "tcpHost", tcphost);
+	JS_SetProperty(self.cx, self.native, "tcpPort", tcpport);
 
 #ifndef DISABLE_DEBUG_SERVER
 	// If remote loading is enabled,
@@ -425,7 +471,13 @@ JSAG_OBJECT_END
 		self.debugServer = [[[DebugServer alloc] init:self] autorelease];
 	}
 #endif
-
+  
+#ifndef RELEASE
+  if (!self.debugServer) {
+    self.debugServer = [[[DebugServer alloc] init:self] autorelease];
+  }
+#endif
+  
 	return self;
 }
 
@@ -454,17 +506,11 @@ JSAG_OBJECT_END
 }
 
 -(jsval) evalStr:(NSString *)source withPath:(NSString *)path {
-	jsval rval = JSVAL_NULL;
 
-	const NSUInteger unicode_length = [source length];
-	const size_t length = unicode_length;
-	const size_t buffer_bytes = (length + 1) * sizeof(unichar);
-	unichar *buffer = (unichar*)malloc(buffer_bytes);
-
-	[source getCharacters:buffer range:NSMakeRange(0, length)];
+  const size_t length = [source lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  const char* buffer = [source UTF8String];
 
 	NSString *uniqueName;
-
 #ifndef DISABLE_DEBUG_SERVER
 	if (self.debugServer) {
 		// Store off the script
@@ -474,50 +520,54 @@ JSAG_OBJECT_END
 	{
 		uniqueName = @"eval";
 	}
+  const char * filename = [uniqueName cStringUsingEncoding:NSASCIIStringEncoding];
 
-	JS_BeginRequest(self.cx);
+  JSAutoRequest ar(self.cx);
 
-	if (JS_EvaluateUCScript(self.cx, self.global, buffer, unicode_length,
-	[uniqueName cStringUsingEncoding:NSASCIIStringEncoding], 1, &rval) != JS_TRUE) {
-		NSLOG(@"{js} Error while evaluating JavaScript from %@ (%d script chars)", path, (int)length);
-	}
+  JS::RootedObject global(self.cx, self.global);
+  JSAutoCompartment(self.cx, global);
+  JS::CompileOptions opts(self.cx, JSVERSION_LATEST);
+  opts.setUTF8(true).setFileAndLine(filename, 1);
+  JS::RootedValue rval(self.cx);
+  
+  if(!JS::Evaluate(self.cx, global, opts, buffer, length, rval.address())) {
+    NSLOG(@"{js} Error while evaluating JavaScript from %@ (%d script chars)", path, (int)length);
+  }
 
-	JS_EndRequest(self.cx);
-
-	free(buffer);
 	return rval;
 }
 
--(void) dispatchEvent:(jsval *)arg {
+-(void) dispatchEvent:(JS::HandleValue)arg {
     [self dispatchEvent:arg withRequestId:0];
 }
 
--(void) dispatchEvent:(jsval *)arg withRequestId:(int)id {
-    JS_BeginRequest(self.cx);
-    
-	jsval events, dispatch, rval;
-    jsval args[] = { *arg, INT_TO_JSVAL(id) };
+-(void) dispatchEvent:(JS::HandleValue)arg withRequestId:(int)requestId {
+  JSContext* cx = self.cx;
+  JSAutoRequest req(cx);
+  
+  JS::RootedValue events(cx), dispatch(cx), rval(cx);
+  JS::Value args[] = {arg, JS::NumberValue(requestId)};
+  
 	if (js_ready) {
 		JS_GetProperty(self.cx, self.native, "events", &events);
-		if (!JSVAL_IS_VOID(events)) {
-			JS_GetProperty(self.cx, JSVAL_TO_OBJECT(events), "dispatchEvent", &dispatch);
-			if (!JSVAL_IS_VOID(dispatch)) {
-				JS_CallFunctionName(self.cx, JSVAL_TO_OBJECT(events), "dispatchEvent", 2, args, &rval);
-                
-				JS_EndRequest(self.cx);
-				return;
+    
+		if (events.isObject()) {
+      JS::RootedObject eventsObject(cx, events.toObjectOrNull());
+			JS_GetProperty(self.cx, eventsObject, "dispatchEvent", &dispatch);
+      
+			if (!dispatch.isUndefined()) {
+				JS_CallFunctionName(self.cx, eventsObject, "dispatchEvent", 2, args, rval.address());
+        return;
 			}
 		}
 	}
-    
-	JS_EndRequest(self.cx);
-    
+  
 	LOG("{js} ERROR: Firing event failed");
 }
 
 -(void) dispatchEventFromString:(NSString *)evt withRequestId:(int)id{
-	jsval str = NSTR_TO_JSVAL(self.cx, evt);
-	[self dispatchEvent:&str withRequestId:id];
+  JS::RootedValue str(self.cx, NSTR_TO_JSVAL(self.cx, evt));
+	[self dispatchEvent:str withRequestId:id];
 }
 
 -(void) dispatchEventFromString:(NSString *)evt {
@@ -526,14 +576,12 @@ JSAG_OBJECT_END
 
 -(void) performGC {
 	LOG("{js} Full GC");
-
-	JS_GC(self.rt);
+  JS_GC(self.rt);
 }
 
 -(void) performMaybeGC {
 	LOG("{js} Maybe GC");
-	
-	JS_MaybeGC(self.cx);
+  JS_MaybeGC(self.cx);
 }
 
 +(js_core*) lastJS {

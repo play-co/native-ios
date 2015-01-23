@@ -19,11 +19,13 @@ const char* AppControllerClassName = "TeaLeafAppDelegate";
 
 int main(int argc, char *argv[]) {
 	
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-
-	int retVal = UIApplicationMain(argc, argv, nil, [NSString stringWithUTF8String:AppControllerClassName]);
-
-	[pool release];
+  int retVal;
+  
+  @autoreleasepool {
+    retVal = UIApplicationMain(
+      argc, argv, nil, [NSString stringWithUTF8String:AppControllerClassName]
+    );
+  }
 
 	return retVal;
 }

@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface FontUtil : NSObject
-+ (NSDictionary *) m_fonts;
+//+ (NSDictionary *) m_fonts;
 + (void) setM_fonts:(NSDictionary *) fonts;
-+ (NSDictionary *) m_literal_fonts;
+//+ (NSDictionary *) m_literal_fonts;
 + (void) setM_literal_fonts:(NSDictionary *) literalFonts;
 + (NSString*) fixFontName:(const char *)font;
 @end

@@ -33,16 +33,16 @@ int gallery_get_photo(const char *url_str, int width, int height, int crop) {
 }
 
 int camera_get_next_id() {
-    TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
-    TeaLeafViewController *viewController = [appDelegate tealeafViewController];
-   // [viewController showImagePickerForPhotoPicker];
+    // TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
+    // TeaLeafViewController *viewController = [appDelegate tealeafViewController];
+    // [viewController showImagePickerForPhotoPicker];
     return 0;
 }
 
 int gallery_get_next_id() {
-    TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
-    TeaLeafViewController *viewController = [appDelegate tealeafViewController];
-   // [viewController showImagePickerForCamera];
+  // TeaLeafAppDelegate *appDelegate = (TeaLeafAppDelegate*)[[UIApplication sharedApplication] delegate];
+  // TeaLeafViewController *viewController = [appDelegate tealeafViewController];
+  // [viewController showImagePickerForCamera];
 	return 0;
 }
 

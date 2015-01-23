@@ -153,7 +153,7 @@
 			{
 				if(nil != suspendStatusChangeTarget)
 				{
-					objc_msgSend(suspendStatusChangeTarget, suspendStatusChangeSelector, manualSuspendLock);
+					((void(*)(id, SEL, bool))objc_msgSend)(suspendStatusChangeTarget, suspendStatusChangeSelector, manualSuspendLock);
 				}
 			}
 		}
@@ -218,7 +218,7 @@
 			{
 				if(nil != suspendStatusChangeTarget)
 				{
-					objc_msgSend(suspendStatusChangeTarget, suspendStatusChangeSelector, interruptLock);
+					((void(*)(id, SEL, bool))objc_msgSend)(suspendStatusChangeTarget, suspendStatusChangeSelector, interruptLock);
 				}
 			}
 		}

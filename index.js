@@ -3,12 +3,12 @@
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
  * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
- 
+
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License v. 2.0 for more details.
- 
+
  * You should have received a copy of the Mozilla Public License v. 2.0
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
@@ -32,6 +32,27 @@ exports.load = function(common) {
 	common.config.set("ios:root", path.resolve(__dirname))
 
 	require(common.paths.root('src', 'testapp')).registerTarget("native-ios", __dirname);
+
+	return {
+		commands: [{
+			name: 'check-profile',
+			shortDescription: 'returns information about a provisioning profile',
+			help: 'accepts either a provisioning profile UUID or filename. If a'
+				+ ' filename is provided and the profile is not already installed'
+				+ ' on this system, this will install the profile. Returns a JSON'
+				+ ' object containing where the profile is, if it\'s installed,'
+				+ ' and the profile\'s short name.',
+			handler: function (args, cb) {
+				require('./xcode/profiles').getProvisioningProfileInfo(args._[0], function (err, info) {
+					if (err) {
+						console.error(err);
+					} else {
+						console.log(JSON.stringify(info, null, '  '));
+					}
+				});
+			}
+		}]
+	};
 }
 
 exports.testapp = function(common, opts, next) {

@@ -102,8 +102,8 @@ static int32_t m_prompt_id = 0;
 	textField.delegate = self;
 	textField.placeholder = @"";
 	textField.text = value;
-	textField.textAlignment = UITextAlignmentCenter;
-	textField.keyboardType = keyboardType;
+	textField.textAlignment = (NSTextAlignment)UITextAlignmentCenter;
+	textField.keyboardType = (UIKeyboardType)keyboardType;
     [InputUtils setKeyboardReturnType:returnButton forTextField:textField];
     
 	if (isPassword) {

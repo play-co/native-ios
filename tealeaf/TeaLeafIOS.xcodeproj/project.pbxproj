@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		08A82384180F7B5C00197337 /* jsImageCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = 08A82383180F7B5C00197337 /* jsImageCache.mm */; };
-		361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C417F51F5A00D35AFD /* NativeCalls.h */; };
 		361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */ = {isa = PBXBuildFile; fileRef = 361049C517F51F5A00D35AFD /* NativeCalls.mm */; };
-		361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */ = {isa = PBXBuildFile; fileRef = 361049C617F51F5A00D35AFD /* TeaLeafTextField.h */; };
 		361049CB17F51F5B00D35AFD /* TeaLeafTextField.mm in Sources */ = {isa = PBXBuildFile; fileRef = 361049C717F51F5A00D35AFD /* TeaLeafTextField.mm */; };
 		368222E017F531FA009F1826 /* FontUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 368222DF17F531FA009F1826 /* FontUtil.mm */; };
 		36ACCF03179F2A63002AE65C /* left_text_handler_disabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 36ACCEFD179F2A63002AE65C /* left_text_handler_disabled.png */; };
@@ -32,7 +30,6 @@
 		4E35EA8A16B9FEEE004FD452 /* timestep_text_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA8316B9FEEE004FD452 /* timestep_text_data.cpp */; };
 		4E35EA8B16B9FEEE004FD452 /* timestep_view.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E35EA8516B9FEEE004FD452 /* timestep_view.cpp */; };
 		4E35EABB16BB0D94004FD452 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E35EAB916BB0D94004FD452 /* libjs_static.a */; };
-		4E35EABC16BB0D94004FD452 /* libnspr4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E35EABA16BB0D94004FD452 /* libnspr4.a */; };
 		4E4919E7167AA57100DFA99B /* jsHaptics.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E4919E6167AA57100DFA99B /* jsHaptics.mm */; };
 		4E4DC7871821C87F00D3E6BF /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E4DC7861821C87F00D3E6BF /* libturbojpeg.a */; };
 		4E5F5CD916CAFCE200747A17 /* iosVersioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E5F5CD816CAFCE200747A17 /* iosVersioning.m */; };
@@ -482,6 +479,30 @@
 		A23214D313D8AFD600FA4C7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A25F91F61489AC0300B39375 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		A25F91F81489AC0300B39375 /* TeaLeafIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeaLeafIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEDE139D1A672ED700E71BFE /* Anchor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Anchor.h; sourceTree = "<group>"; };
+		AEDE139E1A672ED700E71BFE /* CallArgs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallArgs.h; sourceTree = "<group>"; };
+		AEDE139F1A672ED700E71BFE /* CallNonGenericMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallNonGenericMethod.h; sourceTree = "<group>"; };
+		AEDE13A01A672ED700E71BFE /* CharacterEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharacterEncoding.h; sourceTree = "<group>"; };
+		AEDE13A11A672ED700E71BFE /* Class.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Class.h; sourceTree = "<group>"; };
+		AEDE13A21A672ED700E71BFE /* Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Date.h; sourceTree = "<group>"; };
+		AEDE13A31A672ED700E71BFE /* GCAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCAPI.h; sourceTree = "<group>"; };
+		AEDE13A41A672ED700E71BFE /* HashTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HashTable.h; sourceTree = "<group>"; };
+		AEDE13A51A672ED700E71BFE /* HeapAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeapAPI.h; sourceTree = "<group>"; };
+		AEDE13A61A672ED700E71BFE /* Id.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Id.h; sourceTree = "<group>"; };
+		AEDE13A71A672ED700E71BFE /* LegacyIntTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LegacyIntTypes.h; sourceTree = "<group>"; };
+		AEDE13A81A672ED700E71BFE /* MemoryMetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryMetrics.h; sourceTree = "<group>"; };
+		AEDE13A91A672ED700E71BFE /* OldDebugAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldDebugAPI.h; sourceTree = "<group>"; };
+		AEDE13AA1A672ED700E71BFE /* ProfilingStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilingStack.h; sourceTree = "<group>"; };
+		AEDE13AB1A672ED700E71BFE /* PropertyKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyKey.h; sourceTree = "<group>"; };
+		AEDE13AC1A672ED700E71BFE /* RequiredDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequiredDefines.h; sourceTree = "<group>"; };
+		AEDE13AD1A672ED700E71BFE /* RootingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootingAPI.h; sourceTree = "<group>"; };
+		AEDE13AE1A672ED700E71BFE /* SliceBudget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliceBudget.h; sourceTree = "<group>"; };
+		AEDE13AF1A672ED700E71BFE /* StructuredClone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructuredClone.h; sourceTree = "<group>"; };
+		AEDE13B01A672ED700E71BFE /* Tracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tracer.h; sourceTree = "<group>"; };
+		AEDE13B11A672ED700E71BFE /* TypeDecls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeDecls.h; sourceTree = "<group>"; };
+		AEDE13B21A672ED700E71BFE /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		AEDE13B31A672ED700E71BFE /* Value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Value.h; sourceTree = "<group>"; };
+		AEDE13B41A672ED700E71BFE /* Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
 		D510CFBE139059A20066D881 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
 		D5121A771593B42F00C2169F /* native.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = native.mm; sourceTree = "<group>"; };
 		D54113A51783E7AD002B6E3E /* RawImageInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RawImageInfo.h; sourceTree = "<group>"; };
@@ -599,7 +620,6 @@
 				4EEFA20F1755557A00570B4E /* UIKit.framework in Frameworks */,
 				4EEFA20D1755553500570B4E /* MessageUI.framework in Frameworks */,
 				4E35EABB16BB0D94004FD452 /* libjs_static.a in Frameworks */,
-				4E35EABC16BB0D94004FD452 /* libnspr4.a in Frameworks */,
 				D5BC677B1635D0270059EC0F /* SystemConfiguration.framework in Frameworks */,
 				D5BC677C1635D0270059EC0F /* libz.dylib in Frameworks */,
 				D5BC677D1635D0270059EC0F /* OpenGLES.framework in Frameworks */,
@@ -649,6 +669,7 @@
 				D57955FD159A771E000DDEA3 /* TeaLeafIOS-Info.plist */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				87742605198C494D0070CAD3 /* Plugins */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = CustomTemplate;
@@ -956,6 +977,45 @@
 			name = plugins;
 			sourceTree = "<group>";
 		};
+		87742605198C494D0070CAD3 /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Plugins;
+			sourceTree = "<group>";
+		};
+		AEDE139C1A672ED700E71BFE /* js */ = {
+			isa = PBXGroup;
+			children = (
+				AEDE139D1A672ED700E71BFE /* Anchor.h */,
+				AEDE139E1A672ED700E71BFE /* CallArgs.h */,
+				AEDE139F1A672ED700E71BFE /* CallNonGenericMethod.h */,
+				AEDE13A01A672ED700E71BFE /* CharacterEncoding.h */,
+				AEDE13A11A672ED700E71BFE /* Class.h */,
+				AEDE13A21A672ED700E71BFE /* Date.h */,
+				AEDE13A31A672ED700E71BFE /* GCAPI.h */,
+				AEDE13A41A672ED700E71BFE /* HashTable.h */,
+				AEDE13A51A672ED700E71BFE /* HeapAPI.h */,
+				AEDE13A61A672ED700E71BFE /* Id.h */,
+				AEDE13A71A672ED700E71BFE /* LegacyIntTypes.h */,
+				AEDE13A81A672ED700E71BFE /* MemoryMetrics.h */,
+				AEDE13A91A672ED700E71BFE /* OldDebugAPI.h */,
+				AEDE13AA1A672ED700E71BFE /* ProfilingStack.h */,
+				AEDE13AB1A672ED700E71BFE /* PropertyKey.h */,
+				AEDE13AC1A672ED700E71BFE /* RequiredDefines.h */,
+				AEDE13AD1A672ED700E71BFE /* RootingAPI.h */,
+				AEDE13AE1A672ED700E71BFE /* SliceBudget.h */,
+				AEDE13AF1A672ED700E71BFE /* StructuredClone.h */,
+				AEDE13B01A672ED700E71BFE /* Tracer.h */,
+				AEDE13B11A672ED700E71BFE /* TypeDecls.h */,
+				AEDE13B21A672ED700E71BFE /* Utility.h */,
+				AEDE13B31A672ED700E71BFE /* Value.h */,
+				AEDE13B41A672ED700E71BFE /* Vector.h */,
+			);
+			name = js;
+			path = spidermonkey/js;
+			sourceTree = "<group>";
+		};
 		D551A74A178F345E0028DACC /* uthash */ = {
 			isa = PBXGroup;
 			children = (
@@ -1063,6 +1123,7 @@
 		D5582154150E7C7500549BF6 /* deps */ = {
 			isa = PBXGroup;
 			children = (
+				AEDE139C1A672ED700E71BFE /* js */,
 				4EB0C66D16BBA2D800838A49 /* js-config.h */,
 				4EB0C66E16BBA2D800838A49 /* jsalloc.h */,
 				4EB0C66F16BBA2D800838A49 /* jsapi.h */,
@@ -1299,7 +1360,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Game Closure";
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TeaLeafIOS" */;
@@ -1370,9 +1431,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E6B4A0C188736C700429B4A /* rsecc.c in Sources */,
-				361049C817F51F5B00D35AFD /* NativeCalls.h in Sources */,
 				361049C917F51F5B00D35AFD /* NativeCalls.mm in Sources */,
-				361049CA17F51F5B00D35AFD /* TeaLeafTextField.h in Sources */,
 				361049CB17F51F5B00D35AFD /* TeaLeafTextField.mm in Sources */,
 				D53E17F1178506BF000BAC10 /* RawImageInfo.m in Sources */,
 				D5BC67011635D0270059EC0F /* main.m in Sources */,
@@ -1525,17 +1584,18 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -1543,13 +1603,14 @@
 				GCC_THUMB_SUPPORT = YES;
 				GCC_UNROLL_LOOPS = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LLVM_LTO = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lstdc++";
@@ -1557,24 +1618,25 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
-				VALID_ARCHS = "armv7 armv7s i386 armv6";
+				VALID_ARCHS = "armv7 arm64 armv7s";
 			};
 			name = Release;
 		};
 		D56129AD17600A4800FF82A8 /* debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -1582,13 +1644,14 @@
 				GCC_THUMB_SUPPORT = YES;
 				GCC_UNROLL_LOOPS = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LLVM_LTO = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lstdc++";
@@ -1596,7 +1659,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
-				VALID_ARCHS = "armv7 armv7s i386 armv6";
+				VALID_ARCHS = "armv7 arm64 armv7s";
 			};
 			name = debug;
 		};
@@ -1606,6 +1669,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_ENTITLEMENTS = TeaLeafIOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1630,14 +1695,14 @@
 					"./native-core/qr",
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/deps/spidermonkey",
 					"$(SRCROOT)",
 				);
 				LLVM_LTO = NO;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
 					"-lsqlite3.0",
@@ -1652,7 +1717,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 i386";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = debug;
@@ -1663,6 +1728,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_ENTITLEMENTS = TeaLeafIOS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1687,7 +1754,7 @@
 					"./native-core/qr",
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/deps/spidermonkey",
@@ -1712,7 +1779,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 i386";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;

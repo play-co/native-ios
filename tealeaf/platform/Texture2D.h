@@ -71,14 +71,14 @@ typedef enum {
 	unsigned int width, height;
 	NSString *src;
 @private
-	GLuint						_name;
-	CGSize						_size;
-	int							_originalWidth;
-	int							_originalHeight;
-    float                       scale;
-	NSUInteger					_texWidth, _texHeight;
-	Texture2DPixelFormat		_format;
-	GLfloat						_maxS, _maxT;
+	GLuint _name;
+	CGSize _size;
+	int _originalWidth;
+	int _originalHeight;
+  float scale;
+	NSUInteger _texWidth, _texHeight;
+	Texture2DPixelFormat _format;
+	GLfloat _maxS, _maxT;
 }
 - (id) initWithData:(const void*)data andFormat:(Texture2DPixelFormat)pixelFormat andSize:(CGSize)realSize contentSize:(CGSize)contentSize andScale: (float)tex_scale;
 
@@ -86,7 +86,7 @@ typedef enum {
 
 @property(readonly) Texture2DPixelFormat format;
 @property(readonly) unsigned int width, height;
-@property(readonly) unsigned int texWidth, texHeight;
+@property(readonly) NSUInteger texWidth, texHeight;
 
 @property(readonly) GLuint name;
 @property(readonly) int originalWidth;

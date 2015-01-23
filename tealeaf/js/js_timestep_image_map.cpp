@@ -27,19 +27,20 @@ CEXPORT void def_timestep_image_map_class_finalize(JSFreeOp *fop, JSObject *obj)
 	}
 }
 
-CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned argc, jsval *vp) {
-	JS_BeginRequest(cx);
-
-	JSObject *thiz = timestep_image_map_create_ctor_object(cx, vp);
+CEXPORT bool def_timestep_image_map_class_constructor(JSContext *cx, unsigned argc, jsval *vp) {
+  JSAutoRequest areq(cx);
+  JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+  JS::RootedObject thiz(cx, timestep_image_map_create_ctor_object(cx, vp));
+  
 	if (!thiz) {
-		return JS_FALSE;
+		return false;
 	}
 
 	timestep_image_map *map = timestep_image_map_init();
 	JS_SetPrivate(thiz, map);
 
-	JSObject *parent; // NOTE: Parent is currently not stored anywhere
-	JSString *url_jstr;
+  JS::RootedObject parent(cx); // NOTE: Parent is currently not stored anywhere
+  JS::RootedString url_jstr(cx);
 
 	if (argc == 6) {
 		if (JS_ConvertArguments(cx, argc, JS_ARGV(cx, vp), "oiiiiS", &parent, &map->x, &map->y, &map->width, &map->height, &url_jstr)) {
@@ -50,20 +51,16 @@ CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned 
 			JSTR_TO_CSTR_PERSIST(cx, url_jstr, url_cstr);
 			map->url = url_cstr;
 
-			JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(thiz));
-
-			JS_EndRequest(cx);
-			return JS_TRUE;
+      args.rval().set(OBJECT_TO_JSVAL(thiz));
+			return true;
 		}
 	} else if (argc == 10) {
 		if (JS_ConvertArguments(cx, argc, JS_ARGV(cx, vp), "oiiiiiiiiS", &parent, &map->x, &map->y, &map->width, &map->height, &map->margin_top, &map->margin_right, &map->margin_bottom, &map->margin_left, &url_jstr)) {
 			JSTR_TO_CSTR_PERSIST(cx, url_jstr, url_cstr);
 			map->url = url_cstr;
 			
-			JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(thiz));
-			
-			JS_EndRequest(cx);
-			return JS_TRUE;
+      args.rval().set(OBJECT_TO_JSVAL(thiz));
+			return true;
 		}
 	}
 
@@ -72,6 +69,5 @@ CEXPORT JSBool def_timestep_image_map_class_constructor(JSContext *cx, unsigned 
 	// Unlikely
 	timestep_image_delete(map);
 
-	JS_EndRequest(cx);
-	return JS_FALSE;
+	return false;
 }

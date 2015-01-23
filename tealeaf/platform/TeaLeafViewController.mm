@@ -122,7 +122,7 @@ CEXPORT void device_hide_splash() {
 	} else if ([title isEqualToString:@"No"]) {
 		//do nothing
 	} else {
-		[(UIAlertViewEx*)sheet dispatch: buttonIndex];
+		[(UIAlertViewEx*)sheet dispatch:(int)buttonIndex];
 		[sheet release];
 	}
 }
@@ -313,7 +313,7 @@ CEXPORT void device_hide_splash() {
 	// Lower texture memory based on device model
     NSLOG(@"{core} iOS device model '%@'", get_platform());
     
-	int mem_limit = get_platform_memory_limit();
+	long mem_limit = get_platform_memory_limit();
 	
 	if (self.appDelegate.ignoreMemoryWarnings) {
 		mem_limit = 28000000; // Impose lower memory limit for this work-around case
@@ -384,16 +384,14 @@ CEXPORT void device_hide_splash() {
 	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
 	
 	// Run JS initialization in another thread
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, (unsigned long)NULL), ^(void) {
-		NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];
-		
-		if (!core_init_js([baseURL UTF8String], [(NSString*)[self.appDelegate.config objectForKey:@"native_hash"] UTF8String])) {
-			NSLOG(@"{tealeaf} ERROR: Unable to initialize javascript.");
-		} else {
-			[self onJSReady];
-			[self.appDelegate postPauseEvent:self.appDelegate.wasPaused];
-		}
-	});
+  NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];
+  
+  
+  if (!core_init_js([baseURL UTF8String], [(NSString*)[self.appDelegate.config objectForKey:@"native_hash"] UTF8String])) {
+    NSLOG(@"{tealeaf} ERROR: Unable to initialize javascript.");
+  } else {
+    [self onJSReady];
+  }
 	
 	[self.appDelegate.canvas startRendering];
     
@@ -434,13 +432,13 @@ CEXPORT void device_hide_splash() {
     
 	JSContext* cx = [[js_core lastJS] cx];
 	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "keyboardScreenResize"));
-	jsval height = INT_TO_JSVAL(properlyRotatedCoords.origin.y);
-	JS_SetProperty(cx, event, "name", &name);
-	JS_SetProperty(cx, event, "height", &height);
+  JS::RootedValue name(cx, JS::StringValue(JS_InternString(cx, "keyboardScreenResize")));
+  JS::RootedValue height(cx, JS::NumberValue(properlyRotatedCoords.origin.y));
+	JS_SetProperty(cx, event, "name", name);
+	JS_SetProperty(cx, event, "height", height);
     
-	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt];
+  JS::RootedValue evt(cx, OBJECT_TO_JSVAL(event));
+	[[js_core lastJS] dispatchEvent:evt];
 }
 
 - (IBAction)rotationDetected:(UIGestureRecognizer *)sender {
@@ -460,8 +458,8 @@ CEXPORT void device_hide_splash() {
 
 - (void)runCallback:(char *)arg {
 	js_core* instance = [js_core lastJS];
-	jsval args[] = { STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)) };
-	[instance dispatchEvent:args];
+  JS::RootedValue js_arg(instance.cx, STRING_TO_JSVAL(JS_NewStringCopyZ(instance.cx, arg)));
+	[instance dispatchEvent:js_arg];
 }
 
 - (void)sendSMSTo:(NSString *)number withMessage:(NSString *)msg andCallback:(int)cb {
@@ -618,14 +616,14 @@ CEXPORT void device_hide_splash() {
 
 - (void) dispatch:(int)callback {
 	JSContext* cx = [[js_core lastJS] cx];
-	JSObject* event = JS_NewObject(cx, NULL, NULL, NULL);
-	jsval name = STRING_TO_JSVAL(JS_InternString(cx, "dialogButtonClicked"));
-	jsval idv = INT_TO_JSVAL(callback);
-	JS_SetProperty(cx, event, "name", &name);
-	JS_SetProperty(cx, event, "id", &idv);
+  JS::RootedObject event(cx, JS_NewObject(cx, NULL, NULL, NULL));
+  JS::RootedValue name(cx, JS::StringValue(JS_InternString(cx, "dialogButtonClicked")));
+  JS::RootedValue idv(cx, JS::NumberValue(callback));
+	JS_SetProperty(cx, event, "name", name);
+	JS_SetProperty(cx, event, "id", idv);
     
-	jsval evt = OBJECT_TO_JSVAL(event);
-	[[js_core lastJS] dispatchEvent:&evt];
+  JS::RootedValue evt(cx, OBJECT_TO_JSVAL(event));
+	[[js_core lastJS] dispatchEvent:evt];
 }
 
 - (void) registerCallbacks:(int *)cbs length:(int)len {

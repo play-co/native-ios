@@ -28,7 +28,7 @@
 
 
 
-CEXPORT JSBool def_timestep_view_get_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_x(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -37,12 +37,12 @@ CEXPORT JSBool def_timestep_view_get_x(JSContext *cx, JSHandleObject obj, JSHand
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_x(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_x(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -51,12 +51,12 @@ CEXPORT JSBool def_timestep_view_set_x(JSContext *cx, JSHandleObject obj, JSHand
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_y(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_y(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -65,12 +65,12 @@ CEXPORT JSBool def_timestep_view_get_y(JSContext *cx, JSHandleObject obj, JSHand
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_y(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_y(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -79,12 +79,12 @@ CEXPORT JSBool def_timestep_view_set_y(JSContext *cx, JSHandleObject obj, JSHand
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_offsetX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_offsetX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -93,12 +93,12 @@ CEXPORT JSBool def_timestep_view_get_offsetX(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_offsetX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_offsetX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -107,12 +107,12 @@ CEXPORT JSBool def_timestep_view_set_offsetX(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_offsetY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_offsetY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -121,12 +121,12 @@ CEXPORT JSBool def_timestep_view_get_offsetY(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_offsetY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_offsetY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -135,24 +135,12 @@ CEXPORT JSBool def_timestep_view_set_offsetY(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-CEXPORT JSBool def_timestep_view_get_r(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_r(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -161,12 +149,12 @@ CEXPORT JSBool def_timestep_view_get_r(JSContext *cx, JSHandleObject obj, JSHand
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_r(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_r(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -175,12 +163,12 @@ CEXPORT JSBool def_timestep_view_set_r(JSContext *cx, JSHandleObject obj, JSHand
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_flipX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_flipX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -190,12 +178,12 @@ CEXPORT JSBool def_timestep_view_get_flipX(JSContext *cx, JSHandleObject obj, JS
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_flipX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_flipX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -205,12 +193,12 @@ CEXPORT JSBool def_timestep_view_set_flipX(JSContext *cx, JSHandleObject obj, JS
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_flipY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_flipY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -220,12 +208,12 @@ CEXPORT JSBool def_timestep_view_get_flipY(JSContext *cx, JSHandleObject obj, JS
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_flipY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_flipY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -235,12 +223,12 @@ CEXPORT JSBool def_timestep_view_set_flipY(JSContext *cx, JSHandleObject obj, JS
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_anchorX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_anchorX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -249,12 +237,12 @@ CEXPORT JSBool def_timestep_view_get_anchorX(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_anchorX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_anchorX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -263,12 +251,12 @@ CEXPORT JSBool def_timestep_view_set_anchorX(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_anchorY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_anchorY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -277,12 +265,12 @@ CEXPORT JSBool def_timestep_view_get_anchorY(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_anchorY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_anchorY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -291,12 +279,12 @@ CEXPORT JSBool def_timestep_view_set_anchorY(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_opacity(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_opacity(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -305,7 +293,7 @@ CEXPORT JSBool def_timestep_view_get_opacity(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
@@ -313,7 +301,7 @@ CEXPORT JSBool def_timestep_view_get_opacity(JSContext *cx, JSHandleObject obj, 
 
 
 
-CEXPORT JSBool def_timestep_view_get_scale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_scale(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -322,12 +310,12 @@ CEXPORT JSBool def_timestep_view_get_scale(JSContext *cx, JSHandleObject obj, JS
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_scale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_scale(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -336,12 +324,12 @@ CEXPORT JSBool def_timestep_view_set_scale(JSContext *cx, JSHandleObject obj, JS
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_scaleX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -350,12 +338,12 @@ CEXPORT JSBool def_timestep_view_get_scaleX(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_scaleX(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_scaleX(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -364,12 +352,12 @@ CEXPORT JSBool def_timestep_view_set_scaleX(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_scaleY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -378,12 +366,12 @@ CEXPORT JSBool def_timestep_view_get_scaleY(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_scaleY(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_scaleY(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -392,12 +380,12 @@ CEXPORT JSBool def_timestep_view_set_scaleY(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_absScale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_absScale(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -406,12 +394,12 @@ CEXPORT JSBool def_timestep_view_get_absScale(JSContext *cx, JSHandleObject obj,
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_absScale(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_absScale(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -420,12 +408,12 @@ CEXPORT JSBool def_timestep_view_set_absScale(JSContext *cx, JSHandleObject obj,
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_clip(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_clip(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -435,12 +423,12 @@ CEXPORT JSBool def_timestep_view_get_clip(JSContext *cx, JSHandleObject obj, JSH
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_clip(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_clip(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -450,12 +438,12 @@ CEXPORT JSBool def_timestep_view_set_clip(JSContext *cx, JSHandleObject obj, JSH
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_backgroundColor(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_backgroundColor(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -470,12 +458,12 @@ vp.setString(JS_NewStringCopyN(cx, buf, len));
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_backgroundColor(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_backgroundColor(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -493,12 +481,12 @@ CEXPORT JSBool def_timestep_view_set_backgroundColor(JSContext *cx, JSHandleObje
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_visible(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_visible(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -508,12 +496,12 @@ CEXPORT JSBool def_timestep_view_get_visible(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_visible(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_visible(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -523,12 +511,12 @@ CEXPORT JSBool def_timestep_view_set_visible(JSContext *cx, JSHandleObject obj, 
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_hasJSRender(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_hasJSRender(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -538,12 +526,12 @@ CEXPORT JSBool def_timestep_view_get_hasJSRender(JSContext *cx, JSHandleObject o
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_hasJSRender(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_hasJSRender(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -553,12 +541,12 @@ CEXPORT JSBool def_timestep_view_set_hasJSRender(JSContext *cx, JSHandleObject o
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_hasJSTick(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_hasJSTick(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -568,12 +556,12 @@ CEXPORT JSBool def_timestep_view_get_hasJSTick(JSContext *cx, JSHandleObject obj
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_hasJSTick(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_hasJSTick(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -583,42 +571,12 @@ CEXPORT JSBool def_timestep_view_set_hasJSTick(JSContext *cx, JSHandleObject obj
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get___firstRender(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
-	if (thiz) {
-		
-		vp.setBoolean(thiz->__first_render);
-
-		
-	}
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-
-
-CEXPORT JSBool def_timestep_view_set___firstRender(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
-	JS_BeginRequest(cx);
-	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
-	if (thiz) {
-		
-		thiz->__first_render = vp.toBoolean();
-
-		
-	}
-	JS_EndRequest(cx);
-	return JS_TRUE;
-}
-
-
-
-CEXPORT JSBool def_timestep_view_get_zIndex(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_zIndex(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -627,7 +585,7 @@ CEXPORT JSBool def_timestep_view_get_zIndex(JSContext *cx, JSHandleObject obj, J
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
@@ -635,7 +593,7 @@ CEXPORT JSBool def_timestep_view_get_zIndex(JSContext *cx, JSHandleObject obj, J
 
 
 
-CEXPORT JSBool def_timestep_view_get_filterColor(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_filterColor(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -650,12 +608,12 @@ vp.setString(JS_NewStringCopyN(cx, buf, len));
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_filterColor(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_filterColor(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -673,12 +631,12 @@ CEXPORT JSBool def_timestep_view_set_filterColor(JSContext *cx, JSHandleObject o
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_get_filterType(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_get_filterType(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -687,12 +645,12 @@ CEXPORT JSBool def_timestep_view_get_filterType(JSContext *cx, JSHandleObject ob
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
 
 
 
-CEXPORT JSBool def_timestep_view_set_filterType(JSContext *cx, JSHandleObject obj, JSHandleId id, JSBool strict, JSMutableHandleValue vp) {
+CEXPORT bool def_timestep_view_set_filterType(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
 	JS_BeginRequest(cx);
 	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
 	if (thiz) {
@@ -701,8 +659,76 @@ CEXPORT JSBool def_timestep_view_set_filterType(JSContext *cx, JSHandleObject ob
 		
 	}
 	JS_EndRequest(cx);
-	return JS_TRUE;
+	return true;
 }
+
+
+
+CEXPORT bool def_timestep_view_get_width(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		vp.setNumber(thiz->width);
+		
+	}
+	JS_EndRequest(cx);
+	return true;
+}
+
+
+
+CEXPORT bool def_timestep_view_set_width(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		thiz->width = vp.toNumber();
+		
+	}
+	JS_EndRequest(cx);
+	return true;
+}
+
+
+
+
+
+
+
+
+
+CEXPORT bool def_timestep_view_get_height(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		vp.setNumber(thiz->height);
+		
+	}
+	JS_EndRequest(cx);
+	return true;
+}
+
+
+
+CEXPORT bool def_timestep_view_set_height(JSContext *cx, JS::HandleObject obj, JS::HandleId id, bool strict, JS::MutableHandleValue vp) {
+	JS_BeginRequest(cx);
+	timestep_view *thiz = (timestep_view*)JS_GetPrivate(obj.get());
+	if (thiz) {
+		
+		thiz->height = vp.toNumber();
+		
+	}
+	JS_EndRequest(cx);
+	return true;
+}
+
+
+
+
+
+
 
 
 
@@ -732,10 +758,6 @@ static const JSFunctionSpec functions[] = {
 #define BAR_PROPERTY_FLAGS (JSPROP_ENUMERATE | JSPROP_PERMANENT | JSPROP_SHARED)
 
 static const JSPropertySpec properties[] = {
-	{ "width", 0, BAR_PROPERTY_FLAGS,
-		JSOP_WRAPPER(def_timestep_view_get_width), JSOP_WRAPPER(def_timestep_view_set_width) },
-	{ "height", 0, BAR_PROPERTY_FLAGS,
-		JSOP_WRAPPER(def_timestep_view_get_height), JSOP_WRAPPER(def_timestep_view_set_height) },
 	{ "compositeOperation", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_compositeOperation), JSOP_WRAPPER(def_timestep_view_set_compositeOperation) },
 	{ "x", 0, BAR_PROPERTY_FLAGS,
@@ -746,10 +768,6 @@ static const JSPropertySpec properties[] = {
 		JSOP_WRAPPER(def_timestep_view_get_offsetX), JSOP_WRAPPER(def_timestep_view_set_offsetX) },
 	{ "offsetY", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_offsetY), JSOP_WRAPPER(def_timestep_view_set_offsetY) },
-	{ "widthPercent", 0, BAR_PROPERTY_FLAGS,
-		JSOP_WRAPPER(def_timestep_view_get_widthPercent), JSOP_WRAPPER(def_timestep_view_set_widthPercent) },
-	{ "heightPercent", 0, BAR_PROPERTY_FLAGS,
-		JSOP_WRAPPER(def_timestep_view_get_heightPercent), JSOP_WRAPPER(def_timestep_view_set_heightPercent) },
 	{ "r", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_r), JSOP_WRAPPER(def_timestep_view_set_r) },
 	{ "flipX", 0, BAR_PROPERTY_FLAGS,
@@ -780,14 +798,20 @@ static const JSPropertySpec properties[] = {
 		JSOP_WRAPPER(def_timestep_view_get_hasJSRender), JSOP_WRAPPER(def_timestep_view_set_hasJSRender) },
 	{ "hasJSTick", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_hasJSTick), JSOP_WRAPPER(def_timestep_view_set_hasJSTick) },
-	{ "__firstRender", 0, BAR_PROPERTY_FLAGS,
-		JSOP_WRAPPER(def_timestep_view_get___firstRender), JSOP_WRAPPER(def_timestep_view_set___firstRender) },
 	{ "zIndex", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_zIndex), JSOP_WRAPPER(def_timestep_view_set_zIndex) },
 	{ "filterColor", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_filterColor), JSOP_WRAPPER(def_timestep_view_set_filterColor) },
 	{ "filterType", 0, BAR_PROPERTY_FLAGS,
 		JSOP_WRAPPER(def_timestep_view_get_filterType), JSOP_WRAPPER(def_timestep_view_set_filterType) },
+	{ "width", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_width), JSOP_WRAPPER(def_timestep_view_set_width) },
+	{ "_width", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get__width), JSOP_WRAPPER(def_timestep_view_set__width) },
+	{ "height", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get_height), JSOP_WRAPPER(def_timestep_view_set_height) },
+	{ "_height", 0, BAR_PROPERTY_FLAGS,
+		JSOP_WRAPPER(def_timestep_view_get__height), JSOP_WRAPPER(def_timestep_view_set__height) },
 	
 	{0}
 };
@@ -798,7 +822,7 @@ static const JSPropertySpec properties[] = {
 static const JSClass timestep_view_class = {
 	"View",
 	JSCLASS_HAS_PRIVATE,
-	JS_PropertyStub, JS_PropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
+	JS_PropertyStub, JS_DeletePropertyStub, JS_PropertyStub, JS_StrictPropertyStub,
 	JS_EnumerateStub, JS_ResolveStub, JS_ConvertStub, def_timestep_view_class_finalize,
 	JSCLASS_NO_OPTIONAL_MEMBERS
 };

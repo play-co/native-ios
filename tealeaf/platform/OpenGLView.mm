@@ -94,6 +94,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 
 - (void)startRendering {
 	m_ogl_en = YES;
+	last_timestamp = CFAbsoluteTimeGetCurrent();
 }
 
 - (void)stopRendering {
@@ -114,7 +115,7 @@ static volatile BOOL m_ogl_in = NO; // In OpenGL calls right now?
 	
 	if (m_ogl_en) {
 		CFTimeInterval timestamp = CFAbsoluteTimeGetCurrent();
-		int dt = (int)(1000 * (timestamp - last_timestamp));
+		long dt = (long)(1000 * (timestamp - last_timestamp));
 		core_tick(dt);
 		
 		// Measure time to perform a tick

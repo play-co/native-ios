@@ -38,7 +38,7 @@ JSAG_OBJECT_MEMBER(vibrate)
 JSAG_OBJECT_END
 
 
-static JSBool JSPOP_HasVibrator(JSContext *cx, JSHandleObject obj, JSHandleId id, JSMutableHandleValue vp) {
+static bool JSPOP_HasVibrator(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
 	bool hasVibe = false;
 
 	// TODO
@@ -47,7 +47,7 @@ static JSBool JSPOP_HasVibrator(JSContext *cx, JSHandleObject obj, JSHandleId id
 	vp.setBoolean(hasVibe);
 	JS_EndRequest(cx);
 
-	return JS_TRUE;
+	return true;
 }
 
 
@@ -56,7 +56,8 @@ static JSBool JSPOP_HasVibrator(JSContext *cx, JSHandleObject obj, JSHandleId id
 +(void) addToRuntime:(js_core *)js {
 	m_core = js;
 
-	JSObject *obj = JS_NewObject(js.cx, NULL, NULL, NULL);
+  JSContext* cx = get_js_context();
+  JS::RootedObject obj(cx, JS_NewObject(js.cx, NULL, NULL, NULL));
 
 	JSAG_OBJECT_ATTACH_EXISTING(js.cx, js.native, haptics, obj);
 
