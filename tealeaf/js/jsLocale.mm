@@ -13,7 +13,7 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "core/platform/get_locale.h"
+#include "platform/get_locale.h"
 #import "js/jsLocale.h"
 
 @implementation jsLocale

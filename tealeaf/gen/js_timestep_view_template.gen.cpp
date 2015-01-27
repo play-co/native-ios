@@ -19,7 +19,7 @@
 #include "js/js_timestep_view.h"
 
 
-#include "core/timestep/timestep_view.h"
+#include "timestep/timestep_view.h"
 
 #include "core/rgba.h"
 

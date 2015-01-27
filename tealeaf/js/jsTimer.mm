@@ -14,7 +14,7 @@
  */
 
 #import "js/jsTimer.h"
-#include "core/timestep/timestep_animate.h"
+#include "timestep/timestep_animate.h"
 #include "GCAPI.h"
 
 static JSObject *m_callback = nil;

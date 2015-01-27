@@ -14,7 +14,6 @@
  */
 
 #import "js/jsXHR.h"
-#import "core/platform/xhr.h"
 #import "platform/xhr.h"
 #import "platform/log.h"
 

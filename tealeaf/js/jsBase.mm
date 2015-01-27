@@ -16,7 +16,7 @@
 #import "js/jsBase.h"
 #import "platform/ResourceLoader.h"
 #include "platform/log.h"
-#include "core/platform/location_manager.h"
+#include "platform/location_manager.h"
 
 static js_core *m_core = 0;
 static NSString *m_location = nil; // window.location cache

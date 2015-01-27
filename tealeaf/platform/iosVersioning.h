@@ -16,7 +16,7 @@
 #ifndef TeaLeafIOS_iosVersioning_h
 #define TeaLeafIOS_iosVersioning_h
 
-#include "core/util/detect.h"
+#include "util/detect.h"
 
 /*
  *  System Versioning Preprocessor Macros

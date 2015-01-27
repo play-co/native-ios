@@ -15,7 +15,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "core/platform/native.h"
+#import "platform/native.h"
 #import "js/js_core.h"
 #include "core/texture_manager.h"
 
@@ -86,3 +86,5 @@ const char *get_version_code() {
 CEXPORT void report_gl_error(int error_code, gl_error **errors_hash, bool unrecoverable) {
 	// TODO
 }
+
+CEXPORT void finish_loading_images () { }

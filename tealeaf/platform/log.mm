@@ -14,7 +14,7 @@
  */
 
 #include "log.h"
-#include "core/util/detect.h"
+#include "util/detect.h"
 
 #ifndef DISABLE_DEBUG_SERVER
 

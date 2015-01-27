@@ -16,8 +16,8 @@
 #include "texture_2d.h"
 #include "texture_manager.h"
 #include "core/rgba.h"
-#include "core/platform/text_manager.h"
-#include "core/log.h"
+#include "platform/text_manager.h"
+#include "platform/log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #import "FontUtil.h"
@@ -118,7 +118,7 @@ texture_2d *text_manager_get_stroked_text(const char *font_name, int size, const
 #import <CoreText/CoreText.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
-int text_manager_init() {
+CEXPORT int text_manager_init() {
 
 	// Load any font resources from the resources.bundle file
 

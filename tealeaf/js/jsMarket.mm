@@ -14,7 +14,7 @@
  */
 
 #import "js/jsMarket.h"
-#import "core/platform/native.h"
+#import "platform/native.h"
 
 static js_core *m_core = NULL;
 

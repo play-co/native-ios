@@ -19,7 +19,7 @@
 #include "js/js_timestep_image_map.h"
 
 
-#include "core/timestep/timestep_image_map.h"
+#include "timestep/timestep_image_map.h"
 
 
 #include "js/js_core.h"

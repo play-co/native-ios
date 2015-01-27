@@ -14,7 +14,7 @@
  */
 
 #import "js/jsImageCache.h"
-#import "core/image-cache/include/image_cache.h"
+#import "image-cache/image_cache.h"
 
 JSAG_MEMBER_BEGIN(remove, 1)
 {

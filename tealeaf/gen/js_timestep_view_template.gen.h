@@ -18,7 +18,7 @@
 #ifndef JS_TIMESTEP_VIEW_TEMPLATE_H
 #define JS_TIMESTEP_VIEW_TEMPLATE_H
 
-#include "core/util/detect.h"
+#include "util/detect.h"
 #include "js/js.h"
 
 #ifdef __cplusplus

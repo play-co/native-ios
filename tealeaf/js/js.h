@@ -18,7 +18,7 @@
 
 #include "jsapi.h"
 #include "jsMacros.h"
-#include "core/util/detect.h"
+#include "util/detect.h"
 #include <string.h>
 
 #define JS_OBJECT_WRAPPER JSObject*

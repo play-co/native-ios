@@ -17,7 +17,7 @@
 #define JS_ANIMATE_H
 
 #include "core/types.h"
-#include "core/timestep/timestep_animate.h"
+#include "timestep/timestep_animate.h"
 #include "js/js_animate.h"
 #include "js/js_timestep_view.h"
 #include "core/tealeaf_context.h"

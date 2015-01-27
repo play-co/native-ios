@@ -23,7 +23,7 @@
 // functions or else behavior will be undefined.
 //
 // Returns non-zero for success and zero for failure.
-int text_manager_init();
+//int text_manager_init();
 
 #endif // PLATFORM_H
 

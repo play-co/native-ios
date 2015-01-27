@@ -33,6 +33,7 @@
 #import "iosVersioning.h"
 #include "core/core_js.h"
 #include "core/texture_manager.h"
+#include "platform/text_manager.h"
 #include "core/config.h"
 #include "core/events.h"
 
@@ -251,7 +252,7 @@ CEXPORT void device_hide_splash() {
 	self.view = glView;
 	self.appDelegate.canvas = glView;
     
-	core_init_gl(1);
+	core_init_gl(1, 0);
     
 	int w = self.appDelegate.screenWidthPixels;
 	int h = self.appDelegate.screenHeightPixels;

@@ -23,7 +23,7 @@
 #include "texture_manager.h"
 #include "core/config.h"
 #include "core/events.h"
-#include "core/platform/sound_manager.h"
+#include "platform/sound_manager.h"
 #import "core/core_js.h"
 #include "platform.h"
 #include "jsonUtil.h"

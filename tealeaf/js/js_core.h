@@ -16,7 +16,7 @@
 #ifndef JS_CORE_H
 #define JS_CORE_H
 
-#include "core/util/detect.h"
+#include "util/detect.h"
 #include "platform/log.h"
 #include "jsapi.h"
 #include "jsMacros.h"

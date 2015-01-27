@@ -20,7 +20,7 @@ CEXPORT {
 #include "core/log.h"
 }
 #include "js/js_core.h"
-#include "core/timestep/timestep_image_map.h"
+#include "timestep/timestep_image_map.h"
 #include <math.h>
 
 static inline void build_style_frame(anim_frame *frame, JSObject *target) {

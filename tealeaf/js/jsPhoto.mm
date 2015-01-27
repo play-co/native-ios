@@ -18,7 +18,7 @@
 #import "jsMacros.h"
 #include "photo.h"
 #import "Base64.h"
-#import "adapter/QRCodeProcessor.h"
+#import "qr/adapter/QRCodeProcessor.h"
 #import "core/image_loader.h"
 
 JSAG_MEMBER_BEGIN(getPhoto, 4)

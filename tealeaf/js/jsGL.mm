@@ -18,7 +18,7 @@
 #include <math.h>
 #import "core/geometry.h"
 #import "core/draw_textures.h"
-#include "core/platform/text_manager.h"
+#include "platform/text_manager.h"
 #include "core/tealeaf_context.h"
 #include "core/texture_manager.h"
 #include "core/rgba.h"

@@ -16,7 +16,7 @@
 #import "js/jsNavigator.h"
 #import "TeaLeafAppDelegate.h"
 
-#include "core/platform/get_locale.h"
+#include "platform/get_locale.h"
 #include "core/config.h"
 
 
