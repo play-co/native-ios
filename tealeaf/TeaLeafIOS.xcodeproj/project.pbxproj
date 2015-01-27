@@ -72,12 +72,7 @@
 		5B5EBDA717BAE89400C4DD0A /* InputUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B5EBDA617BAE89400C4DD0A /* InputUtils.mm */; };
 		5BAE3E111797939900E8058E /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BAE3E101797939900E8058E /* CoreTelephony.framework */; };
 		8BC3D5E21639FFD2007942C3 /* OALSourceInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8BC3D5E11639FFD2007942C3 /* OALSourceInfo.mm */; };
-		AE85F3821A773098006E8651 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = AE85F2801A773098006E8651 /* .gitignore */; };
-		AE85F3831A773098006E8651 /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE85F2811A773098006E8651 /* CMakeLists.txt */; };
-		AE85F3841A773098006E8651 /* LICENSE.janson in Resources */ = {isa = PBXBuildFile; fileRef = AE85F28B1A773098006E8651 /* LICENSE.janson */; };
-		AE85F3851A773098006E8651 /* LICENSE.libpng in Resources */ = {isa = PBXBuildFile; fileRef = AE85F2DD1A773098006E8651 /* LICENSE.libpng */; };
 		AE85F3861A773098006E8651 /* qrprocess.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F2E21A773098006E8651 /* qrprocess.c */; };
-		AE85F3871A773098006E8651 /* build.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE85F2E31A773098006E8651 /* build.txt */; };
 		AE85F3881A773098006E8651 /* bitstream.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F2E51A773098006E8651 /* bitstream.c */; };
 		AE85F3891A773098006E8651 /* mask.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F2E71A773098006E8651 /* mask.c */; };
 		AE85F38A1A773098006E8651 /* mmask.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F2E91A773098006E8651 /* mmask.c */; };
@@ -91,10 +86,7 @@
 		AE85F3921A773098006E8651 /* identify.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F2FA1A773098006E8651 /* identify.c */; };
 		AE85F3931A773098006E8651 /* quirc.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F2FB1A773098006E8651 /* quirc.c */; };
 		AE85F3941A773098006E8651 /* version_db.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F2FE1A773098006E8651 /* version_db.c */; };
-		AE85F3951A773098006E8651 /* LICENSE.uthash in Resources */ = {isa = PBXBuildFile; fileRef = AE85F3081A773098006E8651 /* LICENSE.uthash */; };
-		AE85F3961A773098006E8651 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE85F3471A773098006E8651 /* LICENSE.txt */; };
 		AE85F3971A773098006E8651 /* benchmark.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F34A1A773098006E8651 /* benchmark.c */; };
-		AE85F3981A773098006E8651 /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE85F34B1A773098006E8651 /* CMakeLists.txt */; };
 		AE85F3991A773098006E8651 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F34C1A773098006E8651 /* config.c */; };
 		AE85F39A1A773098006E8651 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F34D1A773098006E8651 /* core.c */; };
 		AE85F39B1A773098006E8651 /* draw_textures.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F34E1A773098006E8651 /* draw_textures.c */; };
@@ -112,23 +104,13 @@
 		AE85F3A71A773098006E8651 /* texture_manager.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F35A1A773098006E8651 /* texture_manager.c */; };
 		AE85F3A81A773098006E8651 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F35B1A773098006E8651 /* timer.c */; };
 		AE85F3A91A773098006E8651 /* url_loader.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F35C1A773098006E8651 /* url_loader.c */; };
-		AE85F3AA1A773098006E8651 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = AE85F35E1A773098006E8651 /* .gitignore */; };
-		AE85F3AB1A773098006E8651 /* .ycm_extra_conf.py in Resources */ = {isa = PBXBuildFile; fileRef = AE85F35F1A773098006E8651 /* .ycm_extra_conf.py */; };
-		AE85F3AC1A773098006E8651 /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE85F3601A773098006E8651 /* CMakeLists.txt */; };
-		AE85F3AD1A773098006E8651 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = AE85F3631A773098006E8651 /* .gitignore */; };
-		AE85F3AE1A773098006E8651 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = AE85F3701A773098006E8651 /* Makefile */; };
 		AE85F3AF1A773098006E8651 /* image_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F3721A773098006E8651 /* image_cache.c */; };
 		AE85F3B01A773098006E8651 /* murmur.c in Sources */ = {isa = PBXBuildFile; fileRef = AE85F3731A773098006E8651 /* murmur.c */; };
-		AE85F3B21A773098006E8651 /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE85F3771A773098006E8651 /* CMakeLists.txt */; };
 		AE85F3B31A773098006E8651 /* timestep_animate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE85F3781A773098006E8651 /* timestep_animate.cpp */; };
 		AE85F3B41A773098006E8651 /* timestep_events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE85F3791A773098006E8651 /* timestep_events.cpp */; };
 		AE85F3B51A773098006E8651 /* timestep_image_map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE85F37A1A773098006E8651 /* timestep_image_map.cpp */; };
 		AE85F3B61A773098006E8651 /* timestep_text_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE85F37B1A773098006E8651 /* timestep_text_data.cpp */; };
 		AE85F3B71A773098006E8651 /* timestep_view.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE85F37C1A773098006E8651 /* timestep_view.cpp */; };
-		AE85F3B81A773098006E8651 /* tags in Resources */ = {isa = PBXBuildFile; fileRef = AE85F37D1A773098006E8651 /* tags */; };
-		AE85F3B91A773098006E8651 /* animate.json in Resources */ = {isa = PBXBuildFile; fileRef = AE85F37F1A773098006E8651 /* animate.json */; };
-		AE85F3BA1A773098006E8651 /* image_map.json in Resources */ = {isa = PBXBuildFile; fileRef = AE85F3801A773098006E8651 /* image_map.json */; };
-		AE85F3BB1A773098006E8651 /* view.json in Resources */ = {isa = PBXBuildFile; fileRef = AE85F3811A773098006E8651 /* view.json */; };
 		D53E17F1178506BF000BAC10 /* RawImageInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D54113A61783E7AD002B6E3E /* RawImageInfo.m */; };
 		D551A73C178E50AF0028DACC /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D551A73B178E50AF0028DACC /* Security.framework */; };
 		D5BC66EA1635D0270059EC0F /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = D510CFBE139059A20066D881 /* Entitlements.plist */; };
@@ -445,8 +427,6 @@
 		A23214D313D8AFD600FA4C7D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A25F91F61489AC0300B39375 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		A25F91F81489AC0300B39375 /* TeaLeafIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeaLeafIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE85F2801A773098006E8651 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		AE85F2811A773098006E8651 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		AE85F2841A773098006E8651 /* curlbuild-32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "curlbuild-32.h"; sourceTree = "<group>"; };
 		AE85F2851A773098006E8651 /* curlbuild-64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "curlbuild-64.h"; sourceTree = "<group>"; };
 		AE85F2871A773098006E8651 /* hashtable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashtable.h; sourceTree = "<group>"; };
@@ -624,7 +604,6 @@
 		AE85F3431A773098006E8651 /* timestep_text_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_text_data.h; sourceTree = "<group>"; };
 		AE85F3441A773098006E8651 /* timestep_view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_view.h; sourceTree = "<group>"; };
 		AE85F3461A773098006E8651 /* detect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = detect.h; sourceTree = "<group>"; };
-		AE85F3471A773098006E8651 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		AE85F34A1A773098006E8651 /* benchmark.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = benchmark.c; sourceTree = "<group>"; };
 		AE85F34B1A773098006E8651 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		AE85F34C1A773098006E8651 /* config.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = config.c; sourceTree = "<group>"; };
@@ -644,10 +623,6 @@
 		AE85F35A1A773098006E8651 /* texture_manager.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = texture_manager.c; sourceTree = "<group>"; };
 		AE85F35B1A773098006E8651 /* timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = timer.c; sourceTree = "<group>"; };
 		AE85F35C1A773098006E8651 /* url_loader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = url_loader.c; sourceTree = "<group>"; };
-		AE85F35E1A773098006E8651 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		AE85F35F1A773098006E8651 /* .ycm_extra_conf.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = .ycm_extra_conf.py; sourceTree = "<group>"; };
-		AE85F3601A773098006E8651 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		AE85F3631A773098006E8651 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		AE85F3641A773098006E8651 /* curl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curl.h; sourceTree = "<group>"; };
 		AE85F3651A773098006E8651 /* curlbuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curlbuild.h; sourceTree = "<group>"; };
 		AE85F3661A773098006E8651 /* curlrules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curlrules.h; sourceTree = "<group>"; };
@@ -659,20 +634,13 @@
 		AE85F36C1A773098006E8651 /* stdcheaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdcheaders.h; sourceTree = "<group>"; };
 		AE85F36D1A773098006E8651 /* typecheck-gcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "typecheck-gcc.h"; sourceTree = "<group>"; };
 		AE85F36F1A773098006E8651 /* uthash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uthash.h; sourceTree = "<group>"; };
-		AE85F3701A773098006E8651 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		AE85F3721A773098006E8651 /* image_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = image_cache.c; sourceTree = "<group>"; };
 		AE85F3731A773098006E8651 /* murmur.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = murmur.c; sourceTree = "<group>"; };
-		AE85F3751A773098006E8651 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
-		AE85F3771A773098006E8651 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		AE85F3781A773098006E8651 /* timestep_animate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_animate.cpp; sourceTree = "<group>"; };
 		AE85F3791A773098006E8651 /* timestep_events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_events.cpp; sourceTree = "<group>"; };
 		AE85F37A1A773098006E8651 /* timestep_image_map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_image_map.cpp; sourceTree = "<group>"; };
 		AE85F37B1A773098006E8651 /* timestep_text_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_text_data.cpp; sourceTree = "<group>"; };
 		AE85F37C1A773098006E8651 /* timestep_view.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_view.cpp; sourceTree = "<group>"; };
-		AE85F37D1A773098006E8651 /* tags */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tags; sourceTree = "<group>"; };
-		AE85F37F1A773098006E8651 /* animate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = animate.json; sourceTree = "<group>"; };
-		AE85F3801A773098006E8651 /* image_map.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = image_map.json; sourceTree = "<group>"; };
-		AE85F3811A773098006E8651 /* view.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = view.json; sourceTree = "<group>"; };
 		AE85F3BC1A7732F1006E8651 /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		AE85F3BE1A773453006E8651 /* curl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curl.h; sourceTree = "<group>"; };
 		AE85F3BF1A773453006E8651 /* curlbuild-32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "curlbuild-32.h"; sourceTree = "<group>"; };
@@ -1055,14 +1023,9 @@
 		AE85F27F1A773098006E8651 /* core */ = {
 			isa = PBXGroup;
 			children = (
-				AE85F2801A773098006E8651 /* .gitignore */,
-				AE85F2811A773098006E8651 /* CMakeLists.txt */,
 				AE85F2821A773098006E8651 /* deps */,
 				AE85F30A1A773098006E8651 /* include */,
-				AE85F3471A773098006E8651 /* LICENSE.txt */,
 				AE85F3481A773098006E8651 /* src */,
-				AE85F37D1A773098006E8651 /* tags */,
-				AE85F37E1A773098006E8651 /* templates */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -1441,13 +1404,8 @@
 		AE85F35D1A773098006E8651 /* image-cache */ = {
 			isa = PBXGroup;
 			children = (
-				AE85F35E1A773098006E8651 /* .gitignore */,
-				AE85F35F1A773098006E8651 /* .ycm_extra_conf.py */,
-				AE85F3601A773098006E8651 /* CMakeLists.txt */,
 				AE85F3611A773098006E8651 /* include */,
-				AE85F3701A773098006E8651 /* Makefile */,
 				AE85F3711A773098006E8651 /* src */,
-				AE85F3741A773098006E8651 /* test */,
 			);
 			path = "image-cache";
 			sourceTree = "<group>";
@@ -1474,7 +1432,6 @@
 		AE85F3621A773098006E8651 /* curl */ = {
 			isa = PBXGroup;
 			children = (
-				AE85F3631A773098006E8651 /* .gitignore */,
 			);
 			path = curl;
 			sourceTree = "<group>";
@@ -1496,18 +1453,9 @@
 			path = src;
 			sourceTree = "<group>";
 		};
-		AE85F3741A773098006E8651 /* test */ = {
-			isa = PBXGroup;
-			children = (
-				AE85F3751A773098006E8651 /* test.c */,
-			);
-			path = test;
-			sourceTree = "<group>";
-		};
 		AE85F3761A773098006E8651 /* timestep */ = {
 			isa = PBXGroup;
 			children = (
-				AE85F3771A773098006E8651 /* CMakeLists.txt */,
 				AE85F3781A773098006E8651 /* timestep_animate.cpp */,
 				AE85F3791A773098006E8651 /* timestep_events.cpp */,
 				AE85F37A1A773098006E8651 /* timestep_image_map.cpp */,
@@ -1515,16 +1463,6 @@
 				AE85F37C1A773098006E8651 /* timestep_view.cpp */,
 			);
 			path = timestep;
-			sourceTree = "<group>";
-		};
-		AE85F37E1A773098006E8651 /* templates */ = {
-			isa = PBXGroup;
-			children = (
-				AE85F37F1A773098006E8651 /* animate.json */,
-				AE85F3801A773098006E8651 /* image_map.json */,
-				AE85F3811A773098006E8651 /* view.json */,
-			);
-			path = templates;
 			sourceTree = "<group>";
 		};
 		AE85F3BD1A773453006E8651 /* curl */ = {
@@ -1849,38 +1787,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				4EF16B90180F1C0C0011E864 /* icon144.png in Resources */,
-				AE85F3B21A773098006E8651 /* CMakeLists.txt in Resources */,
-				AE85F3841A773098006E8651 /* LICENSE.janson in Resources */,
 				D5BC66EA1635D0270059EC0F /* Entitlements.plist in Resources */,
 				D5BC66F81635D0270059EC0F /* config.plist in Resources */,
 				D5BC66F91635D0270059EC0F /* resources.bundle in Resources */,
-				AE85F3821A773098006E8651 /* .gitignore in Resources */,
 				4EF16B8E180F1C0C0011E864 /* icon72.png in Resources */,
 				36ACCF03179F2A63002AE65C /* left_text_handler_disabled.png in Resources */,
-				AE85F3AD1A773098006E8651 /* .gitignore in Resources */,
 				36ACCF04179F2A63002AE65C /* left_text_handler_pressed.png in Resources */,
-				AE85F3831A773098006E8651 /* CMakeLists.txt in Resources */,
-				AE85F3AA1A773098006E8651 /* .gitignore in Resources */,
 				36ACCF05179F2A63002AE65C /* left_text_handler.png in Resources */,
-				AE85F3851A773098006E8651 /* LICENSE.libpng in Resources */,
 				36ACCF06179F2A63002AE65C /* right_text_handler_disabled.png in Resources */,
 				36ACCF07179F2A63002AE65C /* right_text_handler_pressed.png in Resources */,
-				AE85F3951A773098006E8651 /* LICENSE.uthash in Resources */,
 				4EF16B8D180F1C0C0011E864 /* icon57.png in Resources */,
-				AE85F3BB1A773098006E8651 /* view.json in Resources */,
-				AE85F3B81A773098006E8651 /* tags in Resources */,
-				AE85F3AC1A773098006E8651 /* CMakeLists.txt in Resources */,
-				AE85F3961A773098006E8651 /* LICENSE.txt in Resources */,
-				AE85F3BA1A773098006E8651 /* image_map.json in Resources */,
-				AE85F3AB1A773098006E8651 /* .ycm_extra_conf.py in Resources */,
 				36ACCF08179F2A63002AE65C /* right_text_handler.png in Resources */,
 				4EF16B80180DCA2B0011E864 /* Images.xcassets in Resources */,
 				36ACCF2B179F595D002AE65C /* done_button_pressed.png in Resources */,
-				AE85F3981A773098006E8651 /* CMakeLists.txt in Resources */,
 				36ACCF2C179F595D002AE65C /* done_button.png in Resources */,
 				4EF16B8F180F1C0C0011E864 /* icon114.png in Resources */,
-				AE85F3B91A773098006E8651 /* animate.json in Resources */,
-				AE85F3871A773098006E8651 /* build.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2024,7 +1945,6 @@
 				4E8493F61651D06000C96B4A /* jsSound.mm in Sources */,
 				4E8493F71651D06000C96B4A /* jsTextInput.mm in Sources */,
 				4E8493F81651D06000C96B4A /* jsTimer.mm in Sources */,
-				AE85F3AE1A773098006E8651 /* Makefile in Sources */,
 				4E8493F91651D06000C96B4A /* jsTimestep.mm in Sources */,
 				4E8493FA1651D06000C96B4A /* jsXHR.mm in Sources */,
 				4E77EAE71666B90000FD6430 /* DebugServer.mm in Sources */,

@@ -20,6 +20,7 @@
 #include "platform/log.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "util/detect.h"
 #import "FontUtil.h"
 
 #import <UIKit/UIKit.h>
