@@ -8,7 +8,7 @@
     "ff": "0.2.0",
     "fs-extra": "^0.10.0",
     "plist": "^0.4.3",
-    "rsync": "^0.3.0",
+    "rsync": "^0.4.0",
     "wrench": "~1.3.9",
     "xcode": "https://github.com/gameclosure/node-xcode/tarball/fab08c5f056da36d6b027979e53778c3d2366e96"
   },
