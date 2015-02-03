@@ -38,6 +38,39 @@ JSAG_MEMBER_BEGIN_NOARGS(restore)
 }
 JSAG_MEMBER_END_NOARGS
 
+JSAG_MEMBER_BEGIN(setTransform, 6)
+{
+	JSAG_ARG_DOUBLE(m11);
+	JSAG_ARG_DOUBLE(m12);
+	JSAG_ARG_DOUBLE(m21);
+	JSAG_ARG_DOUBLE(m22);
+	JSAG_ARG_DOUBLE(dx);
+	JSAG_ARG_DOUBLE(dy);
+
+	context_2d_setTransform(GET_CONTEXT_2D(), m11, m12, m21, m22, dx, dy);
+}
+JSAG_MEMBER_END
+
+JSAG_MEMBER_BEGIN(resize, 2)
+{
+	JSAG_ARG_INT32(w)
+	JSAG_ARG_INT32(h)
+
+	context_2d *ctx = GET_CONTEXT_2D();
+	context_2d_resize(ctx, w, h);
+	texture_2d *tex = texture_manager_get_texture(texture_manager_get(), ctx->url);
+
+	JS::RootedValue glname(cx, JS::NumberValue(tex->name));
+	JS::RootedValue texurl(cx, CSTR_TO_JSVAL(cx, tex->url));
+
+	JSObject *tex_data = JS_NewObject(cx, nullptr, nullptr, nullptr);
+	JS_SetProperty(cx, tex_data, "__gl_name", glname);
+	JS_SetProperty(cx, tex_data, "_src", texurl);
+
+	JSAG_RETURN_OBJECT(tex_data);
+}
+JSAG_MEMBER_END
+
 JSAG_MEMBER_BEGIN(rotate, 1)
 {
 	JSAG_ARG_DOUBLE(angle);
@@ -937,6 +970,8 @@ JSAG_OBJECT_MEMBER(translate)
 JSAG_OBJECT_MEMBER(scale)
 JSAG_OBJECT_MEMBER(drawImage)
 JSAG_OBJECT_MEMBER(save)
+JSAG_OBJECT_MEMBER(resize)
+JSAG_OBJECT_MEMBER(setTransform)
 JSAG_OBJECT_MEMBER(restore)
 JSAG_OBJECT_MEMBER(clear)
 JSAG_OBJECT_MEMBER(setGlobalAlpha)
