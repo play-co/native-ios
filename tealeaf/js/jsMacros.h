@@ -16,6 +16,17 @@
 #ifndef JS_MACROS_H
 #define JS_MACROS_H
 
+#include <memory>
+
+namespace JS {
+  struct FreePolicy
+  {
+    void operator()(void* ptr) {
+      js_free(ptr);
+    }
+  };
+} // JS
+
 // JSTR = JavaScript SpiderMonkey string
 // NSTR = NSString Objective-C string
 // CSTR = UTF8 C string
@@ -172,7 +183,8 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
   JS_IsArrayObject(cx, JSVAL_TO_OBJECT(args[argc-argsLeft])) )
 
 #define JSAG_ARG_CSTR(name) JSAG_ARG_JSTR(name##_jstr) \
-  char* name = JS_EncodeStringToUTF8(cx, name##_jstr);
+  std::unique_ptr<char, JS::FreePolicy> h_##name (JS_EncodeStringToUTF8(cx, name##_jstr));\
+  const char* name = h_##name.get();
 
 #define JSAG_ARG_NSTR(name) JSAG_ARG_JSTR(name ## _jstr); JSTR_TO_NSTR(cx, name ## _jstr, name);
 
