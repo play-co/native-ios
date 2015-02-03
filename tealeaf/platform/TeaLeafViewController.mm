@@ -116,15 +116,7 @@ CEXPORT void device_hide_splash() {
 }
 
 - (void) alertView:(UIAlertView *)sheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	NSString *title = [sheet buttonTitleAtIndex:buttonIndex];
-	if ([title isEqualToString:@"Yes"]) {
-		[self restartJS];
-	} else if ([title isEqualToString:@"No"]) {
-		//do nothing
-	} else {
 		[(UIAlertViewEx*)sheet dispatch:(int)buttonIndex];
-		[sheet release];
-	}
 }
 
 -(void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -614,11 +606,11 @@ CEXPORT void device_hide_splash() {
 
 @implementation UIAlertViewEx
 
-- (void) dispatch:(int)callback {
+- (void) dispatch:(int)callbackIndex {
 	JSContext* cx = [[js_core lastJS] cx];
   JS::RootedObject event(cx, JS_NewObject(cx, NULL, NULL, NULL));
-  JS::RootedValue name(cx, JS::StringValue(JS_InternString(cx, "dialogButtonClicked")));
-  JS::RootedValue idv(cx, JS::NumberValue(callback));
+  JS::RootedValue name(cx, JS::StringValue(JS_NewStringCopyZ(cx, "dialogButtonClicked")));
+  JS::RootedValue idv(cx, JS::NumberValue(self->callbacks[callbackIndex]));
 	JS_SetProperty(cx, event, "name", name);
 	JS_SetProperty(cx, event, "id", idv);
     
@@ -628,12 +620,11 @@ CEXPORT void device_hide_splash() {
 
 - (void) registerCallbacks:(int *)cbs length:(int)len {
 	self->callbacks = (int*)malloc(len * sizeof(int));
-	memcpy(self->callbacks, cbs, len);
+	memcpy(self->callbacks, cbs, len * sizeof(int));
 	self->length = len;
 }
 
 - (void) dealloc {
-	[ResourceLoader release];
 	free(self->callbacks);
 	[super dealloc];
 }
