@@ -470,7 +470,7 @@ JSAG_MEMBER_BEGIN(strokeText, 10)
 			// stroke style, the first character looks fine but the rest of the stroke
 			// outline is offset by 1 pixel.  Shifting the stroke by half a pixel seems
 			// to make it look visually centered.
-			if (str_len > 1) {
+			if (strlen(str) > 1) {
 				x -= 0.5f;
 				y += 0.5f;
 			}

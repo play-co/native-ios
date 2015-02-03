@@ -171,7 +171,8 @@ inline JSString *JSStringFromNSString(JSContext *cx, NSString *nstr) {
 #define JSAG_ARG_IS_ARRAY ( JSVAL_IS_OBJECT(args[argc-argsLeft]) && \
   JS_IsArrayObject(cx, JSVAL_TO_OBJECT(args[argc-argsLeft])) )
 
-#define JSAG_ARG_CSTR(name) JSAG_ARG_JSTR(name ## _jstr); JSTR_TO_CSTR(cx, name ## _jstr, name);
+#define JSAG_ARG_CSTR(name) JSAG_ARG_JSTR(name##_jstr) \
+  char* name = JS_EncodeStringToUTF8(cx, name##_jstr);
 
 #define JSAG_ARG_NSTR(name) JSAG_ARG_JSTR(name ## _jstr); JSTR_TO_NSTR(cx, name ## _jstr, name);
 
