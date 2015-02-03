@@ -42,7 +42,7 @@ JSAG_MEMBER_BEGIN(_showDialog, 5)
 	for (int i = 0; i < buttonCount; ++i) {
 		JS_GetElement(cx, btns, i, el);
     JS::RootedString str(cx, JS::ToString(cx, el));
-		buttons[i] = JS_EncodeString(cx, str);
+		buttons[i] = JS_EncodeStringToUTF8(cx, str);
 	}
 	
 	dialog_show_dialog(title, text, image, buttons, buttonCount, callbacks, cbCount);
