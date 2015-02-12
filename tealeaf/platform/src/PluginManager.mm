@@ -15,7 +15,7 @@
 
 #import "PluginManager.h"
 #include "jsonUtil.h"
-#import <deps/JSONKit.h>
+#import <JSONKit.h>
 #import "platform/log.h"
 #include "core.h"
 #include "events.h"

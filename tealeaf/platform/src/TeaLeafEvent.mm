@@ -7,7 +7,7 @@
 //
 
 #import "TeaLeafEvent.h"
-#import <deps/JSONKit.h>
+#import <JSONKit.h>
 #include "events.h"
 #include "core/events.h"
 

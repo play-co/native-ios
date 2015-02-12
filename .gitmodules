@@ -1,5 +1,5 @@
 [submodule "tealeaf/deps/jansson"]
-	path = tealeaf/deps/jansson
+	path = tealeaf/platform/deps/jansson
 	url = https://github.com/gameclosure/jansson.git
 [submodule "barista"]
 	path = barista

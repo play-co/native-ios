@@ -15,7 +15,7 @@
 
 #import "js_core.h"
 #import "platform/xhr.h"
-#import "xhr.h"
+#import "platform/platform_xhr.h"
 
 @interface jsXHR : NSObject
 
