@@ -135,7 +135,6 @@
 		AEA7D5A11A8D5CB6009FFA06 /* libjs_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA7D54E1A8D5C42009FFA06 /* libjs_static.a */; };
 		AEA7D5A21A8D5CB6009FFA06 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA7D54F1A8D5C42009FFA06 /* libpng.a */; };
 		AEA7D5A31A8D5CB6009FFA06 /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEA7D5501A8D5C42009FFA06 /* libturbojpeg.a */; };
-		AEA7D8E71A8D6C54009FFA06 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA7D7691A8D6C54009FFA06 /* JSONKit.m */; };
 		AEA7D8E81A8D6C54009FFA06 /* LICENCE.base64 in Resources */ = {isa = PBXBuildFile; fileRef = AEA7D76A1A8D6C54009FFA06 /* LICENCE.base64 */; };
 		AEA7D8EB1A8D6C54009FFA06 /* OALAction.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA7D7731A8D6C54009FFA06 /* OALAction.m */; };
 		AEA7D8EC1A8D6C54009FFA06 /* OALActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AEA7D7751A8D6C54009FFA06 /* OALActionManager.m */; };
@@ -613,8 +612,6 @@
 		AEA7D5AE1A8D6C53009FFA06 /* multi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multi.h; sourceTree = "<group>"; };
 		AEA7D5AF1A8D6C53009FFA06 /* stdcheaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdcheaders.h; sourceTree = "<group>"; };
 		AEA7D5B01A8D6C53009FFA06 /* typecheck-gcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "typecheck-gcc.h"; sourceTree = "<group>"; };
-		AEA7D7681A8D6C54009FFA06 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		AEA7D7691A8D6C54009FFA06 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		AEA7D76A1A8D6C54009FFA06 /* LICENCE.base64 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENCE.base64; sourceTree = "<group>"; };
 		AEA7D7711A8D6C54009FFA06 /* OALAction+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OALAction+Private.h"; sourceTree = "<group>"; };
 		AEA7D7721A8D6C54009FFA06 /* OALAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OALAction.h; sourceTree = "<group>"; };
@@ -1442,8 +1439,6 @@
 			children = (
 				AEA7D9061A8D6DBF009FFA06 /* jansson */,
 				AEA7D5A51A8D6C53009FFA06 /* curl */,
-				AEA7D7681A8D6C54009FFA06 /* JSONKit.h */,
-				AEA7D7691A8D6C54009FFA06 /* JSONKit.m */,
 				AEA7D76A1A8D6C54009FFA06 /* LICENCE.base64 */,
 				AEA7D76F1A8D6C54009FFA06 /* ObjectAL */,
 			);
@@ -1925,7 +1920,6 @@
 				AEA7D5841A8D5C43009FFA06 /* iosVersioning.mm in Sources */,
 				AEA7D57E1A8D5C43009FFA06 /* dialog.mm in Sources */,
 				AEA7D8EF1A8D6C54009FFA06 /* OALAudioTrack.m in Sources */,
-				AEA7D8E71A8D6C54009FFA06 /* JSONKit.m in Sources */,
 				4E8493DF1651D06000C96B4A /* js_animate.cpp in Sources */,
 				4E8493E01651D06000C96B4A /* js_core.mm in Sources */,
 				AE85F39F1A773098006E8651 /* image_loader.c in Sources */,

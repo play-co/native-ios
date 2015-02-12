@@ -25,7 +25,6 @@
 #import "NativeCalls.h"
 #import "core/core.h"
 #import "core/tealeaf_canvas.h"
-#import "JSONKit.h"
 #import "jansson.h"
 #import "jsonUtil.h"
 #import "allExtensions.h"

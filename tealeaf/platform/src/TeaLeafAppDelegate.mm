@@ -27,7 +27,6 @@
 #import "core/core_js.h"
 #include "platform.h"
 #include "jsonUtil.h"
-#import "JSONKit.h"
 #include "events.h"
 #import "platform/log.h"
 #import "sys/socket.h"
@@ -637,10 +636,10 @@ SplashDescriptor SPLASHES[] = {
 	NSDictionary *dict = nil;
 	NSUInteger length = 0;
 	if (manifest_file) {
-		JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
 		const char *manifest_utf8 = (const char *) [manifest_file UTF8String];
 		length = strlen(manifest_utf8);
-		dict = [decoder objectWithUTF8String:(const unsigned char *)manifest_utf8 length:length error:&err];
+        NSData* tmp = [NSData dataWithBytes:manifest_utf8 length:length];
+        dict = [NSJSONSerialization JSONObjectWithData:tmp options:0 error:&err];
 	}
 
 	// If failed to load,

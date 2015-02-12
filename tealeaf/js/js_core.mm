@@ -32,7 +32,6 @@
 #import "js/jsBase.h"
 #import "platform/PluginManager.h"
 #import "iosVersioning.h"
-#import "JSONKit.h"
 #import "NativeCalls.h"
 
 // JS Ready flag: Indicates that the JavaScript engine is running (see core/core_js.h)
@@ -42,7 +41,6 @@ static js_core *lastJS = nil;
 static JSObject *global_obj = nil;
 static NSDate *m_start_date = nil;
 static NSString *m_uuid = nil;
-static JSONDecoder *m_decoder = nil;
 
 CEXPORT JSContext *get_js_context() {
 	return lastJS.cx;
@@ -226,21 +224,22 @@ JSAG_MEMBER_END
 
 JSAG_MEMBER_BEGIN(_call, 2)
 {
-    if (m_decoder == nil) {
-        m_decoder = [[JSONDecoder decoderWithParseOptions:JKParseOptionStrict] retain];
-    }
 	JSAG_ARG_NSTR(name);
    	JSAG_ARG_NSTR(jsonNStr);
   	NSError *err = nil;
 
     const char *str = [jsonNStr UTF8String];
-    size_t len = strlen(str);
-    	NSMutableDictionary *json = [m_decoder objectWithUTF8String:(const unsigned char*)str length:(NSUInteger)len error:&err];
+    NSData* jsonData = [[NSData alloc] initWithBytes:str length:strlen(str)];
+    NSMutableDictionary* json = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&err];
+    
    	LOG("{js} _call %@ %@", name, jsonNStr);
     NSMutableDictionary *ret = [NativeCalls Call:name withArgs:json];
     NSString *retStr = @"{}";
     if (ret != nil) {
-        retStr = [ret JSONString];
+        retStr = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:ret
+                                                                                options:0
+                                                                                  error:&err]
+                                       encoding:NSUTF8StringEncoding];
     }
     JSAG_RETURN_NSTR(retStr);
     
