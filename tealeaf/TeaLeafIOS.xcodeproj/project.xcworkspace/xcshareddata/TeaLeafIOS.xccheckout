@@ -24,11 +24,11 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>436F5FAB16756B3A3D5A080F8EC782F52CCE3D32</key>
-		<string>../../../../..</string>
+		<string>../../../..</string>
 		<key>6EFF068F440D8BC3A7A7B0D056F49B6CDE818782</key>
-		<string>../../..tealeaf/deps/jansson/</string>
+		<string>../../..tealeaf/deps/jansson</string>
 		<key>998E74F9E5FA4DAD7B1963B463ADEF73CCDEF7A3</key>
-		<string>../../..tealeaf/native-core/</string>
+		<string>../../..tealeaf/native-core</string>
 		<key>A97425D30B890CD607EB74FCBCE8AC3AC8EB6697</key>
 		<string>../../..</string>
 	</dict>
@@ -46,7 +46,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>436F5FAB16756B3A3D5A080F8EC782F52CCE3D32</string>
 			<key>IDESourceControlWCCName</key>
-			<string>..</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
