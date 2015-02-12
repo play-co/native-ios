@@ -20,8 +20,6 @@
 #import <OpenGLES/ES1/glext.h>
 
 
-@class TeaLeafCanvas;
-
 #define MK_RECT(name, x, y, w, h) CGRect name = CGRectMake((int) x, (int) y, (int) w, (int) h);
 
 @interface jsGL : NSObject
