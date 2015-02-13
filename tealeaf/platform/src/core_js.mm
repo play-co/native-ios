@@ -83,11 +83,8 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsBase setLocation:baseURL];
 		
 		js_ready = true;
-	}
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
         [pluginManager initializeWithManifest:@{} appDelegate:nil];
-    });
+	}
     
 	return true;
 }
