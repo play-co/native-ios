@@ -17,9 +17,9 @@
 #import "js_core.h"
 #import "jsMacros.h"
 #include "timestep_events.h"
-#include "gen/js_animate_template.gen.h"
-#include "gen/js_timestep_view_template.gen.h"
-#include "gen/js_timestep_image_map_template.gen.h"
+#include "js/js_animate_template.gen.h"
+#include "js/js_timestep_view_template.gen.h"
+#include "js/js_timestep_image_map_template.gen.h"
 #include "js/js_timestep_view.h"
 
 static JSObject *evt_ctor = NULL;

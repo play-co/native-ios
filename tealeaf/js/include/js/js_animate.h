@@ -13,9 +13,27 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#ifndef JS_TIMESTEP_IMAGE_MAP_H
-#define JS_TIMESTEP_IMAGE_MAP_H
+#ifndef JS_ANIMATE_H
+#define JS_ANIMATE_H
 
-#include "gen/js_timestep_image_map_template.gen.h"
+#include "core/types.h"
+#include "timestep/timestep_animate.h"
+#include "js/js_animate.h"
+#include "js/js_timestep_view.h"
+#include "core/tealeaf_context.h"
+#include "js/js_animate_template.gen.h"
 
+
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+void def_animate_finish(JS_OBJECT_WRAPPER js_anim);
+void def_animate_cb(JS_OBJECT_WRAPPER js_view, JS_OBJECT_WRAPPER cb, double tt, double t);
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif //JS_ANIMATE_H
