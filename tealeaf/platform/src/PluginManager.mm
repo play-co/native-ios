@@ -42,7 +42,11 @@ JSAG_MEMBER_BEGIN(sendEvent, 3)
 	} else {
 		id returnValue = [m_pluginManager plugin:pluginName name:eventName event:json];
         if ([returnValue isKindOfClass: [NSDictionary class]]) {
-            JSAG_RETURN_NSTR([((NSDictionary *) returnValue) JSONString]);
+            NSDictionary* res = returnValue;
+            NSError* err;
+            NSData* d_res = [NSJSONSerialization dataWithJSONObject:res options:0 error:&err];
+            NSString* s_res = [[NSString alloc] initWithData:d_res encoding:NSUTF8StringEncoding];
+            JSAG_RETURN_NSTR(s_res);
         } else {
             JSAG_RETURN_NSTR((NSString *) returnValue);
         }
@@ -230,13 +234,15 @@ JSAG_OBJECT_END
 }
 
 - (void) dispatchJSEvent:(NSDictionary *)evt {
-    NSString *evt_nstr = [evt JSONString];
-    [self dispatchJSEventWithJSONString:evt_nstr andRequestId:0];
+    NSError* err;
+    NSData* data = [NSJSONSerialization dataWithJSONObject:evt options:0 error:&err];
+    [self dispatchJSEventWithJSONString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] andRequestId:0];
 }
 
 - (void) dispatchJSEvent:(NSDictionary *)evt withRequestId:(NSNumber *)requestId {
-    NSString *evt_nstr = [evt JSONString];
-    [self dispatchJSEventWithJSONString:evt_nstr andRequestId:requestId];
+    NSError* err;
+    NSData* data = [NSJSONSerialization dataWithJSONObject:evt options:0 error:&err];
+    [self dispatchJSEventWithJSONString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] andRequestId:requestId];
 }
 
 - (void) dispatchJSResponse:(NSDictionary *)response withError:(id)error andRequestId:(NSNumber *)requestId {
