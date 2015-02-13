@@ -10,37 +10,49 @@
 	<string>TeaLeafIOS</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>2B6BDB0B-A208-41E9-AB44-369BB4330F06</key>
-		<string>https://github.com/gameclosure/native-core-priv.git</string>
-		<key>79686336-5538-4689-B3CD-7F2B247309C8</key>
-		<string>https://github.com/gameclosure/native-ios-priv</string>
-		<key>D36A392F-1E2A-4404-A45D-2C7F67FC0CEF</key>
+		<key>436F5FAB16756B3A3D5A080F8EC782F52CCE3D32</key>
+		<string>https://github.com/gameclosure/devkit-core</string>
+		<key>6EFF068F440D8BC3A7A7B0D056F49B6CDE818782</key>
 		<string>https://github.com/gameclosure/jansson.git</string>
+		<key>998E74F9E5FA4DAD7B1963B463ADEF73CCDEF7A3</key>
+		<string>https://github.com/gameclosure/native-core.git</string>
+		<key>A97425D30B890CD607EB74FCBCE8AC3AC8EB6697</key>
+		<string>https://github.com/gameclosure/native-ios</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>tealeaf/TeaLeafIOS.xcodeproj/project.xcworkspace</string>
+	<string>tealeaf/TeaLeafIOS.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>2B6BDB0B-A208-41E9-AB44-369BB4330F06</key>
-		<string>../../native-core</string>
-		<key>79686336-5538-4689-B3CD-7F2B247309C8</key>
+		<key>436F5FAB16756B3A3D5A080F8EC782F52CCE3D32</key>
+		<string>../../../..</string>
+		<key>6EFF068F440D8BC3A7A7B0D056F49B6CDE818782</key>
+		<string>../../..tealeaf/deps/jansson</string>
+		<key>998E74F9E5FA4DAD7B1963B463ADEF73CCDEF7A3</key>
+		<string>../../..tealeaf/native-core</string>
+		<key>A97425D30B890CD607EB74FCBCE8AC3AC8EB6697</key>
 		<string>../../..</string>
-		<key>D36A392F-1E2A-4404-A45D-2C7F67FC0CEF</key>
-		<string>../../deps/jansson</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/gameclosure/native-ios-priv</string>
+	<string>https://github.com/gameclosure/native-ios</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>79686336-5538-4689-B3CD-7F2B247309C8</string>
+	<string>A97425D30B890CD607EB74FCBCE8AC3AC8EB6697</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>D36A392F-1E2A-4404-A45D-2C7F67FC0CEF</string>
+			<string>436F5FAB16756B3A3D5A080F8EC782F52CCE3D32</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>6EFF068F440D8BC3A7A7B0D056F49B6CDE818782</string>
 			<key>IDESourceControlWCCName</key>
 			<string>jansson</string>
 		</dict>
@@ -48,7 +60,7 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>2B6BDB0B-A208-41E9-AB44-369BB4330F06</string>
+			<string>998E74F9E5FA4DAD7B1963B463ADEF73CCDEF7A3</string>
 			<key>IDESourceControlWCCName</key>
 			<string>native-core</string>
 		</dict>
@@ -56,9 +68,9 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>79686336-5538-4689-B3CD-7F2B247309C8</string>
+			<string>A97425D30B890CD607EB74FCBCE8AC3AC8EB6697</string>
 			<key>IDESourceControlWCCName</key>
-			<string>native-ios-priv</string>
+			<string>native-ios</string>
 		</dict>
 	</array>
 </dict>
