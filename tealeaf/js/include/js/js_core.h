@@ -34,7 +34,7 @@ CEXPORT JSContext *get_js_context();
 CEXPORT JSObject *get_global_object();
 
 
-#if (__OBJC__) == 1
+#ifdef __OBJC__
 
 #import <Foundation/Foundation.h>
 

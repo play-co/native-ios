@@ -14,7 +14,7 @@
  */
 
 #import "js/jsTextInput.h"
-#import "TextInputManager.h"
+#import "platform/TextInputManager.h"
 
 
 JSAG_MEMBER_BEGIN(destroy, 1)

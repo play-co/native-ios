@@ -13,7 +13,7 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "log.h"
+#include "platform/log.h"
 #include "util/detect.h"
 
 #ifndef DISABLE_DEBUG_SERVER

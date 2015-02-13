@@ -6,13 +6,14 @@
 //  Copyright (c) 2013 Game Closure. All rights reserved.
 //
 
-#import "TeaLeafTextField.h"
-#import "TeaLeafViewController.h"
-#import "NativeCalls.h"
-#import "FontUtil.h"
 #import <QuartzCore/QuartzCore.h>
-#import "TeaLeafEvent.h"
-#import "InputUtils.h"
+
+#import "platform/TeaLeafTextField.h"
+#import "platform/TeaLeafViewController.h"
+#import "platform/NativeCalls.h"
+#import "platform/FontUtil.h"
+#import "platform/TeaLeafEvent.h"
+#import "platform/InputUtils.h"
 
 @implementation TeaLeafTextFieldDelegate
 @synthesize maxLength;

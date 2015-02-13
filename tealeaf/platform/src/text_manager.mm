@@ -13,18 +13,22 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "texture_2d.h"
-#include "texture_manager.h"
-#include "core/rgba.h"
-#include "platform/text_manager.h"
-#include "platform/log.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "util/detect.h"
-#import "FontUtil.h"
 
 #import <UIKit/UIKit.h>
 #import <UIKit/UIStringDrawing.h>
+
+#include "util/detect.h"
+
+#include "core/texture_manager.h"
+#include "core/rgba.h"
+#include "core/texture_2d.h"
+
+#import "platform/FontUtil.h"
+
+#include "platform/text_manager.h"
+#include "platform/log.h"
 
 ;
 

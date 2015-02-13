@@ -13,4 +13,4 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "core_js.h"
+#include "core/core_js.h"

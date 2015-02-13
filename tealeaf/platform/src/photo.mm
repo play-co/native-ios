@@ -13,8 +13,8 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "photo.h"
-#import "TeaLeafAppDelegate.h"
+#include "platform/photo.h"
+#import "platform/TeaLeafAppDelegate.h"
 
 int camera_get_photo(const char *url_str, int width, int height, int crop) {
 	NSString  *url = [NSString stringWithUTF8String: url_str];

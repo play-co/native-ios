@@ -13,6 +13,7 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
+#include <Foundation/Foundation.h>
 #include "platform/get_locale.h"
 
 static locale_info m_locale = {

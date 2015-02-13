@@ -51,11 +51,11 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
-#import "platform/log.h"
 
 #import <CoreFoundation/CoreFoundation.h>
 
-#import "Reachability.h"
+#import "platform/log.h"
+#import "platform/Reachability.h"
 
 #define kShouldPrintReachabilityFlags 1
 

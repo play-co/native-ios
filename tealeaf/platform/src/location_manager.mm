@@ -15,7 +15,7 @@
 
 #import <UIKit/UIKit.h>
 
-#include "location_manager.h"
+#include "platform/location_manager.h"
 #include "core/log.h"
 
 void location_manager_set_location(const char *uri) {

@@ -13,15 +13,18 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "PluginManager.h"
-#include "jsonUtil.h"
-#import "platform/log.h"
-#include "core.h"
-#include "events.h"
-#include "core/events.h"
 #include <Foundation/NSNotification.h>
 #include <objc/runtime.h>
 #include <stdlib.h>
+
+#include "core/core.h"
+#include "core/events.h"
+
+#import "platform/PluginManager.h"
+#import "platform/log.h"
+
+#include "platform/jsonUtil.h"
+#include "platform/events.h"
 
 static js_core *m_core = nil;
 static PluginManager *m_pluginManager = nil;

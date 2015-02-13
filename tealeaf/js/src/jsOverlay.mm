@@ -14,7 +14,7 @@
  */
 
 #import "js/jsOverlay.h"
-#import "platform/TeaLeafAppDelegate.h"
+// #import "platform/TeaLeafAppDelegate.h"
 #import "platform/ResourceLoader.h"
 
 // #define CACHE_POLICY NSURLRequestUseProtocolCachePolicy

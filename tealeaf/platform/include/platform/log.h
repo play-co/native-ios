@@ -22,7 +22,8 @@ extern "C" {
 
 void _LOG(const char *f, ...);
 
-#if (__OBJC__) == 1
+#ifdef __OBJC__
+#include <Foundation/Foundation.h>
 void _NSLOG(NSString *f, ...);
 #endif
 

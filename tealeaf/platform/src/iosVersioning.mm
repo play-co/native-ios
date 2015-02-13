@@ -13,13 +13,16 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "iosVersioning.h"
-#import "platform/log.h"
-
 #import <mach/mach.h>
 #import <mach/mach_host.h>
 #import <sys/types.h>
 #import <sys/sysctl.h>
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+#import "platform/iosVersioning.h"
+#import "platform/log.h"
 
 static NSString *m_platform = 0;
 

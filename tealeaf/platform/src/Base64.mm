@@ -13,7 +13,7 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "Base64.h"
+#include "platform/Base64.h"
 
 // liberally borrowed from http://stackoverflow.com/questions/392464/any-base64-library-on-iphone-sdk/4727124#4727124
 

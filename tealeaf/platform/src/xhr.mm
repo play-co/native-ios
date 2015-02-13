@@ -13,9 +13,9 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "xhr.h"
+#import "platform/xhr.h"
 #import "JS.h"
-#import "jsXHR.h"
+#import "js/jsXHR.h"
 
 @implementation XHR
 

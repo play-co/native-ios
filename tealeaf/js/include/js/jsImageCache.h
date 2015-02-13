@@ -13,6 +13,7 @@
  * along with the Game Closure SDK.  If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
+#import <Foundation/Foundation.h>
 #import "js/js_core.h"
 
 @interface jsImageCache : NSObject

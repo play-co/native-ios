@@ -14,7 +14,7 @@
  */
 
 #import "js/jsSound.h"
-#import "SoundManager.h"
+#import "platform/SoundManager.h"
 #import "core/events.h"
 
 JSAG_MEMBER_BEGIN(playBackgroundMusic, 3)

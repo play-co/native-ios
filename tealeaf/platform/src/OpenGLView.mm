@@ -13,13 +13,15 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "OpenGLView.h"
 #include "core/core.h"
 #include "core/tealeaf_context.h"
-#import "TextInputManager.h"
-#import "TeaLeafAppDelegate.h"
+
+#import "timestep/timestep_events.h"
+
+#import "platform/OpenGLView.h"
+#import "platform/TextInputManager.h"
+#import "platform/TeaLeafAppDelegate.h"
 #import "platform/log.h"
-#import "timestep_events.h"
 
 void timestep_animation_tick_animations(double);
 

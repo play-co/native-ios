@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Game Closure. All rights reserved.
 //
 
-#import "NativeCalls.h"
+#import "platform/NativeCalls.h"
 #import "platform/log.h"
 
 @implementation NativeCalls

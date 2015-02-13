@@ -15,22 +15,25 @@
 
 #include <sys/stat.h>
 #include <string.h>
-#import "ResourceLoader.h"
-#import "Base64.h"
-#import "TeaLeafAppDelegate.h"
-#import "RawImageInfo.h"
 
-#include "text_manager.h"
-#include "texture_manager.h"
-#include "events.h"
-#include "log.h"
+#include "util/detect.h"
+
+#import "platform/gl.h"
+#import "platform/ResourceLoader.h"
+#import "platform/Base64.h"
+#import "platform/TeaLeafAppDelegate.h"
+#import "platform/RawImageInfo.h"
+
+#include "platform/log.h"
+#include "platform/text_manager.h"
+
+#include "core/texture_manager.h"
+#include "core/events.h"
 #include "core/core.h"
 #include "core/image_loader.h"
 #include "core/config.h"
-#include "util/detect.h"
-#include "image_cache.h"
-#import <platform/gl.h>
 
+#include "image-cache/image_cache.h"
 
 #define APP @"app.bundle"
 

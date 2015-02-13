@@ -21,7 +21,7 @@
 //  Copyright (c) 2013 Game Closure. All rights reserved.
 //
 
-#import "InputUtils.h"
+#import "platform/InputUtils.h"
 
 // static NSString *INPUTTYPE_DEFAULT = @"DEFAULT";
 static NSString *INPUTTYPE_NUMBER = @"NUMBER";

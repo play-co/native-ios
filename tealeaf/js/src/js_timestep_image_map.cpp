@@ -16,7 +16,7 @@
  */
 
 #include "js/js.h"
-#include "timestep_image_map.h"
+#include "timestep/timestep_image_map.h"
 #include "js/js_timestep_image_map_template.gen.h"
 #include "core/log.h"
 

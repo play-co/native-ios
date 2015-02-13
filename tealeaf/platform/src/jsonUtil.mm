@@ -13,7 +13,7 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "jsonUtil.h"
+#include "platform/jsonUtil.h"
 
 void JSON_AddOptionalString(json_t *obj, const char *key, NSString *value) {
 	if (value == nil || value == (id)[NSNull null]) {

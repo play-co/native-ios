@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Game Closure. All rights reserved.
 //
 
-#import "FontUtil.h"
+#import "platform/FontUtil.h"
 #import "platform/log.h"
 
 @implementation FontUtil

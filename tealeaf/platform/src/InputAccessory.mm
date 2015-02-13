@@ -21,11 +21,11 @@
 //  Copyright (c) 2013 Game Closure. All rights reserved.
 //
 
-#import "InputAccessory.h"
-#import "InputUtils.h"
+#import "platform/InputAccessory.h"
+#import "platform/InputUtils.h"
 #include "platform/log.h"
 #include "core/events.h"
-#include "TeaLeafViewController.h"
+#include "platform/TeaLeafViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 // Instance of the prompt view

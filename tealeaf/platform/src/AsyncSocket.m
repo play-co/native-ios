@@ -8,7 +8,7 @@
 //	http://code.google.com/p/cocoaasyncsocket/
 //
 
-#import "AsyncSocket.h"
+#import "platform/AsyncSocket.h"
 #import <sys/socket.h>
 #import <netinet/in.h>
 #import <arpa/inet.h>

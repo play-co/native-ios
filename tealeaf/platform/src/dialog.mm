@@ -13,9 +13,9 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "platform.h"
-#include "dialog.h"
-#import "TeaLeafViewController.h"
+#include "platform/platform.h"
+#include "platform/dialog.h"
+#import "platform/TeaLeafViewController.h"
 
 void dialog_show_dialog(const char* title, const char* text, const char* image, char** buttons, int buttonLen, int* cbs, int cbLen) {
 	// TODO subclass UIActionSheet

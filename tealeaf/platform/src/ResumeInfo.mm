@@ -13,7 +13,7 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "ResumeInfo.h"
+#import "platform/ResumeInfo.h"
 
 @implementation ResumeInfo
 

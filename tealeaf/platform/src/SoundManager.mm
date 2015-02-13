@@ -13,12 +13,12 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "SoundManager.h"
-#import "ResourceLoader.h"
+#import "platform/SoundManager.h"
+#import "platform/ResourceLoader.h"
 #import "ObjectAL.h"
 #include "core/events.h"
 #include "platform/log.h"
-#include "TeaLeafAppDelegate.h"
+#include "platform/TeaLeafAppDelegate.h"
 #include "limits.h"
 
 SoundManager *globalSoundManager = NULL;

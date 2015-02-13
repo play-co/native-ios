@@ -16,13 +16,17 @@
 #ifndef JSON_UTIL_H
 #define JSON_UTIL_H
 
+#ifdef __OBJC__
+#include <Foundation/Foundation.h>
+#endif
+
 // We use Jansson for JSON serialization.
 // This adds the json_t type and associated functions.
 // See the nice docs here: http://www.digip.org/jansson/doc/2.3/
 // To avoid leaking memory, the basic rule is to use the json_object_set_new()
 // method when you set a new key on a JSON object, and call json_decref(obj)
 // on the top level JSON object when you are done.
-#include "jansson.h"
+#include "jansson/jansson.h"
 
 // This is iPhone-specific stuff
 

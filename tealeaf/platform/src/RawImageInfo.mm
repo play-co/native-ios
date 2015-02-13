@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Game Closure. All rights reserved.
 //
 
-#import "RawImageInfo.h"
+#import "platform/RawImageInfo.h"
 
 @implementation RawImageInfo
 - (void) dealloc {

@@ -13,11 +13,11 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "jsPhoto.h"
-#import "js_core.h"
-#import "jsMacros.h"
-#include "photo.h"
-#import "Base64.h"
+#import "js/jsPhoto.h"
+#import "js/js_core.h"
+#import "js/jsMacros.h"
+#include "platform/photo.h"
+#import "platform/Base64.h"
 #import "qr/adapter/QRCodeProcessor.h"
 #import "core/image_loader.h"
 

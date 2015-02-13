@@ -14,12 +14,12 @@
  */
 
 #import "js/jsSocket.h"
-#import "AsyncSocket.h"
+#import "platform/AsyncSocket.h"
 #import "platform/log.h"
 #include "core/events.h"
 
-#import "jansson.h"
-#import "jsonUtil.h"
+#import "jansson/jansson.h"
+#import "platform/jsonUtil.h"
 
 @interface SocketWrapper : NSObject
 

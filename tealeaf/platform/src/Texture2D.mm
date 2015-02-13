@@ -62,13 +62,15 @@
 
 #import <OpenGLES/ES1/glext.h>
 
-#import "Texture2D.h"
-#import "ResourceLoader.h"
-
-#include "geometry.h"
-#include "text_manager.h"
 #include "core/log.h"
-#import <platform/gl.h>
+#include "core/geometry.h"
+
+#import "platform/Texture2D.h"
+#import "platform/ResourceLoader.h"
+#import "platform/gl.h"
+
+#include "platform/text_manager.h"
+
 
 static inline int NextPowerOfTwo(int n) {
 	n -= 1;

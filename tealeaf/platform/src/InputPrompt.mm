@@ -13,12 +13,12 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "InputPrompt.h"
-#import "InputUtils.h"
+#import "platform/InputPrompt.h"
+#import "platform/InputUtils.h"
 
 #include "platform/log.h"
 #include "core/events.h"
-#include "TeaLeafViewController.h"
+#include "platform/TeaLeafViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 // Instance of the prompt view

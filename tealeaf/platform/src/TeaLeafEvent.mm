@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Game Closure. All rights reserved.
 //
 
-#import "TeaLeafEvent.h"
-#include "events.h"
+#import "platform/TeaLeafEvent.h"
 #include "core/events.h"
+#include "platform/events.h"
 
 
 @implementation TeaLeafEvent

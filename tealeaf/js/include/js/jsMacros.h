@@ -16,6 +16,7 @@
 #ifndef JS_MACROS_H
 #define JS_MACROS_H
 
+
 #include <memory>
 
 namespace JS {
@@ -57,7 +58,9 @@ namespace JS {
 
 #define CSTR_TO_JSVAL(cx, cstr) STRING_TO_JSVAL(CSTR_TO_JSTR(cx, cstr))
 
-#if (__OBJC__) == 1
+#ifdef __OBJC__
+
+#include <Foundation/Foundation.h>
 
 #define JSTR_TO_NSTR(cx, jstr, nstr) \
 	size_t nstr ## _len; \

@@ -13,7 +13,8 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#include "LocalStorage.h"
+#include <Foundation/Foundation.h>
+#include "platform/LocalStorage.h"
 
 void local_storage_set(NSString *key, NSString *value) {
 	NSMutableDictionary *storage = [[NSMutableDictionary dictionaryWithDictionary:(NSMutableDictionary*)retrieveFromUserDefaults(@"localStorage")] retain];

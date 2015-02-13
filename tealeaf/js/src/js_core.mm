@@ -13,13 +13,16 @@
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
 
-#import "js/js_core.h"
-#include "jsapi.h"
-#include "GCAPI.h" // SpiderMonkey Garbage Collect API
-#include "Tracer.h"
-#import "js/jsMacros.h"
 #include <stddef.h>
 #include <stdio.h>
+
+// SpiderMonkey Headers
+#include "jsapi.h"
+#include "GCAPI.h"
+#include "Tracer.h"
+
+#import "js/js_core.h"
+#import "js/jsMacros.h"
 #include "core/log.h"
 #include "core/core.h"
 #include "core/timer.h"
@@ -31,8 +34,8 @@
 #import "platform/native.h"
 #import "js/jsBase.h"
 #import "platform/PluginManager.h"
-#import "iosVersioning.h"
-#import "NativeCalls.h"
+#import "platform/iosVersioning.h"
+#import "platform/NativeCalls.h"
 
 // JS Ready flag: Indicates that the JavaScript engine is running (see core/core_js.h)
 bool js_ready = false;
