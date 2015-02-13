@@ -210,17 +210,6 @@
 		36ACCF02179F2A63002AE65C /* right_text_handler.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_text_handler.png; sourceTree = "<group>"; };
 		36ACCF29179F595D002AE65C /* done_button_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = done_button_pressed.png; sourceTree = "<group>"; };
 		36ACCF2A179F595D002AE65C /* done_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = done_button.png; sourceTree = "<group>"; };
-		4E35EA7C16B9FEEE004FD452 /* timestep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep.h; sourceTree = "<group>"; };
-		4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_animate.cpp; sourceTree = "<group>"; };
-		4E35EA7E16B9FEEE004FD452 /* timestep_animate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_animate.h; sourceTree = "<group>"; };
-		4E35EA7F16B9FEEE004FD452 /* timestep_events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_events.cpp; sourceTree = "<group>"; };
-		4E35EA8016B9FEEE004FD452 /* timestep_events.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_events.h; sourceTree = "<group>"; };
-		4E35EA8116B9FEEE004FD452 /* timestep_image_map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_image_map.cpp; sourceTree = "<group>"; };
-		4E35EA8216B9FEEE004FD452 /* timestep_image_map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_image_map.h; sourceTree = "<group>"; };
-		4E35EA8316B9FEEE004FD452 /* timestep_text_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_text_data.cpp; sourceTree = "<group>"; };
-		4E35EA8416B9FEEE004FD452 /* timestep_text_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_text_data.h; sourceTree = "<group>"; };
-		4E35EA8516B9FEEE004FD452 /* timestep_view.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timestep_view.cpp; sourceTree = "<group>"; };
-		4E35EA8616B9FEEE004FD452 /* timestep_view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timestep_view.h; sourceTree = "<group>"; };
 		4E35EAB916BB0D94004FD452 /* libjs_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjs_static.a; path = deps/spidermonkey/libjs_static.a; sourceTree = "<group>"; };
 		4E35EABA16BB0D94004FD452 /* libnspr4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnspr4.a; path = deps/spidermonkey/libnspr4.a; sourceTree = "<group>"; };
 		4E4919E5167AA57100DFA99B /* jsHaptics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsHaptics.h; sourceTree = "<group>"; };
@@ -782,7 +771,6 @@
 				4EF16B7F180DCA2B0011E864 /* Images.xcassets */,
 				D551A74A178F345E0028DACC /* uthash */,
 				4EB0C68716BBB4B900838A49 /* testapp */,
-				4E35EA7B16B9FEEE004FD452 /* timestep */,
 				4E77EAE41666B8DF00FD6430 /* debug */,
 				D5CA48DF15895D140017224F /* gen */,
 				D5582154150E7C7500549BF6 /* deps */,
@@ -833,25 +821,6 @@
 				4EE0B9A517BC70BD002A18DA /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		4E35EA7B16B9FEEE004FD452 /* timestep */ = {
-			isa = PBXGroup;
-			children = (
-				4E35EA7C16B9FEEE004FD452 /* timestep.h */,
-				4E35EA7D16B9FEEE004FD452 /* timestep_animate.cpp */,
-				4E35EA7E16B9FEEE004FD452 /* timestep_animate.h */,
-				4E35EA7F16B9FEEE004FD452 /* timestep_events.cpp */,
-				4E35EA8016B9FEEE004FD452 /* timestep_events.h */,
-				4E35EA8116B9FEEE004FD452 /* timestep_image_map.cpp */,
-				4E35EA8216B9FEEE004FD452 /* timestep_image_map.h */,
-				4E35EA8316B9FEEE004FD452 /* timestep_text_data.cpp */,
-				4E35EA8416B9FEEE004FD452 /* timestep_text_data.h */,
-				4E35EA8516B9FEEE004FD452 /* timestep_view.cpp */,
-				4E35EA8616B9FEEE004FD452 /* timestep_view.h */,
-			);
-			name = timestep;
-			path = core/timestep;
 			sourceTree = "<group>";
 		};
 		4E77EAE41666B8DF00FD6430 /* debug */ = {
@@ -2122,7 +2091,10 @@
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/platform/prebuilt-libs";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/platform/prebuilt-libs",
+					"$(PROJECT_DIR)",
+				);
 				LLVM_LTO = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
@@ -2180,7 +2152,10 @@
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/platform/prebuilt-libs";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/platform/prebuilt-libs",
+					"$(PROJECT_DIR)",
+				);
 				LLVM_LTO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (

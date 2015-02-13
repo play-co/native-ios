@@ -362,18 +362,8 @@ CEXPORT void device_hide_splash() {
     [self.appDelegate.window.rootViewController.view addSubview:self.inputAccTextField];
 	m_showing_splash = YES;
     
-	// Initialize text manager
-	if (!text_manager_init()) {
-		NSLOG(@"{tealeaf} ERROR: Unable to initialize text manager.");
-	}
-	
-	// Setup the JS runtime in the main thread
-	if (!setup_js_runtime()) {
-		NSLOG(@"{tealeaf} ERROR: Unable to setup javascript runtime.");
-	}
-    
 	// PluginManager gets initialized after createJS() so that events are generated after core js is loaded
-	self.appDelegate.pluginManager = [[[PluginManager alloc] init] autorelease];
+	self.appDelegate.pluginManager = [PluginManager get];
 	
 	// Run JS initialization in another thread
   NSString *baseURL = [NSString stringWithFormat:@"http://%@:%d/", [self.appDelegate.config objectForKey:@"code_host"], [[self.appDelegate.config objectForKey:@"code_port"] intValue]];

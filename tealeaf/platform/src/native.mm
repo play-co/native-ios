@@ -87,4 +87,10 @@ CEXPORT void report_gl_error(int error_code, gl_error **errors_hash, bool unreco
 	// TODO
 }
 
+#ifdef TEALEAF_BUILD_LIBRARY
+CEXPORT void device_hide_splash() {
+    LOG("device_hide_splash not implemented");
+}
+#endif
+
 CEXPORT void finish_loading_images () { }

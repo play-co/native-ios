@@ -29,22 +29,30 @@
 #include "core_js.h"
 //#import "TeaLeafEvent.h"
 #import "SoundManager.h"
-
+#import "platform/text_manager.h"
+#import "platform/PluginManager.h"
 
 static js_core *m_core = 0;
+static PluginManager *pluginManager = nullptr;
 
 CEXPORT bool setup_js_runtime() {
+    // TODO put this in core?
+    text_manager_init();
 	return 0 != (m_core = [[js_core alloc] initRuntime]);
 }
 
 CEXPORT bool init_js(const char *uri, const char *version) {
+    
+    setup_js_runtime();
+    
 	if (m_core && !js_ready) {
+        pluginManager = [[PluginManager alloc] init];
 		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
         
 		NSString *baseURL = [NSString stringWithUTF8String:uri];
 		
 		js_core *js = m_core;
-		[js setConfig:app.config pluginManager:app.pluginManager];
+		[js setConfig:app.config pluginManager:pluginManager];
 		
 		ResourceLoader *loader = [ResourceLoader get];
 		[loader setBaseURL:[NSURL URLWithString:baseURL]];
@@ -54,8 +62,8 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsSound addToRuntime:js];
 		[jsLocalStorage addToRuntime:js];
 		[jsXHR addToRuntime:js];
-		[jsTextInput addToRuntime:js withSuperView:app.tealeafViewController.view];
-		[jsOverlay addToRuntime:js withSuperView:app.tealeafViewController.view];
+        [jsTextInput addToRuntime:js withSuperView:nil];
+		[jsOverlay addToRuntime:js withSuperView:nil];
 		[jsDialog addToRuntime:js];
 		[jsPhoto addToRuntime:js];
 		[jsTimestep addToRuntime:js];
@@ -72,12 +80,14 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsTimer addToRuntime:js];
 		[jsSocket addToRuntime:js];
 		[jsImageCache addToRuntime:js];
-   //     [TeaLeafEvent InitWithJS: js];
-		
 		[jsBase setLocation:baseURL];
 		
 		js_ready = true;
 	}
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [pluginManager initializeWithManifest:@{} appDelegate:nil];
+    });
     
 	return true;
 }

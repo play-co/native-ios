@@ -329,6 +329,10 @@ JSAG_OBJECT_END
 	return self;
 }
 
+- (void) initializeWithManifest:(NSDictionary *)manifest appDelegate:(TeaLeafAppDelegate *)appDelegate {
+    
+}
+
 - (void) onPluginNotification:(NSNotification *)notification {
 	if ([[notification name] isEqualToString:@"GameClosurePlugin"]) {
 		//PluginManager *mgr = (PluginManager *)[notification object];

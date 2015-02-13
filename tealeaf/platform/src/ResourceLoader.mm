@@ -158,11 +158,12 @@ static int base_path_len = 0;
 		url = [url substringFromIndex:8];
 	}
 	
-	if (self.appDelegate.isTestApp) {
-		return [self resolveFileUrl:url];
-	} else {
+    // TODO restore testapp
+//	if (self.appDelegate.isTestApp) {
+//		return [self resolveFileUrl:url];
+//	} else {
 		return [self resolveFile:url inBundle:inBundle];
-	}
+//	}
 }
 
 - (NSURL *) resolveFile:(NSString *)path inBundle:(BOOL)inBundle {
