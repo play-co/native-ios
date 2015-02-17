@@ -35,6 +35,12 @@
 static js_core *m_core = 0;
 static PluginManager *pluginManager = nullptr;
 
+CEXPORT void DevkitOpenURL(NSURL* url, NSString* sourceApplication) {
+  if (pluginManager) {
+    [pluginManager handleOpenURL:url sourceApplication:sourceApplication];
+  }
+}
+
 CEXPORT bool setup_js_runtime() {
     // TODO put this in core?
     text_manager_init();
