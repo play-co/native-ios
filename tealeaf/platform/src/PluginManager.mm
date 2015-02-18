@@ -23,7 +23,6 @@
 #import "platform/PluginManager.h"
 #import "platform/log.h"
 
-#include "platform/jsonUtil.h"
 #include "platform/events.h"
 
 static js_core *m_core = nil;

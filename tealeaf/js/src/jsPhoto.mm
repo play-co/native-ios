@@ -40,7 +40,8 @@ JSAG_MEMBER_BEGIN(processQR, 1)
     JSAG_ARG_NSTR(b64image)
 
 	char text[512];
-	qr_process_base64_image([b64image UTF8String], text);
+    // TODO FIXME
+	//qr_process_base64_image([b64image UTF8String], text);
 
 	JSAG_RETURN_CSTR(text);
 }
@@ -51,7 +52,9 @@ JSAG_MEMBER_BEGIN(encodeQR, 1)
     JSAG_ARG_CSTR(text)
 
 	int width, height;
-	char *b64image = qr_generate_base64_image(text, &width, &height);
+    // TODO FIXME
+	// char *b64image = qr_generate_base64_image(text, &width, &height);
+    char *b64image = "";
 
 	JSAG_RETURN_CSTR(b64image);
 }

@@ -18,13 +18,14 @@
 #import "ObjectAL.h"
 #include "core/events.h"
 #include "platform/log.h"
-#include "platform/TeaLeafAppDelegate.h"
+//#include "platform/TeaLeafAppDelegate.h"
 #include "limits.h"
 
 SoundManager *globalSoundManager = NULL;
 
 @interface SoundManager ()
-@property (nonatomic, assign) TeaLeafAppDelegate *appDelegate;
+// TODO FIXME
+//@property (nonatomic, assign) TeaLeafAppDelegate *appDelegate;
 @end
 
 @implementation SoundManager
@@ -49,14 +50,15 @@ SoundManager *globalSoundManager = NULL;
 	[OALSimpleAudio sharedInstance].honorSilentSwitch = YES;
 	[OALSimpleAudio sharedInstance].preloadCacheEnabled = YES;
 	[OALSimpleAudio sharedInstance].channel.interruptible = YES;
-	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
-	return self; 
+//	self.appDelegate = ((TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate]);
+	return self;
 }
 
 -(NSString*) resolvePath:(NSString*) path {
 	NSString *filePath = nil;
 	NSURL *url = [[ResourceLoader get] resolve:path];
-	if (self.appDelegate.isTestApp) {
+    // TODO FIXME
+	if (false) {
 		return [[url absoluteString] substringFromIndex:7];
 	} else {
 		if ([url.scheme compare: @"http"] != NSOrderedSame) {

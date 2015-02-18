@@ -3,12 +3,12 @@
  *
  * The Game Closure SDK is free software: you can redistribute it and/or modify
  * it under the terms of the Mozilla Public License v. 2.0 as published by Mozilla.
- 
+
  * The Game Closure SDK is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License v. 2.0 for more details.
- 
+
  * You should have received a copy of the Mozilla Public License v. 2.0
  * along with the Game Closure SDK.	 If not, see <http://mozilla.org/MPL/2.0/>.
  */
@@ -48,21 +48,21 @@ CEXPORT bool setup_js_runtime() {
 }
 
 CEXPORT bool init_js(const char *uri, const char *version) {
-    
+
     setup_js_runtime();
-    
+
 	if (m_core && !js_ready) {
         pluginManager = [[PluginManager alloc] init];
-		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-        
+//		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
+
 		NSString *baseURL = [NSString stringWithUTF8String:uri];
-		
+
 		js_core *js = m_core;
-		[js setConfig:app.config pluginManager:pluginManager];
-		
+        [js setConfig:@{} pluginManager:pluginManager];
+
 		ResourceLoader *loader = [ResourceLoader get];
 		[loader setBaseURL:[NSURL URLWithString:baseURL]];
-		
+
 		[jsConsole addToRuntime:js];
 		[jsGL addToRuntime:js];
 		[jsSound addToRuntime:js];
@@ -87,28 +87,28 @@ CEXPORT bool init_js(const char *uri, const char *version) {
 		[jsSocket addToRuntime:js];
 		[jsImageCache addToRuntime:js];
 		[jsBase setLocation:baseURL];
-		
+
 		js_ready = true;
         [pluginManager initializeWithManifest:@{} appDelegate:nil];
 	}
-    
+
 	return true;
 }
 
 CEXPORT bool destroy_js() {
 	if (js_ready) {
 		js_ready = false;
-		
+
 		LOG("{js} Shutting down...");
-		
+
 		TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
-        
+
 		[app.canvas stopRendering];
-        
+
 		view_animation_shutdown();
 		timestep_events_shutdown();
 		timestep_view_shutdown();
-        
+
 		[jsConsole onDestroyRuntime];
 		[jsGL onDestroyRuntime];
 		[jsSound onDestroyRuntime];
@@ -131,22 +131,22 @@ CEXPORT bool destroy_js() {
 		[jsBase onDestroyRuntime];
 		[jsTimer onDestroyRuntime];
 		[jsSocket onDestroyRuntime];
-		
+
 		core_timer_clear_all();
-        
+
 		SoundManager *sm = [SoundManager get];
 		if (sm) {
 			[sm stopBackgroundMusic];
 			[sm clearEffects];
 		}
 	}
-    
+
 	if (m_core) {
 		[m_core shutdown];
 		[m_core release];
 		m_core = 0;
 	}
-    
+
 	return true;
 }
 
@@ -164,11 +164,11 @@ CEXPORT void js_dispatch_event(const char *evt) {
 }
 
 CEXPORT void js_on_pause() {
-	
+
 }
 
 CEXPORT void js_on_resume() {
-	
+
 }
 
 
@@ -178,9 +178,9 @@ CEXPORT void js_object_wrapper_init(PERSISTENT_JS_OBJECT_WRAPPER *obj) {
 
 CEXPORT void js_object_wrapper_root(PERSISTENT_JS_OBJECT_WRAPPER *obj, JS_OBJECT_WRAPPER target) {
 	js_object_wrapper_delete(obj);
-    
+
 	*obj = target;
-    
+
 	JS_AddObjectRoot(get_js_context(), obj);
 }
 

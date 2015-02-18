@@ -475,9 +475,11 @@ void trace_js_gc_things(JSTracer* tracer, void * data) {
 #endif
   
 #ifndef RELEASE
+#ifndef DISABLE_DEBUG_SERVER
   if (!self.debugServer) {
     self.debugServer = [[[DebugServer alloc] init:self] autorelease];
   }
+#endif
 #endif
   
 	return self;

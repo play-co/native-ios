@@ -21,10 +21,12 @@
 
 
 static bool JSPOP_Online(JSContext *cx, JS::HandleObject obj, JS::HandleId id, JS::MutableHandleValue vp) {
-	TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
+//	TeaLeafAppDelegate *app = (TeaLeafAppDelegate *)[[UIApplication sharedApplication] delegate];
   JSAutoRequest areq(cx);
   
-	vp.setBoolean(app.isOnline == YES);
+    // TODO FIXME
+    vp.setBoolean(true);
+//	vp.setBoolean(app.isOnline == YES);
 	return true;
 }
 
