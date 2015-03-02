@@ -72,6 +72,11 @@ static CADisplayLink *displayLink;
 	GLTRACE(glGenRenderbuffers(1, &_colorRenderBuffer));
 	GLTRACE(glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer));
 	[_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:_eaglLayer];
+  
+  // Query new size:
+  glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH,  &_backingWidth);
+  glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backingHeight);
+
 }
 
 
@@ -80,6 +85,19 @@ static CADisplayLink *displayLink;
 	GLTRACE(glGenFramebuffers(1, &framebuffer));
 	GLTRACE(glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
 	GLTRACE(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer));
+  
+  // Create stencil/depth buffer. We don't use depth buffering, but we _do_ use
+  // stencil buffering for view clipping.
+  GLTRACE(glGenRenderbuffers(1, &_dsRenderBuffer));
+  GLTRACE(glBindRenderbuffer(GL_RENDERBUFFER, _dsRenderBuffer));
+  GLTRACE(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES,
+        _backingWidth, _backingHeight));
+  GLTRACE(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+        GL_RENDERBUFFER, _dsRenderBuffer));
+  GLTRACE(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+        GL_RENDERBUFFER, _dsRenderBuffer));
+
+  GLTRACE(glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer));
 }
 
 static CFTimeInterval last_timestamp = 0.0f;

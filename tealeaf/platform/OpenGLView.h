@@ -24,8 +24,11 @@
     CAEAGLLayer* _eaglLayer;
     EAGLContext* _context;
     GLuint _colorRenderBuffer;
+    GLuint _dsRenderBuffer;
     float _currentRotation;
     int _id;
+    GLint _backingWidth;
+    GLint _backingHeight;
 
     NSMutableArray *touchData;
     NSCondition *cond;
