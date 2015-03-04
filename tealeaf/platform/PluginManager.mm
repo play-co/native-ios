@@ -232,7 +232,10 @@ JSAG_OBJECT_END
 }
 
 - (void) dispatchJSEvent:(NSDictionary *)evt {
-    NSString *evt_nstr = [evt JSONString];
+    NSError* error = nil;
+    NSData* data = [NSJSONSerialization dataWithJSONObject:evt options:0 error:&error];
+    NSString *evt_nstr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
     [self dispatchJSEventWithJSONString:evt_nstr andRequestId:0];
 }
 
