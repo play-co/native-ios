@@ -90,9 +90,6 @@
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	[self.window makeKeyAndVisible];
 
-    [app registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-
 	//TEALEAF_SPECIFIC_START
 	self.tealeafViewController = [[TeaLeafViewController alloc] init];
 	self.signalRestart = NO;
@@ -134,6 +131,7 @@
 
 	return YES;
 }
+
 
 - (void) restartJS {
 	if (!self.isTestApp) {
