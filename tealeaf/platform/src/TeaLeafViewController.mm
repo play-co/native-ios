@@ -571,7 +571,7 @@ CEXPORT void device_hide_splash() {
 	}
 
     NSData *data = UIImagePNGRepresentation(image);
-    NSString *b64Image = encodeBase64(data);
+    NSString *b64Image = [NSString stringWithFormat:@"image/png;base64,%@", encodeBase64(data)];
     [[PluginManager get] dispatchJSEvent:@{ @"name" : @"PhotoLoaded", @"url": self.photoURL, @"data": b64Image }];
     
     [self dismissViewControllerAnimated:YES completion:NULL];
