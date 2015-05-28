@@ -70,6 +70,7 @@ var copyIOSProjectDir = function(srcPath, destPath, cb) {
 
   var rsync = new Rsync()
     .flags('a')
+    .set('delete-before')
     .source(srcPath)
     .destination(destPath)
     .execute(cb);
