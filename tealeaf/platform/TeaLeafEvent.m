@@ -7,7 +7,6 @@
 //
 
 #import "TeaLeafEvent.h"
-#import <deps/JSONKit.h>
 #include "events.h"
 #include "core/events.h"
 
@@ -18,6 +17,9 @@
         opts = [NSMutableDictionary dictionary];
     }
     [opts setObject:name forKey:@"name"];
-    core_dispatch_event([[opts JSONString] UTF8String]);
+
+    NSData* data = [NSJSONSerialization dataWithJSONObject:opts options:0 error:nil];
+    NSString *evt = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    core_dispatch_event([evt UTF8String]);
 }
 @end
