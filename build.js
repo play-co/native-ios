@@ -78,6 +78,7 @@ exports.createXcodeProject = function (config) {
     .then(function () {
       var rsync = new Rsync()
         .flags('a')
+        .set('exclude', config.xcodeResourcesPath)
         .set('delete-before')
         .source(srcPath)
         .destination(destPath);
