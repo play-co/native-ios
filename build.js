@@ -1,12 +1,29 @@
+var chalk = require('chalk');
 var path = require('path');
 var fs = require('fs-extra');
-var clc = require('cli-color');
 var updatePlist = require('./lib/updatePlist');
 var xcodeUtil = require('./lib/xcodeUtil');
 var copyResources = require('./lib/copyResources');
-var exec = require('child_process').exec;
 var Rsync = require('rsync');
-var ff = require('ff');
+
+var mkdirs = Promise.promisify(fs.mkdirs);
+
+var DEFAULT_FRAMEWORKS = [
+  'StoreKit',
+  'AddressBook',
+  'libresolv.dylib',
+  'CoreTelephony',
+  'Security',
+  'MobileCoreServices',
+  'SystemConfiguration',
+  'MessageUI',
+  'CFNetwork',
+  'AudioToolbox',
+  'OpenAL',
+  'AVFoundation',
+  'AdSupport',
+  'CoreText'
+];
 
 var iosVersion = require('./package.json').version;
 
@@ -29,51 +46,45 @@ var getModuleConfig = function(modulePath) {
   return config;
 };
 
-var copyFilesToProject = function(srcPath, destPath, files) {
-  files.forEach(function(file) {
-    var srcFile = path.join(srcPath, file);
-    var destFile = path.join(destPath, file);
-    fs.copySync(srcFile, destFile);
-  });
-};
-
-
-var installModule = function (app, config, modulePath, xcodeProject, infoPlist, cb) {
-  try {
-    var moduleConfig = getModuleConfig(modulePath);
-  } catch (e) {
-    return cb(e);
-  }
-
-  xcodeProject.installModule(modulePath, moduleConfig, function (err, filesToCopy) {
-    if (!err) {
-      copyFilesToProject(modulePath, xcodeProject.path, filesToCopy);
+var installModule = function (app, config, modulePath, xcodeProject, infoPlist) {
+  var moduleConfig = getModuleConfig(modulePath);
+  return xcodeProject
+    .installModule(modulePath, moduleConfig)
+    .then(function () {
       if (moduleConfig.plist) {
         infoPlist.add(app.manifest, moduleConfig.plist);
       }
-      cb(null);
-    } else {
-      cb(err);
-    }
-  });
+    });
 };
 
-var copyIOSProjectDir = function(srcPath, destPath, cb) {
-  var parent = path.dirname(destPath);
-  if (!fs.existsSync(parent)) {
-    fs.mkdirSync(parent);
+function updateConfig(config) {
+  if (!config.xcodeProjectPath) {
+    config.xcodeProjectPath = path.join(config.outputPath, 'xcodeproject');
+  }
+}
+
+exports.createXcodeProject = function (config) {
+  updateConfig(config);
+
+  var srcPath;
+  if (config.srcXcodeProjectPath) {
+    srcPath = config.srcXcodeProjectPath;
+  } else {
+    srcPath = __dirname + '/tealeaf/';
   }
 
-  if (!fs.existsSync(destPath)) {
-    fs.mkdirSync(destPath);
-  }
+  var destPath = config.xcodeProjectPath;
+  return mkdirs(destPath)
+    .then(function () {
+      var rsync = new Rsync()
+        .flags('a')
+        .set('exclude', config.xcodeResourcesPath)
+        .set('delete-before')
+        .source(srcPath)
+        .destination(destPath);
 
-  var rsync = new Rsync()
-    .flags('a')
-    .set('delete-before')
-    .source(srcPath)
-    .destination(destPath)
-    .execute(cb);
+      return Promise.fromNode(rsync.execute.bind(rsync));
+    });
 };
 
 function removeKeysForObjects(parentObject, objects, keys) {
@@ -182,115 +193,95 @@ function updateConfigPlist(app, config, plist) {
     });
 }
 
-function buildXcodeProject(api, app, config, cb) {
-  var f = ff(function() {
-    var srcDir;
-    if (config.srcXcodeProjectPath) {
-      srcDir = config.srcXcodeProjectPath;
-    } else {
-      srcDir = __dirname + '/tealeaf/';
-    }
+function buildXcodeProject(api, app, config) {
+  return xcodeUtil
+    .getXcodeProject(config.xcodeProjectPath)
+    .then(function (xcodeProject) {
+      var infoPlist = updatePlist.getInfoPlist(config.xcodeProjectPath);
+      var configPlist = updatePlist.get(path.join(config.xcodeProjectPath, 'resources', 'config.plist'));
+      updateInfoPlist(app, config, infoPlist);
+      updateConfigPlist(app, config, configPlist);
 
-    copyIOSProjectDir(srcDir, config.xcodeProjectPath, f());
-  }, function() {
-    xcodeUtil.getXcodeProject(config.xcodeProjectPath, f());
-  }, function (_xcodeProject) {
-    xcodeProject = _xcodeProject;
-
-    infoPlist = updatePlist.getInfoPlist(config.xcodeProjectPath);
-    configPlist = updatePlist.get(path.join(config.xcodeProjectPath, 'resources', 'config.plist'));
-    updateInfoPlist(app, config, infoPlist);
-    updateConfigPlist(app, config, configPlist);
-
-    Object.keys(app.modules).map(function (moduleName) {
-      return app.modules[moduleName].extensions.ios;
-    }).filter(function (iosExtension) {
-      return !!iosExtension;
-    }).forEach(function(iosExtension) {
-      installModule(app, config, iosExtension, xcodeProject, infoPlist, f());
+      return Promise
+        .resolve(Object.keys(app.modules))
+        .map(function (moduleName) {
+          return app.modules[moduleName].extensions.ios;
+        })
+        .filter(function (iosExtension) {
+          return !!iosExtension;
+        })
+        .each(function(iosExtension) {
+          return installModule(app, config, iosExtension, xcodeProject, infoPlist);
+        })
+        .then(function () {
+          return [
+            copyResources.copyIcons(api, app, config),
+            copyResources.copySplash(api, app, config),
+            xcodeProject.installModule(null, {frameworks: DEFAULT_FRAMEWORKS}),
+            xcodeProject.addResourceFiles('resources.bundle')
+          ];
+        })
+        .all()
+        .then(function () {
+          return [
+            xcodeProject.write(),
+            infoPlist.write(),
+            configPlist.write()
+          ];
+        })
+        .all();
     });
+}
 
-    copyResources.copyIcons(api, app, config, f());
-    copyResources.copySplash(api, app, config, f());
-  }, function() {
-    xcodeProject.installModule(null, {
-      frameworks: [
-        'StoreKit',
-        'AddressBook',
-        'libresolv.dylib',
-        'CoreTelephony',
-        'Security',
-        'MobileCoreServices',
-        'SystemConfiguration',
-        'MessageUI',
-        'CFNetwork',
-        'AudioToolbox',
-        'OpenAL',
-        'AVFoundation',
-        'AdSupport',
-        'CoreText'
-      ]
-    }, f());
-
-    xcodeProject.addResourceFiles('resources.bundle', f());
-  }, function () {
-    xcodeProject.write(f());
-    infoPlist.write(f());
-    configPlist.write(f());
-  }).cb(cb);
-};
-
-exports.build = function(api, app, config, cb) {
+exports.build = function(api, app, config) {
   logger = api.logging.get('ios-build');
 
-  var infoPlist;
-  var configPlist;
+  updateConfig(config);
 
-  if (!config.xcodeProjectPath) {
-    config.xcodeProjectPath = path.join(config.outputPath, 'xcodeproject');
-  }
-
-  var f = ff(function () {
-
-
-    if (!config.repack) {
-      buildXcodeProject(api, app, config, f());
-    }
-  }, function () {
-    if (config.ipaPath) {
-      require('./lib/ipa')
-        .buildIPA(api, app, config, f.wait());
-    }
-  }, function () {
-    var projectDir = xcodeUtil.getXcodeProjectDir(config.xcodeProjectPath);
-
-    logger.log("built", clc.yellowBright(config.bundleID));
-
-    if (config.ipaPath) {
-      logger.log("saved to " + clc.blueBright(config.ipaPath));
-    } else {
-      logger.log("xcode project file is at", clc.blueBright(projectDir));
-      logger.log("build output at", clc.blueBright(config.xcodeProjectPath));
-    }
-
-    if (config.open) {
-      // open the xcode project
-      logger.log('opening xcode project...');
-      exec('open "' + projectDir + '"');
-    }
-
-    if (config.reveal) {
-      // show the ipaFile or the project in Finder
-      if (config.ipaPath) {
-        logger.log('revealing ipa file...');
-        exec('open --reveal "' + config.ipaPath + '"');
-      } else {
-        logger.log('revealing xcode project...');
-        exec('open --reveal "' + projectDir + '"');
+  return Promise
+    .resolve()
+    .then(function () {
+      if (!config.repack) {
+        return buildXcodeProject(api, app, config);
       }
-    }
-  }).cb(cb);
-}
+    })
+    .then(function () {
+      if (config.ipaPath) {
+        // TODO
+        return require('./lib/ipa').buildIPA(api, app, config);
+      }
+    })
+    .then(function () {
+      var exec = require('child_process').exec;
+      var projectDir = xcodeUtil.getXcodeProjectDir(config.xcodeProjectPath);
+
+      logger.log("built", chalk.yellow(config.bundleID));
+
+      if (config.ipaPath) {
+        logger.log("saved to " + chalk.blue(config.ipaPath));
+      } else {
+        logger.log("xcode project file is at", chalk.blue(projectDir));
+        logger.log("build output at", chalk.blue(config.xcodeProjectPath));
+      }
+
+      if (config.open) {
+        // open the xcode project
+        logger.log('opening xcode project...');
+        exec('open "' + projectDir + '"');
+      }
+
+      if (config.reveal) {
+        // show the ipaFile or the project in Finder
+        if (config.ipaPath) {
+          logger.log('revealing ipa file...');
+          exec('open --reveal "' + config.ipaPath + '"');
+        } else {
+          logger.log('revealing xcode project...');
+          exec('open --reveal "' + projectDir + '"');
+        }
+      }
+    });
+};
 
 //All of these (and the plist copying), should go into "externalProject"
 //copy native resources

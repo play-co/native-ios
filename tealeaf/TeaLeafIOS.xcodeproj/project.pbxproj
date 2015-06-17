@@ -151,7 +151,6 @@
 		D5BC67531635D0270059EC0F /* value.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E72C66715DAFE6E000404EF /* value.c */; };
 		D5BC67551635D0270059EC0F /* get_locale.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E9506D915E4383900FEF0E9 /* get_locale.mm */; };
 		D5BC67561635D0270059EC0F /* jsonUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4E667D2315E5C5010089D48D /* jsonUtil.mm */; };
-		D5BC675C1635D0270059EC0F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DC89DD161258110083B183 /* JSONKit.m */; };
 		D5BC675E1635D0270059EC0F /* OALSimpleAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E6E960C162DF13D0095FC9F /* OALSimpleAudio.m */; };
 		D5BC675F1635D0270059EC0F /* OALAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E6E9620162DF5600095FC9F /* OALAction.m */; };
 		D5BC67601635D0270059EC0F /* OALActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E6E9623162DF5600095FC9F /* OALActionManager.m */; };
@@ -459,8 +458,6 @@
 		54212FAE162D0AD4004625D0 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		54212FAF162D0AD4004625D0 /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
 		54212FB0162D0AD4004625D0 /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
-		54DC89DC161258110083B183 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
-		54DC89DD161258110083B183 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		5B2BEA6912AEF41100AE98C5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		5B469A40121A6B1300E414EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5B5EBD9A17BAD42C00C4DD0A /* jsInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsInput.h; sourceTree = "<group>"; };
@@ -959,15 +956,6 @@
 			name = Base64;
 			sourceTree = "<group>";
 		};
-		54DC7B02161257CC0083B183 /* JSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				54DC89DC161258110083B183 /* JSONKit.h */,
-				54DC89DD161258110083B183 /* JSONKit.m */,
-			);
-			name = JSONKit;
-			sourceTree = "<group>";
-		};
 		5B73EB6917C2FAA90017077E /* plugins */ = {
 			isa = PBXGroup;
 			children = (
@@ -1147,7 +1135,6 @@
 				4EB0C68116BBA2D800838A49 /* jsversion.h */,
 				4EB0C68216BBA2D800838A49 /* jswrapper.h */,
 				54212FAC162D0AAE004625D0 /* Base64 */,
-				54DC7B02161257CC0083B183 /* JSONKit */,
 				4E72C67215DAFE76000404EF /* Jansson */,
 				D5582155150E7C7500549BF6 /* ObjectAL */,
 			);
@@ -1497,7 +1484,6 @@
 				D5BC67551635D0270059EC0F /* get_locale.mm in Sources */,
 				D5BC67561635D0270059EC0F /* jsonUtil.mm in Sources */,
 				4E6B4A05188736C700429B4A /* bitstream.c in Sources */,
-				D5BC675C1635D0270059EC0F /* JSONKit.m in Sources */,
 				D5BC675E1635D0270059EC0F /* OALSimpleAudio.m in Sources */,
 				4E6B4A08188736C700429B4A /* mqrspec.c in Sources */,
 				D5BC675F1635D0270059EC0F /* OALAction.m in Sources */,
@@ -1695,7 +1681,7 @@
 					"./native-core/qr",
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/deps/spidermonkey",
@@ -1754,7 +1740,7 @@
 					"./native-core/qr",
 				);
 				INFOPLIST_FILE = "TeaLeafIOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/deps/spidermonkey",

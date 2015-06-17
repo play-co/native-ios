@@ -15,8 +15,6 @@
 
 #import "DebugServer.h"
 
-#import "JSONKit.h"
-
 #include "js/OldDebugAPI.h"
 #include "js/js_core.h"
 
@@ -27,8 +25,6 @@
 @class DebugConnexion; // Forward declaration for DebugMirror
 
 static const unsigned short SERVER_PORT = 9222;
-
-static const JKSerializeOptionFlags JK_ENCODE_FLAGS = JKSerializeOptionEscapeUnicode;
 
 
 /*
@@ -913,13 +909,16 @@ static void OnWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventTy
 }
 
 - (bool) onMessage:(char *)buffer count:(size_t)count {
-	JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
-
-	NSError *err;
-	NSDictionary *dict = [decoder objectWithUTF8String:(const unsigned char*)buffer length:count error:&err];
-
+    
+    NSError *err;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:[[NSString
+                                                                   stringWithCString:buffer
+                                                                   encoding:NSUTF8StringEncoding]
+                                                                  dataUsingEncoding:NSUTF8StringEncoding]
+                                                         options:0
+                                                           error:&err];
+    
 	bool rval = true;
-
 	if (!dict) {
 		NSLOG(@"{debugger} Invalid JSON formatting: %@ (bytes:%d)", err, count);
 	} else {

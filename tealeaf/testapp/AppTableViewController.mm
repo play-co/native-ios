@@ -17,7 +17,6 @@
 #include "TeaLeafAppDelegate.h"
 #include "jansson.h"
 #include "jsonUtil.h"
-#import "JSONKit.h"
 #include "log.h"
 #include "iosVersioning.h"
 
@@ -171,11 +170,11 @@ static NSThread *appLoadListThread = nil;
 	NSString *projectsURL = [NSString stringWithFormat:@"%@/projects", url];
 	NSData *data = [NSData dataWithContentsOfURL:[[NSURL alloc] initWithString:[projectsURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
-	JSONDecoder *decoder = [JSONDecoder decoderWithParseOptions:JKParseOptionStrict];
-
 	NSError *err;
 	@try {
-		NSDictionary *apps = [decoder objectWithData:data error:&err];
+        NSDictionary *apps = [NSJSONSerialization JSONObjectWithData:data
+                                                             options:0
+                                                               error:&err];
 
 		for (NSString *key in apps) {
 			NSDictionary *app = [apps objectForKey:key];
