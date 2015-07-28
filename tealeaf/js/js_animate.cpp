@@ -239,7 +239,7 @@ CEXPORT bool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *
   }
 
 
-  if (unlikely(argc < 2 || JSVAL_IS_PRIMITIVE(args[0]))) {
+  if (unlikely(argc < 1 || JSVAL_IS_PRIMITIVE(args[0]))) {
     LOG("{animate} ERROR: Animate constructor arguments were invalid!");
 
     return false;
