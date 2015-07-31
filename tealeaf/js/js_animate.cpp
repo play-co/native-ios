@@ -239,13 +239,12 @@ CEXPORT bool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *
   }
 
 
-  if (unlikely(argc < 2 || JSVAL_IS_PRIMITIVE(args[0]) || JSVAL_IS_PRIMITIVE(args[1]))) {
+  if (unlikely(argc < 1 || JSVAL_IS_PRIMITIVE(args[0]))) {
     LOG("{animate} ERROR: Animate constructor arguments were invalid!");
 
     return false;
   } else {
     JS::RootedObject js_timestep_view(cx, JSVAL_TO_OBJECT(args[0]));
-    JSObject* js_group = JSVAL_TO_OBJECT(args[1]);
     JS::RootedValue __view(cx);
 
     JS_GetProperty(cx, js_timestep_view, "__view", &__view);
@@ -256,8 +255,6 @@ CEXPORT bool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *
 
       JS_SetPrivate(thiz, (void*)anim);
       anim->js_anim = thiz.get();
-
-      js_object_wrapper_root(&anim->js_group, js_group);
     }
 
     args.rval().set(OBJECT_TO_JSVAL(thiz));
@@ -266,29 +263,40 @@ CEXPORT bool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *
   }
 }
 
-void def_animate_finish(JS_OBJECT_WRAPPER a) {
-  LOGFN("js_animate_finish");
+void def_animate_add_to_group(JS_OBJECT_WRAPPER a) {
+  LOGFN("def_animate_add_to_group");
   JSContext *cx = get_js_context();
   JSAutoRequest areq(cx);
   JS::RootedObject js_anim(cx, a);
-
-  view_animation *anim = (view_animation *)JS_GetPrivate(js_anim);
-
-  JS::RootedObject js_group(cx, anim->js_group);
   JS::RootedValue finish_val(cx);
-
-  JS_GetProperty(cx, js_group, "onAnimationFinish", &finish_val);
-
+  JS_GetProperty(cx, js_anim, "_addToGroup", &finish_val);
   if (finish_val.isObject()) {
     JS::RootedObject finish(cx, finish_val.toObjectOrNull());
     JS::Value args[] = {OBJECT_TO_JSVAL(js_anim)};
     if (JS_ObjectIsFunction(cx, finish)) {
       JS::RootedValue ret(cx);
-      JS_CallFunctionValue(cx, js_group, finish_val, 1, args, ret.address());
+      JS_CallFunctionValue(cx, js_anim, finish_val, 1, args, ret.address());
     }
   }
+  LOGFN("end def_animate_add_to_group");
+}
 
-  LOGFN("end def_animate_finish");
+void def_animate_remove_from_group(JS_OBJECT_WRAPPER a) {
+  LOGFN("def_animate_remove_from_group");
+  JSContext *cx = get_js_context();
+  JSAutoRequest areq(cx);
+  JS::RootedObject js_anim(cx, a);
+  JS::RootedValue finish_val(cx);
+  JS_GetProperty(cx, js_anim, "_removeFromGroup", &finish_val);
+  if (finish_val.isObject()) {
+    JS::RootedObject finish(cx, finish_val.toObjectOrNull());
+    JS::Value args[] = {OBJECT_TO_JSVAL(js_anim)};
+    if (JS_ObjectIsFunction(cx, finish)) {
+      JS::RootedValue ret(cx);
+      JS_CallFunctionValue(cx, js_anim, finish_val, 1, args, ret.address());
+    }
+  }
+  LOGFN("end def_animate_remove_from_group");
 }
 
 void def_animate_cb(JS_OBJECT_WRAPPER view, JS_OBJECT_WRAPPER cb, double tt, double t) {
