@@ -226,6 +226,7 @@ CEXPORT void def_animate_class_finalize(JSFreeOp *fop, JSObject *obj) {
   view_animation *anim = (view_animation *)JS_GetPrivate(obj);
   if (anim) {
     view_animation_release(anim);
+    js_object_wrapper_delete(&anim->js_anim);
   }
 }
 
@@ -252,9 +253,8 @@ CEXPORT bool def_animate_class_constructor(JSContext *cx, unsigned argc, jsval *
 
     if (view) {
       view_animation *anim = view_animation_init(view);
-
       JS_SetPrivate(thiz, (void*)anim);
-      anim->js_anim = thiz.get();
+      js_object_wrapper_root(&anim->js_anim, thiz.get());
     }
 
     args.rval().set(OBJECT_TO_JSVAL(thiz));
