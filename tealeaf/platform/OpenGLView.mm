@@ -284,6 +284,48 @@ static void on_touch_start(int event_type, UITouch *t, CGFloat x, CGFloat y) {
 	timestep_events_push(slot->uid, event_type, x, y);
 }
 
+static void on_touch_move(int event_type, UITouch *t, CGFloat x, CGFloat y) {
+    uint32_t low = *(uint32_t*)&t;
+    uint32_t hash = wangHash(low);
+    int key = hash & (TOUCH_SIZE - 1);
+    int start_key = key;
+    Touch *slot = &m_touches[key];
+    
+    if (slot->t != t) {
+        do {
+            TOUCHLOG("TS:%d TouchMove:%d key:%d", m_touches_size, event_type, key);
+            
+            key = (key + 1) & (TOUCH_SIZE - 1);
+            slot = &m_touches[key];
+        } while (slot->t != t && key != start_key);
+    }
+    
+    // If inserting now,
+    if (slot->t != t) {
+        // If displacing a slot,
+        if (slot->t) {
+            TOUCHLOG("TS:%d TouchMove:%d key:%d DISPLACING EVENT IN SLOT", m_touches_size, event_type, key);
+            
+            // Touch up at old location (should never happen)
+            timestep_events_push(slot->uid, TOUCH_UP, slot->x, slot->y);
+        } else {
+            ++m_touches_size;
+        }
+        
+        TOUCHLOG("TS:%d TouchMove:%d key:%d INSERTING", m_touches_size, event_type, key);
+        
+        slot->t = t;
+        slot->uid = ++m_next_uid;
+    } else {
+        TOUCHLOG("TS:%d TouchMove:%d key:%d UPDATING", m_touches_size, event_type, key);
+    }
+    
+    // Modify
+    slot->x = x;
+    slot->y = y;
+    timestep_events_push(slot->uid, event_type, x, y);
+}
+
 static void on_touch_up(UITouch *t, CGFloat x, CGFloat y) {
 	uint32_t low = *(uint32_t*)&t;
 	uint32_t hash = wangHash(low);
@@ -294,7 +336,7 @@ static void on_touch_up(UITouch *t, CGFloat x, CGFloat y) {
 	TOUCHLOG("TS:%d TouchUp key:%d", m_touches_size, key);
 	
 	// While the table entries are filled and not the given one,
-	while (slot->t && --limit >= 0) {
+	while (--limit >= 0) {
 		if (slot->t == t) {
 			TOUCHLOG("TS:%d TouchUp key:%d REMOVING", m_touches_size, key);
 			timestep_events_push(slot->uid, TOUCH_UP, x, y);
@@ -329,7 +371,7 @@ static void on_touch_up(UITouch *t, CGFloat x, CGFloat y) {
 	CGFloat scale = [[UIScreen mainScreen] scale];
 	for (UITouch *t in touches) {
 		CGPoint loc = [t locationInView:self];
-		on_touch_start(TOUCH_MOVE, t, loc.x * scale, loc.y * scale);
+		on_touch_move(TOUCH_MOVE, t, loc.x * scale, loc.y * scale);
 	}
 }
 
