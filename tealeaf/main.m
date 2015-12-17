@@ -14,18 +14,10 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
-const char* AppControllerClassName = "TeaLeafAppDelegate";
-
-int main(int argc, char *argv[]) {
-	
-  int retVal;
-  
-  @autoreleasepool {
-    retVal = UIApplicationMain(
-      argc, argv, nil, [NSString stringWithUTF8String:AppControllerClassName]
-    );
-  }
-
-	return retVal;
+int main(int argc, char * argv[]) {
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    }
 }

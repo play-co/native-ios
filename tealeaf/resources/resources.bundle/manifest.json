@@ -1,0 +1,1 @@
+{"android":{},"appID":"e2ce307d0bd347118b5934c775ad8b41","dependencies":{"devkit-core":"https://github.com/gameclosure/devkit-core#master"},"ios":{},"shortName":"templatescene","studio":{"domain":"studio.example.com","name":"Your Studio Name","stagingDomain":"staging.example.com"},"supportedOrientations":["portrait","landscape"],"title":"templatescene"}
