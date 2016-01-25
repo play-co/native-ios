@@ -200,6 +200,10 @@ JSAG_OBJECT_END
 	[self postNotification:@"onResume" obj1:nil obj2:nil];
 }
 
+- (void) performActionForShortcutItem:(UIApplicationShortcutItem *) shortcutItem {
+    [self postNotification:@"performActionForShortcutItem:" obj1:shortcutItem obj2:nil];
+}
+
 - (void) dispatchJSEventWithJSONString: (NSString*) str andRequestId:(NSNumber *)requestId {
     if (m_core) {
         JSContext *cx = m_core.cx;
