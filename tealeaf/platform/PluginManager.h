@@ -39,7 +39,7 @@
 - (void) handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication;
 - (void) onPause;
 - (void) onResume;
-- (void) performActionForShortcutItem: (NSString *) shortcutItem;
+- (void) performActionForShortcutItem: (UIApplicationShortcutItem *) shortcutItem;
 @end
 
 
