@@ -201,7 +201,7 @@ JSAG_OBJECT_END
 }
 
 - (void) performActionForShortcutItem:(UIApplicationShortcutItem *) shortcutItem {
-    [self postNotification:@"performActionForShortcutItem:" obj1:shortcutItem obj2:nil];
+	[self postNotification:@"performActionForShortcutItem:" obj1:shortcutItem obj2:nil];
 }
 
 - (void) dispatchJSEventWithJSONString: (NSString*) str andRequestId:(NSNumber *)requestId {
